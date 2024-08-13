@@ -1,0 +1,583 @@
+Deep neural embedding for software vulnerability discovery: Comparison and optimization
+X Yuan, G Lin, Y Tai, J Zhang - Security and Communication …, 2022 - Wiley Online Library
+… proposed to include synthetic vulnerable functions and perform … discover that utilizing
+CodeBERT as a code embedding solution yielded the best performance in terms of vulnerability …
+保存 引用 被引用次数：30 相关文章 所有 9 个版本
+[PDF] github.io
+Empirical analysis of security vulnerabilities in python packages
+M Alfadel, DE Costa, E Shihab - Empirical Software Engineering, 2023 - Springer
+… Our findings show that the discovered vulnerabilities in Python packages are … the vulnerability
+discovery time, in between the discovery time and publication time, or after the vulnerability …
+保存 引用 被引用次数：101 相关文章 所有 6 个版本
+[HTML] springer.com
+[HTML] Static analysis for discovering IoT vulnerabilities
+P Ferrara, AK Mandal, A Cortesi, F Spoto - International Journal on …, 2021 - Springer
+… rather than IoT systems), how these vulnerabilities can actually be exploited, and in which
+… top seven vulnerabilities of OWASP Top 10, and we discuss which IoT Top 10 vulnerabilities …
+保存 引用 被引用次数：80 相关文章 所有 10 个版本
+[PDF] acm.org
+CVEfixes: automated collection of vulnerabilities and their fixes from open-source software
+G Bhandari, A Naseer, L Moonen - Proceedings of the 17th International …, 2021 - dl.acm.org
+… discovery and repair of security vulnerabilities in source code requires comprehensive datasets
+of real-life vulnerable … prehensive vulnerability dataset from Common Vulnerabilities and …
+保存 引用 被引用次数：112 相关文章 所有 3 个版本
+[PDF] acm.org
+Vulnerability detection with fine-grained interpretationsCCF A
+Y Li, S Wang, TN Nguyen - Proceedings of the 29th ACM Joint Meeting …, 2021 - dl.acm.org
+… The rule-based approaches were developed to leverage known vulnerability patterns to
+discover possible vulnerable code, such as FlawFinder [7], RATS [9], ITS4 [33], Checkmarx [1], …
+保存 引用 被引用次数：171 相关文章 所有 5 个版本
+[PDF] usenix.org
+Smart contract vulnerabilities: Vulnerable does not imply exploited
+D Perez, B Livshits - … USENIX Security Symposium (USENIX Security 21 …, 2021 - usenix.org
+… We discover that out of 23,327 vulnerable contracts worth a total of 3,124,433 ETH, 463
+contracts may have been exploited for an amount of 8,487 ETH, which represents only 0.27% of …
+保存 引用 被引用次数：122 相关文章 所有 6 个版本 
+[PDF] smu.edu.sg
+Out of sight, out of mind? How vulnerable dependencies affect open-source projects
+GAA Prana, A Sharma, LK Shar, D Foo… - Empirical Software …, 2021 - Springer
+… characteristics of the discovered vulnerabilities in the sampled … the relationship between
+the vulnerabilities with project as well … For this analysis we list vulnerabilities discovered at the …
+保存 引用 被引用次数：58 相关文章 所有 5 个版本
+The rise of software vulnerability: Taxonomy of software vulnerabilities detection and machine learning approaches
+H Hanif, MHNM Nasir, MF Ab Razak, A Firdaus… - Journal of Network and …, 2021 - Elsevier
+… vulnerabilities as common vulnerabilities because they are frequently being targeted by
+vulnerability … It allows for a more pre-emptive approach in vulnerability discovery rather than post-…
+保存 引用 被引用次数：115 相关文章 所有 3 个版本
+[PDF] smu.edu.sg
+Finding a needle in a haystack: Automated mining of silent vulnerability fixes
+J Zhou, M Pacheco, Z Wan, X Xia, D Lo… - 2021 36th IEEE/ACM …, 2021 - ieeexplore.ieee.org
+… vulnerabilities [5], it is challenging to promptly discover … as vulnerability fixes that are not
+marked as vulnerability fixes in … ) of them are for fixing vulnerabilities, indicating VulFixMiner is …
+保存 引用 被引用次数：55 相关文章 所有 7 个版本
+[PDF] arxiv.org
+Deep learning based vulnerability detection: Are we there yet?CCF A
+S Chakraborty, R Krishna, Y Ding… - IEEE Transactions on …, 2021 - ieeexplore.ieee.org
+… in discovering vulnerability as yet unseen in past training data. For discovering such …
+prediction tool that addresses the concerns we discovered in existing systems and demonstrate its …
+保存 引用 被引用次数：410 相关文章 所有 10 个版本
+Vuldeelocator: a deep learning-based fine-grained vulnerability detector
+Z Li, D Zou, S Xu, Z Chen, Y Zhu… - IEEE Transactions on …, 2021 - ieeexplore.ieee.org
+… Finally, we map the vulnerable iSeVCs and the vulnerable lines of code in them to source
+… Mounier, “Toward large-scale vulnerability discovery using machine learning,” in Proc. 6th …
+保存 引用 被引用次数：183 相关文章 所有 6 个版本
+[PDF] arxiv.org
+The race to the vulnerable: Measuring the log4j shell incident
+R Hiesgen, M Nawrocki, TC Schmidt… - arXiv preprint arXiv …, 2022 - arxiv.org
+… attempting to exploit vulnerable services, researchers who want to examine and analyze,
+and the security industry, which wants to discover and close vulnerable services before they …
+保存 引用 被引用次数：48 相关文章 所有 12 个版本 
+[HTML] mdpi.com
+[HTML] The kinase chemogenomic set (KCGS): an open science resource for kinase vulnerability identification
+CI Wells, H Al-Ali, DM Andrews, CRM Asquith… - International journal of …, 2021 - mdpi.com
+… We will determine Kd values for new kinase hits for all KCGS version 1.0 compounds
+discovered with this new screening. If compounds fall outside our desired selectivity window, they …
+保存 引用 被引用次数：80 相关文章 所有 18 个版本 
+[PDF] arxiv.org
+D2a: A dataset built for ai-based vulnerability detection methods using differential analysis
+Y Zheng, S Pujar, B Lewis, L Buratti… - 2021 IEEE/ACM …, 2021 - ieeexplore.ieee.org
+… programming errors and security vulnerabilities. Research has … can achieve better coverage
+and discover bugs that are missed … vulnerability detection requires large labeled datasets of …
+保存 引用 被引用次数：109 相关文章 所有 9 个版本
+[PDF] authorea.com
+Cyber security threats, vulnerabilities, and security solutions models in banking
+D Ghelani, TK Hua, SKR Koduru - Authorea Preprints, 2022 - authorea.com
+… It is a frequent vulnerability discovered in current Web pages. Vicious assaults are … Malware
+patterns are discovered using the Dynamic Approach while executing code in a real-time …
+保存 引用 被引用次数：138 相关文章 所有 4 个版本 
+[PDF] researchgate.net
+[引用] A game theory method to cyber-threat information sharing in cloud computing technology
+M Amini, Z Bozorgasl - … Journal of Information System Management System, 2023
+保存 引用 被引用次数：87 相关文章 所有 4 个版本
+[PDF] researchgate.net
+Prediction of software vulnerability based deep symbiotic genetic algorithms: Phenotyping of dominant-features
+CB Şahin, ÖB Dinler, L Abualigah - Applied Intelligence, 2021 - Springer
+… on applying deep learning for vulnerability discovery are at a more coarse granularity (eg,
+function level). VulDeePecker demonstrates the feasibility of using deep learning to detect …
+保存 引用 被引用次数：45 相关文章 所有 4 个版本
+[HTML] nih.gov
+Molecular characterization of selectively vulnerable neurons in Alzheimer's disease
+K Leng, E Li, R Eser, A Piergies, R Sit, M Tan… - Nature …, 2021 - nature.com
+… We discovered a selectively vulnerable subpopulation of excitatory neurons in the EC and
+validated the selective depletion of this subpopulation during AD progression with quantitative …
+保存 引用 被引用次数：289 相关文章 所有 13 个版本
+Deescvhunter: A deep learning-based framework for smart contract vulnerability detection
+X Yu, H Zhao, B Hou, Z Ying… - 2021 International Joint …, 2021 - ieeexplore.ieee.org
+… vulnerabilities: reentrancy and time dependence. And we propose a novel notion of Vulnerability
+… is a compelling need to discover and detect smart contract vulnerabilities in advance. …
+保存 引用 被引用次数：52 相关文章
+[HTML] nih.gov
+Phenotypic drug discovery: recent successes, lessons learned and new directions
+F Vincent, A Nueda, J Lee, M Schenone… - … Drug Discovery, 2022 - nature.com
+… discovered through observation of their effects on normal or disease physiology. For the
+past generation, this phenotypic drug discovery … , modern phenotypic drug discovery, which …
+保存 引用 被引用次数：134 相关文章 所有 6 个版本
+Combining graph neural networks with expert knowledge for smart contract vulnerability detection
+Z Liu, P Qian, X Wang, Y Zhuang… - IEEE Transactions on …, 2021 - ieeexplore.ieee.org
+… This case is not isolated and several security vulnerabilities are discovered and exploited
+every few months [13], [14], [15], undermining the trust for smart contract-based applications. …
+保存 引用 被引用次数：199 相关文章 所有 6 个版本
+[PDF] cell.com
+Full View
+[PDF] Genome-wide gene expression tuning reveals diverse vulnerabilities of M. tuberculosis
+B Bosch, MA DeJesus, NC Poulton, W Zhang… - Cell, 2021 - cell.com
+… Validation of vulnerability predictions Our vulnerability estimates are predicated on the …
+Our results provide a roadmap to reinvigorate target-based drug discovery in TB; all else …
+保存 引用 被引用次数：153 相关文章 所有 9 个版本
+[PDF] acm.org
+Eth2vec: learning contract-wide code representations for vulnerability detection on ethereum smart contracts
+N Ashizawa, N Yanai, JP Cruz, S Okamura - Proceedings of the 3rd ACM …, 2021 - dl.acm.org
+… vulnerabilities have been discovered in the past decade. Many security analysis tools have
+been created to detect such vulnerabilities, … analysis tool for vulnerability detection in smart …
+保存 引用 被引用次数：97 相关文章 所有 6 个版本
+[PDF] usenix.org
+{ÆPIC} leak: Architecturally leaking uninitialized data from the microarchitecture
+P Borrello, A Kogler, M Schwarzl, M Lipp… - 31st USENIX Security …, 2022 - usenix.org
+… vulnerability discovered. However, we argue that a generic mitigation of the vulnerability class
+… In the blank spots, we discover ÆPIC Leak, an architectural vulnerability in the local APIC …
+保存 引用 被引用次数：52 相关文章 所有 14 个版本 
+[HTML] nih.gov
+Ontogeny and Vulnerabilities of Drug-Tolerant Persisters in HER2+ Breast Cancer
+CA Chang, J Jen, S Jiang, A Sayad, AS Mer, KR Brown… - Cancer discovery, 2022 - AACR
+DTPs are implicated in resistance to anticancer therapies, but their ontogeny and vulnerabilities
+remain unclear. We find that HER2 TKI-DTPs emerge from stochastically arising primed …
+保存 引用 被引用次数：62 相关文章 所有 10 个版本
+[PDF] cell.com
+Full View
+[PDF] Binary pan-cancer classes with distinct vulnerabilities defined by pro-or anti-cancer YAP/TEAD activity
+JD Pearson, K Huang, M Pacal, SR McCurdy, S Lu… - Cancer Cell, 2021 - cell.com
+… The discovery of contrasting vulnerabilities in YAPoff versus YAPon classes suggested that
+cancer may switch binary classes to escape therapeutics. Indeed, conversion of adenocarci…
+保存 引用 被引用次数：105 相关文章 所有 10 个版本
+[PDF] usenix.org
+{EOSAFE}: Security analysis of {EOSIO} smart contracts
+N He, R Zhang, H Wang, L Wu, X Luo, Y Guo… - 30th USENIX Security …, 2021 - usenix.org
+… vulnerabilities discovered so far are more complicated than traditional simple vulnerabilities,
+… Note that these four vulnerabilities we studied are general vulnerabilities in EOSIO, rather …
+保存 引用 被引用次数：68 相关文章 所有 10 个版本 
+[PDF] wingtecher.com
+Empirical evaluation of smart contract testing: What is the best choice?
+M Ren, Z Yin, F Ma, Z Xu, Y Jiang, C Sun, H Li… - Proceedings of the 30th …, 2021 - dl.acm.org
+… influence on the number of discovered vulnerabilities. As to performance metrics, the
+fundamental purpose of testing tools is to find real and harmful vulnerabilities. In this work, we …
+保存 引用 被引用次数：64 相关文章 所有 3 个版本
+[PDF] arxiv.org
+Linevd: Statement-level vulnerability detection using graph neural networksCCF C
+D Hin, A Kan, H Chen, MA Babar - Proceedings of the 19th international …, 2022 - dl.acm.org
+… the statement-level software vulnerability detection task from a … formulates statement-level
+vulnerability detection as a node … the prediction performance without vulnerability status for …
+保存 引用 被引用次数：123 相关文章 所有 6 个版本
+Vulnerability exploitation time prediction: an integrated framework for dynamic imbalanced learning
+J Yin, MJ Tang, J Cao, H Wang, M You, Y Lin - World Wide Web, 2022 - Springer
+… of cybersecurity vulnerabilities are discovered and published … patching the countless disclosed
+vulnerabilities, due to relatively … coverage (patching as many vulnerabilities as they can to …
+保存 引用 被引用次数：63 相关文章 所有 4 个版本
+Vulrepair: a t5-based automated software vulnerability repairCCF A
+M Fu, C Tantithamthavorn, T Le, V Nguyen… - Proceedings of the 30th …, 2022 - dl.acm.org
+… In particular, criminal groups may make use of unresolved security vulnerabilities in … of the
+National Vulnerability Database (NVD), the number of vulnerabilities discovered per year is …
+保存 引用 被引用次数：98 相关文章 所有 5 个版本
+[PDF] usenix.org
+Dos and don'ts of machine learning in computer security
+D Arp, E Quiring, F Pendlebury, A Warnecke… - 31st USENIX Security …, 2022 - usenix.org
+… Since the manual search for vulnerabilities is complex and … In what follows, we show that a
+dataset for vulnerability … and malware detection to vulnerability discovery. Ultimately, we strive …
+保存 引用 被引用次数：310 相关文章 所有 25 个版本 
+[PDF] wiley.com
+Full View
+A review on security threats, vulnerabilities, and counter measures of 5G enabled Internet‐of‐Medical‐Things
+MK Hasan, TM Ghazal, RA Saeed… - IET …, 2022 - Wiley Online Library
+… It has been discovered that IoMT is vulnerable to various types of attacks, including
+denial of service (DoS), malware, and eavesdropping attack. In addition, IoMT is exposed to …
+保存 引用 被引用次数：175 相关文章 所有 9 个版本
+[PDF] ieee.org
+Perspectives on the SolarWinds incident
+S Peisert, B Schneier, H Okhravi… - IEEE Security & …, 2021 - ieeexplore.ieee.org
+… A significant cybersecurity event has recently been discovered in which malicious actors …
+Numerous recent vulnerabilities discovered in security software further highlight this tradeoff.…
+保存 引用 被引用次数：76 相关文章 所有 6 个版本
+[PDF] usenix.org
+{SmarTest}: Effectively hunting vulnerable transaction sequences in smart contracts through language {Model-Guided} symbolic execution
+S So, S Hong, H Oh - … USENIX Security Symposium (USENIX Security 21 …, 2021 - usenix.org
+… vulnerable contracts, our technique automatically learns a probability distribution over
+vulnerable … Then, symbolic execution guided by the learned model can effectively find vulnerable …
+保存 引用 被引用次数：77 相关文章 所有 9 个版本 
+[HTML] sciencedirect.com
+[HTML] Unveiling security, privacy, and ethical concerns of ChatGPT
+X Wu, R Duan, J Ni - Journal of Information and Intelligence, 2024 - Elsevier
+… discovering vulnerabilities. While there are concerns about how ChatGPT can assist hackers,
+it should be noted that its capabilities are still limited. Currently, it may be considered not …
+保存 引用 被引用次数：75 相关文章 所有 3 个版本
+[PDF] google.com
+Understanding digital transformation in advanced manufacturing and engineering: A bibliometric analysis, topic modeling and research trend discovery
+CH Lee, CL Liu, AJC Trappey, JPT Mo… - Advanced Engineering …, 2021 - Elsevier
+… to develop predictive models, discover patterns, and inform … System vulnerabilities or security
+vulnerabilities are likely to … , and system vulnerability-discovering tools are effective security …
+保存 引用 被引用次数：94 相关文章 所有 7 个版本
+Mobile operating system (Android) vulnerability analysis using machine learning
+V Mahor, K Pachlasiya, B Garg, M Chouhan… - … Conference on Network …, 2021 - Springer
+… AMD: android malware detection (analysis) approaches, including signature-based on
+detection for power use monitoring, may miss new malicious infections and vulnerable activities. …
+保存 引用 被引用次数：75 相关文章 所有 2 个版本
+[HTML] nature.com
+[HTML] Exploiting vulnerabilities of SWI/SNF chromatin remodelling complexes for cancer therapy
+M Wanior, A Krämer, S Knapp, AC Joerger - Oncogene, 2021 - nature.com
+… -dependent chromatin remodelling complexes have been discovered in mammalians: ISWI,
+… The discovery of SWI/SNF chromatin remodellers and their evolutionary history have been …
+保存 引用 被引用次数：81 相关文章 所有 9 个版本
+[HTML] mdpi.com
+[HTML] A comprehensive review of cyber security vulnerabilities, threats, attacks, and solutions
+Ö Aslan, SS Aktuğ, M Ozkan-Okay, AA Yilmaz, E Akin - Electronics, 2023 - mdpi.com
+… before the attackers and give chances to patch the discovered vulnerabilities. To effectively
+protect computer systems, all the tools mentioned above, protocols, and technologies (Figure …
+保存 引用 被引用次数：133 相关文章 所有 5 个版本 
+Fuzzing: a survey for roadmap
+X Zhu, S Wen, S Camtepe, Y Xiang - ACM Computing Surveys (CSUR), 2022 - dl.acm.org
+… Fuzzing has detected thousands of bugs and vulnerabilities in various applications. Although
+… vulnerabilities more effectively and efficiently. Until now, fuzzing has discovered thousands …
+保存 引用 被引用次数：143 相关文章 所有 2 个版本
+[PDF] adamdoupe.com
+[PDF] Favocado: Fuzzing the Binding Code of JavaScript Engines Using Semantically Correct Test Cases.
+ST Dinh, H Cho, K Martin, A Oest, K Zeng… - NDSS, 2021 - adamdoupe.com
+… To illustrate how Favocado finds vulnerabilities in binding code, we introduce four real-world
+vulnerabilities discovered by Favocado. Given JavaScript snippets are minimized test …
+保存 引用 被引用次数：45 相关文章 所有 13 个版本 
+[HTML] springer.com
+[HTML] Lags in the release, adoption, and propagation of npm vulnerability fixes
+B Chinthanet, RG Kula, S McIntosh, T Ishio… - Empirical Software …, 2021 - Springer
+… We define the vulnerability discovery as the period between the threat detection and before
+the patch release. It is most likely that the fixing process starts after the CVE assessment, ie, …
+保存 引用 被引用次数：65 相关文章 所有 11 个版本
+[PDF] snu.ac.kr
+Difuzzrtl: Differential fuzz testing to find cpu bugs
+J Hur, S Song, D Kwon, E Baek, J Kim… - 2021 IEEE Symposium …, 2021 - ieeexplore.ieee.org
+… , an RTL fuzzer specifically designed to discover CPU RTL vulnerabilities. The core ideas …
+-testing approach to clearly identify an RTL vulnerability. In other words, DIFUZZRTL keeps …
+保存 引用 被引用次数：77 相关文章 所有 10 个版本
+[PDF] usenix.org
+{UNIFUZZ}: A holistic and pragmatic {Metrics-Driven} platform for evaluating fuzzers
+Y Li, S Ji, Y Chen, S Liang, WH Lee, Y Chen… - 30th USENIX Security …, 2021 - usenix.org
+… should exhibit a diversity of functionalities, sizes, vulnerability types, etc. Third, from the … in
+discovering bugs, each benchmark program should contain at least one vulnerability that can …
+保存 引用 被引用次数：95 相关文章 所有 12 个版本 
+[HTML] nature.com
+Full View
+[HTML] Confronting false discoveries in single-cell differential expression
+JW Squair, M Gautier, C Kathe, MA Anderson… - Nature …, 2021 - nature.com
+… be more vulnerable to false discoveries. To evaluate this possibility systematically, we
+calculated the variability between replicates within 41 human and mouse scRNA-seq datasets. In …
+保存 引用 被引用次数：427 相关文章 所有 17 个版本
+Penetration testing framework for smart contract blockchain
+A Bhardwaj, SBH Shah, A Shankar, M Alazab… - Peer-to-Peer Networking …, 2021 - Springer
+… domain has happened primarily in the past few years along with latest cybersecurity
+attacks, threat vectors and vulnerabilities discovered and exploited by Cybersecurity attackers. …
+保存 引用 被引用次数：94 相关文章 所有 4 个版本
+[PDF] ucsb.edu
+Diane: Identifying fuzzing triggers in apps to generate under-constrained inputs for iot devices
+N Redini, A Continella, D Das… - … IEEE Symposium on …, 2021 - ieeexplore.ieee.org
+… them to generate inputs for the analyzed devices, we can effectively discover vulnerabilities.
+Specifically, we found 11 vulnerabilities in 5 different devices, 9 of which were previously …
+保存 引用 被引用次数：64 相关文章 所有 15 个版本
+[PDF] arxiv.org
+The wmdp benchmark: Measuring and reducing malicious use with unlearning
+N Li, A Pan, A Gopal, S Yue, D Berrios, A Gatti… - arXiv preprint arXiv …, 2024 - arxiv.org
+… & vulnerability discovery stage, attackers use various methods to discover vulnerabilities …
+To measure a model’s weaponization & vulnerability discovery abilities, we sourced questions …
+保存 引用 被引用次数：9 相关文章 所有 3 个版本 
+[PDF] ijcai.org
+[PDF] Smart contract vulnerability detection using graph neural networksCCF none
+Y Zhuang, Z Liu, P Qian, Q Liu, X Wang, Q He - Proceedings of the Twenty …, 2021 - ijcai.org
+… The case is not isolated and several security vulnerabilities are discovered and exploited
+every few months †. According to the statistics of SlowMist Hacked ‡, blockchain networks …
+保存 引用 被引用次数：246 相关文章 所有 5 个版本 
+[HTML] Role of artificial intelligence in the Internet of Things (IoT) cybersecurity
+M Kuzlu, C Fair, O Guler - Discover Internet of things, 2021 - Springer
+… However, devices that have been infected once are susceptible to reinfection due to having
+already been discovered as being vulnerable, and reinfection can take as little as a few …
+保存 引用 被引用次数：209 相关文章 所有 3 个版本
+Cybersecurity for autonomous vehicles: Review of attacks and defense
+K Kim, JS Kim, S Jeong, JH Park, HK Kim - Computers & security, 2021 - Elsevier
+… vulnerabilities in the ECU to understand and exploit further vulnerabilities using the already
+discovered … They were able to test for vulnerable discovery and security practices in …
+保存 引用 被引用次数：279 相关文章 所有 3 个版本
+[PDF] arxiv.org
+Consumer, commercial, and industrial iot (in) security: Attack taxonomy and case studies
+C Xenofontos, I Zografopoulos… - IEEE Internet of …, 2021 - ieeexplore.ieee.org
+… The identified vulnerabilities of this incident were initially discovered between 2001 and
+2013, and are included in the common vulnerabilities and exposure (CVE) database, …
+保存 引用 被引用次数：135 相关文章 所有 6 个版本
+[PDF] usenix.org
+{MIRAGE}: Mitigating {Conflict-Based} Cache Attacks with a Practical {Fully-Associative} Design
+G Saileshwar, M Qureshi - 30th USENIX Security Symposium (USENIX …, 2021 - usenix.org
+… 52] have proposed efficient algorithms to discover a minimal eviction-set (lines mapping
+to … In this paper, we target the root cause of vulnerability to eviction-set discovery in prior …
+保存 引用 被引用次数：82 相关文章 所有 8 个版本 
+[PDF] uts.edu.au
+Deepwukong: Statically detecting software vulnerabilities using deep graph neural network
+X Cheng, H Wang, J Hua, G Xu, Y Sui - ACM Transactions on Software …, 2021 - dl.acm.org
+… To further understand whether DeepWukong can successfully discover real-world emerging
+vulnerabilities that are not in the SARD dataset, we evaluate DeepWukong by choosing the …
+保存 引用 被引用次数：176 相关文章 所有 5 个版本
+[HTML] nature.com
+[HTML] Targeting cancer metabolism in the era of precision oncology
+ZE Stine, ZT Schug, JM Salvino, CV Dang - … reviews Drug discovery, 2022 - nature.com
+… One hundred years have passed since Warburg discovered alterations in cancer … Hence,
+the conceptual framework for drug design must consider the metabolic vulnerabilities of non-…
+保存 引用 被引用次数：510 相关文章 所有 9 个版本
+[PDF] taylorfrancis.com
+How does the offense-defense balance scale?
+B Garfinkel, A Dafoe - Emerging Technologies and International …, 2021 - taylorfrancis.com
+… Third, we assume that, until all vulnerabilities are discovered, the number of vulnerabilities
+each actor discovers grows linearly with effort. Now, let N represent total number of …
+保存 引用 被引用次数：78 相关文章 所有 4 个版本 
+[PDF] arxiv.org
+Snipuzz: Black-box fuzzing of iot firmware via message snippet inference
+X Feng, R Sun, X Zhu, M Xue, S Wen, D Liu… - Proceedings of the …, 2021 - dl.acm.org
+… Even if vendors plan to fix the vulnerabilities in their products, the over-the-air patching is …
+reported to have vulnerabilities [28]. It is hence crucial to discover such vulnerabilities and fix …
+保存 引用 被引用次数：91 相关文章 所有 7 个版本
+[HTML] usenix.org
+[HTML] {FLAME}: Taming backdoors in federated learning
+TD Nguyen, P Rieger, R De Viti, H Chen… - 31st USENIX Security …, 2022 - usenix.org
+… In spite of their effectiveness in the context of vulnerability discovery, current state-of-the-art …
+a set of vulnerability properties that can aid both static and dynamic vulnerability detection …
+保存 引用 被引用次数：196 相关文章 所有 10 个版本 
+[PDF] csdsafrica.org
+[图书] Artificial intelligence and international security
+MC Horowitz, GC Allen, E Saravalle, A Cho… - 2022 - csdsafrica.org
+… to new vulnerability discovery, many cyber attacks exploit older, well-known vulnerabilities
+that … can automatically test software for known cyber vulnerabilities before the new software is …
+保存 引用 被引用次数：129 相关文章 所有 8 个版本 
+[HTML] Advances in covalent drug discovery
+L Boike, NJ Henning, DK Nomura - Nature Reviews Drug Discovery, 2022 - nature.com
+… discovery, selectivity profiling and target identification. This Review showcases covalent
+drug discovery … toolbox of covalent drug discovery techniques facilitates success in this field. …
+保存 引用 被引用次数：274 相关文章 所有 10 个版本
+[PDF] researchgate.net
+Survey on smart homes: Vulnerabilities, risks, and countermeasures
+B Hammi, S Zeadally, R Khatoun, J Nebhen - Computers & Security, 2022 - Elsevier
+… For instance, a team of hackers recently discovered a man-in-the-middle vulnerability in a
+Samsung smart refrigerator that can be exploited to steal Gmail users’ login credentials. In the …
+保存 引用 被引用次数：71 相关文章 所有 4 个版本
+[PDF] arxiv.org
+On the just-in-time discovery of profit-generating transactions in defi protocols
+L Zhou, K Qin, A Cully, B Livshits… - 2021 IEEE Symposium …, 2021 - ieeexplore.ieee.org
+… on the vulnerability discovery of smart contracts are related to our work [10], [13], [16], [19],
+[36], [38], [39], [41], [43], [45], [48], [56], [57]. Traditional smart contract vulnerabilities examined …
+保存 引用 被引用次数：112 相关文章 所有 7 个版本
+[PDF] sciencedirect.com
+A survey on IoT platforms: Communication, security, and privacy perspectives
+L Babun, K Denney, ZB Celik, P McDaniel… - Computer Networks, 2021 - Elsevier
+… to discover malicious actors and compromised devices based on behavioral analysis [6]. …
+Confidentiality: We evaluate how IoT platforms are vulnerable to attacks impacting the …
+保存 引用 被引用次数：189 相关文章 所有 6 个版本
+[HTML] nih.gov
+Pharmacologic Screening Identifies Metabolic Vulnerabilities of CD8+ T Cells
+JM Drijvers, JE Gillis, T Muijlwijk, TH Nguyen… - Cancer immunology …, 2021 - AACR
+… To identify specific metabolic vulnerabilities of CD8 + T cells … In addition, we discovered
+that ACSL4 deficiency reduced … the discovery of cell type–specific metabolic vulnerabilities of …
+保存 引用 被引用次数：96 相关文章 所有 8 个版本
+[PDF] ieee.org
+Cyber-physical energy systems security: Threat modeling, risk assessment, resources, metrics, and case studies
+I Zografopoulos, J Ospina, X Liu, C Konstantinou - IEEE Access, 2021 - ieeexplore.ieee.org
+… operating conditions, discover vulnerabilities, develop security … entry points and system
+vulnerabilities. Leveraging the threat … enables the system vulnerability prioritization factoring the …
+保存 引用 被引用次数：207 相关文章 所有 9 个版本
+[PDF] researchgate.net
+[PDF] Impact of controls on data integrity and information systems
+S Duggineni - Science and Technology, 2023 - researchgate.net
+… validated user input, which minimized vulnerabilities in the application and properly … data
+security vulnerabilities, data integrity controls and any vulnerabilities that were discovered were …
+保存 引用 被引用次数：120 相关文章 
+[PDF] arxiv.org
+Low-resource languages jailbreak gpt-4
+ZX Yong, C Menghini, SH Bach - arXiv preprint arXiv:2310.02446, 2023 - arxiv.org
+… Although creators like Meta and OpenAI have made strides in mitigating safety issues [3, 29,
+31, 40], we discover cross-lingual vulnerabilities in existing safety mechanisms. We find that …
+保存 引用 被引用次数：71 相关文章 所有 3 个版本 
+[PDF] researchgate.net
+Small-molecule drug discovery in triple negative breast cancer: current situation and future directions
+M Liao, J Zhang, G Wang, L Wang, J Liu… - Journal of medicinal …, 2021 - ACS Publications
+… However, an ideal single-target drug discovery still faces a huge challenge. Alternatively, …
+targeting TNBC vulnerabilities with small-molecule drugs for future therapeutic purposes. …
+保存 引用 被引用次数：70 相关文章 所有 5 个版本
+[PDF] wiley.com
+Full View
+The Rise of “Internet of Things”: Review and Open Research Issues Related to Detection and Prevention of IoT‐Based Security Attacks
+M Shafiq, Z Gu, O Cheikhrouhou… - Wireless …, 2022 - Wiley Online Library
+… since there are many vulnerabilities in these devices. Many … can be used to test for
+vulnerabilities in IoT devices. In Sections 7… a timely manner when vulnerabilities are discovered. It …
+保存 引用 被引用次数：86 相关文章 所有 5 个版本
+Meningioma DNA methylation groups identify biological drivers and therapeutic vulnerabilities
+A Choudhury, ST Magill, CD Eaton, BC Prager… - Nature …, 2022 - nature.com
+… discovery and validation cohorts (n = 565). b, Unsupervised hierarchical clustering of
+meningiomas from the discovery … c, Kaplan–Meier curves for meningioma LFFR from the discovery …
+保存 引用 被引用次数：121 相关文章 所有 11 个版本
+[HTML] nih.gov
+Single-cell RNA analysis reveals the potential risk of organ-specific cell types vulnerable to SARS-CoV-2 infections
+Z Zhang, F Cui, C Cao, Q Wang, Q Zou - Computers in biology and …, 2022 - Elsevier
+… Subsequently, we utilized GeneSwitches to discover functional events during cell state
+transitions [50]. Moreover, as shown in Fig. 4B, the top ten significantly changed pathways for …
+保存 引用 被引用次数：92 相关文章 所有 7 个版本
+Applied artificial intelligence as event horizon of cyber security
+A Ali, AW Septyanto, I Chaudhary… - … for Technology and …, 2022 - ieeexplore.ieee.org
+… vulnerabilities are discovered daily. No application, equipment, system, or technology is
+immune from security vulnerabilities, … threat could reach vulnerable systems [15]. This helps as …
+保存 引用 被引用次数：131 相关文章 所有 3 个版本
+[PDF] cell.com
+Full View
+[PDF] In vivo structural characterization of the SARS-CoV-2 RNA genome identifies host proteins vulnerable to repurposed drugs
+L Sun, P Li, X Ju, J Rao, W Huang, L Ren, S Zhang… - Cell, 2021 - cell.com
+… We validated several structural elements predicted in silico and discovered structural features
+that affect the translation and abundance of subgenomic viral RNAs in cells. The structural …
+保存 引用 被引用次数：164 相关文章 所有 12 个版本
+Role of reactive oxygen species in the progression of Alzheimer's disease
+S Bhatt, L Puli, CR Patil - Drug Discovery Today, 2021 - Elsevier
+… the deposition of β-amyloid (Aβ) plaques and neurofibrillary tangles in vulnerable brain
+regions. The vulnerability of the brain to reactive oxygen species (ROS) is now emerging as a …
+保存 引用 被引用次数：105 相关文章 所有 3 个版本
+[HTML] pnas.org
+Ranking the risk of animal-to-human spillover for newly discovered viruses
+ZL Grange, T Goldstein, CK Johnson… - Proceedings of the …, 2021 - National Acad Sciences
+… stark reminders that we are vulnerable to zoonotic viral threats… as part of a virus discovery
+project and public records of virus … on the recent wealth of virus discovery data to systematically …
+保存 引用 被引用次数：215 相关文章 所有 28 个版本
+[PDF] cell.com
+Full View
+[PDF] A review of threat modelling approaches for APT-style attacks
+M Tatam, B Shanmugam, S Azam, K Kannoorpatti - Heliyon, 2021 - cell.com
+… to discover a target and identify an exploitable vulnerability. The challenge is to identify the
+priorities, when reducing vulnerabilities … scoring on known vulnerabilities and exploits. These …
+保存 引用 被引用次数：80 相关文章 所有 9 个版本
+Blockchain-enabled fraud discovery through abnormal smart contract detection on Ethereum
+L Liu, WT Tsai, MZA Bhuiyan, H Peng, M Liu - Future Generation Computer …, 2022 - Elsevier
+… vulnerabilities, namely, the representation vector is as the input of the network model, and
+then vulnerability detection is carried out. This method is only applicable to the vulnerability …
+保存 引用 被引用次数：77 相关文章 所有 2 个版本
+[PDF] mq.edu.au
+Coping with crisis: The paradox of technology and consumer vulnerabilityCCF none
+SF Yap, Y Xu, LP Tan - International Journal of Consumer …, 2021 - Wiley Online Library
+… in a state of vulnerability (Baker et al., 2007). We define the notion of vulnerability in this …
+Future research could use ZMET to discover the meaning and experience of older adults (or …
+保存 引用 被引用次数：122 相关文章 所有 4 个版本
+[PDF] tandfonline.com
+Lessons of the SolarWinds hack
+M Willett - Survival April–May 2021: Facing Russia, 2023 - taylorfrancis.com
+… lated to the Russian SolarWinds hack had been discovered. Attributed by Microsoft to a
+state-sponsored Chinese group and exploiting vulnerabilities in Microsoft’s email servers, this …
+保存 引用 被引用次数：70 相关文章 所有 3 个版本 
+Prompt Injection attack against LLM-integrated Applications
+Y Liu, G Deng, Y Li, K Wang, T Zhang, Y Liu… - arXiv preprint arXiv …, 2023 - arxiv.org
+… However, this expanded usage is accompanied by heightened security vulnerabilities, … Early
+attempts to exploit this vulnerability used heuristic prompts, discovered through the "trial and …
+保存 引用 被引用次数：120 相关文章 所有 2 个版本 
+[PDF] wiley.com
+Full View
+A novel machine learning‐based analysis model for smart contract vulnerability
+Y Xu, G Hu, L You, C Cao - Security and Communication …, 2021 - Wiley Online Library
+… of the contract, leveraging symbolic execution, taint tracking, and fuzzing to discover
+vulnerabilities. … If some smart contracts have no vulnerability, we will label them no vulnerability. …
+保存 引用 被引用次数：44 相关文章 所有 8 个版本
+[HTML] nih.gov
+SARS‐CoV‐2 variants and vulnerability at the global level
+VP Chavda, AB Patel… - Journal of medical …, 2022 - Wiley Online Library
+… The ultimate goal of the current research toward COVID-19 is to discover new viral mutations
+fast and determine their potential consequences. A mutation occurs when the pattern of the …
+保存 引用 被引用次数：121 相关文章 所有 7 个版本
+[PDF] editononline.com
+Vulnerability of agro-pastoral community resulting from oil exploration activities at Lokichar-Kochodin basin in Turkana county
+AC Kirui - Journal of Policy and Development Studies …, 2022 - journals.editononline.com
+… There is no particular study that has examined the nature of vulnerability of households …
+nature of vulnerability of the Agro-Pastoral Community that ensued from the discovery and …
+保存 引用 相关文章 
+[HTML] nih.gov
+Targeting ferroptosis as a vulnerability in cancerCCF none
+G Lei, L Zhuang, B Gan - Nature Reviews Cancer, 2022 - nature.com
+… -inducing and ferroptosis defence mechanisms, dissect the roles and mechanisms of ferroptosis
+in tumour suppression and tumour immunity, conceptualize the diverse vulnerabilities of …
+保存 引用 被引用次数：888 相关文章 所有 8 个版本
+Gradient of developmental and injury response transcriptional states defines functional vulnerabilities underpinning glioblastoma heterogeneity
+LM Richards, OKN Whitley, G MacLeod, FMG Cavalli… - Nature Cancer, 2021 - nature.com
+… Although discovered in GSCs, primary tumor cells also organize along the transcriptional …
+original discovery cohort. Tumor cells spanned the complete range of phenotypes discovered …
+保存 引用 被引用次数：186 相关文章 所有 4 个版本
+[PDF] google.com
+Security challenges and opportunities for smart contracts in Internet of Things: A survey
+K Peng, M Li, H Huang, C Wang, S Wan… - IEEE Internet of …, 2021 - ieeexplore.ieee.org
+… , we intend to explore the vulnerabilities and attacks in smart contracts, … vulnerabilities, and
+the more likely it is to be noticed by more people. Once the key vulnerabilities are discovered, …
+保存 引用 被引用次数：108 相关文章 所有 3 个版本
+[HTML] sciencedirect.com
+[HTML] Overcoming the compensatory elevation of NRF2 renders hepatocellular carcinoma cells more vulnerable to disulfiram/copper-induced ferroptosis
+X Ren, Y Li, Y Zhou, W Hu, C Yang, Q Jing, C Zhou… - Redox biology, 2021 - Elsevier
+… We also discovered that the phosphorylated levels of p38, JNK and ERK, several components
+of the MAPK signaling pathway, were up-regulated after treatment of DSF/Cu (Figs. 2D …
+保存 引用 被引用次数：173 相关文章 所有 6 个版本
+[PDF] idsi.md
+Cyber security threat analysis in higher education institutions as a result of distance learning
+LA Alexei, A Alexei - International Journal of Scientific and Technology …, 2021 - ibn.idsi.md
+… The field was not prepared for such a challenge, several problems arose, which included:
+the use of technologies whose vulnerabilities have not yet been studied or discovered, …
+保存 引用 被引用次数：71 相关文章 所有 5 个版本 
+[PDF] ieee.org
+Advances in adversarial attacks and defenses in computer vision: A survey
+N Akhtar, A Mian, N Kardan, M Shah - IEEE Access, 2021 - ieeexplore.ieee.org
+… this prospect due to an unsought discovery of adversarial vulnerability of deep learning [22]. …
+THE C&W ATTACK The discovery of adversarial vulnerability of deep learning [22] also …
+[HTML] Cyber security threat modeling based on the MITRE Enterprise ATT&CK Matrix
+W Xiong, E Legrand, O Åberg, R Lagerström - Software and Systems …, 2022 - Springer
+… When we perform attack simulations on the system model, the various attacks that the
+system is vulnerable to can be discovered and possible mitigation strategies can be tested. The …
+保存 引用 被引用次数：143 相关文章 所有 6 个版本
+[HTML] nature.com
+[HTML] Antibodies to combat viral infections: development strategies and progress
+G Pantaleo, B Correia, C Fenwick, VS Joo… - … Reviews Drug Discovery, 2022 - nature.com
+… mAbs through identification of vulnerable regions in viral proteins… Here, we describe advances
+in antibody discovery and … optimal candidate antigens and vulnerable regions within them …
+保存 引用 被引用次数：100 相关文章 所有 11 个版本
+Research trends in vulnerability studies from 2000 to 2019: Findings from a bibliometric analysisCCF none
+BJ Kim, S Jeong, JB Chung - International Journal of Disaster Risk …, 2021 - Elsevier
+… Through the analysis of each centrality value, it is possible to discover which research
+topics are considered important in the vulnerability research network in each period. …
+保存 引用 被引用次数：74 相关文章 所有 5 个版本
+[HTML] sciencedirect.com
+[HTML] Artificial intelligence for cybersecurity: Literature review and future research directions
+R Kaur, D Gabrijelčič, T Klobučar - Information Fusion, 2023 - Elsevier
+… [38] proposed a new scheme for the identification of vulnerabilities across the system …
+discover any potential attack space. Researchers use AI-based fuzzing to discover vulnerabilities …
+保存 引用 被引用次数：135 相关文章 所有 3 个版本
+[PDF] usenix.org
+How machine learning is solving the binary function similarity problem
+A Marcelli, M Graziano, X Ugarte-Pedrero… - 31st USENIX Security …, 2022 - usenix.org
+… We compiled the ten vulnerable functions for four architectures (x86, x64, ARM 32 bit, MIPS
+… the vulnerability discovery results, we only used as a query the functions that are vulnerable …
+保存 引用 被引用次数：72 相关文章 所有 11 个版本 
+[PDF] arxiv.org
+Security aspects of Internet of Things aided smart grids: A bibliometric survey
+J Sakhnini, H Karimipour, A Dehghantanha, RM Parizi… - Internet of things, 2021 - Elsevier
+… vulnerability analysis in power grids. One paper proposes an automated binary-based
+vulnerability discovery … This automatic discovery algorithm is tested on real smart meter data from …
+保存 引用 被引用次数：165 相关文章 所有 5 个版本
+[HTML] sciencedirect.com
+[HTML] Copper metabolism as a unique vulnerability in cancerCCF none
+VC Shanbhag, N Gudekar, K Jasmer… - … et Biophysica Acta (BBA …, 2021 - Elsevier
+… Here, we review the general mechanisms of cellular copper homeostasis and discuss roles
+of copper in cancer progression, highlighting metabolic vulnerabilities that may be targetable …
+保存 引用 被引用次数：246 相关文章 所有 8 个版本
+[PDF] dmu.ac.uk
+Digital Twins and Cyber Security–solution or challenge?
+D Holmes, M Papathanasaki… - 2021 6th South-East …, 2021 - ieeexplore.ieee.org
+… Cyber security risks are dynamic and fast evolving based on a wide variety of factors such
+as vulnerability discovery, exploit availability, and cyber threat intelligence. This means that …
+保存 引用 被引用次数：76 相关文章 所有 5 个版本
+Artificial intelligence, cyber-threats and Industry 4.0: Challenges and opportunities
+A Bécue, I Praça, J Gama - Artificial Intelligence Review, 2021 - Springer
+… DM focuses on the discovery of previously unknown properties in the data. It does not
+need … on knowledge of past intrusions, known system vulnerabilities, or the installation-specific …
+保存 引用 被引用次数：214 相关文章 所有 4 个版本
+[PDF] sciencedirect.com
+Network intrusion detection system using deep learning
+L Ashiku, C Dagli - Procedia Computer Science, 2021 - Elsevier
+… [7], which reflect common vulnerabilities and exposures (CVE); CVE is a dictionary of publicly
+disclosed types of attacks that evolves upon discovery of potential vulnerabilities [11]. Like …
+保存 引用 被引用次数：141 相关文章 所有 5 个版本
