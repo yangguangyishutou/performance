@@ -4,38 +4,119 @@
 
 ## 24/11/7
 
-### AutoDAN related(246)
+### Attack
 
-#### Attack
+##### A. 对抗提示生成  Adversarial Prompting / Fuzzing
 
-1. ACL2024 ArtPrompt-ASCII Art-based Jailbreak Attacks against Aligned LLMs
+1. Universal and Transferable Adversarial Attacks on Aligned Language Models (GCG)
+
+> GCP reformulates the jailbreak attack as an adversarial example generation process and utilizes the gradiant information of white-box LLMx to guide the search process of the jailbreak prompt's tokens.
+
+>  GCG inevitably request a search scheme guided by the gradient information on tokens. 
+>
+>  Although it provides a way to automatically generate jailbreak prompts, this leads to an in- trinsic drawback: they often generate jailbreak prompts composed of nonsensical sequences or gib- berish, i.e., without any semantic meaning
+>
+>  This severe flaw makes them highly susceptible to naive defense mechanisms like perplexity-based detection
+>
+>  白盒，依赖gradient information
+>
+>  
+
+2. PAIR: ICLR2024 Jailbreaking black box large language models in twenty queries
+
+> prompt automatic iterative refinement
+>
+> uses an attacker LLM to automatically generate jailbreaks for a separate targeted LLM without human intervention. 
+>
+> 缺点： lack guidance for jailbreak knowledge
+
+3. Arxiv2024 Tree of attacks: Jailbreaking black-box llms automatically
+
+> 缺点： lack guidance for jailbreak knowledge
+
+> TAP utilizes an attacker LLM to iteratively refine candidate (attack) prompts until one of the refined prompts jailbreaks the target.
+
+
+
+2. ICLR2024 AUTODAN: GENERATING STEALTHY JAILBREAK PROMPTS ON ALIGNED LARGE LANGUAGE MODELS
+
+> existing suffer from scalability issues, heavily rely on manual crafting of prompts
+
+> Stealthiness problem, semantic meaning less, susceptible through perplexity testing
+
+>  automatically generated stealthy jaikbreak prompts by hierarchical genetic algorithm.
+
+> genetic algorithms
+
+Autodan: Automatic and interpretable adversarial attacks on large language models.
+
+
+
+3. AUTODAN-TURBO: A LIFELONG AGENT FOR STRAT- EGY SELF-EXPLORATION TO JAILBREAK LLMS
+
+> utilizes *lifelong learning agents* to automatically and continually discover diverse strategies,
+>
+> Automatic Strategy Discovery
+>
+> 利用attacker LLM 生成合适的jailbreak strategy
+
+3. USENIX2024 LLM-Fuzzer-Scaling Assessment of Large Language Model Jailbreaks
+
 ```plaintext
-这篇论文探讨了基于ASCII艺术的越狱攻击（ArtPrompt），以及大语言模型（LLMs）在面对这种攻击时的脆弱性。现有的安全增强技术通常假设用于对LLMs进行安全对齐的语料库只能通过语义理解进行解读，但这一假设在实际应用中并不成立，从而导致了LLMs在处理非语义文本时的安全漏洞。例如，论坛用户常常通过ASCII艺术（基于文本的图像形式）来传递信息，这种格式的提示往往无法被模型正确识别。
+论文介绍了**LLM-Fuzzer**，借鉴了模糊测试（fuzz testing），通过使用人工设计的越狱提示作为起始点，并通过精心定制的种子选择和变异机制，自动生成适应不同LLMs的越狱提示。实验结果表明，LLM-Fuzzer生成的越狱提示在可利用性和可转移性方面显著提高，表明许多开源和商业LLMs在经过安全微调后，仍然容易受到越狱攻击。
 
-作者提出了一个新的攻击方法——ArtPrompt，它利用LLMs在识别ASCII艺术时的不足，绕过安全防护并诱发不希望的行为。为此，作者还提出了一个新的基准——视觉文本挑战（Vision-in-Text Challenge, ViTC），用于评估LLMs在处理无法仅通过语义解释的提示时的能力。实验表明，五个主流的LLMs（GPT-3.5、GPT-4、Gemini、Claude、Llama2）在面对ASCII艺术形式的提示时表现不佳。ArtPrompt作为一个黑盒攻击，仅需访问模型的输入接口，即可有效诱导这些模型产生不希望的行为。
 ```
+
+##### B. Exploit multi language 利用语言的差别，文化习俗，跨语言的歧义/模糊性, cipher
+
+1. "do anything now": Characterizing and evaluating in-the-wild jailbreak prompts on large language models
+
+3. Low-resource languages jailbreak gpt-4
+
+> low-resource language-based strategies
+
+3. Gpt-4 is too smart to be safe: Stealthy chat with llms via cipher
+
+> Cipher 
+
+5. Codechameleon: Personalized encryption framework for jailbreaking large language models
+
+> cipher
+
+6. ICLR2024  Artprompt: Ascii art-based jailbreak attacks against aligned llms
+
+> ascii based 
+>
+> 论坛用户常常通过ASCII艺术（基于文本的图像形式。例如在命令行界面展示一副图像/大的文字）来传递信息，这种格式的提示往往无法被模型正确识别。作者提出了利用LLMs在识别ASCII艺术时的不足，绕过安全防护并诱发不希望的行为
+
+7. Many-shot jailbreaking.
+
+> very long contexts
+
+##### C. Human persuasion strategies
+
+1. How johnny can persuade llms to jailbreak them: Rethinking persuasion to challenge ai safety by humanizing llms.
+
+
+
 2. ICML2024 Cold-attack-Jailbreaking llms with stealthiness and controllability
 ```plaintext
-COLD-Attack（Jailbreaking LLMs with Stealthiness and Controllability）是一种新型的越狱攻击方法，旨在提供对大型语言模型（LLMs）攻击的更高控制性和隐蔽性。该方法通过结合可控文本生成技术和能量约束解码（Energy-based Constrained Decoding，COLD）算法，实现了对攻击过程的多维度控制。
+1. 利用Autodan 生成fluent attack，可以绕过基于perplexity的过滤器。然而，fluentcy 不意味着stealthiness
+2. 无法控制attack的feature，例如情感sentiment，contextual coherence上下文耦合度。可以通过sentiment contextual conherence防御，因此要增加controllability实现attack
 ```
-3. USENIX2024 LLM-Fuzzer-Scaling Assessment of Large Language Model Jailbreaks
+
+
+##### 其他： 智能体
+
+4. (**Multi-Agent/Modal**) ICML2024 Agent smith-A single image can jailbreak one million multimodal llm agents exponentially fast
+
 ```plaintext
-这篇论文提出了一个名为**LLM-Fuzzer**的自动化工具，用于大规模评估大型语言模型（LLMs）对越狱攻击的易受攻击性。越狱攻击是指通过特殊设计的提示，迫使LLMs生成有害、不实或不当的内容，给社会带来负面影响。尽管通过红队方法（即手动设计对抗性输入）已被用来测试LLMs的安全性，但这种方法在大规模评估中面临显著的挑战。
-
-为了解决这一问题，论文介绍了**LLM-Fuzzer**，该工具借鉴了模糊测试（fuzz testing）的思路，通过使用人工设计的越狱提示作为起始点，并通过精心定制的种子选择和变异机制，自动生成适应不同LLMs的越狱提示。实验结果表明，LLM-Fuzzer生成的越狱提示在可利用性和可转移性方面显著提高，表明许多开源和商业LLMs在经过安全微调后，仍然容易受到越狱攻击。
-
-这个研究强调了LLMs在面临越狱攻击时的脆弱性，尤其是在安全性增强之后，依然存在严重的安全隐患。
-```
-4. (**Multi-Agent/Modal**)ICML2024 Agent smith-A single image can jailbreak one million multimodal llm agents exponentially fast
-```plaintext
-这篇论文提出了一种新的安全问题，称为**传染性越狱**（infectious jailbreak），它发生在多智能体（multi-agent）环境中。传统的越狱攻击通常依赖于给单个多模态大语言模型（MLLM）输入对抗性图像或提示，迫使模型执行不符合安全规范的行为。然而，在多智能体环境中，一个被越狱的智能体可以迅速“感染”其他智能体，导致它们也表现出有害行为，而无需进一步的外部干预。
-
-为了验证传染性越狱的可行性，作者在模拟的多智能体环境中，使用了最多100万个LLaVA-1.5智能体，并通过随机配对的对话进行交互。实验结果表明，向任何一个智能体的记忆中输入一个对抗性图像，就足以使整个系统中的智能体迅速发生传染性越狱，所有智能体都会开始表现出不希望的行为。
-
-论文最后提出了一个简单的原则，用于判断防御机制是否能够有效地限制传染性越狱的传播，但如何设计一个符合这一原则的实用防御措施，仍然是一个开放性问题。
+这篇论文提出了一种新的安全问题，称为**传染性越狱**（infectious jailbreak），它发生在多智能体（multi-agent）环境中。在多智能体环境中，一个被越狱的智能体可以迅速“感染”其他智能体，导致它们也表现出有害行为，而无需进一步的外部干预。
 ```
 
-#### Defense
+
+
+### Defense
 
 1. ICML2024 DRO-On Prompt-Driven Safeguarding for Large Language Models
 
@@ -44,6 +125,12 @@ COLD-Attack（Jailbreaking LLMs with Stealthiness and Controllability）是一�
 
 基于这一发现，论文提出了一种名为DRO（Directed Representation Optimization）的安全提示优化方法。DRO通过将安全提示视为可训练的连续嵌入向量，学习根据查询的有害性来调整表示的方向，向拒绝方向或反方向移动。实验结果表明，DRO能够显著提升人工设计的安全提示的效果，且不会降低模型的整体表现。
 ```
+
+3. Arxiv2023-SmoothLLM Defending Large Language Models Against Jailbreaking Attacks
+
+
+
+
 
 #### Survey
 
