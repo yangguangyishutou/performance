@@ -66,7 +66,6 @@
 
 ```plaintext
 论文介绍了**LLM-Fuzzer**，借鉴了模糊测试（fuzz testing），通过使用人工设计的越狱提示作为起始点，并通过精心定制的种子选择和变异机制，自动生成适应不同LLMs的越狱提示。实验结果表明，LLM-Fuzzer生成的越狱提示在可利用性和可转移性方面显著提高，表明许多开源和商业LLMs在经过安全微调后，仍然容易受到越狱攻击。
-
 ```
 
 * GPTFUZZER: Red Teaming Large Language Models with Auto-Generated Jailbreak Prompts
