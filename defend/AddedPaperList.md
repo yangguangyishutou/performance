@@ -6,9 +6,9 @@
 
 ### Attack
 
-##### A. 对抗提示生成  Adversarial Prompting / Fuzzing
+##### A. 对抗提示生成  Adversarial Prompting / Fuzzing / Genetic algorithm
 
-1. Universal and Transferable Adversarial Attacks on Aligned Language Models (GCG)
+* Universal and Transferable Adversarial Attacks on Aligned Language Models (GCG)
 
 > GCP reformulates the jailbreak attack as an adversarial example generation process and utilizes the gradiant information of white-box LLMx to guide the search process of the jailbreak prompt's tokens.
 
@@ -22,7 +22,7 @@
 >
 >  
 
-2. PAIR: ICLR2024 Jailbreaking black box large language models in twenty queries
+* ICLR2024 PAIR: Jailbreaking black box large language models in twenty queries
 
 > prompt automatic iterative refinement
 >
@@ -30,7 +30,7 @@
 >
 > 缺点： lack guidance for jailbreak knowledge
 
-3. Arxiv2024 Tree of attacks: Jailbreaking black-box llms automatically
+* Arxiv2024 Tree of attacks: Jailbreaking black-box llms automatically
 
 > 缺点： lack guidance for jailbreak knowledge
 
@@ -38,7 +38,7 @@
 
 
 
-2. ICLR2024 AUTODAN: GENERATING STEALTHY JAILBREAK PROMPTS ON ALIGNED LARGE LANGUAGE MODELS
+* ICLR2024 AUTODAN: GENERATING STEALTHY JAILBREAK PROMPTS ON ALIGNED LARGE LANGUAGE MODELS
 
 > existing suffer from scalability issues, heavily rely on manual crafting of prompts
 
@@ -48,11 +48,11 @@
 
 > genetic algorithms
 
-Autodan: Automatic and interpretable adversarial attacks on large language models.
+* Autodan: Automatic and interpretable adversarial attacks on large language models.
 
 
 
-3. AUTODAN-TURBO: A LIFELONG AGENT FOR STRAT- EGY SELF-EXPLORATION TO JAILBREAK LLMS
+* AUTODAN-TURBO: A LIFELONG AGENT FOR STRAT- EGY SELF-EXPLORATION TO JAILBREAK LLMS
 
 > utilizes *lifelong learning agents* to automatically and continually discover diverse strategies,
 >
@@ -60,51 +60,123 @@ Autodan: Automatic and interpretable adversarial attacks on large language model
 >
 > 利用attacker LLM 生成合适的jailbreak strategy
 
-3. USENIX2024 LLM-Fuzzer-Scaling Assessment of Large Language Model Jailbreaks
+* USENIX2024 LLM-Fuzzer-Scaling Assessment of Large Language Model Jailbreaks
 
 ```plaintext
 论文介绍了**LLM-Fuzzer**，借鉴了模糊测试（fuzz testing），通过使用人工设计的越狱提示作为起始点，并通过精心定制的种子选择和变异机制，自动生成适应不同LLMs的越狱提示。实验结果表明，LLM-Fuzzer生成的越狱提示在可利用性和可转移性方面显著提高，表明许多开源和商业LLMs在经过安全微调后，仍然容易受到越狱攻击。
 
 ```
 
-##### B. Exploit multi language 利用语言的差别，文化习俗，跨语言的歧义/模糊性, cipher
+* GPTFUZZER: Red Teaming Large Language Models with Auto-Generated Jailbreak Prompts
 
-1. "do anything now": Characterizing and evaluating in-the-wild jailbreak prompts on large language models
+> we introduce GPTFUZZER, a novel blackbox jailbreak fuzzing framework inspired by the AFL fuzzing
+> framework. Instead of manual engineering, GPTFUZZER automates the generation of jailbreak templates for red-teaming LLMs. At its core, GPTFUZZER starts with human-written
+> templates as initial seeds, then mutates them to produce new templates.
 
-3. Low-resource languages jailbreak gpt-4
+* ICASSP2024 [**Fuzzllm**: A novel and universal fuzzing framework for proactively discovering jailbreak vulnerabilities in large language models](https://ieeexplore.ieee.org/abstract/document/10448041/)* [Cited by 34]
+
+
+
+* Arxiv2024 JAILBREAKING LEADING SAFETY-ALIGNED LLMS WITH SIMPLE ADAPTIVE ATTACKS
+
+> we initially design an adversarial prompt template (sometimes adapted to the target LLM), and then we apply random search on a suffix to maximize a target logprob (e.g., of the token “Sure”),
+
+
+
+Arxiv2024 Jailbreaking Attack against Multimodal Large Language Model
+
+> A maximum likelihood-based algorithm is proposed to find an image Jailbreaking Prompt (imgJP), enabling jailbreaks against MLLMs across multiple unseen prompts and images
+
+##### B. Exploit multi language 利用语言的差别，文化习俗，跨语言的歧义/模糊性, cipher， 上下文/长度
+
+* "do anything now": Characterizing and evaluating in-the-wild jailbreak prompts on large language models
+
+* Low-resource languages jailbreak gpt-4
 
 > low-resource language-based strategies
 
-3. Gpt-4 is too smart to be safe: Stealthy chat with llms via cipher
+* Gpt-4 is too smart to be safe: Stealthy chat with llms via cipher
 
 > Cipher 
 
-5. Codechameleon: Personalized encryption framework for jailbreaking large language models
+* Codechameleon: Personalized encryption framework for jailbreaking large language models
 
 > cipher
+>
+> we reformulate tasks into a code completion format, enabling users to encrypt queries using personalized encryption functions
 
-6. ICLR2024  Artprompt: Ascii art-based jailbreak attacks against aligned llms
+* ICLR2024  Artprompt: Ascii art-based jailbreak attacks against aligned llms
 
 > ascii based 
 >
 > 论坛用户常常通过ASCII艺术（基于文本的图像形式。例如在命令行界面展示一副图像/大的文字）来传递信息，这种格式的提示往往无法被模型正确识别。作者提出了利用LLMs在识别ASCII艺术时的不足，绕过安全防护并诱发不希望的行为
 
-7. Many-shot jailbreaking.
+* Many-shot jailbreaking.
 
 > very long contexts
 
+* Arxiv2024 [Jailbreak and guard aligned language models with only few in-context demonstrations](https://arxiv.org/abs/2310.06387)//利用模型的上下文学习能力
+
+> In-context attack and in-context defense
+>
+> 感觉没有很深入的insight
+
+ACL2024 Play Guessing Game with LLM: Indirect Jailbreak Attack with Implicit
+
+> by implicitly providing LLMs with some clues about the original malicious query
+
+Arxiv A Wolf in Sheep’s Clothing: Generalized Nested Jailbreak Prompts can Fool Large Language Models Easily
+
+> In this paper, we generalize jailbreak prompt attacks into two aspects: (1) Prompt Rewriting and (2) Scenario Nesting. Based on this, we propose ReNeLLM
+
 ##### C. Human persuasion strategies
 
-1. How johnny can persuade llms to jailbreak them: Rethinking persuasion to challenge ai safety by humanizing llms.
+* How johnny can persuade llms to jailbreak them: Rethinking persuasion to challenge ai safety by humanizing llms.
 
 
 
-2. ICML2024 Cold-attack-Jailbreaking llms with stealthiness and controllability
+* ICML2024 Cold-attack-Jailbreaking llms with stealthiness and controllability
+
 ```plaintext
 1. 利用Autodan 生成fluent attack，可以绕过基于perplexity的过滤器。然而，fluentcy 不意味着stealthiness
 2. 无法控制attack的feature，例如情感sentiment，contextual coherence上下文耦合度。可以通过sentiment contextual conherence防御，因此要增加controllability实现attack
 ```
 
+* Arxiv2024 DeepInception: Hypnotize Large Language Model to Be Jailbreaker
+
+> as DeepInception, which can hypnotize an LLM to be a jailbreaker. Specifically, DeepInception leverages the personification ability of LLM to construct a virtual, nested scene to jailbreak,
+
+
+
+##### D. 通过Fine-tuning DPO固有缺陷
+
+Usenix2024 [Making them ask and answer: Jailbreaking large language models in few queries via disguise and reconstruction](https://www.usenix.org/conference/usenixsecurity24/presentation/liu-tong)**CCF A**
+
+> few have systematically investigated the underlying vulnerabil- ity and its root cause. 
+>
+> Our research distinguishes itself by attributing this vulnerability to biases inherent in the fine- tuning process. 
+>
+> safety bias in fine-tuning
+>
+> disguise + reconstruction
+>
+>  利用了fine-tuning中固有存在的bias
+
+ICML2024 [A mechanistic understanding of alignment algorithms: A case study on dpo and toxicity](https://arxiv.org/abs/2401.01967)**CCF A**
+
+> In this work we study a popular algorithm, direct preference optimization(DPO), and the mechanisms by which it reduces toxicity.
+>
+> We use this insight to demonstrate a simple method to un-align the model, reverting it
+> back to its toxic behavior.
+
+ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank Modifications
+
+> This study explores this brittleness of safety alignment by leveraging pruning and low-rank modifications.
+
+NeuraIPS2023 Jailbroken: How Does LLM Safety Training Fail
+
+> We hypothesize two failure modes of safety training: competing objectives and
+> mismatched generalization
 
 ##### 其他： 智能体
 
@@ -114,7 +186,7 @@ Autodan: Automatic and interpretable adversarial attacks on large language model
 这篇论文提出了一种新的安全问题，称为**传染性越狱**（infectious jailbreak），它发生在多智能体（multi-agent）环境中。在多智能体环境中，一个被越狱的智能体可以迅速“感染”其他智能体，导致它们也表现出有害行为，而无需进一步的外部干预。
 ```
 
-
+Arxiv2023 MASTERKEY: Automated Jailbreaking of Large Language Model Chatbots
 
 ### Defense
 
@@ -183,3 +255,12 @@ Autodan: Automatic and interpretable adversarial attacks on large language model
 ```plaintext
 这篇论文提出了一个新的评估基准——Weapons of Mass Destruction Proxy（WMDP）基准，旨在评估大语言模型（LLM）中的危险知识，尤其是与生物安全、网络安全和化学安全相关的知识。通过去学习(Unlearning)移除模型中的有害知识，从而起到**开源模型**对越狱攻击的防御效果。
 ```
+
+
+
+ICML2024 On Prompt-Driven Safeguarding for Large Language Models
+
+ ACL 2024 [Safedecoding: Defending against jailbreak attacks via safety-aware decoding](https://arxiv.org/abs/2402.08983)**CCF A**
+
+
+
