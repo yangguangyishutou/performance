@@ -296,25 +296,35 @@ Arxiv2023 MASTERKEY: Automated Jailbreaking of Large Language Model Chatbots
 这篇论文提出了一个新的评估基准——Weapons of Mass Destruction Proxy（WMDP）基准，旨在评估大语言模型（LLM）中的危险知识，尤其是与生物安全、网络安全和化学安全相关的知识。通过去学习(Unlearning)移除模型中的有害知识，从而起到**开源模型**对越狱攻击的防御效果。
 ```
 
-3.Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal
-### 引申于baseline
+3. Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal
+```plaintext
+引申于baseline
 自动化的评估red teaming的框架，并研发出新的对抗性训练方法R2D2——基于强优化的红色团队方法不断更新的动态测试用例池上的llm进行微调
+```
 
-4.Arxiv2024 Building Guardrails for Large Language Models
+4. Arxiv2024 Building Guardrails for Large Language Models
+```plaintext
 ### 引申于baseline
 基于当前llm护栏情况提出新护栏要求（没有具体实现，可以不看）
+```
 
-5.Arxiv2024 Defending against Jailbreaks via Repetition
+5. Arxiv2024 Defending against Jailbreaks via Repetition
+```plaintext
 ### 引申于baseline
 通过重复输出来解决问题
+```
 
-6.IEEE Silent Guardian: Protecting Text From Malicious Exploitation by Large Language Models
+6. IEEE Silent Guardian: Protecting Text From Malicious Exploitation by Large Language Models
+```plaintext
 ### 引申于baseline
 针对llm的文本保护机制，通过STP构造TPE（截断保护实例，可以终止当前对话）进行防御，自动选择符号进行转换
+```
 
-7.Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
+7. Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
+```plaintext
 ### 引申于baseline
 缩放定律揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
+```
 
 
 
