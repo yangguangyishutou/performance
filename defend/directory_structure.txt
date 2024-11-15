@@ -1,0 +1,76 @@
+
+Directory Structure:
+===================
+
+== Attack ==
+[1] 📁 A Adversarial Prompting & Fuzzing & Genetic algorithm
+    [1] 📁 AutoDAN
+        └── 📄 Arxiv2023 “Do Anything Now”Characterizing and Evaluating In The Wild.pdf
+        └── 📄 Arxiv2023-AutoDAN.pdf
+        └── 📄 Arxiv2024-AutoDAN-turbo-A Lifelong Agent for Strategy Self-Exploration to Jailbreak LLMs.pdf
+    [2] 📁 Fuzzer
+        └── 📄 Arxiv2023-GPTFUZZER-Red Teaming Large Language Models with Auto-Generated Jailbreak Prompts.pdf
+        └── 📄 IEEE2024 Fuzzllm-A novel and universal fuzzing framework for proactively discovering jailbreak vulnerabilities in large language models.pdf
+        └── 📄 USENIX2024 LLM-Fuzzer-Scaling Assessment of Large Language Model Jailbreaks.pdf
+    [3] 📁 GCG
+        └── 📄 Arxiv2023-GCG-Universal and transferable adversarial attacks on aligned language models.pdf
+    [4] 📁 PAIR & TAP
+        └── 📄 Arxiv2024 Tree of Attacks- Jailbreaking Black-Box LLMs Automatically.pdf
+        └── 📄 ICLR2024 PAIR-Jailbreaking Black Box Large Language Models in Twenty Queries.pdf
+    └── 📄 Jailbreaking leading safety-aligned llms with simple adaptive attacks.pdf
+[2] 📁 B Low-source & Linguistic differences or ambiguity
+    [1] 📁 Cipher
+        └── 📄 (Codechameleon)Personalized encryption framework for jailbreaking large language models.pdf
+        └── 📄 Arxiv2023 GPT-4 is too smart to be safe-Stealthy chat with llms via cipher.pdf
+    └── 📄 ACL2024 ArtPrompt- ASCII Art-based Jailbreak Attacks against Aligned LLMs.pdf
+    └── 📄 Arxiv2023 Low-resource languages jailbreak gpt-4.pdf
+[3] 📁 C Human persuasion strategies & Context
+    └── 📄 (ICA)-Jailbreak and guard aligned language models with only few in-context demonstrations.pdf
+    └── 📄 Arxiv2024 DeepInception- Hypnotize Large Language Model to Be Jailbreaker.pdf
+    └── 📄 Arxiv2024 How Johnny Can Persuade LLMs to Jailbreak Them- Rethinking Persuasion to Challenge AI Safety by Humanizing LLMs.pdf
+    └── 📄 Arxiv2024 Jailbreak and Guard Aligned Language Models with Only Few In-Context Demonstrations.pdf
+[4] 📁 D Fine-tuning & DPO weakness
+    └── 📄 Assessing the brittleness of safety alignment via pruning and low-rank modifications.pdf
+    └── 📄 ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank Modifications.pdf
+    └── 📄 NeurIPS-2023-jailbroken-how-does-llm-safety-training-fail-Paper-Conference.pdf
+    └── 📄 UsenixSec2024 Making Them Ask and Answer- Jailbreaking Large Language Models in Few Queries via Disguise and Reconstruction.pdf
+[5] 📁 E Multi-Agent&Modal
+    └── 📄 ICML2024 Agent smith-A single image can jailbreak one million multimodal llm agents exponentially fast.pdf
+    └── 📄 Jailbreaking attack against multimodal large language model.pdf
+[6] 📁 F misc
+    [1] 📁 Injection
+        └── 📄 Arxiv2024-11 SQL Injection Jailbreak-a structural disaster of large language models.pdf
+    [2] 📁 MasterKey
+        └── 📄 NDSS2024-Masterkey-Automated jailbreaking of large language model chatbots.pdf
+    └── 📄 (ReNeLLM)-A Wolf in Sheep's Clothing Generalized Nested Jailbreak Prompts can Fool Large Language Models Easily.pdf
+    └── 📄 Arxiv Play Guessing Game with LLM- Indirect Jailbreak Attack with Implicit Clues.pdf
+    └── 📄 Arxiv2024 RePD-Defending Jailbreak Attack through a Retrieval-based Prompt.pdf
+    └── 📄 Arxiv2024-11 Data Extraction Attacks in Retrieval-Augmented Generation via Backdoors.pdf
+    └── 📄 ICML2024 Cold-attack-Jailbreaking llms with stealthiness and controllability.pdf
+└── 📄 Open sesame! universal black box jailbreaking of large language models.pdf
+
+== Defend ==
+└── 📄 ACL2024 Defending LLMs against Jailbreaking Attacks via Backtranslation.pdf
+└── 📄 ACL2024 SafeDecoding- Defending against Jailbreak Attacks via Safety-Aware Decoding.pdf
+└── 📄 ACL2024 SafeDecoding- Defending against Jailbreak Attacks via Safety-Aware Decodingpdf.pdf
+└── 📄 Arxiv2023 Baseline defenses for adversarial attacks against aligned language models.pdf
+└── 📄 Arxiv2023-SmoothLLM Defending Large Language Models Against Jailbreaking Attacks.pdf
+└── 📄 Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies.pdf
+└── 📄 Arxiv2024 Building Guardrails for Large Language Models.pdf
+└── 📄 Arxiv2024 Defending against Jailbreaks via Repetition.pdf
+└── 📄 Arxiv2024 Defending Large Language Models Against Jailbreaking Attacks Through Goal Prioritization.pdf
+└── 📄 Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal.pdf
+└── 📄 Arxiv2024-11 Defense Against Prompt Injection Attack by Leveraging Attack Techniques.pdf
+└── 📄 defense1.md
+└── 📄 ICML2024 The wmdp benchmark-Measuring and reducing malicious use with unlearning.pdf
+└── 📄 ICML2024-DRO-On Prompt-Driven Safeguarding for Large Language Models.pdf
+└── 📄 IEEE_Silent_Guardian_Protecting_Text_From_Malicious_Exploitation_by_Large_Language_Models.pdf
+└── 📄 PMLR2024 RigorLLM- Resilient Guardrails for Large Language Models against Undesired Content.pdf
+
+== benchmark ==
+└── 📄 Arxiv2024 EasyJailbreak-A Unified Framework for Jailbreaking Large Language Models.pdf
+└── 📄 Arxiv2024 JailbreakBench-An Open Robustness Benchmark For Jailbreaking LLMs.pdf
+└── 📄 Arxiv2024 SALAD-Bench- A Hierarchical and Comprehensive Safety Benchmark for Large Language Models.pdf
+└── 📄 ICML2024 Harmbench-A standardized evaluation framework for automated red teaming and robust refusal.pdf
+
+Structure has been saved to: ./defend/directory_structure.txt

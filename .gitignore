@@ -227,3 +227,6 @@ TSWLatexianTemp*
 .vscode/
 license/main.pdf
 license/fig/xyf_run_copy.sh
+
+# personal note
+defend/note/

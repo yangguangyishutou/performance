@@ -1,10 +1,13 @@
 # 添加论文列表
 
-## 24/11/12
+### Update(可折叠此部分)
 
-删除重复论文，更新了论文pdf分类。调整分类： B-上下文/长度 -> C-人类干预策略。
+#### 24/11/14
 
-不确定的分类暂时都放在了F-misc下。
+- 可视化目录树：[ExtractTreeStructure](./Extract_Tree_Structure.ps1)，结果：directory_structure.txt
+- Add: 
+  - Arxiv2023 Llama guard-Llm-based input-output safeguard for human-ai conversations
+  - Arxiv2024 JailbreakBench
 
 ### Attack
 
@@ -27,7 +30,8 @@
 * ICLR2024 PAIR: Jailbreaking black box large language models in twenty queries
 
 > prompt automatic iterative refinement
->
+> Insight: 20 queries to jailbreak LLM
+> **TAP is based on PAIR**
 > uses an attacker LLM to automatically generate jailbreaks for a separate targeted LLM without human intervention. 
 >
 > 缺点： lack guidance for jailbreak knowledge
@@ -35,10 +39,45 @@
 * Arxiv2024 Tree of attacks: Jailbreaking black-box llms automatically
 
 > 缺点： lack guidance for jailbreak knowledge
-
+> **based on PAIR**
+> 剪枝操作起到核心作用
 > TAP utilizes an attacker LLM to iteratively refine candidate (attack) prompts until one of the refined prompts jailbreaks the target.
+> **Attacker: GPT-4 + Human**
+> 人类评判标准：基于Wei的论文[Jailbroken](../Attack/D%20Fine-tuning%20&%20DPO%20weakness/NeurIPS-2023-jailbroken-how-does-llm-safety-training-fail-Paper-Conference.pdf)
+> 其他方法：GPT-3.5-turbo/Substring效果均较差，**Llama-Guard**较好，作者由此推测专用小模型的评估效果也许可以比肩GPT-4
 
+Algorithm:
 
+```python
+def TAP(Q, b, w, d):
+    # 初始化树
+    tree = Tree(root=Node(query=Q))
+    
+    while tree.depth <= d:
+        # 分支：为每个叶节点生成b个子节点
+        for leaf in tree.leaves:
+            prompts = generate_prompts(A, leaf.history, b)
+            tree.add_children(leaf, prompts)
+            
+        # 剪枝1：删除离题的提示
+        for leaf in tree.new_leaves:
+            if is_off_topic(leaf.prompt, Q):
+                tree.delete(leaf)
+                
+        # 查询和评估
+        for leaf in tree.remaining_leaves:
+            response = query_target(T, leaf.prompt)
+            score = evaluate(E, response)
+            if is_successful(score):
+                return leaf.prompt
+            leaf.add_to_history(response)
+            
+        # 剪枝2：保留最高分的w个叶节点
+        if len(tree.leaves) > w:
+            tree.keep_top_k_leaves(w)
+            
+    return None
+```
 
 * ICLR2024 AUTODAN: GENERATING STEALTHY JAILBREAK PROMPTS ON ALIGNED LARGE LANGUAGE MODELS
 
