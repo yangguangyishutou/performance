@@ -2,11 +2,13 @@
 
 问题1: Benchmark
 
+问题2: 文章是否足够全了？
 
+问题3: 7篇文章讨论清楚
 
 ### 大模型MIA
 
-1. Arxiv 2023 Membership Inference Attacks against Language Models via Neighbourhood Comparison.pdf
+1. Arxiv 2023 Membership Inference Attacks against Language Models via Neighbourhood Comparison.pdf 
 
 > simple thresholding of the model score in isola- tion tends to lead to high false-positive rates as it does not account for the intrinsic complexity of a sample
 >
@@ -40,7 +42,7 @@
 
 >  We introduce MIMIR1, a unified repository for evaluating MIAs for LMs, with implementations of several attacks from literature. 
 
-> 
+> released **benchmark**
 
 
 
@@ -78,9 +80,7 @@
 >
 > Beam Search-based Adversarial Attack (BEAST).
 
-问题2: 文章是否足够全了？
 
-问题3: 7篇文章讨论清楚
 
 
 
