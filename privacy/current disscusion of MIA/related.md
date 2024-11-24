@@ -92,7 +92,73 @@
 
 
 
+9. Arxiv 2024 Nob-MIAs Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction.pdf
 
+> 提出了用于评估成员推断攻击（MIA）的无偏数据集构建方法，重点在于消除 n-gram 偏差和分类偏差。
+>
+> 提出了 No-Ngram 和 No-Class 两种算法以构建无偏数据集。
+>
+> Non-biased MIAs Assessment for Large Language Models.
+
+
+
+10. Arxiv 2024 RECALL Membership Inference via Relative Conditional Log-Likelihoods.pdf
+
+> 提出了基于条件对数似然变化的成员推断攻击方法，用于检测大语言模型的训练数据。
+>
+> 提出了 RECALL 分数，通过前缀干扰区分成员和非成员数据。
+>
+> Relative Conditional Log-Likelihoods for Membership Inference in LLMs.
+
+
+
+11. Arxiv 2024 Blind Baselines Beat Membership Inference Attacks for Foundation Models.pdf
+
+> 通过“盲攻击”揭示现有成员推断评估方法的缺陷，强调分布偏差对评估结果的影响。
+>
+> 提出了改进建议，倡导基于随机训练-测试划分的评估方法。
+>
+> Blind Baselines for Membership Inference Evaluations in Foundation Models.
+
+
+
+12. Arxiv 2024 Min-K%++ A New Membership Inference Method for Pretraining Data Detection.pdf
+
+> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
+>
+> 提供了理论支持，适用于实时在线生成场景。
+>
+> Min-K%++ for Robust Pretraining Data Membership Inference in LLMs.
+
+
+
+13. Arxiv 2024 DC-PDD  Pretraining Data Detection for Large Language Models.pdf
+
+> 提出了 DC-PDD 方法，通过分布校准改进对预训练数据的检测性能，适用于多语言场景。
+>
+> 提供了新基准数据集 PatentMIA，针对中文预训练数据检测。
+>
+> Divergence-Calibrated Pretraining Data Detection for Robust Membership Inference in LLMs.
+
+
+
+14. Arxiv 2024 MIN-K% PROB A Practical Method for Pretraining Data Detection in Large Language Models.pdf
+
+> 提出了 MIN-K% PROB 方法，通过分析低概率 token 检测预训练数据的存在。
+>
+> 提供了动态基准数据集 WIKIMIA，用于多模型的训练数据检测评估。
+>
+> MIN-K% PROB for Robust and Scalable Pretraining Data Detection in LLMs.
+
+
+
+15. ACL 2024 DPDLLM A Black-Box Framework for Pretraining Data Detection in Large Language Models.pdf
+
+> 提出了 DPDLLM 框架，通过参考模型生成的概率序列，无需访问模型内部信息即可检测预训练数据。
+>
+> 构建了 WikiMIA2 和 BookMIA 等基准数据集，用于评估检测性能。
+>
+> DPDLLM for Black-Box Pretraining Data Detection in LLMs.
 
 ### 传统Machine Learning MIA
 
