@@ -8,7 +8,7 @@
 
 ### 大模型MIA
 
-1. Arxiv 2023 Membership Inference Attacks against Language Models via Neighbourhood Comparison.pdf 
+1. Arxiv 2023 Membership Inference Attacks against Language Models via Neighbourhood Comparison.pdf	——zhuoyang
 
 > simple thresholding of the model score in isola- tion tends to lead to high false-positive rates as it does not account for the intrinsic complexity of a sample
 >
@@ -22,7 +22,7 @@
 
 
 
-2. Arxiv 2024 Do Membership Inference Attacks Work on Large Language Models.pdf
+2. Arxiv 2024 Do Membership Inference Attacks Work on Large Language Models.pdf	——zhuoyang
 
 > We find that MIAs barely outperform random guessing for most settings across varying LLM sizes and domains
 >
@@ -46,7 +46,7 @@
 
 
 
-3. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf
+3. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
 > SMIA trains a neural network to analyze the target model’s behavior on perturbed inputs, effectively capturing variations in output probability distributions between members and non-members
 >
@@ -54,25 +54,25 @@
 >
 > 对member和non-member perturb ，存在不同的differencial change
 
-4. ICLR2024 DETECTING PRETRAINING DATA FROM LARGE LANGUAGE MODELS.pdf
+4. ICLR2024 DETECTING PRETRAINING DATA FROM LARGE LANGUAGE MODELS.pdf	——WangBo
 
 > We introduce a dynamic benchmark **WIKIMIA** that uses data created before and after model training to support gold truth detection.
 >
 > Min-k% Prob
 
-5. LLM Dataset Inference Did you train on my dataset.pdf
+5. LLM Dataset Inference Did you train on my dataset.pdf	——WangBo
 
 > 提出了比membership更大范围的dataset inference 问题
 
 
 
-6. Usenix Sec2024 Did the Neurons Read your Book Document-level Membership Inference for Large Language Models.pdf
+6. Usenix Sec2024 Did the Neurons Read your Book Document-level Membership Inference for Large Language Models.pdf	——WangBo
 
 > we introduce the task of document-level membership inference for real-world LLMs,
 
 
 
-7. ICML2024 Fast Adversarial Attacks on Language Models In One GPU Minute.pdf
+7. ICML2024 Fast Adversarial Attacks on Language Models In One GPU Minute.pdf	——xiaoyun
 
 > The computational efficiency of BEAST facilitates us to in- vestigate its applications on LMs for jailbreak- ing, eliciting hallucinations, and privacy attacks.
 >
@@ -82,7 +82,7 @@
 
 
 
-8. Arxiv 2024 PANORAMIA Privacy Auditing of Machine Learning Models without Retraining.pdf
+8. Arxiv 2024 PANORAMIA Privacy Auditing of Machine Learning Models without Retraining.pdf	——xiaoyun
 
 > PANORAMIA 提出了基于生成数据的隐私审计框架，可在无需重复训练模型或真实非成员数据的情况下评估隐私泄漏。
 >
@@ -92,7 +92,7 @@
 
 
 
-9. Arxiv 2024 Nob-MIAs Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction.pdf
+9. Arxiv 2024 Nob-MIAs Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction.pdf	——xiaoyun
 
 > 提出了用于评估成员推断攻击（MIA）的无偏数据集构建方法，重点在于消除 n-gram 偏差和分类偏差。
 >
@@ -102,7 +102,7 @@
 
 
 
-10. Arxiv 2024 RECALL Membership Inference via Relative Conditional Log-Likelihoods.pdf
+10. Arxiv 2024 RECALL Membership Inference via Relative Conditional Log-Likelihoods.pdf	——yuanheng
 
 > 提出了基于条件对数似然变化的成员推断攻击方法，用于检测大语言模型的训练数据。
 >
@@ -112,7 +112,7 @@
 
 
 
-11. Arxiv 2024 Blind Baselines Beat Membership Inference Attacks for Foundation Models.pdf
+11. Arxiv 2024 Blind Baselines Beat Membership Inference Attacks for Foundation Models.pdf	——yuanheng
 
 > 通过“盲攻击”揭示现有成员推断评估方法的缺陷，强调分布偏差对评估结果的影响。
 >
@@ -122,7 +122,7 @@
 
 
 
-12. Arxiv 2024 Min-K%++ A New Membership Inference Method for Pretraining Data Detection.pdf
+12. Arxiv 2024 Min-K%++ A New Membership Inference Method for Pretraining Data Detection.pdf	——yuanheng
 
 > 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
 >
@@ -132,7 +132,7 @@
 
 
 
-13. Arxiv 2024 DC-PDD  Pretraining Data Detection for Large Language Models.pdf
+13. Arxiv 2024 DC-PDD  Pretraining Data Detection for Large Language Models.pdf	——caiyi
 
 > 提出了 DC-PDD 方法，通过分布校准改进对预训练数据的检测性能，适用于多语言场景。
 >
@@ -142,7 +142,7 @@
 
 
 
-14. Arxiv 2024 MIN-K% PROB A Practical Method for Pretraining Data Detection in Large Language Models.pdf
+14. Arxiv 2024 MIN-K% PROB A Practical Method for Pretraining Data Detection in Large Language Models.pdf	——caiyi
 
 > 提出了 MIN-K% PROB 方法，通过分析低概率 token 检测预训练数据的存在。
 >
@@ -152,7 +152,7 @@
 
 
 
-15. ACL 2024 DPDLLM A Black-Box Framework for Pretraining Data Detection in Large Language Models.pdf
+15. ACL 2024 DPDLLM A Black-Box Framework for Pretraining Data Detection in Large Language Models.pdf	——caiyi	
 
 > 提出了 DPDLLM 框架，通过参考模型生成的概率序列，无需访问模型内部信息即可检测预训练数据。
 >
