@@ -82,6 +82,14 @@
 
 
 
+8. Arxiv 2024 PANORAMIA Privacy Auditing of Machine Learning Models without Retraining.pdf
+
+> PANORAMIA 提出了基于生成数据的隐私审计框架，可在无需重复训练模型或真实非成员数据的情况下评估隐私泄漏。
+>
+> 提出了使用生成数据进行隐私审计的新方法
+>
+> Privacy Auditing with NO Retraining by using Artificial data for Membership Inference Attacks (PANORAMIA).
+
 
 
 
