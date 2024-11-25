@@ -317,7 +317,7 @@ TODO persuation策略有什么新意？
 
 #### How johnny can persuade llms to jailbreak them: Rethinking persuasion to challenge ai safety by humanizing llms.
 >1、说服分类学中的分类法是PAP的基础，有40种基本strategy
->2、利用分类法进行说服性释义构建，将简单的有害查询转化为大规模的PAP越狱攻击
+>2、利用分类法进行说服性释义构建，将简单的有害查询转化为大规模的PAP越狱攻击,需要使用Fine-tuning等方法
 >3、使用开发过的PAP进行广泛扫描，对14个类别的话题进行测试
 >4、深度迭代探测，根据用户反馈迭代说服技巧
 
