@@ -384,7 +384,7 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 > We use this insight to demonstrate a simple method to un-align the model, reverting it
 > back to its toxic behavior.
 
-ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank Modifications
+#### ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank Modifications
 
 > This study explores this brittleness of safety alignment by leveraging pruning and low-rank modifications.
 
@@ -449,6 +449,14 @@ self-classify 任务
 
 #### ICML2024 DRO-On Prompt-Driven Safeguarding for Large Language Models
 
+[Github](https://github.com/chujiezheng/LLM-Safeguard)
+
+* 基于假设：Models can recognize harmful queries but fail to
+refuse them, while safety prompts increase the probability
+of refusal (i.e., refusing to provide assistance).
+
+* 有害和无害的查询在模型的表示空间中是如何存在的，以及安全提示对查询表示的影响如何与模型的拒绝行为相关。
+
 #### ACL2023 Defending large language models against jailbreaking attacks through goal prioritization
 
 
@@ -466,7 +474,8 @@ self-classify 任务
 
 > 感觉有点绕弯，有点像“拍脑袋”式的防御，效果和模型能力关联也很大
 
-#### ACL 2024 [Safedecoding: Defending against jailbreak attacks via safety-aware decoding](https://arxiv.org/abs/2402.08983)**CCF A**
+#### ACL2024 Safedecoding: Defending against jailbreak attacks via safety-aware decoding
+
 Key Insight:
 
 - 模型遭受攻击时，有害tokens的概率分布高于正常tokens，传统top-k/p采样将会优先选择有害tokens，尽管正常tokens概率仍不为0
