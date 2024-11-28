@@ -449,7 +449,7 @@ self-classify 任务
 
 #### ICML2024 DRO-On Prompt-Driven Safeguarding for Large Language Models
 
-[Github](https://github.com/chujiezheng/LLM-Safeguard)
+[Github](https://github.com/chujiezheng/LLM-Safeguard)，Linux环境
 
 * 基于假设：Models can recognize harmful queries but fail to
 refuse them, while safety prompts increase the probability
@@ -457,9 +457,48 @@ of refusal (i.e., refusing to provide assistance).
 
 * 有害和无害的查询在模型的表示空间中是如何存在的，以及安全提示对查询表示的影响如何与模型的拒绝行为相关。
 
-#### ACL2023 Defending large language models against jailbreaking attacks through goal prioritization
+#### ACL2024 Defending large language models against jailbreaking attacks through goal prioritization
 
+> **像是融合了In-context-demonstrations和DeepInception的方法**。
+> 附录的例子很全，一个系统prompt结构示例：
+> You are an assistant that is harmless and helpful. ......
+> Example 1: Benign query + Internal thoughts + Response
+> Example 2: Harmful query + Internal thoughts + Response
+> Task: Now is the real task and you need to respond without violating the goal priority requirement. ... 
+> User Query: ...
+> Response: ...
 
+**Ideas:**
+提供帮助和确保安全这两个目标之间的内在冲突 --> 在训练和推理阶段整合目标优先级
+out-of-distribution场景下，模型难以辨别目标优先级，因此常用的SFT和RLHF不能有效防御越狱攻击。
+更强大的llm更容易受到越狱攻击，但也可以更有效地挫败越狱攻击。
+**4 A100 训练13B模型 --> 16h**
+
+- Without training: plug-and-play-prompting method
+  - **2 in-context demonstrations**: benign + harmful，能够更好地理解目标优先级要求
+  - **Internal thoughts**：缓冲区，能够充分理解用户查询并分析目标优先级
+  - goal prioritization requirement
+- With training: a training pipeline(model weights & fine-tuning data accessible)
+  - 两种相反的优先级策略，避免模型过度优化单一目标而忽视优先级要求
+    - Safety-first training
+    - Help-first training
+  - **训练数据**构造：
+    - 有害查询:
+      - 当优先考虑有用性时 -> 输出有用但不安全的响应
+      - 当优先考虑安全性时 -> 输出安全但可能不够有用的响应
+    - 良性查询:
+      - 随机选择优先级策略
+      - 生成既安全又有用的响应
+
+- 使用了[UltraFeedBack(未加入仓库)](https://openreview.net/forum?id=pNkOx3IVWI)作为良性的数据集，数据集的文章被ICLR2024拒稿
+
+#### ACL2023 Defending against alignment-breaking attacks via robustly aligned llm
+
+propose a robust alignment check function to filter harmful queries, which relies on LLMs’ ability to reject masked jailbreak prompts.
+
+#### ICLR2023 Rain - Your language models can align themselves without finetuning
+
+self-evaluation and rewind mechanisms
 
 #### ACL2024 Defending LLMs against Jailbreaking Attacks via Backtranslation
 
@@ -481,11 +520,14 @@ Key Insight:
 - 模型遭受攻击时，有害tokens的概率分布高于正常tokens，传统top-k/p采样将会优先选择有害tokens，尽管正常tokens概率仍不为0
 - 通过调整 token 分布来平衡质量和安全性：过滤掉高风险 token，放大安全 token 的权重
 
-#### ICML2024 On Prompt-Driven Safeguarding for Large Language Models
-
-#### Arxiv2023 (RAIN)Baseline defenses for adversarial attacks against aligned language models
+#### Arxiv2023 Baseline defenses for adversarial attacks against aligned language models
 
 #### TIFS2024 Silent guardian - Protecting text from malicious exploitation by large language models
+
+[Github](https://github.com/weiyezhimeng/Silent-Guardian)
+star(1)和论文引用(3)都较少
+
+这篇文章主要是**文本保护**，防止模型生成侵权内容、虚假信息或推断个人隐私，打算暂时跳过
 
 #### ICLR2024-Expand The Unlocking Spell on Base LLMs - Rethinking Alignment via In-Context Learning
 
