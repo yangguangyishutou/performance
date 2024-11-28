@@ -561,7 +561,7 @@ out-of-distribution场景下，模型难以辨别目标优先级，因此常用�
       - 随机选择优先级策略
       - 生成既安全又有用的响应
 
-- 使用了[UltraFeedBack(未加入仓库)](https://openreview.net/forum?id=pNkOx3IVWI)作为良性的数据集，数据集的文章被ICLR2024拒稿
+- 使用了[UltraFeedBack](https://openreview.net/forum?id=pNkOx3IVWI)作为良性的数据集，但Ultra这篇文章被ICLR2024拒稿
 
 #### ACL2023 Defending against alignment-breaking attacks via robustly aligned llm
 
@@ -602,6 +602,20 @@ star(1)和论文引用(3)都较少
 
 #### ICLR2024-Expand The Unlocking Spell on Base LLMs - Rethinking Alignment via In-Context Learning
 
+[Github](https://allenai.github.io/re-align/)
+
+- Insights: **Purely in-context-learning** with three constant stylistic examples and a system prompt. 也是ICA
+- Ideas:
+  - Hypothesis:
+    - Alignment tuning: Adopt the language style
+    - Knowledge: From LLM itself
+  - Rethink the effect of SFT(Instruction-tuning with instruction-answer pairs) and RLHF(Feedback-tuning, Preference-learning with reward-model) on alignment
+
+- 改进后ICA的亮点：
+  - 风格设计
+  - 将系统提示(system prompt)引入基础模型的上下文学习
+  - 仅需3个固定示例即可实现良好效果
+
 #### PMLR2024 RigorLLM- Resilient Guardrails for Large Language Models against Undesired Content
 
 ## Newest
@@ -640,5 +654,3 @@ star(1)和论文引用(3)都较少
 ### Defense
 
 1. Arxiv2024-11 Defense Against Prompt Injection Attack by Leveraging Attack Techniques
-
-2. ICML2024 The wmdp benchmark-Measuring and reducing malicious use with unlearning
