@@ -468,6 +468,8 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 
 ## Defense
 
+分类
+
 #### Arxiv2023-SmoothLLM Defending Large Language Models Against Jailbreaking Attacks
 
 > our defense first randomly **perturbs** multiple copies of a given input prompt, and then aggregates the corresponding predictions to detect adversarial inputs.
@@ -593,6 +595,12 @@ Key Insight:
 
 #### Arxiv2023 Baseline defenses for adversarial attacks against aligned language models
 
+> 针对的攻击主要是基于对抗性的攻击，这类攻击是通过优化器利用FT和RLHF来hand-craft的
+> 本文并没有提出新的defence approach，而是提出已有三种防御的baseline
+> 这些基线是 perplexity filtering, attack removal via paraphrasing and retokenization, and adversarial training
+> 测试用的是白盒攻击
+> filtering and paraphrasing 更有前景
+
 #### TIFS2024 Silent guardian - Protecting text from malicious exploitation by large language models
 
 [Github](https://github.com/weiyezhimeng/Silent-Guardian)
@@ -617,6 +625,39 @@ star(1)和论文引用(3)都较少
   - 仅需3个固定示例即可实现良好效果
 
 #### PMLR2024 RigorLLM- Resilient Guardrails for Large Language Models against Undesired Content
+
+[Github](https://github.com/eurekayuan/RigorLLM) stars:12
+1 single NVIDIA A6000 Ada GPU
+和COLD Attack, cold-decoding关联似乎很大
+
+**Resilient Guardrails(弹性护栏) + 约束优化的创新**
+
+- 框架：
+  - 训练：
+    - （稀疏）嵌入：真实世界的有害+良性数据 -> 预训练文本编码器将原始训练数据投影到嵌入空间
+      - 数据集：
+        - 有害：Hex-PHI
+        - 良性：HotpotQA
+        - 验证集：OpenAI Moderation dataset, Toxic-chat
+        - 弹性测试：Advbench
+    - 增强：利用 Langevin 扩大有害输入嵌入空间（算法如下）
+  - **测试**：
+    - 优化一个安全后缀，减轻有害输入的影响
+      - 核心思想：同时优化安全后缀和对抗后缀，通过博弈方式提高鲁棒性。
+      - 最终只使用优化后的安全后缀，丢弃对抗后缀
+    - 利用 LLM ，通过paraphrases/summaries等手段扩充输入
+    - 获取预测：
+      - KNN
+        - KNN 对 对抗性噪声具有弹性
+        - 利用语义相似性原理:即使遭受攻击,对抗样本在嵌入空间中仍应接近原始输入
+        - 在增强数据空间中执行KNN,提高鲁棒性
+        - 对原始和增强数据的概率取平均,减少不确定性
+      - 使用现有LLM(如LlamaGuard)进行类别预测
+        - 为每个有害类别计算语言建模概率
+        - 良性类别概率通过补集计算
+        - 同样对原始和增强数据取平均
+      - 总体聚合策略：
+        - 加权平均融合两个模型的预测
 
 ## Newest
 
