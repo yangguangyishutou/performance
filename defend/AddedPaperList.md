@@ -469,6 +469,42 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 ## Defense
 
 分类
+### A.Input/Output Filter
+#### Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal
+> 引申于baseline
+> 自动化的评估red teaming的框架，并研发出新的对抗性训练方法R2D2——基于强优化的红色团队方法不断更新的动态测试用例池上的llm进行微调
+
+#### Arxiv2024 Building Guardrails for Large Language Models
+> 引申于baseline
+> **Guardrails**, which filter the inputs or outputs of LLMs, have emerged as a core safeguarding technology. 
+> guardrails (Welbl et al., 2021; Gehman et al., 2020), which monitors and filters the inputs and outputs of trained LLMs. 
+> TODO：目的是过滤，核心思想？
+> 基于当前llm护栏情况提出新护栏要求（没有具体实现，可以不看）
+
+#### Arxiv2024 Defending against Jailbreaks via Repetition
+> 引申于baseline
+> We hypothesise that this is due to domain shift: the alignment training imparts a self-censoring behaviour to the model (“Sorry I can’t do that”), while the self-classify approach shifts it to a classification format (“Is this prompt malicious”). 
+> self-censoring任务
+> self-classify 任务
+>
+> 把prompt给LLM，LLM输出内容，把内容再给LLM，让LLM执行self-classify任务，通过domain shift转换从而实现defense
+>
+> 通过重复输出来解决问题
+
+#### IEEE Silent Guardian: Protecting Text From Malicious Exploitation by Large Language Models
+> 引申于baseline
+> 针对llm的文本保护机制，通过STP构造TPE（截断保护实例，可以终止当前对话）进行防御，自动选择符号进行转换
+
+
+
+
+### B.Inference Guidance 
+#### Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
+> 引申于baseline
+>缩放定律揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
+
+### C.Security Aligment
+
 
 #### Arxiv2023-SmoothLLM Defending Large Language Models Against Jailbreaking Attacks
 
@@ -476,49 +512,7 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 >
 > motivated in part by the randomized smoothing literature in the adversarial robustness community
 
-#### Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal
 
-```plaintext
-引申于baseline
-自动化的评估red teaming的框架，并研发出新的对抗性训练方法R2D2——基于强优化的红色团队方法不断更新的动态测试用例池上的llm进行微调
-```
-
-#### Arxiv2024 Building Guardrails for Large Language Models
-
-```plaintext
-### 引申于baseline
-**Guardrails**, which filter the inputs or outputs of LLMs, have emerged as a core safeguarding technology. 
-guardrails (Welbl et al., 2021; Gehman et al., 2020), which monitors and filters the inputs and outputs of trained LLMs. 
-TODO：目的是过滤，核心思想？
-基于当前llm护栏情况提出新护栏要求（没有具体实现，可以不看）
-```
-
-#### Arxiv2024 Defending against Jailbreaks via Repetition
-
-```plaintext
-### 引申于baseline
-We hypothesise that this is due to domain shift: the alignment training imparts a self-censoring behaviour to the model (“Sorry I can’t do that”), while the self-classify approach shifts it to a classification format (“Is this prompt malicious”). 
-self-censoring任务
-self-classify 任务
-
-把prompt给LLM，LLM输出内容，把内容再给LLM，让LLM执行self-classify任务，通过domain shift转换从而实现defense
-
-通过重复输出来解决问题
-```
-
-#### IEEE Silent Guardian: Protecting Text From Malicious Exploitation by Large Language Models
-
-```plaintext
-### 引申于baseline
-针对llm的文本保护机制，通过STP构造TPE（截断保护实例，可以终止当前对话）进行防御，自动选择符号进行转换
-```
-
-#### Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
-
-```plaintext
-### 引申于baseline
-缩放定律揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
-```
 
 #### ICML2024 DRO-On Prompt-Driven Safeguarding for Large Language Models
 
