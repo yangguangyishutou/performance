@@ -492,7 +492,7 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 > 并给出免责声明
 >
 > 》上下文污染。他们认为一旦模型针对恶意提示给出不合适的响应，如肯定的答复或有害的内容，上下文便会被污染，基于被污染的上下文，模型会更
-> 倾向于继续对有害提示进行响应。(后两段出处为李南的综述，原文为多模态LLM，没仔细看)
+> 倾向于继续对有害提示进行响应。(后两段出处为李南的综述，原文为多模态LLM，没仔细看)555
 
 #### NDSS2024 MASTERKEY: Automated Jailbreaking of Large Language Model Chatbots
 
