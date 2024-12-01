@@ -220,9 +220,19 @@ TODO: initial seeds/population, mutation operation, fitness function
 
 > A maximum **likelihood-based** algorithm is proposed to find an image Jailbreaking Prompt (imgJP), enabling jailbreaks against MLLMs across multiple unseen prompts and images
 
-#### Autodan: Automatic and interpretable adversarial attacks on large language models.
+#### Arxiv 2023 Autodan: Automatic and interpretable adversarial attacks on large language models.
 
-> TODO 
+> 应该属于Adversarial prompt
+>
+> 可读性+梯度
+>
+> GCG:随机选择位置迭代randomly select a token position to optimize in each iteration with the goal of making the model start with an affirmative response
+>
+> AutoDan：从左到右生成。两重循环 内循环p optimizes a single token 外层循环 generates tokens one by one
+>
+> use two-step preliminary-to-fine selection to optimize the single token 
+>
+> > ![AutoDan-GA](./img/AutoDan2023.png)
 
 ### B. Rule-based: Exploit multi language 利用语言的差别，文化习俗，跨语言的歧义/模糊性, cipher， 上下文/长度
 
