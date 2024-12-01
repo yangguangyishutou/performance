@@ -447,7 +447,7 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 > -  LDPO=−E[log⁡σ(βlog⁡P−βlog⁡N)]
 > - 其中，*P*是偏好（非毒性）的输出，*N*是非偏好（毒性）的输出，σ*是sigmoid函数，β*是一个可调参数。
 
-ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank Modifications
+#### ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank Modifications
 
 > This study explores this brittleness of safety alignment by leveraging pruning and low-rank modifications.
 >
@@ -489,61 +489,104 @@ ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank 
 
 ## Defense
 
+分类
+### A.Input/Output Filter
+#### Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal
+> 引申于baseline
+> 自动化的评估red teaming的框架，并研发出新的对抗性训练方法R2D2——基于强优化的红色团队方法不断更新的动态测试用例池上的llm进行微调
+
+#### Arxiv2024 Building Guardrails for Large Language Models
+> 引申于baseline
+> **Guardrails**, which filter the inputs or outputs of LLMs, have emerged as a core safeguarding technology. 
+> guardrails (Welbl et al., 2021; Gehman et al., 2020), which monitors and filters the inputs and outputs of trained LLMs. 
+> TODO：目的是过滤，核心思想？
+> 基于当前llm护栏情况提出新护栏要求（没有具体实现，可以不看）
+
+#### Arxiv2024 Defending against Jailbreaks via Repetition
+> 引申于baseline
+> We hypothesise that this is due to domain shift: the alignment training imparts a self-censoring behaviour to the model (“Sorry I can’t do that”), while the self-classify approach shifts it to a classification format (“Is this prompt malicious”). 
+> self-censoring任务
+> self-classify 任务
+>
+> 把prompt给LLM，LLM输出内容，把内容再给LLM，让LLM执行self-classify任务，通过domain shift转换从而实现defense
+>
+> 通过重复输出来解决问题
+
+#### IEEE Silent Guardian: Protecting Text From Malicious Exploitation by Large Language Models
+> 引申于baseline
+> 针对llm的文本保护机制，通过STP构造TPE（截断保护实例，可以终止当前对话）进行防御，自动选择符号进行转换
+
+
+
+
+### B.Inference Guidance 
+#### Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
+> 引申于baseline
+>缩放定律揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
+
+### C.Security Aligment
+
+
 #### Arxiv2023-SmoothLLM Defending Large Language Models Against Jailbreaking Attacks
 
 > our defense first randomly **perturbs** multiple copies of a given input prompt, and then aggregates the corresponding predictions to detect adversarial inputs.
 >
 > motivated in part by the randomized smoothing literature in the adversarial robustness community
 
-#### Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal
 
-```plaintext
-引申于baseline
-自动化的评估red teaming的框架，并研发出新的对抗性训练方法R2D2——基于强优化的红色团队方法不断更新的动态测试用例池上的llm进行微调
-```
-
-#### Arxiv2024 Building Guardrails for Large Language Models
-
-```plaintext
-### 引申于baseline
-**Guardrails**, which filter the inputs or outputs of LLMs, have emerged as a core safeguarding technology. 
-guardrails (Welbl et al., 2021; Gehman et al., 2020), which monitors and filters the inputs and outputs of trained LLMs. 
-TODO：目的是过滤，核心思想？
-基于当前llm护栏情况提出新护栏要求（没有具体实现，可以不看）
-```
-
-#### Arxiv2024 Defending against Jailbreaks via Repetition
-
-```plaintext
-### 引申于baseline
-We hypothesise that this is due to domain shift: the alignment training imparts a self-censoring behaviour to the model (“Sorry I can’t do that”), while the self-classify approach shifts it to a classification format (“Is this prompt malicious”). 
-self-censoring任务
-self-classify 任务
-
-把prompt给LLM，LLM输出内容，把内容再给LLM，让LLM执行self-classify任务，通过domain shift转换从而实现defense
-
-通过重复输出来解决问题
-```
-
-#### IEEE Silent Guardian: Protecting Text From Malicious Exploitation by Large Language Models
-
-```plaintext
-### 引申于baseline
-针对llm的文本保护机制，通过STP构造TPE（截断保护实例，可以终止当前对话）进行防御，自动选择符号进行转换
-```
-
-#### Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
-
-```plaintext
-### 引申于baseline
-缩放定律揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
-```
 
 #### ICML2024 DRO-On Prompt-Driven Safeguarding for Large Language Models
 
-#### ACL2023 Defending large language models against jailbreaking attacks through goal prioritization
+[Github](https://github.com/chujiezheng/LLM-Safeguard)，Linux环境
 
+* 基于假设：Models can recognize harmful queries but fail to
+refuse them, while safety prompts increase the probability
+of refusal (i.e., refusing to provide assistance).
 
+* 有害和无害的查询在模型的表示空间中是如何存在的，以及安全提示对查询表示的影响如何与模型的拒绝行为相关。
+
+#### ACL2024 Defending large language models against jailbreaking attacks through goal prioritization
+
+> **像是融合了In-context-demonstrations和DeepInception的方法**。
+> 附录的例子很全，一个系统prompt结构示例：
+> You are an assistant that is harmless and helpful. ......
+> Example 1: Benign query + Internal thoughts + Response
+> Example 2: Harmful query + Internal thoughts + Response
+> Task: Now is the real task and you need to respond without violating the goal priority requirement. ... 
+> User Query: ...
+> Response: ...
+
+**Ideas:**
+提供帮助和确保安全这两个目标之间的内在冲突 --> 在训练和推理阶段整合目标优先级
+out-of-distribution场景下，模型难以辨别目标优先级，因此常用的SFT和RLHF不能有效防御越狱攻击。
+更强大的llm更容易受到越狱攻击，但也可以更有效地挫败越狱攻击。
+**4 A100 训练13B模型 --> 16h**
+
+- Without training: plug-and-play-prompting method
+  - **2 in-context demonstrations**: benign + harmful，能够更好地理解目标优先级要求
+  - **Internal thoughts**：缓冲区，能够充分理解用户查询并分析目标优先级
+  - goal prioritization requirement
+- With training: a training pipeline(model weights & fine-tuning data accessible)
+  - 两种相反的优先级策略，避免模型过度优化单一目标而忽视优先级要求
+    - Safety-first training
+    - Help-first training
+  - **训练数据**构造：
+    - 有害查询:
+      - 当优先考虑有用性时 -> 输出有用但不安全的响应
+      - 当优先考虑安全性时 -> 输出安全但可能不够有用的响应
+    - 良性查询:
+      - 随机选择优先级策略
+      - 生成既安全又有用的响应
+
+- 使用了[UltraFeedBack](https://openreview.net/forum?id=pNkOx3IVWI)作为良性的数据集，但Ultra这篇文章被ICLR2024拒稿
+
+#### ACL2023 Defending against alignment-breaking attacks via robustly aligned llm
+
+propose a robust alignment check function to filter harmful queries, which relies on LLMs’ ability to reject masked jailbreak prompts.
+
+#### ICLR2023 Rain - Your language models can align themselves without finetuning
+
+self-evaluation and rewind mechanisms
 
 #### ACL2024 Defending LLMs against Jailbreaking Attacks via Backtranslation
 
@@ -558,21 +601,78 @@ self-classify 任务
 
 > 感觉有点绕弯，有点像“拍脑袋”式的防御，效果和模型能力关联也很大
 
-#### ACL 2024 [Safedecoding: Defending against jailbreak attacks via safety-aware decoding](https://arxiv.org/abs/2402.08983)**CCF A**
+#### ACL2024 Safedecoding: Defending against jailbreak attacks via safety-aware decoding
+
 Key Insight:
 
 - 模型遭受攻击时，有害tokens的概率分布高于正常tokens，传统top-k/p采样将会优先选择有害tokens，尽管正常tokens概率仍不为0
 - 通过调整 token 分布来平衡质量和安全性：过滤掉高风险 token，放大安全 token 的权重
 
-#### ICML2024 On Prompt-Driven Safeguarding for Large Language Models
+#### Arxiv2023 Baseline defenses for adversarial attacks against aligned language models
 
-#### Arxiv2023 (RAIN)Baseline defenses for adversarial attacks against aligned language models
+> 针对的攻击主要是基于对抗性的攻击，这类攻击是通过优化器利用FT和RLHF来hand-craft的
+> 本文并没有提出新的defence approach，而是提出已有三种防御的baseline
+> 这些基线是 perplexity filtering, attack removal via paraphrasing and retokenization, and adversarial training
+> 测试用的是白盒攻击
+> filtering and paraphrasing 更有前景
 
 #### TIFS2024 Silent guardian - Protecting text from malicious exploitation by large language models
 
+[Github](https://github.com/weiyezhimeng/Silent-Guardian)
+star(1)和论文引用(3)都较少
+
+这篇文章主要是**文本保护**，防止模型生成侵权内容、虚假信息或推断个人隐私，打算暂时跳过
+
 #### ICLR2024-Expand The Unlocking Spell on Base LLMs - Rethinking Alignment via In-Context Learning
 
+[Github](https://allenai.github.io/re-align/)
+
+- Insights: **Purely in-context-learning** with three constant stylistic examples and a system prompt. 也是ICA
+- Ideas:
+  - Hypothesis:
+    - Alignment tuning: Adopt the language style
+    - Knowledge: From LLM itself
+  - Rethink the effect of SFT(Instruction-tuning with instruction-answer pairs) and RLHF(Feedback-tuning, Preference-learning with reward-model) on alignment
+
+- 改进后ICA的亮点：
+  - 风格设计
+  - 将系统提示(system prompt)引入基础模型的上下文学习
+  - 仅需3个固定示例即可实现良好效果
+
 #### PMLR2024 RigorLLM- Resilient Guardrails for Large Language Models against Undesired Content
+
+[Github](https://github.com/eurekayuan/RigorLLM) stars:12
+1 single NVIDIA A6000 Ada GPU
+和COLD Attack, cold-decoding关联似乎很大
+
+**Resilient Guardrails(弹性护栏) + 约束优化的创新**
+
+- 框架：
+  - 训练：
+    - （稀疏）嵌入：真实世界的有害+良性数据 -> 预训练文本编码器将原始训练数据投影到嵌入空间
+      - 数据集：
+        - 有害：Hex-PHI
+        - 良性：HotpotQA
+        - 验证集：OpenAI Moderation dataset, Toxic-chat
+        - 弹性测试：Advbench
+    - 增强：利用 Langevin 扩大有害输入嵌入空间（算法如下）
+  - **测试**：
+    - 优化一个安全后缀，减轻有害输入的影响
+      - 核心思想：同时优化安全后缀和对抗后缀，通过博弈方式提高鲁棒性。
+      - 最终只使用优化后的安全后缀，丢弃对抗后缀
+    - 利用 LLM ，通过paraphrases/summaries等手段扩充输入
+    - 获取预测：
+      - KNN
+        - KNN 对 对抗性噪声具有弹性
+        - 利用语义相似性原理:即使遭受攻击,对抗样本在嵌入空间中仍应接近原始输入
+        - 在增强数据空间中执行KNN,提高鲁棒性
+        - 对原始和增强数据的概率取平均,减少不确定性
+      - 使用现有LLM(如LlamaGuard)进行类别预测
+        - 为每个有害类别计算语言建模概率
+        - 良性类别概率通过补集计算
+        - 同样对原始和增强数据取平均
+      - 总体聚合策略：
+        - 加权平均融合两个模型的预测
 
 ## Newest
 
@@ -610,5 +710,3 @@ Key Insight:
 ### Defense
 
 1. Arxiv2024-11 Defense Against Prompt Injection Attack by Leveraging Attack Techniques
-
-2. ICML2024 The wmdp benchmark-Measuring and reducing malicious use with unlearning
