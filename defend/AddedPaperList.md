@@ -390,6 +390,15 @@ TODO persuation策略有什么新意？
 >4、深度迭代探测，根据用户反馈迭代说服技巧
 
 #### ICML2024 Cold-attack-Jailbreaking llms with stealthiness and controllability
+>提出了一个新颖的框架COLD-Attack，通过将可控文本生成和越狱攻击生成结合起来，实现了在LLM中生成具有控制属性的越狱攻击。
+>可控文本生成：攻击者可以控制攻击的多个属性，如情感、风格、隐蔽性等
+>cold attack：用自动化的方式解决可控攻击生成问题，是一种基于能量的方法（GCG中使用的对抗性成本函数可以作为额外的能量函数集成到COLD中）
+>其中主要分为三个框架：
+>1.能量函数公式：指定能量函数正确捕获攻击约束
+>2.Langevin dynamics sampling：获得一个良好的基于能量的模型，控制对抗攻击
+>3.解码过程：将连续日志变为离散文本
+>![image](https://github.com/user-attachments/assets/2c180567-27fb-4f34-8e43-ddafdfc6342b)
+
 
 关联度极高：[NeurlPS2022 Cold decoding-Energy-based constrained text generation with langevin dynamics]，未加入仓库
 
