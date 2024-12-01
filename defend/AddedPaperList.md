@@ -509,13 +509,14 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 ### A. Input/Output Filter 
 #### Arxiv2024 HarmBench A Standardized Evaluation Framework for Automated Red Teaming and Robust Refusal
 > 引申于baseline
-> 自动化的评估red teaming的框架，并研发出新的对抗性训练方法R2D2——基于强优化的红色团队方法不断更新的动态测试用例池上的llm进行微调
+> 自动化的评估red teaming的框架，并研发出新的对抗性训练方法R2D2——不断更新的动态测试用例池上的llm进行微调，在每次L个模型更新时，随机重置池中的测试用例的K%，并在指令调整数据集上包含了一个标准的监督微调损失LSFT
 
 #### Arxiv2024 Building Guardrails for Large Language Models
 > 引申于baseline
 > **Guardrails**, which filter the inputs or outputs of LLMs, have emerged as a core safeguarding technology. 
 > guardrails (Welbl et al., 2021; Gehman et al., 2020), which monitors and filters the inputs and outputs of trained LLMs. 
 > TODO：目的是过滤，核心思想？
+> 核心思想：在查询阶段识别潜在的误用
 > 基于当前llm护栏情况提出新护栏要求（没有具体实现，可以不看）
 
 #### Arxiv2024 Defending against Jailbreaks via Repetition
@@ -531,6 +532,8 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 #### IEEE Silent Guardian: Protecting Text From Malicious Exploitation by Large Language Models
 > 引申于baseline
 > 针对llm的文本保护机制，通过STP构造TPE（截断保护实例，可以终止当前对话）进行防御，自动选择符号进行转换
+> ![image](https://github.com/user-attachments/assets/b6e8fb10-61ba-41a2-ab95-c158cab7da44)
+
 
 
 
@@ -538,7 +541,9 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 ### B.Inference Guidance 
 #### Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
 > 引申于baseline
->缩放定律揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
+> Scaling Laws揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
+>  Scaling Laws：首先训练一系列的模型然后使用这些模型的测试数据性能来拟合损失随这些因素而变化的经验估计量，实验中探索三种参数下的拟合数据效果，最后投入预测
+
 
 ### C.Security Aligment
 
