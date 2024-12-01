@@ -438,17 +438,38 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 
 > In this work we study a popular algorithm, direct preference optimization(DPO), and the mechanisms by which it reduces toxicity.
 >
-> We use this insight to demonstrate a simple method to un-align the model, reverting it
-> back to its toxic behavior.
+> DPO（Direct Preference Optimization）算法是一种直接偏好优化方法
+>
+> DPO算法依赖于成对的偏好数据，即对于每个输入（prompt），都有一对或多个备选的输出（continuations），其中一个是偏好的（positive，例如非毒性的文本）和一个或多个非偏好的（negative，例如毒性的文本）
+>
+> 在训练过程中，DPO算法通过梯度下降方法更新模型参数，以最小化损失函数。
+>
+> -  LDPO=−E[log⁡σ(βlog⁡P−βlog⁡N)]
+> - 其中，*P*是偏好（非毒性）的输出，*N*是非偏好（毒性）的输出，σ*是sigmoid函数，β*是一个可调参数。
 
 ICML2024 Assessing the Brittleness of Safety Alignment via Pruning and Low-Rank Modifications
 
 > This study explores this brittleness of safety alignment by leveraging pruning and low-rank modifications.
+>
+> 看不太懂
+>
+> 使用剪枝（pruning）和低秩修改 (Low-Rank modification)来探究大语言模型中的哪一部分对安全对齐起到至关重要的作用
+>
+> 结论：与LLM安全有关的区域非常稀疏，只占全参数量的3%左右
 
 #### NeuraIPS2023 Jailbroken: How Does LLM Safety Training Fail
 
-> We hypothesize two failure modes of safety training: competing objectives and
-> mismatched generalization
+> 该方法为早期的攻击方法
+>
+> 1.目标竞争（Competing Objective）前缀注入(命令模型给出肯定的回复) 拒绝抑制
+>
+> 2.不匹配的泛化（Mismatched Generalization）base64编码 ,ROT13 cipher, leetspeak (replacing letters with visually similar numbers and symbols)  ,generate JSON
+>
+> 》风格注入类似于拒绝抑制，要求模型以特定风格给出响应，如禁止使用较长的单词，这样模型就无法像通常情况下一样，以专业与公式化的言语进行拒绝
+> 并给出免责声明
+>
+> 》上下文污染。他们认为一旦模型针对恶意提示给出不合适的响应，如肯定的答复或有害的内容，上下文便会被污染，基于被污染的上下文，模型会更
+> 倾向于继续对有害提示进行响应。(后两段出处为李南的综述，原文为多模态LLM，没仔细看)
 
 #### NDSS2024 MASTERKEY: Automated Jailbreaking of Large Language Model Chatbots
 
