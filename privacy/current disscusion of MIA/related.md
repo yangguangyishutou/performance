@@ -122,7 +122,7 @@
 
 
 
-12. Arxiv 2024 Min-K%++ A New Membership Inference Method for Pretraining Data Detection.pdf	——yuanheng
+12. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
 
 > 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
 >
@@ -142,7 +142,7 @@
 
 
 
-14. Arxiv 2024 MIN-K% PROB A Practical Method for Pretraining Data Detection in Large Language Models.pdf	——caiyi
+14. Arxiv 2024 Detecting Pretraining Data from Large Language Models.pdf	——caiyi
 
 > 提出了 MIN-K% PROB 方法，通过分析低概率 token 检测预训练数据的存在。
 >
