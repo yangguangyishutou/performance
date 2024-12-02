@@ -6,6 +6,15 @@
 
 问题3: 7篇文章讨论清楚
 
+认识阶段1: models tend to assign higher probabilities to their training samples than non-training points，缺点：simple thresholding of the model score in isolation tends to lead to high FPs
+
+认识阶段2: reference-based attacks which compare model scores to those obtained from a reference model scores trained on similar data can substaintially improve the performance of MIA，缺点：需要确认两边的data distribution一致。
+
+### Benchmark
+
+1. Do Membership Inference Attacks Work on Large Language Models
+2. 
+
 ### 大模型MIA
 
 1. Arxiv 2023 Membership Inference Attacks against Language Models via Neighbourhood Comparison.pdf	——zhuoyang
@@ -14,9 +23,13 @@
 >
 > reference-based attacks
 >
->  unrealistic assumption that an adversary has access to samples closely resembling the original train- ing data
+> unrealistic assumption that an adversary has access to samples closely resembling the original train- ing data
 >
 > neighbourhood attacks, which compare model scores for a given sample to scores of **synthetically generated neighbour texts** and therefore eliminate the need for access to the training data distribu- tion. 
+>
+> insight：neighbor 是经过变换得到，不是member，因此如果原有x与neighbor的loss接近，说明不是member，反之则是
+>
+> TODO：if the model score of the target data is similar to the crafted neighbors, then they are all plausible points from the distribution and the target point is not a member of the training set. However, if a sample is much more likely under the target model’s distribution than its neighbors, we infer that this could only be a result of overfitting ： 用公式如何表示
 >
 > 
 
