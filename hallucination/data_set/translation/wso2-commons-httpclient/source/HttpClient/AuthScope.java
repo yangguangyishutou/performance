@@ -154,7 +154,7 @@ public class AuthScope {
      * 
      * @since 3.0
      */
-    public AuthScope(final AuthScope authscope) {
+    public AuthScope(final AuthScope authscope) { //#None#
         super();
         if (authscope == null) {
             throw new IllegalArgumentException("Scope may not be null");
@@ -170,7 +170,7 @@ public class AuthScope {
      * 
      * @since 3.0
      */
-    public String getHost() {
+    public String getHost() {  //#None#
         return this.host;
     }
 

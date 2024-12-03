@@ -1,4 +1,3 @@
-//以下是将给定的Java代码翻译成C++的版本。假设相关的依赖项已经实现，例如`ParameterParser`、`NameValuePair`、`Header`等类已经在C++中实现。
 
 
 #include <string>
@@ -7,7 +6,7 @@
 #include <stdexcept>
 #include <algorithm>
 
-// 假设这些类已经在C++中实现
+// 锟斤拷锟斤拷锟斤拷些锟斤拷锟窖撅拷锟斤拷C++锟斤拷实锟斤拷
 class ParameterParser;
 class NameValuePair;
 class Header;
@@ -98,10 +97,10 @@ public:
 };
 
 
-// ### 说明：
-// 1. **异常处理**：在C++中，异常处理使用`std::runtime_error`和`std::invalid_argument`来替代Java中的`MalformedChallengeException`和`IllegalArgumentException`。
-// 2. **字符串处理**：C++中的字符串处理使用`std::string`，并且使用`std::transform`来实现字符串的小写转换。
-// 3. **容器**：C++中的`std::map`和`std::vector`分别替代了Java中的`HashMap`和`List`。
-// 4. **假设依赖项**：假设`ParameterParser`、`NameValuePair`和`Header`类已经在C++中实现，并且具有与Java版本相同的功能。
+// ### 说锟斤拷锟斤拷
+// 1. **锟届常锟斤拷锟斤拷**锟斤拷锟斤拷C++锟叫ｏ拷锟届常锟斤拷锟斤拷使锟斤拷`std::runtime_error`锟斤拷`std::invalid_argument`锟斤拷锟斤拷锟絁ava锟叫碉拷`MalformedChallengeException`锟斤拷`IllegalArgumentException`锟斤拷
+// 2. **锟街凤拷锟斤拷锟斤拷锟斤拷**锟斤拷C++锟叫碉拷锟街凤拷锟斤拷锟斤拷锟斤拷使锟斤拷`std::string`锟斤拷锟斤拷锟斤拷使锟斤拷`std::transform`锟斤拷实锟斤拷锟街凤拷锟斤拷锟斤拷小写转锟斤拷锟斤拷
+// 3. **锟斤拷锟斤拷**锟斤拷C++锟叫碉拷`std::map`锟斤拷`std::vector`锟街憋拷锟斤拷锟斤拷锟絁ava锟叫碉拷`HashMap`锟斤拷`List`锟斤拷
+// 4. **锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷**锟斤拷锟斤拷锟斤拷`ParameterParser`锟斤拷`NameValuePair`锟斤拷`Header`锟斤拷锟窖撅拷锟斤拷C++锟斤拷实锟街ｏ拷锟斤拷锟揭撅拷锟斤拷锟斤拷Java锟芥本锟斤拷同锟侥癸拷锟杰★拷
 
-// 这个C++代码应该能够实现与原始Java代码相同的功能。
+// 锟斤拷锟紺++锟斤拷锟斤拷应锟斤拷锟杰癸拷实锟斤拷锟斤拷原始Java锟斤拷锟斤拷锟斤拷同锟侥癸拷锟杰★拷
