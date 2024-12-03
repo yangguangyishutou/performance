@@ -12,10 +12,18 @@
 
 ### Benchmark
 
-1. Do Membership Inference Attacks Work on Large Language Models
-2. 
+1. MIMIR http://github.com/iamgroot42/mimir
+   * Do Membership Inference Attacks Work on Large Language Models
+2. WIKIMIA
+   * DETECTING PRETRAINING DATA FROM LARGE LANGUAGE MODELS
+3. Gutenberg
+   * Nob-MIAs: Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction
 
 ### 大模型MIA
+
+
+
+### A. 白盒LOSS： Perturbation/Neighborhood...
 
 1. Arxiv 2023 Membership Inference Attacks against Language Models via Neighbourhood Comparison.pdf	——zhuoyang
 
@@ -33,37 +41,11 @@
 >
 > 
 
+2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
-
-2. Arxiv 2024 Do Membership Inference Attacks Work on Large Language Models.pdf	——zhuoyang
-
-> We find that MIAs barely outperform random guessing for most settings across varying LLM sizes and domains
+> SMIA **trains a neural network to analyze the target model’s behavior on perturbed inputs,** effectively capturing variations in output probability distributions between members and non-members
 >
-> Our further analyses re- veal that this poor performance can be attributed to (1) the combination of a large dataset and few training iterations, and (2) an inherently fuzzy boundary between members and non-members.
->
-> explore the challenges in evaluating membership inference attacks on LLMs, across an array of five commonly-used membership inference attacks
->
-> LOSS Yeom et al., 2018  f (x; M) = L(x;M)
->
-> Reference-based attacks, Carlini et al. 2022 Mireshghallah et al., 2022a f (x; M) = L(x; M) − L(x; Mref ).
->
-> zlib entropy Carlini et al. 2021 : f (x; M) = L(x;M)/zlib(x)
->
-> curvature Matern 2023
->
-> Min-k% Prob Shi et al. 2023
-
->  We introduce MIMIR1, a unified repository for evaluating MIAs for LMs, with implementations of several attacks from literature. 
-
-> released **benchmark**
-
-
-
-3. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
-
-> SMIA trains a neural network to analyze the target model’s behavior on perturbed inputs, effectively capturing variations in output probability distributions between members and non-members
->
-> Our central hypothesis is that perturbing the input of a target model will result in differential changes in its output probability distribution for members and non-members, contingent on the extent of semantic change distance.
+> Our central hypothesis is that **perturbing the input of a target model will result in differential changes** in its output probability distribution for members and non-members, contingent on the extent of semantic change distance.
 >
 > 对member和non-member perturb ，存在不同的differencial change
 
@@ -73,45 +55,21 @@
 >
 > Min-k% Prob
 
-5. LLM Dataset Inference Did you train on my dataset.pdf	——WangBo
+14. Arxiv 2024 MIN-K% PROB A Practical Method for Pretraining Data Detection in Large Language Models.pdf	——caiyi
 
-> 提出了比membership更大范围的dataset inference 问题
-
-
-
-6. Usenix Sec2024 Did the Neurons Read your Book Document-level Membership Inference for Large Language Models.pdf	——WangBo
-
-> we introduce the task of document-level membership inference for real-world LLMs,
-
-
-
-7. ICML2024 Fast Adversarial Attacks on Language Models In One GPU Minute.pdf	——xiaoyun
-
-> The computational efficiency of BEAST facilitates us to in- vestigate its applications on LMs for jailbreak- ing, eliciting hallucinations, and privacy attacks.
+> 提出了 MIN-K% PROB 方法，通过分析低概率 token 检测预训练数据的存在。
 >
-> 提出了方法可以快速实施攻击
+> 提供了动态基准数据集 WIKIMIA，用于多模型的训练数据检测评估。
 >
-> Beam Search-based Adversarial Attack (BEAST).
+> MIN-K% PROB for Robust and Scalable Pretraining Data Detection in LLMs.
 
+12. Arxiv 2024 Min-K%++ A New Membership Inference Method for Pretraining Data Detection.pdf	——yuanheng
 
-
-8. Arxiv 2024 PANORAMIA Privacy Auditing of Machine Learning Models without Retraining.pdf	——xiaoyun
-
-> PANORAMIA 提出了基于生成数据的隐私审计框架，可在无需重复训练模型或真实非成员数据的情况下评估隐私泄漏。
+> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
 >
-> 提出了使用生成数据进行隐私审计的新方法
+> 提供了理论支持，适用于实时在线生成场景。
 >
-> Privacy Auditing with NO Retraining by using Artificial data for Membership Inference Attacks (PANORAMIA).
-
-
-
-9. Arxiv 2024 Nob-MIAs Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction.pdf	——xiaoyun
-
-> 提出了用于评估成员推断攻击（MIA）的无偏数据集构建方法，重点在于消除 n-gram 偏差和分类偏差。
->
-> 提出了 No-Ngram 和 No-Class 两种算法以构建无偏数据集。
->
-> Non-biased MIAs Assessment for Large Language Models.
+> Min-K%++ for Robust Pretraining Data Membership Inference in LLMs.
 
 
 
@@ -132,16 +90,10 @@
 > 提出了改进建议，倡导基于随机训练-测试划分的评估方法。
 >
 > Blind Baselines for Membership Inference Evaluations in Foundation Models.
-
-
-
-12. Arxiv 2024 Min-K%++ A New Membership Inference Method for Pretraining Data Detection.pdf	——yuanheng
-
-> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
 >
-> 提供了理论支持，适用于实时在线生成场景。
->
-> Min-K%++ for Robust Pretraining Data Membership Inference in LLMs.
+> TODO 具体说为啥是flawed？Unfortunately, we find that evaluations of MI attacks for foundation models are flawed, because they sample members and non-members from different distributions.
+
+
 
 
 
@@ -152,18 +104,78 @@
 > 提供了新基准数据集 PatentMIA，针对中文预训练数据检测。
 >
 > Divergence-Calibrated Pretraining Data Detection for Robust Membership Inference in LLMs.
-
-
-
-14. Arxiv 2024 MIN-K% PROB A Practical Method for Pretraining Data Detection in Large Language Models.pdf	——caiyi
-
-> 提出了 MIN-K% PROB 方法，通过分析低概率 token 检测预训练数据的存在。
 >
-> 提供了动态基准数据集 WIKIMIA，用于多模型的训练数据检测评估。
+> We compute the cross-entropy (i.e., the diver- gence) between the token probability distri- bution and the token frequency distribution to derive a detection score
+
+
+
+###  B. Empirical Accessment
+
+2. Arxiv 2024 Do Membership Inference Attacks Work on Large Language Models.pdf	——zhuoyang
+
+> We find that MIAs barely outperform random guessing for most settings across varying LLM sizes and domains
 >
-> MIN-K% PROB for Robust and Scalable Pretraining Data Detection in LLMs.
+> Our further analyses re- veal that this poor performance can be attributed to (1) the combination of a large dataset and few training iterations, and (2) an inherently fuzzy boundary between members and non-members.
+>
+> explore the challenges in evaluating membership inference attacks on LLMs, across an array of five commonly-used membership inference attacks
+>
+> 
+>
+> * LOSS Yeom et al., 2018  f (x; M) = L(x;M)
+>* Reference-based attacks, Carlini et al. 2022 Mireshghallah et al., 2022a f (x; M) = L(x; M) − L(x; Mref ).
+> * zlib entropy Carlini et al. 2021 : f (x; M) = L(x;M)/zlib(x)
+>* curvature Matern 2023 neighborhood attack
+> * Min-k% Prob Shi et al. 2023
+
+>  We introduce MIMIR1, a unified repository for evaluating MIAs for LMs, with implementations of several attacks from literature. 
+
+> released **benchmark**
+>
+> Non-members have high n-gram overlap with members e.g.non-members from the Pile Wikipedia and ArXiv test samples have aver- age 7-gram overlaps of over 30%. 
 
 
+
+9. Arxiv 2024 Nob-MIAs Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction.pdf	——xiaoyun
+
+> 提出了用于评估成员推断攻击（MIA）的无偏数据集构建方法，重点在于消除 n-gram 偏差和分类偏差。
+>
+> 提出了 No-Ngram 和 No-Class 两种算法以构建无偏数据集。
+>
+> Membership Inference Attacks (MIAs) aim to detect whether specific documents were used in a given LLM pretraining, but their effec- tiveness is undermined by biases such as **time-shifts and n-gram overlaps.**
+>
+> Non-biased MIAs Assessment for Large Language Models.
+>
+> This paper addresses the evaluation of MIAs on LLMs with partially inferable training sets, under the **ex-post hypothesis**:
+>
+> TODO We provide algorithms for constructing ex-post datasets of two types: No − Ngram (“No N-gram bias”) and No−Class (“non classifiable”), each designed to mitigate specific types of biases for MIA assessment.
+
+### C. Dataset Document Inference
+
+TODO Document Inference与现有技术的关系和创新？
+
+5. LLM Dataset Inference Did you train on my dataset.pdf	——WangBo
+
+> 提出了比membership更大范围的 **dataset inference** 问题
+>
+> Metrics for LLM Membership Inference 相关工作讲的听清楚
+
+6. Usenix Sec2024 Did the Neurons Read your Book Document-level Membership Inference for Large Language Models.pdf	——WangBo
+
+> we introduce the task of document-level membership inference for real-world LLMs,
+
+
+
+### D. Adversarial 
+
+7. ICML2024 Fast Adversarial Attacks on Language Models In One GPU Minute.pdf	——xiaoyun
+
+> The computational efficiency of BEAST facilitates us to investigate its applications on LMs for jailbreak- ing, eliciting hallucinations, and privacy attacks.
+>
+> 提出了方法可以快速实施攻击
+>
+> Beam Search-based Adversarial Attack (BEAST).
+
+### E. Blackbox LOSS（LOSS未知）
 
 15. ACL 2024 DPDLLM A Black-Box Framework for Pretraining Data Detection in Large Language Models.pdf	——caiyi	
 
@@ -172,6 +184,28 @@
 > 构建了 WikiMIA2 和 BookMIA 等基准数据集，用于评估检测性能。
 >
 > DPDLLM for Black-Box Pretraining Data Detection in LLMs.
+
+
+
+### MIA Defense 
+
+### A.  Differencial Privacy
+
+XXX
+
+### B. Privacy Auditing
+
+8. Arxiv 2024 PANORAMIA Privacy Auditing of Machine Learning Models without Retraining.pdf	——xiaoyun
+
+> PANORAMIA 提出了基于生成数据的隐私审计框架，可在无需重复训练模型或真实非成员数据的情况下评估隐私泄漏。
+>
+> 提出了使用生成数据进行隐私审计的新方法
+>
+> Privacy Auditing with NO Retraining by using Artificial data for Membership Inference Attacks (PANORAMIA).
+>
+> 1. Training Machine Learning (ML) models with Differential Privacy (DP) Dwork et al. (2006), such as with DP-SGD Abadi et al. (2016), upper-bounds the worst-case privacy loss incurred by the training data.
+>
+> 2. privacy auditing aims to empirically lower-bound the privacy loss of a target ML model or algorithm.
 
 ### 传统Machine Learning MIA
 
