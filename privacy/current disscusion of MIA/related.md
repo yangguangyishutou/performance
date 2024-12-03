@@ -90,8 +90,14 @@
 > 提出了改进建议，倡导基于随机训练-测试划分的评估方法。
 >
 > Blind Baselines for Membership Inference Evaluations in Foundation Models.
->
 > TODO 具体说为啥是flawed？Unfortunately, we find that evaluations of MI attacks for foundation models are flawed, because they sample members and non-members from different distributions.
+
+
+12. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
+
+> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
+
+
 
 
 
