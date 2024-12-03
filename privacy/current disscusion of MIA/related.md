@@ -1,16 +1,16 @@
 
 
-问题1: Benchmark
+问题: 7篇文章讨论清楚
 
-问题2: 文章是否足够全了？
+问题：目标对比工具是否开源可以直接获取？他们实验的setup，1. 数据集 2. 生成的长度？
 
-问题3: 7篇文章讨论清楚
+问题：LOSS，交叉熵，概率分布之间的转换关系？
 
 认识阶段1: models tend to assign higher probabilities to their training samples than non-training points，缺点：simple thresholding of the model score in isolation tends to lead to high FPs
 
 认识阶段2: reference-based attacks which compare model scores to those obtained from a reference model scores trained on similar data can substaintially improve the performance of MIA，缺点：需要确认两边的data distribution一致。
 
-### Benchmark
+### Benchmark TODO
 
 1. MIMIR http://github.com/iamgroot42/mimir
    * Do Membership Inference Attacks Work on Large Language Models
@@ -19,19 +19,57 @@
 3. Gutenberg
    * Nob-MIAs: Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction
 
-### 大模型MIA
 
 
+
+
+
+
+## 大模型MIA
+
+min-k; Neighbourhood, RECALL, blind,DC-PDD;
 
 ### A. 白盒LOSS： Perturbation/Neighborhood...
 
+#### 1. Threshold
+
+#### 2. Min-k
+
+4. ICLR2024 DETECTING PRETRAINING DATA FROM LARGE LANGUAGE MODELS.pdf	——WangBo
+
+> dataset：WIKIMIA
+>
+> We introduce a dynamic benchmark **WIKIMIA** that uses data created before and after model training to support gold truth detection.
+>
+> Min-k% Prob
+
+> 提出了 MIN-K% PROB 方法，通过分析低概率 token 检测预训练数据的存在。
+>
+> 提供了动态基准数据集 WIKIMIA，用于多模型的训练数据检测评估。
+>
+> MIN-K% PROB for Robust and Scalable Pretraining Data Detection in LLMs.
+
+6. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
+
+> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
+>
+> 提供了理论支持，适用于实时在线生成场景。
+>
+> Min-K%++ for Robust Pretraining Data Membership Inference in LLMs.
+
+> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
+
+#### 3. Perturbation
+
 1. Arxiv 2023 Membership Inference Attacks against Language Models via Neighbourhood Comparison.pdf	——zhuoyang
 
+> dataset：article summaries， tweets， wikipedia
+>
 > simple thresholding of the model score in isola- tion tends to lead to high false-positive rates as it does not account for the intrinsic complexity of a sample
 >
 > reference-based attacks
 >
-> unrealistic assumption that an adversary has access to samples closely resembling the original train- ing data
+> unrealistic assumption that an adversary has access to samples closely resembling the original training data
 >
 > neighbourhood attacks, which compare model scores for a given sample to scores of **synthetically generated neighbour texts** and therefore eliminate the need for access to the training data distribu- tion. 
 >
@@ -39,7 +77,6 @@
 >
 > TODO：if the model score of the target data is similar to the crafted neighbors, then they are all plausible points from the distribution and the target point is not a member of the training set. However, if a sample is much more likely under the target model’s distribution than its neighbors, we infer that this could only be a result of overfitting ： 用公式如何表示
 >
-> 
 
 2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
@@ -49,27 +86,7 @@
 >
 > 对member和non-member perturb ，存在不同的differencial change
 
-4. ICLR2024 DETECTING PRETRAINING DATA FROM LARGE LANGUAGE MODELS.pdf	——WangBo
 
-> We introduce a dynamic benchmark **WIKIMIA** that uses data created before and after model training to support gold truth detection.
->
-> Min-k% Prob
-
-14. Arxiv 2024 MIN-K% PROB A Practical Method for Pretraining Data Detection in Large Language Models.pdf	——caiyi
-
-> 提出了 MIN-K% PROB 方法，通过分析低概率 token 检测预训练数据的存在。
->
-> 提供了动态基准数据集 WIKIMIA，用于多模型的训练数据检测评估。
->
-> MIN-K% PROB for Robust and Scalable Pretraining Data Detection in LLMs.
-
-12. Arxiv 2024 Min-K%++ A New Membership Inference Method for Pretraining Data Detection.pdf	——yuanheng
-
-> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
->
-> 提供了理论支持，适用于实时在线生成场景。
->
-> Min-K%++ for Robust Pretraining Data Membership Inference in LLMs.
 
 
 
@@ -81,8 +98,6 @@
 >
 > Relative Conditional Log-Likelihoods for Membership Inference in LLMs.
 
-
-
 11. Arxiv 2024 Blind Baselines Beat Membership Inference Attacks for Foundation Models.pdf	——yuanheng
 
 > 通过“盲攻击”揭示现有成员推断评估方法的缺陷，强调分布偏差对评估结果的影响。
@@ -91,17 +106,6 @@
 >
 > Blind Baselines for Membership Inference Evaluations in Foundation Models.
 > TODO 具体说为啥是flawed？Unfortunately, we find that evaluations of MI attacks for foundation models are flawed, because they sample members and non-members from different distributions.
-
-
-12. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
-
-> 提出了 Min-K%++ 方法，通过局部极大值检测预训练数据，显著提升了成员推断攻击的检测性能。
-
-
-
-
-
-
 
 13. Arxiv 2024 DC-PDD  Pretraining Data Detection for Large Language Models.pdf	——caiyi
 
@@ -125,8 +129,6 @@
 >
 > explore the challenges in evaluating membership inference attacks on LLMs, across an array of five commonly-used membership inference attacks
 >
-> 
->
 > * LOSS Yeom et al., 2018  f (x; M) = L(x;M)
 >* Reference-based attacks, Carlini et al. 2022 Mireshghallah et al., 2022a f (x; M) = L(x; M) − L(x; Mref ).
 > * zlib entropy Carlini et al. 2021 : f (x; M) = L(x;M)/zlib(x)
@@ -145,7 +147,7 @@
 
 > 提出了用于评估成员推断攻击（MIA）的无偏数据集构建方法，重点在于消除 n-gram 偏差和分类偏差。
 >
-> 提出了 No-Ngram 和 No-Class 两种算法以构建无偏数据集。
+> 提出了	m 和 No-Class 两种算法以构建无偏数据集。
 >
 > Membership Inference Attacks (MIAs) aim to detect whether specific documents were used in a given LLM pretraining, but their effec- tiveness is undermined by biases such as **time-shifts and n-gram overlaps.**
 >
@@ -153,7 +155,11 @@
 >
 > This paper addresses the evaluation of MIAs on LLMs with partially inferable training sets, under the **ex-post hypothesis**:
 >
-> TODO We provide algorithms for constructing ex-post datasets of two types: No − Ngram (“No N-gram bias”) and No−Class (“non classifiable”), each designed to mitigate specific types of biases for MIA assessment.
+> TODO 
+>
+> No-n-gram no-class 具体怎么做的？
+>
+> We provide algorithms for constructing ex-post datasets of two types:  No − Ngram (“No N-gram bias”) and No−Class (“non classifiable”), each designed to mitigate specific types of biases for MIA assessment.
 
 ### C. Dataset Document Inference
 
@@ -169,8 +175,6 @@ TODO Document Inference与现有技术的关系和创新？
 
 > we introduce the task of document-level membership inference for real-world LLMs,
 
-
-
 ### D. Adversarial 
 
 7. ICML2024 Fast Adversarial Attacks on Language Models In One GPU Minute.pdf	——xiaoyun
@@ -180,20 +184,26 @@ TODO Document Inference与现有技术的关系和创新？
 > 提出了方法可以快速实施攻击
 >
 > Beam Search-based Adversarial Attack (BEAST).
+>
+> TODO Beam Search
 
 ### E. Blackbox LOSS（LOSS未知）
 
 15. ACL 2024 DPDLLM A Black-Box Framework for Pretraining Data Detection in Large Language Models.pdf	——caiyi	
 
-> 提出了 DPDLLM 框架，通过参考模型生成的概率序列，无需访问模型内部信息即可检测预训练数据。
+> 提出了 DPDLLM 框架，通过参考模型生成的概率序列，**无需访问模型内部信息即可检测预训练数据**。
 >
 > 构建了 WikiMIA2 和 BookMIA 等基准数据集，用于评估检测性能。
 >
 > DPDLLM for Black-Box Pretraining Data Detection in LLMs.
+>
+> TODO 总体思路？ 给定文本形式的输出内容，如何inference membership？
 
 
 
-### MIA Defense 
+
+
+## MIA Defense 
 
 ### A.  Differencial Privacy
 
@@ -213,7 +223,9 @@ XXX
 >
 > 2. privacy auditing aims to empirically lower-bound the privacy loss of a target ML model or algorithm.
 
-### 传统Machine Learning MIA
+
+
+## 传统Machine Learning MIA
 
 
 
@@ -223,7 +235,9 @@ CCS2024 Is Difficulty Calibration All We Need- Towards More Practical MIA.pdf
 >
 > Difficulty calibration is proposed by Watson et al. [57] to mitigate the aforementioned issues. It attempts to quantify the difficulty of sample points (i.e., the extent to the sample represented on the whole distribution) and uses this value to regularize the model’s original outputs, finally obtaining calibrated scores for MIAs.
 
-### Other MIA
+##  Other MIA
+
+
 
 ICL
 
