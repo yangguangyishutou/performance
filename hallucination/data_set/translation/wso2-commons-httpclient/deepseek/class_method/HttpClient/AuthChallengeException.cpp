@@ -1,5 +1,3 @@
-//�����ǽ�Java���뷭���C++�İ汾��������ص��������Ѿ�ʵ�֣�����`AuthenticationException`����C++���Ѿ����塣
-
 
 /*
  * $Header: /home/jerenkrantz/tmp/commons/commons-convert/cvs/home/cvs/jakarta-commons//httpclient/src/java/org/apache/commons/httpclient/auth/AuthChallengeException.java,v 1.2 2004/04/18 23:51:36 jsdever Exp $

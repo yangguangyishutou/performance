@@ -20,13 +20,13 @@ private:
     int port;
 
 public:
-    AuthScope(const std::string& host, int port, const std::string& realm, const std::string& scheme)
+    AuthScope(const std::string& host, int port, const std::string& realm, const std::string& scheme)  //#None#
         : host((host.empty()) ? ANY_HOST : toLowerCase(host)),
           port((port < 0) ? ANY_PORT : port),
           realm((realm.empty()) ? ANY_REALM : realm),
           scheme((scheme.empty()) ? ANY_SCHEME : toUpperCase(scheme)) {}
 
-    AuthScope(const std::string& host, int port, const std::string& realm)
+    AuthScope(const std::string& host, int port, const std::string& realm)  //#None#
         : AuthScope(host, port, realm, ANY_SCHEME) {}
 
     AuthScope(const std::string& host, int port)
@@ -46,7 +46,7 @@ public:
         return this->host;
     }
 
-    int getPort() const {
+    int getPort() const {  //#None#
         return this->port;
     }
 
