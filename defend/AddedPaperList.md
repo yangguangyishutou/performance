@@ -520,7 +520,7 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 #### AutoDefense: Multi-Agent LLM Defense against Jailbreak Attacks
 > [AutoDefense](./img/屏幕截图 2024-12-04 220136.png)
 > ![image](https://github.com/user-attachments/assets/59cb2c92-0adf-4194-a6eb-d5ed7958acda)
-
+> LLM把回复结果呈现给用户之前会先将其传给agent，经过agent处理后再进行输出
 #### Arxiv2024 Building Guardrails for Large Language Models
 
 > 护栏Guardrail： 基于LLM用数据fine-tune得到一个恶意prompt的二分类器，用于识别。
