@@ -670,7 +670,7 @@ TODO
 
 * 有害和无害的查询在模型的表示空间中是如何存在的，以及安全提示对查询表示的影响如何与模型的拒绝行为相关。
 
-### F. Ddecoding
+### F. Decoding
 
 #### ACL2024 Safedecoding: Defending against jailbreak attacks via safety-aware decoding
 
@@ -737,6 +737,22 @@ TODO
         - 同样对原始和增强数据取平均
       - 总体聚合策略：
         - 加权平均融合两个模型的预测
+
+-----
+
+以下是综述文章：[Arxiv2024-Jailbreak Attacks and Defenses Against Large Language Models-A Survey] 提到的比较有参考价值的防御相关文章：
+
+#### ICLR2024 Safety-tuned llamas - Lessons from improving the safety of large language models that follow instructions
+
+
+#### Arxiv2023 Detecting Language Model Attacks with Perplexity
+
+- A Light-GBM trained on perplexity and token length resolved the false positives and correctly detected most adversarial attacks in the test set.基于困惑度和令牌长度训练的Light-GBM解决了假阳性问题，并正确检测了测试集中的大多数自动化的对抗性攻击（但对人为制造的越狱无法防御）
+- 
+
+
+
+#### EMNLP2023 Attack prompt generation for red teaming and defending large language models
 
 ## Newest
 
