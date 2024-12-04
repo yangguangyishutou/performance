@@ -626,20 +626,20 @@ out-of-distribution场景下，模型难以辨别目标优先级，因此常用�
 
 #### ACL2024 Defending LLMs against Jailbreaking Attacks via Backtranslation
 
-* Insight: **Backtranslation**: **假设能通过模型第一轮会话，让模型根据输出结果生成初始prompt，然后判断初始prompt有害**
-  * 原始Prompt P
-  * **回复有害**：返回拒绝模板(固定模板的原因：避免泄露更多模型信息)
-  * 回复无害：**让模型推测原始Prompt**，再将推测出的prompt P'返回给目标模型
-    * 在此之前，先检查P与P'的语义相似度，相似度过低则正常输出，不再进行Backtranslation
-    * **目标模型回复有害**：返回拒绝模板
-    * 目标模型回复无害：正常返回
-* 针对P'回复是否有害的判断可以采用**早停**（因为P'的回复无需返回给用户），检测到有害token即可终止输出
+> * Insight: **Backtranslation**: **假设能通过模型第一轮会话，让模型根据输出结果生成初始prompt，然后判断初始prompt有害**
+>  * 原始Prompt P
+>  * **回复有害**：返回拒绝模板(固定模板的原因：避免泄露更多模型信息)
+>   * 回复无害：**让模型推测原始Prompt**，再将推测出的prompt P'返回给目标模型
+>     * 在此之前，先检查P与P'的语义相似度，相似度过低则正常输出，不再进行Backtranslation
+>     * **目标模型回复有害**：返回拒绝模板
+>     * 目标模型回复无害：正常返回
+> * 针对P'回复是否有害的判断可以采用**早停**（因为P'的回复无需返回给用户），检测到有害token即可终止输出
 
 > 效果和模型能力关联很大
 
 #### ICLR2023 Rain - Your language models can align themselves without finetuning
 
-self-evaluation and rewind mechanisms
+> self-evaluation and rewind mechanisms
 
 ### D.Inference Guidance
 TODO
@@ -653,46 +653,46 @@ TODO
 
 #### ICML2024 On Prompt-Driven Safeguarding for Large Language Models
 
-- **定向表征优化（DRO）**：将安全提示视为可训练的连续嵌入，根据查询的有害程度，学习将查询的表征representation向拒绝方向正向/反向移动。
-- 在模型的表征空间中，安全提示通常会将输入查询移动到一个"更倾向拒绝"的方向。
-- 大语言模型本身就具有区分有害和无害查询的能力，即使没有安全提示。
-
-- Q：有害和无害的查询在模型的表示空间中是如何存在的，以及安全提示对查询表示的影响如何与模型的拒绝行为相关？
-- [Github](https://github.com/chujiezheng/LLM-Safeguard)，Linux环境
+> - **定向表征优化（DRO）**：将安全提示视为可训练的连续嵌入，根据查询的有害程度，学习将查询的表征representation向拒绝方向正向/反向移动。
+> - 在模型的表征空间中，安全提示通常会将输入查询移动到一个"更倾向拒绝"的方向。
+> - 大语言模型本身就具有区分有害和无害查询的能力，即使没有安全提示。
+>
+> - Q：有害和无害的查询在模型的表示空间中是如何存在的，以及安全提示对查询表示的影响如何与模型的拒绝行为相关？
+> - [Github](https://github.com/chujiezheng/LLM-Safeguard)，Linux环境
 
 ### F. Decoding
 
 #### ACL2024 Safedecoding: Defending against jailbreak attacks via safety-aware decoding
 
-- 模型遭受攻击时，有害tokens的概率分布高于正常tokens，传统top-k/p采样将会优先选择有害tokens，尽管正常tokens概率仍不为0
-- 通过调整 token 分布来平衡质量和安全性：过滤掉高风险 token(需要首先有高风险token的database？)，放大安全 token 的权重
+> - 模型遭受攻击时，有害tokens的概率分布高于正常tokens，传统top-k/p采样将会优先选择有害tokens，尽管正常tokens概率仍不为0
+> - 通过调整 token 分布来平衡质量和安全性：过滤掉高风险 token(需要首先有高风险token的database？)，放大安全 token 的权重
 
 ### G. perplexity filtering
 
 #### Arxiv2023 Detecting Language Model Attacks with Perplexity
 
-- A Light-GBM(Light Gradient Boosting Machine) trained on perplexity and token length resolved the false positives and correctly detected most adversarial attacks in the test set.
-- 单纯使用困惑度（perplexity）阈值作为过滤器：假阳性严重，无法有效检测对抗性提示
-- 结合**困惑度(GPT-2计算)和token序列长度**可以显著提高自动化对抗性攻击的检测性能（但对人为制造的越狱无法防御）
-- 对抗性提示在困惑度分布上与常规提示存在明显差异
+> -  A Light-GBM(Light Gradient Boosting Machine) trained on perplexity and token length resolved the false positives and correctly detected most adversarial attacks in the > test set.
+> - 单纯使用困惑度（perplexity）阈值作为过滤器：假阳性严重，无法有效检测对抗性提示
+> - 结合**困惑度(GPT-2计算)和token序列长度**可以显著提高自动化对抗性攻击的检测性能（但对人为制造的越狱无法防御）
+> - 对抗性提示在困惑度分布上与常规提示存在明显差异
 
 #### ICLR2024 The Unlocking Spell on Base LLMs - Rethinking Alignment via In-Context Learning
 
-[Github](https://allenai.github.io/re-align/)
-
-- 改进的ICA：
-  - 优化风格设计
-  - 将系统提示(system prompt)引入基础模型的上下文学习
-  - 仅需3个固定示例即可实现良好效果
+> [Github](https://allenai.github.io/re-align/)
+> 
+> - 改进的ICA：
+>   - 优化风格设计
+>   - 将系统提示(system prompt)引入基础模型的上下文学习
+>   - 仅需3个固定示例即可实现良好效果
 
 #### ICLR2024 Safety-tuned llamas - Lessons from improving the safety of large language models that follow instructions
 
-- 即使少量安全数据(3%)也能显著减少有害和不安全的响应
-- 通过系统的安全指令微调，可以提高模型的安全性，同时基本保持模型的整体性能
-- 该论文以实验论证为主，防御相关的数据集、实验等可以参考本文
-
-- 相关：
-  - [Stanford Alpaca: An Instruction-following LLaMA Model](https://github.com/tatsu-lab/stanford_alpaca)，结合self-instruct，可以利用有限资源开发更小的指令遵循模型
+> - 即使少量安全数据(3%)也能显著减少有害和不安全的响应
+> - 通过系统的安全指令微调，可以提高模型的安全性，同时基本保持模型的整体性能
+> - 该论文以实验论证为主，防御相关的数据集、实验等可以参考本文
+> 
+> - 相关：
+>   - [Stanford Alpaca: An Instruction-following LLaMA Model](https://github.com/tatsu-lab/stanford_alpaca)，结合self-instruct，可以利用有限资源开发更小的指令遵循模型
 
 ## Newest
 
