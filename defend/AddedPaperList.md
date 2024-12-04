@@ -639,8 +639,12 @@ out-of-distribution场景下，模型难以辨别目标优先级，因此常用�
 self-evaluation and rewind mechanisms
 
 ### D.Inference Guidance
-
 TODO
+#### Guide for Defense (G4D): Dynamic Guidance for Robust and Balanced Defense in Large Language Models
+
+
+#### Defending Large Language Models Against Jailbreak Attacks Through Chain of Thought Prompting
+
 
 ### E. Security Aligment （Fine-tune） 重载类
 
