@@ -520,8 +520,14 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 #### AutoDefense: Multi-Agent LLM Defense against Jailbreak Attacks
 > [AutoDefense](./img/屏幕截图 2024-12-04 220136.png)
 > ![image](https://github.com/user-attachments/assets/59cb2c92-0adf-4194-a6eb-d5ed7958acda)
-> AutoDefense采用响应过滤机制来识别和过滤有害信息
-> LLM把回复结果呈现给用户之前会先将其传给agent，经过agent处理后再进行输出
+> AutoDefense采用响应过滤机制来识别和过滤有害信息。
+> LLM先生成结果，呈现给用户之前会先将其传给代理，经过代理处理后再进行输出，所以类似于output filter。
+> 利用固有的LLM的对齐能力，框架划分将防御任务分解为多个子任务，并将其分配给多个LLM代理。
+> 这种集体努力确保了防御系统能够公正地判断内容是否对齐并适合呈现给用户。
+> 内容是否对齐的判断是利用OPENAI的模板。
+> 以下是一些multi_agent的方法，根据agent数量的不同会有不同分工
+> ![image](https://github.com/user-attachments/assets/c0ffaf80-1477-4cad-9179-62c1faab0fcc)
+
 #### Arxiv2024 Building Guardrails for Large Language Models
 
 > 护栏Guardrail： 基于LLM用数据fine-tune得到一个恶意prompt的二分类器，用于识别。
