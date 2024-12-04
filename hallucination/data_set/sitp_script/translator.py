@@ -1,7 +1,8 @@
 import os
 from openai import OpenAI
-from . import _api_key
 
+
+_api_key  = None
 client = OpenAI(api_key = _api_key, base_url = "https://api.deepseek.com")
 
 def translate(source_dir, target_dir):

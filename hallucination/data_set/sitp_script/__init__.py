@@ -1,7 +1,4 @@
-_api_key  = None
-
-__all__ = ['data_set', 'translate', 'clone_files']
-
 from .file_operation import clone_files
-from .translator import translate
+from .translator import translate, _api_key
 from .data_set import data_set
+
