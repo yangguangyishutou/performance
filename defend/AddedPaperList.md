@@ -518,7 +518,8 @@ COLD: Energy-based Constrained Decoding with Langevin Dynamics(基于能量的La
 
 ### A. Input/Output Filter/Prompt Engineering  (input->BlackBox->malicious prompt, LLM output->BlackBox->malicious content)
 #### AutoDefense: Multi-Agent LLM Defense against Jailbreak Attacks
->
+> [AutoDefense](./img/屏幕截图 2024-12-04 220136.png)
+> 
 #### Arxiv2024 Building Guardrails for Large Language Models
 
 > 护栏Guardrail： 基于LLM用数据fine-tune得到一个恶意prompt的二分类器，用于识别。
