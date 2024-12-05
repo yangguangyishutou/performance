@@ -37,6 +37,11 @@ class IgnoreCookiesSpec : public CookieSpec {};
  *
  * @since 2.0
  */
+
+
+
+//##使用std::shared_ptr初始化普通指针
+
 class CookiePolicy {
 public:
     static const std::string BROWSER_COMPATIBILITY;
@@ -51,19 +56,19 @@ public:
     static const int RFC2109 = 2;
     static const int RFC2965 = 3;
 
-    static void registerCookieSpec(const std::string& id, const std::shared_ptr<CookieSpec>& spec);
-    static void unregisterCookieSpec(const std::string& id);
-    static std::shared_ptr<CookieSpec> getCookieSpec(const std::string& id);
-    static int getDefaultPolicy();
-    static void setDefaultPolicy(int policy);
-    static std::shared_ptr<CookieSpec> getSpecByPolicy(int policy);
-    static std::shared_ptr<CookieSpec> getDefaultSpec();
-    static std::shared_ptr<CookieSpec> getSpecByVersion(int ver);
-    static std::shared_ptr<CookieSpec> getCompatibilitySpec();
-    static std::vector<std::string> getRegisteredCookieSpecs();
+    static void registerCookieSpec(const std::string& id, const std::shared_ptr<CookieSpec>& spec);  //#None
+    static void unregisterCookieSpec(const std::string& id);//#None
+    static std::shared_ptr<CookieSpec> getCookieSpec(const std::string& id);//#None
+    static int getDefaultPolicy();//#None
+    static void setDefaultPolicy(int policy);//#None
+    static std::shared_ptr<CookieSpec> getSpecByPolicy(int policy);//#None
+    static std::shared_ptr<CookieSpec> getDefaultSpec();//#None
+    static std::shared_ptr<CookieSpec> getSpecByVersion(int ver);//#None
+    static std::shared_ptr<CookieSpec> getCompatibilitySpec();//#None
+    static std::vector<std::string> getRegisteredCookieSpecs();//#None
 
 private:
-    static std::map<std::string, std::shared_ptr<CookieSpec>> SPECS;
+    static std::map<std::string, std::shared_ptr<CookieSpec>> SPECS;//#None
     static int defaultPolicy;
     static Log* LOG;
 

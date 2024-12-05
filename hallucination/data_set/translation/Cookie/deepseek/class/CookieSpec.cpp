@@ -67,7 +67,7 @@ public:
      * @throws MalformedCookieException if an exception occurs during parsing
      * @throws std::invalid_argument if an input parameter is illegal
      */
-    virtual std::vector<std::shared_ptr<Cookie>> parse(
+    virtual std::vector<std::shared_ptr<Cookie>> parse(  //#None
         const std::string& host, int port, const std::string& path, bool secure,
         const Header& header)
         throw(MalformedCookieException, std::invalid_argument) = 0;
@@ -81,7 +81,7 @@ public:
      * @throws MalformedCookieException if an exception occurs during parsing
      * @throws std::invalid_argument if an input parameter is illegal
      */
-    virtual void parseAttribute(const NameValuePair& attribute, std::shared_ptr<Cookie> cookie)
+    virtual void parseAttribute(const NameValuePair& attribute, std::shared_ptr<Cookie> cookie)  //#None
         throw(MalformedCookieException, std::invalid_argument) = 0;
 
     /**
@@ -97,7 +97,7 @@ public:
      * @throws MalformedCookieException if the cookie is invalid
      * @throws std::invalid_argument if an input parameter is illegal
      */
-    virtual void validate(const std::string& host, int port, const std::string& path, bool secure,
+    virtual void validate(const std::string& host, int port, const std::string& path, bool secure,   //#None
         const std::shared_ptr<Cookie>& cookie)
         throw(MalformedCookieException, std::invalid_argument) = 0;
 
@@ -107,7 +107,7 @@ public:
      *
      * @param datepatterns collection of date patterns
      */
-    virtual void setValidDateFormats(const std::vector<std::string>& datepatterns) = 0;
+    virtual void setValidDateFormats(const std::vector<std::string>& datepatterns) = 0;  //#None
 
     /**
      * Returns the collection of date patterns used for parsing. The String patterns are compatible 
@@ -115,7 +115,7 @@ public:
      *
      * @return collection of date patterns
      */
-    virtual std::vector<std::string> getValidDateFormats() const = 0;
+    virtual std::vector<std::string> getValidDateFormats() const = 0;  //#None
 
     /**
      * Determines if a Cookie matches a location.
@@ -129,7 +129,7 @@ public:
      * @return <tt>true</tt> if the cookie should be submitted with a request 
      *  with given attributes, <tt>false</tt> otherwise.
      */
-    virtual bool match(const std::string& host, int port, const std::string& path, bool secure,
+    virtual bool match(const std::string& host, int port, const std::string& path, bool secure,   //#None
         const std::shared_ptr<Cookie>& cookie) const = 0;
 
     /**
@@ -144,7 +144,7 @@ public:
      *
      * @return a vector of <tt>Cookie</tt>s that match the given attributes
      */
-    virtual std::vector<std::shared_ptr<Cookie>> match(
+    virtual std::vector<std::shared_ptr<Cookie>> match(  //#None
         const std::string& host, int port, const std::string& path, bool secure,
         const std::vector<std::shared_ptr<Cookie>>& cookies) const = 0;
 
@@ -156,7 +156,7 @@ public:
      * 
      * @since 3.0
      */
-    virtual bool domainMatch(const std::string& host, const std::string& domain) const = 0;
+    virtual bool domainMatch(const std::string& host, const std::string& domain) const = 0;  //#None
 
     /**
      * Performs path-match as defined by the cookie specification.
@@ -166,7 +166,7 @@ public:
      * 
      * @since 3.0
      */
-    virtual bool pathMatch(const std::string& path, const std::string& topmostPath) const = 0;
+    virtual bool pathMatch(const std::string& path, const std::string& topmostPath) const = 0;  //#None
 
     /**
      * Create a <tt>"Cookie"</tt> header value for an array of cookies.
@@ -174,7 +174,7 @@ public:
      * @param cookie the cookie to be formatted as string
      * @return a string suitable for sending in a <tt>"Cookie"</tt> header.
      */
-    virtual std::string formatCookie(const std::shared_ptr<Cookie>& cookie) const = 0;
+    virtual std::string formatCookie(const std::shared_ptr<Cookie>& cookie) const = 0;  //#None
 
     /**
      * Create a <tt>"Cookie"</tt> header value for an array of cookies.
@@ -183,7 +183,7 @@ public:
      * @return a string suitable for sending in a Cookie header.
      * @throws std::invalid_argument if an input parameter is illegal
      */
-    virtual std::string formatCookies(const std::vector<std::shared_ptr<Cookie>>& cookies) const
+    virtual std::string formatCookies(const std::vector<std::shared_ptr<Cookie>>& cookies) const   //#None
         throw(std::invalid_argument) = 0;
 
     /**
@@ -193,7 +193,7 @@ public:
      * @return a Header for the given Cookies.
      * @throws std::invalid_argument if an input parameter is illegal
      */
-    virtual std::shared_ptr<Header> formatCookieHeader(const std::vector<std::shared_ptr<Cookie>>& cookies) const
+    virtual std::shared_ptr<Header> formatCookieHeader(const std::vector<std::shared_ptr<Cookie>>& cookies) const //#None
         throw(std::invalid_argument) = 0;
 
     /**
@@ -203,14 +203,16 @@ public:
      * @return a Cookie header.
      * @throws std::invalid_argument if an input parameter is illegal
      */
-    virtual std::shared_ptr<Header> formatCookieHeader(const std::shared_ptr<Cookie>& cookie) const
+    virtual std::shared_ptr<Header> formatCookieHeader(const std::shared_ptr<Cookie>& cookie) const//#None
         throw(std::invalid_argument) = 0;
 
-    virtual ~CookieSpec() = default;
+    virtual ~CookieSpec() = default;  //#None
 };
 
 const std::string CookieSpec::PATH_DELIM = "/";
 const char CookieSpec::PATH_DELIM_CHAR = PATH_DELIM[0];
+
+//##None
 
 /*
 主要变化点：

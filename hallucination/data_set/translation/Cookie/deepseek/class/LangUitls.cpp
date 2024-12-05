@@ -15,7 +15,7 @@ public:
         return seed * HASH_OFFSET + hashcode;
     }
 
-    static int hashCode(int seed, const std::shared_ptr<void>& obj) {
+    static int hashCode(int seed, const std::shared_ptr<void>& obj) {  //#有多个 重载函数 "LangUtils::hashCode" 实例与参数列表匹配
         return hashCode(seed, obj ? std::hash<std::shared_ptr<void>>()(obj) : 0);
     }
 
@@ -23,7 +23,7 @@ public:
         return hashCode(seed, b ? 1 : 0);
     }
 
-    static bool equals(const std::shared_ptr<void>& obj1, const std::shared_ptr<void>& obj2) {
+    static bool equals(const std::shared_ptr<void>& obj1, const std::shared_ptr<void>& obj2) {  //#使用shared_ptr(通用指针)调用类成员
         if (obj1 == nullptr) {
             return obj2 == nullptr;
         }

@@ -1,20 +1,19 @@
+�����ǽ�Java���뷭���C++�İ汾��������ص��������Ѿ�ʵ�֣�����C++���Ѿ�ʵ�������Ƶ���ͺ�����
+
+```cpp
 #include <string>
 #include <ctime>
-#include <chrono>
 #include <stdexcept>
 #include <algorithm>
+#include <iostream>
 #include <memory>
 
-// Assuming these headers are already implemented
-#include "LogFactory.cpp"
-#include "Date.h"
-#include "CookieSpec.cpp"
-#include "CookiePolicy.cpp"
-#include "LangUitls.cpp"
-
-//##1.继承了java标准库中存在但c++不存在的类Comparator 2.包含了额外的头文件Date.h
-
-#include "NameValuePair.cpp"
+// �����Ѿ�ʵ����������ͺ���
+class CookieSpec;
+class CookiePolicy;
+class LangUtils;
+class Log;
+class LogFactory;
 
 class Cookie : public NameValuePair, public Comparator {
 public:
@@ -23,7 +22,7 @@ public:
     /**
      * Default constructor. Creates a blank cookie 
      */
-    Cookie() : Cookie(nullptr, "noname", nullptr, nullptr, nullptr, false) {}  //#不存在的类“Date“
+    Cookie() : Cookie(nullptr, "noname", nullptr, nullptr, nullptr, false) {}
 
     /**
      * Creates a cookie with the given name, value and domain attribute.
@@ -32,7 +31,7 @@ public:
      * @param value   the cookie value
      * @param domain  the domain this cookie can be sent to
      */
-    Cookie(const std::string& domain, const std::string& name, const std::string& value) 
+    Cookie(const std::string& domain, const std::string& name, const std::string& value)
         : Cookie(domain, name, value, nullptr, nullptr, false) {}
 
     /**
@@ -48,14 +47,14 @@ public:
      *                of the session
      * @param secure if true this cookie can only be sent over secure
      * connections
-     * @throws std::invalid_argument If cookie name is null or blank,
+     * @throws IllegalArgumentException If cookie name is null or blank,
      *   cookie name contains a blank, or cookie name starts with character $
      *   
      */
-    Cookie(const std::string& domain, const std::string& name, const std::string& value, const std::string& path, const Date* expires, bool secure) //#不存在的类“Date“
+    Cookie(const std::string& domain, const std::string& name, const std::string& value, 
+           const std::string& path, const std::time_t* expires, bool secure)
         : NameValuePair(name, value) {
-        
-        LOG.trace("enter Cookie(String, String, String, String, Date, boolean)");
+        LOG->trace("enter Cookie(String, String, String, String, Date, boolean)");
         if (name.empty()) {
             throw std::invalid_argument("Cookie name may not be null");
         }
@@ -82,14 +81,15 @@ public:
      * @param secure if <tt>true</tt> this cookie can only be sent over secure
      * connections
      */
-    Cookie(const std::string& domain, const std::string& name, const std::string& value, const std::string& path, int maxAge, bool secure)
+    Cookie(const std::string& domain, const std::string& name, const std::string& value, 
+           const std::string& path, int maxAge, bool secure)
         : Cookie(domain, name, value, path, nullptr, secure) {
-        
         if (maxAge < -1) {
             throw std::invalid_argument("Invalid max age: " + std::to_string(maxAge));
         }            
         if (maxAge >= 0) {
-            setExpiryDate(new Date(std::time(nullptr) + maxAge * 1000L));
+            std::time_t expiryDate = std::time(nullptr) + maxAge;
+            setExpiryDate(&expiryDate);
         }
     }
 
@@ -101,7 +101,7 @@ public:
      *
      * @see #setComment(String)
      */
-    const std::string& getComment() const {  //#None
+    const std::string& getComment() const {
         return cookieComment;
     }
 
@@ -128,8 +128,8 @@ public:
      * @see #setExpiryDate(java.util.Date)
      *
      */
-    const Date* getExpiryDate() const {   //#不存在的类“Date“
-        return cookieExpiryDate.get();
+    const std::time_t* getExpiryDate() const {
+        return cookieExpiryDate;
     }
 
     /**
@@ -143,8 +143,8 @@ public:
      * @see #getExpiryDate
      *
      */
-    void setExpiryDate(const Date* expiryDate) {  //#不存在的类“Date“
-        cookieExpiryDate.reset(expiryDate ? new Date(*expiryDate) : nullptr);
+    void setExpiryDate(const std::time_t* expiryDate) {
+        cookieExpiryDate = expiryDate;
     }
 
     /**
@@ -154,8 +154,8 @@ public:
      * @return <tt>false</tt> if the cookie should be discarded at the end
      *         of the "session"; <tt>true</tt> otherwise
      */
-    bool isPersistent() const {  //#None
-        return cookieExpiryDate != nullptr;
+    bool isPersistent() const {
+        return (cookieExpiryDate != nullptr);
     }
 
     /**
@@ -165,7 +165,7 @@ public:
      *
      * @see #setDomain(java.lang.String)
      */
-    const std::string& getDomain() const {  //#None
+    const std::string& getDomain() const {
         return cookieDomain;
     }
 
@@ -176,9 +176,9 @@ public:
      *
      * @see #getDomain
      */
-    void setDomain(const std::string& domain) {  //#错误处理简化
+    void setDomain(const std::string& domain) {
         if (!domain.empty()) {
-            size_t ndx = domain.find(":");
+            size_t ndx = domain.find(':');
             if (ndx != std::string::npos) {
                 cookieDomain = domain.substr(0, ndx);
             } else {
@@ -195,7 +195,7 @@ public:
      * 
      * @see #setPath(java.lang.String)
      */
-    const std::string& getPath() const {  //#None
+    const std::string& getPath() const {
         return cookiePath;
     }
 
@@ -207,7 +207,7 @@ public:
      * @see #getPath
      *
      */
-    void setPath(const std::string& path) { //None
+    void setPath(const std::string& path) {
         cookiePath = path;
     }
 
@@ -215,7 +215,7 @@ public:
      * @return <code>true</code> if this cookie should only be sent over secure connections.
      * @see #setSecure(boolean)
      */
-    bool getSecure() const {  //#None
+    bool getSecure() const {
         return isSecure;
     }
 
@@ -231,7 +231,7 @@ public:
      * 
      * @see #getSecure()
      */
-    void setSecure(bool secure) {  //#None
+    void setSecure(bool secure) {
         isSecure = secure;
     }
 
@@ -244,7 +244,7 @@ public:
      * @see #setVersion(int)
      *
      */
-    int getVersion() const { //#None
+    int getVersion() const {
         return cookieVersion;
     }
 
@@ -256,7 +256,7 @@ public:
      * 
      * @see #getVersion
      */
-    void setVersion(int version) { //#None
+    void setVersion(int version) {
         cookieVersion = version;
     }
 
@@ -265,9 +265,9 @@ public:
      * 
      * @return <tt>true</tt> if the cookie has expired.
      */
-    bool isExpired() const { 
+    bool isExpired() const {
         return (cookieExpiryDate != nullptr  
-            && cookieExpiryDate->getTime() <= std::time(nullptr));
+            && *cookieExpiryDate <= std::time(nullptr));
     }
 
     /**
@@ -277,9 +277,9 @@ public:
      * 
      * @return <tt>true</tt> if the cookie expired.
      */
-    bool isExpired(const Date& now) const {  //#不存在的类“Date“
+    bool isExpired(std::time_t now) const {
         return (cookieExpiryDate != nullptr  
-            && cookieExpiryDate->getTime() <= now.getTime());
+            && *cookieExpiryDate <= now);
     }
 
     /**
@@ -295,7 +295,7 @@ public:
      * 
      * @see #isPathAttributeSpecified
      */
-    void setPathAttributeSpecified(bool value) {  //#None
+    void setPathAttributeSpecified(bool value) {
         hasPathAttribute = value;
     }
 
@@ -308,7 +308,7 @@ public:
      * 
      * @see #setPathAttributeSpecified
      */
-    bool isPathAttributeSpecified() const {  //#None
+    bool isPathAttributeSpecified() const {
         return hasPathAttribute;
     }
 
@@ -325,7 +325,7 @@ public:
      *
      * @see #isDomainAttributeSpecified
      */
-    void setDomainAttributeSpecified(bool value) {  //#None
+    void setDomainAttributeSpecified(bool value) {
         hasDomainAttribute = value;
     }
 
@@ -338,7 +338,7 @@ public:
      *
      * @see #setDomainAttributeSpecified
      */
-    bool isDomainAttributeSpecified() const {  //#None
+    bool isDomainAttributeSpecified() const {
         return hasDomainAttribute;
     }
 
@@ -347,7 +347,7 @@ public:
      * {@link Object#hashCode} general hashCode contract.
      * @return A hash code
      */
-    int hashCode() const {  //#LangUtils::hashCode参数表不匹配
+    int hashCode() const {
         int hash = LangUtils::HASH_SEED;
         hash = LangUtils::hashCode(hash, getName());
         hash = LangUtils::hashCode(hash, cookieDomain);
@@ -360,7 +360,7 @@ public:
      * @param obj The object to compare against.
      * @return true if the two objects are equal.
      */
-    bool equals(const Cookie& obj) const {  //#LangUtils::equal参数表不匹配
+    bool equals(const Cookie& obj) const {
         if (this == &obj) return true;
         return LangUtils::equals(getName(), obj.getName())
               && LangUtils::equals(cookieDomain, obj.cookieDomain)
@@ -372,7 +372,7 @@ public:
      * 
      * @return string.
      */
-    std::string toExternalForm() const {  //#std::unique_ptr参数表不匹配
+    std::string toExternalForm() const {
         std::unique_ptr<CookieSpec> spec;
         if (getVersion() > 0) {
             spec.reset(CookiePolicy::getDefaultSpec()); 
@@ -392,27 +392,27 @@ public:
      * @param o2 The second object to be compared
      * @return See {@link java.util.Comparator#compare(Object,Object)}
      */
-    int compare(const Cookie& o1, const Cookie& o2) const {  //#None
-        LOG.trace("enter Cookie.compare(Object, Object)");
+    int compare(const Cookie& c1, const Cookie& c2) const {
+        LOG->trace("enter Cookie.compare(Object, Object)");
 
-        if (o1.getPath().empty() && o2.getPath().empty()) {
+        if (c1.getPath().empty() && c2.getPath().empty()) {
             return 0;
-        } else if (o1.getPath().empty()) {
+        } else if (c1.getPath().empty()) {
             // null is assumed to be "/"
-            if (o2.getPath() == CookieSpec::PATH_DELIM) {
+            if (c2.getPath() == CookieSpec::PATH_DELIM) {
                 return 0;
             } else {
                 return -1;
             }
-        } else if (o2.getPath().empty()) {
+        } else if (c2.getPath().empty()) {
             // null is assumed to be "/"
-            if (o1.getPath() == CookieSpec::PATH_DELIM) {
+            if (c1.getPath() == CookieSpec::PATH_DELIM) {
                 return 0;
             } else {
                 return 1;
             }
         } else {
-            return o1.getPath().compare(o2.getPath());
+            return c1.getPath().compare(c2.getPath());
         }
     }
 
@@ -423,7 +423,7 @@ public:
      * 
      * @see #toExternalForm
      */
-    std::string toString() const {  //#None
+    std::string toString() const {
         return toExternalForm();
     }
 
@@ -437,13 +437,13 @@ private:
     std::string  cookieDomain;
 
     /** Expiration {@link Date}. */
-    std::unique_ptr<Date> cookieExpiryDate;
+    const std::time_t* cookieExpiryDate = nullptr;
 
     /** Path attribute. */
     std::string  cookiePath;
 
     /** My secure flag. */
-    bool isSecure;
+    bool isSecure = false;
 
     /**
      * Specifies if the set-cookie header included a Path attribute for this
@@ -458,28 +458,16 @@ private:
     bool hasDomainAttribute = false;
 
     /** The version of the cookie specification I was created from. */
-    int     cookieVersion = 0;
+    int cookieVersion = 0;
 
     // -------------------------------------------------------------- Constants
 
     /** Log object for this class */
-    static Log LOG;
+    static std::unique_ptr<Log> LOG;
 };
 
-// Initialize static member
-Log Cookie::LOG = LogFactory::getLog("Cookie");
+std::unique_ptr<Log> Cookie::LOG = LogFactory::getLog(typeid(Cookie).name());
+```
 
-/*
-说明：
-智能指针：在C++中，使用std::unique_ptr来管理动态分配的Date对象，以避免内存泄漏。
-
-字符串处理：使用std::string来处理字符串，并使用std::transform来转换域名为小写。
-
-日志：假设Log类已经实现，并且LogFactory可以创建日志实例。
-
-比较函数：compare函数用于比较两个Cookie对象，遵循Java中的Comparator接口。
-
-异常处理：使用std::invalid_argument来处理非法参数。
-
-这个C++版本的代码与Java代码的功能基本一致，但使用了C++的特性来优化内存管理和字符串处理。
-*/
+### ˵����
+1. **ʱ�䴦��**��Java�е�`Date`����C++��û��ֱ�Ӷ�Ӧ���࣬���ʹ����`std::time_t`��

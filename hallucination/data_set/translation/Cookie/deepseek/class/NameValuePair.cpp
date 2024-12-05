@@ -15,6 +15,8 @@
  * @version $Revision: 480424 $ $Date: 2006-11-29 06:56:49 +0100 (Wed, 29 Nov 2006) $
  * 
  */
+
+//##None
 class NameValuePair {
 public:
     // ----------------------------------------------------------- Constructors
@@ -23,7 +25,7 @@ public:
      * Default constructor.
      * 
      */
-    NameValuePair() : name(nullptr), value(nullptr) {}
+    NameValuePair() : name(nullptr), value(nullptr) {} //#None
 
     /**
      * Constructor.
@@ -53,7 +55,7 @@ public:
      * @param name The new name
      * @see #getName()
      */
-    void setName(const std::string& name) {
+    void setName(const std::string& name) {  //#None
         this->name = name;
     }
 
@@ -63,7 +65,7 @@ public:
      * @return String name The name
      * @see #setName(String)
      */
-    const std::string& getName() const {
+    const std::string& getName() const {  //#None
         return name;
     }
 
@@ -72,7 +74,7 @@ public:
      *
      * @param value The new value.
      */
-    void setValue(const std::string& value) {
+    void setValue(const std::string& value) { //#None
         this->value = value;
     }
 
@@ -81,7 +83,7 @@ public:
      *
      * @return String value The current value.
      */
-    const std::string& getValue() const {
+    const std::string& getValue() const {  //#None
         return value;
     }
 
@@ -91,24 +93,24 @@ public:
      * Get a String representation of this pair.
      * @return A string representation.
      */
-    std::string toString() const {
+    std::string toString() const {  //#None
         return "name=" + name + ", value=" + value;
     }
 
-    bool equals(const NameValuePair& other) const {
+    bool equals(const NameValuePair& other) const {//#LangUtils::equals参数表不匹配
         return LangUtils::equals(this->name, other.name) &&
                LangUtils::equals(this->value, other.value);
     }
 
-    bool operator==(const NameValuePair& other) const {
+    bool operator==(const NameValuePair& other) const { //None
         return equals(other);
     }
 
-    bool operator!=(const NameValuePair& other) const {
+    bool operator!=(const NameValuePair& other) const {//None
         return !equals(other);
     }
 
-    int hashCode() const {
+    int hashCode() const { //#LangUtils::hashCode参数表不匹配
         int hash = LangUtils::HASH_SEED;
         hash = LangUtils::hashCode(hash, this->name);
         hash = LangUtils::hashCode(hash, this->value);

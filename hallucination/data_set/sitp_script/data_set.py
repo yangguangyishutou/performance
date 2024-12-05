@@ -1,5 +1,6 @@
 import os
 import re
+import javalang
 from openpyxl import Workbook, load_workbook
 from openpyxl.styles import Font, Alignment, Border, Side, PatternFill
 
@@ -34,6 +35,19 @@ def over_all_comment(code:str)->str:
         return match.group(1)
     else:
         return 'error: no overall comment found'
+    
+def get_method_name(code:str)->list[str]:
+    '''
+    获取方法名
+    '''
+    tree = javalang.parse.parse(code)
+    method_names = []
+    for path, node in tree.filter(javalang.tree.MethodDeclaration):
+        method_names.append(node.name)
+
+    for path, node in tree.filter(javalang.tree.ConstructorDeclaration):
+        method_names.append(node.name)
+    return method_names
 
 
 
@@ -48,12 +62,13 @@ class data_set:
         if os.path.exists(file_path):
             self.workbook = load_workbook(file_path)
             self.worksheet = self.workbook['data_set']
-            self.cur_row = self.worksheet.max_row
+            self.cur_row = self.worksheet.max_row + 1
         else:
             self.workbook = Workbook()
             self.worksheet = self.workbook.active
             self.worksheet.title = 'data_set'
             self.cur_row = 1
+        print(f"数据集文件{file_path}已加载,已有{self.cur_row - 1}行数据")
 
     def write_files(self, file_dir_path, name):
         if self.find_unit('A', name) is not None:
@@ -70,8 +85,7 @@ class data_set:
             # 打开文件，读取方法名
             with open(os.path.join(file_dir_path, file_name), 'r', encoding='utf-8') as f:
                 code = f.read()
-                pattern = r'\b(?:public|private|protected|static|final|synchronized|native|abstract|transient|volatile|strictfp)?\s+(?:[\w<>\[\]]+\s+)?([\w<>]+)\s*\([^)]*\)\s*\{'
-                matches = re.findall(pattern, code)
+                matches = get_method_name(code)
                 # 记录文件名所在起始行
                 start_file_row = self.cur_row
                 # 写入方法名
@@ -93,7 +107,7 @@ class data_set:
                         self.worksheet.merge_cells('E' + str(start_strategy_row) + ':E' + str(self.cur_row - 1))
                 # 如果没有方法名，则空出一行
                 else:
-                    print(f"wenjian {file_name} 没有匹配到方法")
+                    print(f"文件 {file_name} 没有匹配到方法")
                     self.cur_row += 1
                 # 合并文件名所在行
                 print(f"合并单元格B{start_file_row}:{self.cur_row - 1}")
@@ -194,6 +208,7 @@ class data_set:
 
 
     def save_file(self):
+        print("保存文件")
         self.workbook.save(self.file_path)
 
 

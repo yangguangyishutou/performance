@@ -1,6 +1,6 @@
 import sitp_script as sitp
 
-sitp._api_key = 'sk-a9fd998286e04e8e9af58f9cfe2add77'
+_api_key = 'sk-a9fd998286e04e8e9af58f9cfe2add77'
 
 
 ###以下为参数设置###
@@ -35,7 +35,7 @@ def clone_files():
     sitp.clone_files(original_program_path, basic_file_name, source_file_dir_path)
 # 调用DeepSeek API进行翻译
 def translate_files():
-    sitp.translate(source_file_dir_path, target_file_dir_path)
+    sitp.translate(source_file_dir_path, target_file_dir_path, _api_key)
 # 将基本信息自动写入数据集中(根据source_file_dir_path中的文件自动填写文件、方法名)
 def write_basic_info():
     data_set.write_files(source_file_dir_path, group_name)
