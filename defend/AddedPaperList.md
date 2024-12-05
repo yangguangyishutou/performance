@@ -733,6 +733,8 @@ TODO
 
 1. (未加，感觉关联不大，但是攻击思路比较新颖)[Arxiv2024 Safeguard is a Double-edged Sword: Denial-of-service Attack on Large Language Models](https://arxiv.org/abs/2410.02916)
 
+   >攻击者通过软件或网络钓鱼攻击，将看似无害的对抗性提示（adversarial prompt）插入用户提示模板中，导致保护措施拒绝来自该客户端的几乎所有用户请求
+
 ### Defense
 
 #### Arxiv2024 Adversarial Robustness Limits via Scaling-Law and Human-Alignment Studies
