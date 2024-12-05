@@ -669,6 +669,14 @@ TODO
 > - 模型遭受攻击时，有害tokens的概率分布高于正常tokens，传统top-k/p采样将会优先选择有害tokens，尽管正常tokens概率仍不为0
 > - 通过调整 token 分布来平衡质量和安全性：过滤掉高风险 token(需要首先有高风险token的database？)，放大安全 token 的权重
 
+#### Arxiv 2024 Oct   RePD: Defending Jailbreak Attack through a Retrieval-based Prompt Decomposition Process
+
+>RePD teaches LLM how to decouple the jailbreak prompt according to the retrieval template
+>
+>从库里找出相似模版，和随机恶意问题组合后给LLM作为one-shot示例教LLM如何分离问题和模版，然后引入两个模型，一个只分离，一个只回答分离后的问题
+>
+>然而论文没讲这个相似性的计算公式
+
 ### G. perplexity filtering
 
 #### Arxiv2023 Detecting Language Model Attacks with Perplexity
