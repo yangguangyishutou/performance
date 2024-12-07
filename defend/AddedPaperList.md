@@ -704,6 +704,23 @@ TODO
 > - 相关：
 >   - [Stanford Alpaca: An Instruction-following LLaMA Model](https://github.com/tatsu-lab/stanford_alpaca)，结合self-instruct，可以利用有限资源开发更小的指令遵循模型
 
+### H. Multi-Agent Defense
+
+#### Arxiv2024 Guide for Defense (G4D) Dynamic Guidance for Robust and Balanced Defense in Large Language Models
+
+**总结：意图检测 + 问题转述 + 安全分析 = 最终输入的prompt**
+
+- A dynamic, guide-based defense framework
+  - 意图检测
+    - CoT
+  - 问题转述(只对第一步被检测为有害的问题进行转述)
+  - 安全分析
+    - 分析出的意图 + 检索到的信息 = 检索增强意图
+      - 检索信息库：Wikipedia，top-1
+        - 如果是代码大模型，可考虑Stack Overflow, GitHub等
+  - 最终输入的prompt
+    - 检索增强意图 + 改写后的查询 + 生成的指导(第三步的输出)
+
 ## Newest
 
 ### Attack
@@ -742,3 +759,6 @@ TODO
 > Scaling Laws揭示了低鲁棒性，并训练获得高对抗鲁棒性（*）
 > Scaling Laws：首先训练一系列的模型然后使用这些模型的测试数据性能来拟合损失随这些因素而变化的经验估计量，实验中探索三种参数下的拟合数据效果，最后投入预测
 
+#### Arxiv2023 Llm self defense - By self examination, llms know they are being tricked
+
+leverages the model’s ability to self-assess its output
