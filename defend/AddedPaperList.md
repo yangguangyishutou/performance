@@ -726,6 +726,11 @@ TODO
 | Defense A |         | xxxxx     |              |
 | Defense B |         |           |              |
 | Defense C |         |           |              |
+| Defense D |         |           |              |
+| Defense E |         |           |              |
+| Defense F |         |           |              |
+| Defense G |         |           |              |
+| Defense H |         |           |              |
 
 
 
