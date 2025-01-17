@@ -2,7 +2,7 @@
 
 | method | summary（论文卖点） | advantage | disadvantage | Dataset |
 | ------ | ------------------- | --------- | ------------ | ------- |
-|  对抗提示生成       |                     |           |              |         |
+|  对抗提示生成       |  (1)GCG：     (2)Attacker:   |(1)GCG:         (2)Attacker:           |(1)GCG:         (2)Attacker:              |(1)GCG:         (2)Attacker:         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
