@@ -101,11 +101,40 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > insight：neighbor 是经过变换得到，不是member，因此如果原有x与neighbor的loss接近，说明不是member，反之则是
 >
+> 
+>
 > TODO：if the model score of the target data is similar to the crafted neighbors, then they are all plausible points from the distribution and the target point is not a member of the training set. However, if a sample is much more likely under the target model’s distribution than its neighbors, we infer that this could only be a result of overfitting ： 用公式如何表示
 >
 > DO: 使用一种基于**neighbors**的决策规则，用来判断一个给定的样本 xxx 是否可能是模型训练集中的成员。具体做法是先构造若干与 xxx 语义、语法上极为相似但不在训练集中的邻居样本 {x~1,…,x~n}，计算目标模型对 xxx 的损失与对这些邻居的平均损失之间的差值，再与某个阈值 γ 进行比较。如果这个差值远小于 γ ，就说明模型对 xxx 可能存在“过拟合”，进而暗示 xxx 可能出现在训练集中。
->
+> $$
+> Δ=L(f 
+> θ
+> ​
+>  ,x)− 
+> n
+> 1
+> ​
+>   
+> i=1
+> ∑
+> n
+> ​
+>  L(f 
+> θ
+> ​
+>  , 
+> x
+> ~
+>   
+> i
+> ​
+>  ).
+> $$
 > <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbors1.png" style="zoom: 67%;" />
+>
+> 在论文中，为了得到表格中列出的**低 FPR**（1%、0.1%、0.01%），需要**有目的地调节这个阈值**，使得他们在这些指定的 FPR 下测量到的 TPR 是多少，从而比较不同攻击方法的效果。
+>
+> ![](F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbor2.png)
 
 2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
