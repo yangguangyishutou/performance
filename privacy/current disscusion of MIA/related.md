@@ -6,9 +6,37 @@
 
 问题：LOSS，交叉熵，概率分布之间的转换关系？
 
+> **1.交叉熵和LOSS的关系**
+>
+> **交叉熵损失（Cross Entropy Loss）可以视作一种常用的 Loss（损失函数）策略。** 在分类任务中，交叉熵损失非常常见，因为它能直接衡量模型输出的**预测概率分布与真实分布**之间的差异，从而指导模型对参数进行优化。
+>
+> 
+>
+> **2. 概率分布、交叉熵和 MIA 的关系**
+>
+> 在 MIA 中，攻击者可以通过以下步骤利用概率分布和交叉熵损失来推断样本是否属于训练集：
+>
+> 1. **获取模型输出的预测概率分布：** 对于每个输入样本，攻击者首先获取模型的输出概率分布 q，即每个类别的预测概率。
+>
+> 2. **计算交叉熵损失：** 根据真实标签 p 和模型的输出概率分布 q，攻击者计算交叉熵损失：
+>
+>    H(p,q) = - logqk
+>
+>    交叉熵损失反映了模型对预测的信心程度，损失越小，预测越自信。
+>
+> 3. **区分训练集和非训练集样本：** 根据模型对训练集样本和非训练集样本的表现差异，攻击者通常会发现训练集样本的交叉熵损失较低（即模型对其更为自信），而非训练集样本的交叉熵损失较高。基于这一差异，攻击者就可以尝试推断样本是否属于训练集。
+>
+> 4. **训练集样本的高置信度：** 当样本属于训练集时，模型通常能较好地拟合这些样本，产生较高的 qk，从而导致较低的交叉熵损失。这使得训练集样本与非训练集样本在损失值上存在可辨识的差异。
+>
+> 5. **非训练集样本的低置信度：** 对于未见过的样本，尤其是那些在训练数据中不存在的样本，模型的预测通常会不那么确定，导致交叉熵损失较高。这使得攻击者可以通过损失值的高低来判断样本是否为训练集成员。
+>
+> 
+
 认识阶段1: models tend to assign higher probabilities to their training samples than non-training points，缺点：simple thresholding of the model score in isolation tends to lead to high FPs
 
 认识阶段2: reference-based attacks which compare model scores to those obtained from a reference model scores trained on similar data can substaintially improve the performance of MIA，缺点：需要确认两边的data distribution一致。
+
+
 
 ### Benchmark TODO
 
@@ -18,8 +46,6 @@
    * DETECTING PRETRAINING DATA FROM LARGE LANGUAGE MODELS
 3. Gutenberg
    * Nob-MIAs: Non-biased Membership Inference Attacks Assessment on Large Language Models with Ex-Post Dataset Construction
-
-
 
 
 
@@ -77,6 +103,9 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > TODO：if the model score of the target data is similar to the crafted neighbors, then they are all plausible points from the distribution and the target point is not a member of the training set. However, if a sample is much more likely under the target model’s distribution than its neighbors, we infer that this could only be a result of overfitting ： 用公式如何表示
 >
+> DO: 使用一种基于**neighbors**的决策规则，用来判断一个给定的样本 xxx 是否可能是模型训练集中的成员。具体做法是先构造若干与 xxx 语义、语法上极为相似但不在训练集中的邻居样本 {x~1,…,x~n}，计算目标模型对 xxx 的损失与对这些邻居的平均损失之间的差值，再与某个阈值 γ 进行比较。如果这个差值远小于 γ ，就说明模型对 xxx 可能存在“过拟合”，进而暗示 xxx 可能出现在训练集中。
+>
+> <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbors1.png" style="zoom: 67%;" />
 
 2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
@@ -237,15 +266,14 @@ CCS2024 Is Difficulty Calibration All We Need- Towards More Practical MIA.pdf
 
 ##  Other MIA
 
-
-
 ICL
 
 CCS2024 Membership Inference Attacks Against In-Context Learning.pdf
 
 > ICL的MIA attack，和我们讨论的问题不太一样
 >
-> 
+
+
 
 Vision Transformer
 
@@ -257,9 +285,7 @@ CCS2024 Membership Inference Attacks against Vision Transformers.pdf
 
 
 
-### Others
-
-
+## Others
 
 Arxiv2023 LLaMA Open and Efficient Foundation Language Models.pdf
 
