@@ -50,9 +50,13 @@
 |           | 5. RAIN              | - Dataset: (1) harm-free generation task: Anthropic’s Helpfulness and Harmlessness (HH); (2) truthful generation task: Truthful-QA, (3) adversarial defense task: AdvBench (4) controlled sentiment generation task: IMDB(2011) | **无需训练数据和微调、内存效率高、通用(可作为插件)**             | 自评估和回退机制导致推理时间增加、工程复杂度增加                                                                                                                                       |
 |           | 6. chain of thought    | - Dataset: JADE、DAN                                                                                                                             | **模拟人类思维，无需额外训练、有自我反思和自我细化**  | 对复杂攻击的防御能力有限、依赖模型的推理能力、需要设计提示模版、要求较高     |
 | Adversarial Training + Security Alignment (Fine-tune) | 1. RA-LLM             | - Dataset: MS MARCO dataset(question-answering,2016) for BAR; AdvBench(Harmful behaviors + Harmful strings) for ASR                 | **增加对齐检查函数 -> 实现成本低；理论分析较完善**                                                                                       | 随机丢弃机制(random dropping mechanism)会对部分模型的良性样本产生轻微负面影响，该机制待优化；防御极端情况的攻击(非常长/短的对抗性提示)可能效果有限         |
+|                                                       | 2. DRO定向表示优化           | - Dataset: 通过GPT-3.5-turbo生成的100个有害查询和100个无害查询           | **采用提示调优（Prompt Tuning）的方式，仅优化安全提示的连续嵌入、具有一定鲁棒性**             | 效果依赖于用于锚定低维表示空间的锚数据、存在对无害查询的误拒、对复杂攻击的防御能力有待验证      |
 | Decoding  | 1. safedecoding             | - Dataset: Advbench、HEx-PHI               | **无需额外训练、计算开销低、兼容性强**             | 对复杂攻击的防御能力有限、依赖模型的推理能力、存在前后不一致的语义转换问题       |
 |           | 2. RePD            | - Dataset: The ToxicChat dataset            | **多代理版本、增强对抗自适应攻击的能力、保持对良性查询的有用性**             | 计算开销增加、对非模板攻击的防御能力有限、依赖于检索数据库      |
-
+| perplexity filtering  | 1. Perplexity and Token Length             | - Dataset: Machine-Generated Adversarial Prompts、Human-Designed Adversarial Prompts               | **高困惑度检测、计算成本较低、高检测率**             | 对人工设计的对抗性提示效果有限、 依赖GPT-2的困惑度计算、对短提示可能存在误报、数据集存在局限性       |
+|                       | 2. URIAL（上下文学习）           | - Dataset: AlpacaEval、MT-Bench、LIMA、HH-RLHF-redteam、MaliciousInstruct            | **无需微调、可以处理多轮对话、保留知识、提高推理效率**             | 上下文长度限制、示例选择敏感、安全性依赖于系统提示和上下文示例的设计、不适用于一些特定任务（如代码生成等）     |
+|                       | 3. safety-tuning安全微调           | - Dataset: 安全微调：Anthropic Red Teaming Datase、Alpaca数据集
+安全评估：I-MaliciousInstructions、I-CoNa、I-Controversial、I-PhysicalSafety、Q-Harm、XSTest            | **无需大规模修改模型、较好的可扩展性、显著提升模型安全性**             | 可能存在过度安全行为、对人工设计的越狱提示（如专门为GPT-4设计的越狱提示）效果有限、数据集覆盖不足     |
 
 
 文本：
