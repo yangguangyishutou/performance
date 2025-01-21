@@ -48,10 +48,10 @@
 |           | 3. SmoothLLM - Perturbation   | - Dataset: question-answering benchmarks: PIQA, OpenBookQA, ToxiGen; AdvBench | **计算效率高、通用性、可解释性强**                                        | 参数敏感(扰动率q的选择较关键，过大会导致prompt失去原有语义，过度扰动的prompt引发的模型回复可能会被误判为“非越狱攻击”)，主要针对基于**字符级**修改的攻击                      |
 |           | 4. Backtranslation    | - Dataset: MT-Bench, AdvBench                                                                                                                              | **对良性输入影响小、简单易解释(通过回译的prompt可以直观获取原始prompt的真实意图)**  | 同样依赖安全对齐的基础模型(基础模型有漏洞时无法保证安全)，应对更隐蔽的攻击(如加密等)、白盒攻击的效果有限，依赖回译准确性(可能导致过度拒绝或者不能识别越狱意图)           |
 |           | 5. RAIN              | - Dataset: (1) harm-free generation task: Anthropic’s Helpfulness and Harmlessness (HH); (2) truthful generation task: Truthful-QA, (3) adversarial defense task: AdvBench (4) controlled sentiment generation task: IMDB(2011) | **无需训练数据和微调、内存效率高、通用(可作为插件)**             | 自评估和回退机制导致推理时间增加、工程复杂度增加                                                                                                                                       |
-|           | 6. chain of thought    | - Dataset:JADE、DAN                                                                                                                             | **模拟人类思维，无需额外训练、有自我反思和自我细化**  | 对复杂攻击的防御能力有限、依赖模型的推理能力、需要设计提示模版、要求较高     |
+|           | 6. chain of thought    | - Dataset: JADE、DAN                                                                                                                             | **模拟人类思维，无需额外训练、有自我反思和自我细化**  | 对复杂攻击的防御能力有限、依赖模型的推理能力、需要设计提示模版、要求较高     |
 | Adversarial Training + Security Alignment (Fine-tune) | 1. RA-LLM             | - Dataset: MS MARCO dataset(question-answering,2016) for BAR; AdvBench(Harmful behaviors + Harmful strings) for ASR                 | **增加对齐检查函数 -> 实现成本低；理论分析较完善**                                                                                       | 随机丢弃机制(random dropping mechanism)会对部分模型的良性样本产生轻微负面影响，该机制待优化；防御极端情况的攻击(非常长/短的对抗性提示)可能效果有限         |
 | Decoding  | 1. safedecoding             | - Dataset: Advbench、HEx-PHI               | **无需额外训练、计算开销低、兼容性强**             | 对复杂攻击的防御能力有限、依赖模型的推理能力、存在前后不一致的语义转换问题       |
-| Decoding  | 2. RePD            | - Dataset:The ToxicChat dataset            | **多代理版本、增强对抗自适应攻击的能力、保持对良性查询的有用性**             | 计算开销增加、对非模板攻击的防御能力有限、依赖于检索数据库      |
+|           | 2. RePD            | - Dataset: The ToxicChat dataset            | **多代理版本、增强对抗自适应攻击的能力、保持对良性查询的有用性**             | 计算开销增加、对非模板攻击的防御能力有限、依赖于检索数据库      |
 
 
 
