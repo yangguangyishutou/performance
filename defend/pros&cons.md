@@ -55,8 +55,7 @@
 |           | 2. RePD            | - Dataset: The ToxicChat dataset            | **多代理版本、增强对抗自适应攻击的能力、保持对良性查询的有用性**             | 计算开销增加、对非模板攻击的防御能力有限、依赖于检索数据库      |
 | perplexity filtering  | 1. Perplexity and Token Length             | - Dataset: Machine-Generated Adversarial Prompts、Human-Designed Adversarial Prompts               | **高困惑度检测、计算成本较低、高检测率**             | 对人工设计的对抗性提示效果有限、 依赖GPT-2的困惑度计算、对短提示可能存在误报、数据集存在局限性       |
 |                       | 2. URIAL（上下文学习）           | - Dataset: AlpacaEval、MT-Bench、LIMA、HH-RLHF-redteam、MaliciousInstruct            | **无需微调、可以处理多轮对话、保留知识、提高推理效率**             | 上下文长度限制、示例选择敏感、安全性依赖于系统提示和上下文示例的设计、不适用于一些特定任务（如代码生成等）     |
-|                       | 3. safety-tuning安全微调           | - Dataset: 安全微调：Anthropic Red Teaming Datase、Alpaca数据集
-安全评估：I-MaliciousInstructions、I-CoNa、I-Controversial、I-PhysicalSafety、Q-Harm、XSTest            | **无需大规模修改模型、较好的可扩展性、显著提升模型安全性**             | 可能存在过度安全行为、对人工设计的越狱提示（如专门为GPT-4设计的越狱提示）效果有限、数据集覆盖不足     |
+|                       | 3. safety-tuning安全微调           | - Dataset: 安全微调：Anthropic Red Teaming Datase、Alpaca数据集  安全评估：I-MaliciousInstructions、I-CoNa、I-Controversial、I-PhysicalSafety、Q-Harm、XSTest            | **无需大规模修改模型、较好的可扩展性、显著提升模型安全性**             | 可能存在过度安全行为、对人工设计的越狱提示（如专门为GPT-4设计的越狱提示）效果有限、数据集覆盖不足     |
 
 
 文本：
