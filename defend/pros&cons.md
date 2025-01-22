@@ -4,8 +4,7 @@
 
 | method | summary（论文卖点） | advantage | disadvantage | Dataset |
 | ------ | ------------------- | --------- | ------------ | ------- |
-|  对抗提示生成       |  (1)GCG：given a (potentially harmful) user query, our attack appends an adversarial sufffx to the query that attempts
-to induce negative behavior     (2)Attacker:   |(1)GCG:highly transferable, including to black-box, publicly released, production LLMs.         (2)Attacker:           |(1)GCG:they often generate jailbreak prompts composed of nonsensical sequences or gib- berish, i.e., without any semantic meaning         (2)Attacker:              |(1)GCG:         (2)Attacker:         |
+|  对抗提示生成       |  (1)GCG：given a (potentially harmful) user query, our attack appends an adversarial sufffx to the query that attempts to induce negative behavior     (2)Attacker:   |(1)GCG:highly transferable, including to black-box, publicly released, production LLMs.         (2)Attacker:           |(1)GCG:they often generate jailbreak prompts composed of nonsensical sequences or gib- berish, i.e., without any semantic meaning         (2)Attacker:              |(1)GCG:         (2)Attacker:         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
