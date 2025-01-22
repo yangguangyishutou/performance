@@ -9,7 +9,7 @@
 |        | （3）TAP：TAP utilizes an attacker LLM to iteratively refine candidate (attack) prompts until one of the refined prompts jailbreaks the target.(攻击者迭代优化候选提示，直到出现越狱)                   |（3）TAP：TAP finds jailbreaks for a significantly higher fraction of prompts than PAIR while sending significantly fewer queries to the target.（查询比PAIR还少，效率更高）、对于一些受保护的LLM，TAP攻击成功率比PAIR还高           |（3）TAP：黑盒攻击，缺乏引导，在部分模型上性能不如PAIR              |（3）TAP：         |
 |        |(4）Fuzzing:                     |           |              |         |
 |        |（5）GA:                     |           |              |         |
-|        |(6)Likelyhood:以output中存在“sure”等正面回复的关键字的likelihood作为引导                     |           |              |         |
+|        |(6)Likelyhood:共3篇文章，以output中存在“sure”等正面回复的关键字的likelihood作为引导，人工设计性和随机查询是典型的特点                     |           |              |         |
 |人类说服技巧        | （1）PAP：利用分类法得到说服技巧，再利用这些说服技巧，将简单的有害查询转化为大规模的PAP（说服性对抗提示）越狱攻击                    |（1）PAP：Results show that persuasion significantly in creases the jailbreak performance across all risk categories（说服性对抗提示能大幅度提高越狱攻击成功率） PAP comparison with baselines PAP is more effective than baseline attacks.           |（1）PAP：构建PAP过程复杂，需要用到Fine-tuning，效率较低              |         |
 |        |（2）cold-attack:                     |           |              |         |
 |        |                     |           |              |         |
