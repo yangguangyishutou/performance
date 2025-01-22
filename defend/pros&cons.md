@@ -10,7 +10,7 @@
 |        |(4）Fuzzing:                     |           |              |         |
 |        |（5）GA:                     |           |              |         |
 |        |(6)Likelyhood:                     |           |              |         |
-|人类说服技巧        | （1）PAP：利用分类法得到说服技巧，再利用这些说服技巧，将简单的有害查询转化为大规模的PAP（说服性对抗提示）越狱攻击                    |           |              |         |
+|人类说服技巧        | （1）PAP：利用分类法得到说服技巧，再利用这些说服技巧，将简单的有害查询转化为大规模的PAP（说服性对抗提示）越狱攻击                    |（1）PAP：Results show that persuasion significantly in creases the jailbreak performance across all risk categories（说服性对抗提示能大幅度提高越狱攻击成功率） PAP comparison with baselines PAP is more effective than baseline attacks.           |（1）PAP：              |         |
 |        |（2）cold-attack:                     |           |              |         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
