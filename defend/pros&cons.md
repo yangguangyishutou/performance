@@ -4,8 +4,7 @@
 
 | method | summary（论文卖点） | advantage | disadvantage | Dataset |
 | ------ | ------------------- | --------- | ------------ | ------- |
-|  对抗提示生成       |  (1)GCG：given a (potentially harmful) user query, our attack appends an adversarial sufffx to the query that attempts to induce negative behavior， it is their careful combination that leads to reliably successful attacks in practice     (2)Attacker:   |(1)GCG:highly transferable, including to black-box, publicly released, production LLMs.（即移植性很强）                    |(1)GCG:they often generate jailbreak prompts composed of nonsensical sequences or gib- berish, i.e., without any semantic meaning （不具备实际语义）                      |(1)GCG:![Uploading image.png…]()
-                 |
+|  对抗提示生成       |  (1)GCG：given a (potentially harmful) user query, our attack appends an adversarial sufffx to the query that attempts to induce negative behavior， it is their careful combination that leads to reliably successful attacks in practice     (2)Attacker:   |(1)GCG:highly transferable, including to black-box, publicly released, production LLMs.（即移植性很强）                    |(1)GCG:they often generate jailbreak prompts composed of nonsensical sequences or gib- berish, i.e., without any semantic meaning （不具备实际语义）                      |(1)GCG:LLM-Tuning-Safety/HEx-PHI  JailbreakBench/JBB-Behaviors  walledai/AdvBench   walledai/JailbreakBench  lenML/advbench_behaviors_m5
 |        | （2）Attacker:                    |（2）Attacker:           |（2）Attacker:              |（2）Attacker:         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
