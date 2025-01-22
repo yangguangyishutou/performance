@@ -6,7 +6,7 @@
 | ------ | ------------------- | --------- | ------------ | ------- |
 |  对抗提示生成       |  (1)GCG：given a (potentially harmful) user query, our attack appends an adversarial sufffx to the query that attempts to induce negative behavior， it is their careful combination that leads to reliably successful attacks in practice （GCG攻击方法在有害的查询中添加对抗性后缀，合理组合使得模型内部对齐失效）   |(1)GCG:highly transferable, including to black-box, publicly released, production LLMs.（即移植性很强）                    |(1)GCG:they often generate jailbreak prompts composed of nonsensical sequences or gib- berish, i.e., without any semantic meaning （不具备实际语义）                      |(1)GCG:LLM-Tuning-Safety/HEx-PHI  JailbreakBench/JBB-Behaviors  walledai/AdvBench   walledai/JailbreakBench  lenML/advbench_behaviors_m5
 |        | （2）PAIR:                    |（2）PAIR:           |（2）PAIR:              |（2）PAIR:No dataset metadata found         |
-|        |                     |           |              |         |
+|        | （3）TAP：                   |（3）TAP：           |（3）TAP：              |（3）TAP：         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
 |        |                     |           |              |         |
