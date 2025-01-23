@@ -10,7 +10,7 @@
 | 对抗提示生成（GA-based） | AutoDAN-HGA（让别的model生成同义prompt初始化种群）           |                                                              |                                                              |                                                              |
 |                          | GPTFUZZER                                                    |           |              |         |
 |                          | 通过随机替换原始提示语中的单词来初始化群体,并根据每个提示语的相似性和性能来计算适应性。在crossover中,合格的提示语被转换为其他句法形式以产生后代。如果新群体在几轮中保持与上一代的相似性,则算法将终止 |           |              |         |
-|        |(4)Likelyhood:共3篇文章，以output中存在“sure”等正面回复的关键字的likelihood作为引导，人工设计性和随机查询是典型的特点                     |（4）Likelyhood:专门针对给定防御设计攻击，自适应性：set of rules + harmful requests + adversarail suffix 不需要梯度、LLM辅助、多轮对话（由人工模板补偿） 人工设计性比较强,同时ASR高           |              |         |
+|        |(4)Likelyhood:共3篇文章，以output中存在“sure”等正面回复的关键字的likelihood作为引导，人工设计性和随机查询是典型的特点                     |（4）Likelyhood:专门针对给定防御设计攻击，自适应性：set of rules + harmful requests + adversarail suffix 不需要梯度、LLM辅助、多轮对话（由人工模板补偿） 人工设计性比较强,同时ASR高           |              |（4）Likelyhood:ai-safety-institute/AgentHarm         |
 |人类说服技巧        | （1）PAP：利用分类法得到说服技巧，再利用这些说服技巧，将简单的有害查询转化为大规模的PAP（说服性对抗提示）越狱攻击                    |（1）PAP：Results show that persuasion significantly in creases the jailbreak performance across all risk categories（说服性对抗提示能大幅度提高越狱攻击成功率） PAP comparison with baselines PAP is more effective than baseline attacks.           |（1）PAP：构建PAP过程复杂，需要用到Fine-tuning，效率较低              |         |
 |        |（2）cold-attack:                     |           |              |         |
 |  |                     |           |              |         |
