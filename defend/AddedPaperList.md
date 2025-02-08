@@ -542,6 +542,8 @@ star(1)和论文引用(3)都较少
 
 #### ACL2024 Defending large language models against jailbreaking attacks through goal prioritization
 
+Nov 2023
+
 > Prompt engineering
 >
 > 像是融合了**In-context-demonstrations**和DeepInception的方法。
