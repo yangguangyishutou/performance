@@ -1,0 +1,18 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+\centering
+\vspace{-0mm}
+\caption{Transferable performance of jailbreak suffix which is generated on VICUNA-7B-1.5. Number in bold indicates the best jailbreak performance. }
+\label{table:trans}
+\scalebox{0.9}{
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+Method & MISTRAL-7B-INSTRUCT-0.2 & STARLING-7B-ALPHA & CHATGPT-3.5   & CHATGPT-4    \\ \midrule
+GCG~\cite{zou2023universal}    & 16\%                    & 16\%              & 10\%          & 0\%          \\
+MAC~\cite{zhang2024boosting}    & 22\%                    & 16\%              & 14\%          & 2\%          \\
+$\mathcal{I}$-GCG (ours)    & \textbf{26\%}           & \textbf{20\%}     & \textbf{22\%} & \textbf{4\%} \\ \bottomrule
+\end{tabular}
+}
+\vspace{-0mm}
+\end{table}

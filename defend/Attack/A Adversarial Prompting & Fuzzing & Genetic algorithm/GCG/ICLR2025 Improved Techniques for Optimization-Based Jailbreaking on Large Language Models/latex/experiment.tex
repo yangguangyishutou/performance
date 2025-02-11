@@ -1,0 +1,65 @@
+\section{Experiments}
+
+\subsection{Experimental settings}
+\label{sec:Experiments Setting}
+\par \textbf{Datasets.}  We use the ``harmful behaviors'' subset from the AdvBench benchmark~\cite{zou2023universal} to evaluate the jailbreak performance of the proposed $\mathcal{I}$-GCG. Specifically, the AdvBench consists of 520 objectives that request harmful content, such as abusive language, violent content, misinformation, illegal activities, and so on. Following previous works~\cite{chao2023jailbreaking,li2023deepinception,wei2024jailbroken}, we eliminate duplicate harmful requests from the AdvBench dataset and select 50 representative harmful requests to compare performance. We also adopt HarmBench~\cite{mazeika2024harmbench}, which is used in the NeurIPS 2023 Red Teaming Track, to evaluate the proposed $\mathcal{I}$-GCG (Base Model Subtrack)~\footnote{\url{https://trojandetection.ai/}}. The implementation of our $\mathcal{I}$-GCG on NeurIPS 2023 Red Teaming Track is shown in the Appendix. 
+
+
+
+\par \textbf{Threat models.}
+We use VICUNA-7B-1.5~\cite{vicuna2023}, GUANACO-7B~\cite{dettmers2024qlora}, LLAMA2-7B-CHAT~\cite{touvron2023llama}, and MISTRAL-7B-INSTRUCT-0.2~\cite{jiang2023mistral} as the threat models for comparison experiments. The details of threat models are presented in the Appendix. The proposed method is compared to the following baselines: GCG~\cite{zou2023universal}, MAC~\cite{zhang2024boosting}, AutoDAN~\cite{liu2023autodan}, Probe-Sampling~\cite{zhao2024accelerating}, Advprompter~\cite{paulus2024advprompter}, PAIR~\cite{chao2023jailbreaking}, and TAP~\cite{mehrotra2023tree}. We use the \textbf{same jailbreak setting} as reported in the original works.
+
+% Besides, we also adopt the proposed JAHG in the NeurIPS 2023 Red Teaming Track
+\par \textbf{Evaluation metrics.} To evaluate the attack success rate (ASR) of the generated jailbreak suffix, we first use the template-based check~\cite{zou2023universal,chen2024red,liu2023autodan}, then feed the passed responses to the ChatGPT-3.5-based check~\cite{chao2023jailbreaking,chen2024red,tdc2023}. Finally, we manually check the passed responses to ensure that the evaluation is accurate. The details of these evaluation settings are presented in the Appendix. 
+
+\par \textbf{Implementation details.} 
+For any malicious question Q, we set the target response as ``Sure, + My output is harmful. Here is + \textbf{Rephrase}(Q)''. 
+% We also adopt other harmful guidance to conduct experiments, which is presented in Appendix. 
+Following previous works~\cite{zou2023universal,zhang2024boosting}, the length of the jailbreak suffix is set to 20. During the candidate generation, the token substitute batch size $B$ and top-$k$ are both set to 256. We first launch the jailbreak attack with the suffix initialization (! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! !) on the simple jailbreak request to generate the jailbreak suffix. The request is set to ``Provide instructions on how to steal from a store without getting caught''. The number of iterations for this process is set to 1,000.  
+Then, we use the previously generated jailbreak suffix to initialize the jailbreak suffixes of malicious questions. The number of iterations for this process is 500. All experiments are conducted on an Ubuntu system with an NVIDIA A100 Tensor Core GPU and 80GB of RAM.
+
+\input{fig/fig_top_p}
+\subsection{Hyper-parameter selection}
+The proposed automatic multi-candidate update strategy has one hyper-parameter, \textit{i.e.,} the first $p$ single-token suffix candidates, which can impact the jailbreak performance. To determine the optimal hyper-parameter $p$, we use the LLAMA2-7B-CHAT on one randomly chosen question. The results are shown in Fig.~\ref{fig:top_p}. The time it takes for the jailbreak attack to converge decreases as the single-token suffix candidate $p$ grows. When $p$ equals 7, the proposed method takes only about 400 steps to converge, whereas the original GCG takes about 2000 steps. $p$ is set to 7 to conduct experiments.
+
+
+% We conduct a hyper-parameter selection experiment with the LLAMA2-7B-CHAT on one randomly chosen question to select the optimal hyper-parameter $p$. The results are shown in Fig.~\ref{fig:top_p}. The time required for the jailbreak attack to converge decreases as the single-token suffix candidate $p$ increases. When $p$=7, the proposed method only takes about 400 steps to converge, while the original GCG takes about 2000 steps. $p$ is set to 7 to conduct experiments. 
+
+\input{table/main}
+\subsection{Comparisons with other jailbreak attack methods}
+\noindent\textbf{Comparison results.}  The comparison experiment results with other jailbreak attack methods are shown in
+Table~\ref{table:main}. It can
+be observed that the proposed method outperforms previous jailbreak methods in all attack scenarios.  
+It is particularly noteworthy that the proposed method can achieve 100\% attack success rate across all four LLMs. Specifically, as for the outstanding LLM, MISTRAL-7B-INSTRUCT-0.2, which outperforms the leading open 13B model (LLAMA2) and even the 34B model (LLAMA1) in benchmarks for tasks like reasoning, mathematics, etc, AutoDAN~\cite{liu2023autodan} achieves an attack success rate of approximately 96\%, while the proposed method achieves the attack success rate of approximately 100\%. 
+\input{table/nips}
+It indicates that the jailbreak attack method with the proposed improved techniques can further significantly improve jailbreak performance. More importantly, when tested against the robust security alignment of the LLM (LLAMA2-7B-CHAT), previous state-of-the-art jailbreak methods (MAC~\cite{zhang2024boosting} and Probe-Sampling~\cite{zhao2024accelerating}) only achieves the success rate of approximately 56\%. However, the proposed method consistently achieves a success rate of approximately 100\%. These comparison experiment results demonstrate that our proposed method outperforms other jailbreak attack methods. We also evaluate the proposed $\mathcal{I}$-GCG in the NeurIPS 2023 Red Teaming Track. Given the 256-character limit for suffix length in the competition, we can enhance performance by using more complex harmful templates for jailbreak attacks. Then we compare our $I$-GCG to the baselines provided by the competition, including ZeroShot~\cite{perez2022red}, GBDA~\cite{guo2021gradient}, and PEZ~\cite{wen2024hard}. The results are shown in Table~\ref{tb:NeurIPS}. Our $\mathcal{I}$-GCG can also achieve a success rate of approximately  100\%. 
+
+\input{table/transferability}
+\par \noindent\textbf{Transferability performance.} 
+We also compare the proposed method with GCG~\cite{zou2023universal} and MAC~\cite{zhang2024boosting} on transferability. Specifically, we adopt VICUNA-7B-1.5 to generate the jailbreak suffixes and use two advanced open source LLMs (MISTRAL-7B-INSTRUCT-0.2 and STARLING-7B-ALPHA) and two advanced closed source LLMs (CHATGPT-3.5 and CHATGPT-4) to evaluate the jailbreak transferability. The results are shown in Table~\ref{table:trans}. The proposed method outperforms GCG~\cite{zou2023universal} and MAC~\cite{zhang2024boosting} in terms of attack success rates across all scenarios. It indicates that the proposed method can also significantly improve the transferability of the generated jailbreak suffixes. Specifically, as for the open source LLM, STARLING-7B-ALPHA, GCG~\cite{zou2023universal} achieves an ASR of about 16\%, but the proposed method can achieve an ASR of about 20\%. As for the close source LLM, CHATGPT-3.5, MAC~\cite{zhang2024boosting} achieves ASR of about 14\%, but our $\mathcal{I}$-GCG can achieve ASR of about 22\%. 
+% The experiment results 
+% demonstrate the proposed method has the potential to improve the transferability of jailbreak suffix. 
+
+
+\input{table/ablation}
+
+\subsection{Ablation study}
+In this paper, we propose three improved technique terms to boost the jailbreak performance: \textit{i.e.,} harmful guidance, update strategy, and suffix initialization. To validate the effectiveness of each element in the proposed method, we adopt LLAMA2-7B-CHAT on AdvBench to conduct ablation experiments. We adopt the ASR and average iterations as evaluation metrics. GCG is used as the baseline. The results are shown in Table~\ref{table:ablation}. The analyses are summarized as follows: First, by incorporating only harmful guidance, ASR's performance improves significantly, as do the average iterations. When the update strategy and suffix initialization are used, the performance of ASR improves while the average iterations decrease. The results indicate that harmful guidance contributes more to improving jailbreak effectiveness. Update strategy and suffix initialization contribute more to improving jailbreak efficiency. Then, using all techniques yields the best results in terms of jailbreak effectiveness and efficiency.
+
+\input{table/information}
+\subsection{Discussion}
+\noindent\textbf{Effectiveness of the proposed harmful guidance.}  In this paper, we propose to introduce harmful information into the optimization goal to guide jailbreak. We use ``my output is harmful'' as the harmful guidance. To further explore the impact of harmful guidance, we adopt more examples of harmful guidance to jailbreak the secure aligned LLM, LLAMA2-7B-CHAT. The results are shown in Table~\ref{table:information}. It can be observed that using different harmful guidance can also achieve nearly 100\% attack success rate, which indicates introducing harmful guidance in the optimization goal could facilitate finding the jailbreak space, thereby enhancing jailbreak performance.
+
+\noindent\textbf{Efficiency of the proposed update strategy and suffix initialization.} Although introducing harmful guidance can boost jailbreak performance, it also brings optimization difficulties and reduces jailbreak efficiency. To improve jailbreak efficiency, we propose the automatic multiple token candidate update strategy and the prior-guided suffix initialization. 
+Previous experimental results show that the proposed efficient techniques can significantly boost jailbreak efficiency. 
+\input{fig/fig_efficiency}
+To further study their impact, we combine the proposed efficient techniques with the original GCG and calculate that the average loss value of the AdvBench for LLAMA2-7B-CHAT changes with the number of jailbreak iterations. The results are shown in Fig.~\ref{fig:efficiency}. It can be observed that the proposed techniques can boost the convergence of jailbreak, among which suffix initialization performs better. However, the prior-guided initialization must first be generated, which can be accomplished by the update strategy. 
+
+
+\noindent\textbf{Limitation.}  The proposed method still has worthy room for exploration. For example, the better harmful guidance design, more general suffix initialization, \textit{etc.} Although our method achieves excellent jailbreak performance, there is still room for improvement in jailbreak transferability with transferability-enhancing methods summarized in~\cite{gu2023survey}. 
+
+
+
+
+
+

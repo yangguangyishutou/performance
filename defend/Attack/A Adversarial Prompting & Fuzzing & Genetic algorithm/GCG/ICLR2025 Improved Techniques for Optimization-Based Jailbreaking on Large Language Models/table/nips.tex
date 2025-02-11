@@ -1,0 +1,17 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{wraptable}{r}{0.5\textwidth} 
+\center
+\vspace{-4mm}
+\caption{Jailbreak Performance on NeurIPS 2023 Red Teaming Track.}
+\vspace{-2mm}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+Method & ZeroShot~\cite{perez2022red} & GBDA~\cite{guo2021gradient}  & PEZ~\cite{wen2024hard}   & $\mathcal{I}$-GCG (ours) \\ \midrule
+ASR    & 0.1\%    & 0.1\% & 0.2\% & 100\%        \\ \bottomrule
+\end{tabular}
+}
+\label{tb:NeurIPS}
+\vspace{-5mm}
+\end{wraptable}
