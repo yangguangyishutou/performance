@@ -2,6 +2,30 @@
 
 ## Attack
 
+
+
+Attack方法
+
+| ----    | 开源/需要复现 | --                  |
+| ------- | ------------- | ------------------- |
+| PAIR    | 开源          | @chengxing， 服务器 |
+| **COU** |               |                     |
+
+
+
+
+
+Dataset
+
+| ---                   | ---- |
+| --------------------- | ---- |
+| **Advbench**          |      |
+| **MaliciousInstruct** |      |
+
+
+
+
+
 ### A. 对抗提示生成  Adversarial Prompting / Fuzzing / Genetic algorithm
 
 ### 1. 白盒 gradient-based approach
