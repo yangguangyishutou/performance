@@ -1,0 +1,38 @@
+\begin{abstract}
+\textcolor{red}{\textbf{Warning:} This paper contains model outputs that are offensive in nature.}
+
+
+Large language models (LLMs) are being rapidly developed, and a key component of their widespread deployment is their safety-related alignment. Many red-teaming efforts aim to jailbreak LLMs, where among these efforts, the Greedy Coordinate Gradient (GCG) attack's success has led to a growing interest in the study of optimization-based jailbreaking techniques. Although GCG is a significant milestone, its attacking efficiency remains unsatisfactory. In this paper, we present several improved (empirical) techniques for optimization-based jailbreaks like GCG. We first observe that the single target template of \texttt{``Sure''} largely limits the attacking performance of GCG; given this, we propose to apply diverse target templates containing harmful self-suggestion and/or guidance to mislead LLMs. Besides, from the optimization aspects, we propose an automatic multi-coordinate updating strategy in GCG (\textit{i.e.}, adaptively deciding how many tokens to replace in each step) to accelerate convergence, as well as tricks like easy-to-hard initialisation. Then, we combine these improved technologies to develop an efficient jailbreak method, dubbed $\mathcal{I}$-GCG. In our experiments, we evaluate on a series of benchmarks (such as NeurIPS 2023 Red Teaming Track). The results demonstrate that our improved techniques can help GCG outperform state-of-the-art jailbreaking attacks and achieve nearly 100\% attack success rate.
+The code is released at \href{https://github.com/jiaxiaojunQAQ/I-GCG}{https://github.com/jiaxiaojunQAQ/I-GCG}.
+
+
+
+
+
+
+
+
+
+
+
+%  Adversarial jailbreak attack methods have been demonstrated to circumvent human preference safeguards of large language models (LLMs) for tricking them into generating harmful responses to malicious questions. Suffix-based jailbreak attack method, which appends the specific suffix to the malicious question, have been one of the important jailbreak attack methods. However, previous works 
+% adopt simple optimization objective to generate jailbreak suffix, which achieves limited jailbreak performance. In this paper, we propose a series of improved techniques for jialbreaking LLMs from different perspectives. Specifically, we propose to introduce harmful information into the optimization goal to guide jailbreak, thereby improving jailbreak performance. To improve the efficiency of jailbreak, an automatic multiple coordinate update strategy, 
+
+% an effective adversarial jailbreak attack with harmful guidance, dubbed \textit{JAHG}. 
+
+
+% Specifically, we propose to introduce harmful information into the optimization goal to guide jailbreak, thereby improving jailbreak performance. To improve the efficiency of jailbreak, we propose an easy-to-hard optimization strategy, which first generate the jailbreak suffix on the malicious questions that easily bypass the safeguards and then adopt the generated suffix as initialization to generate the jailbreak suffix on the malicious questions that hardly bypass the safeguards. Besides, we also propose an automatic multiple coordinate update strategy to further improve jailbreak efficiency. Experimental evaluations on series of benchmark databases demonstrate that the proposed method outperforms state-of-the-art jailbreak attack methods, achieving nearly 100\% attack success rate. Moreover, the proposed method also achieves nearly 100\% success rate on the NeurIPS 2023 Red Teaming Track. \\
+% \textcolor{red}{\textbf{Warning:} This paper contains model outputs that are offensive in nature.}
+
+% \ty{Our easy-to-hard strategy is similar to the self-transfer trick in \citet{andriushchenko2024jailbreaking}, so we may keep a lower profile of this trick in Abstract and discuss it as a concurrent work in Related Work. We should highlight the diverse harmful guidance (Sec 3.1) and automatic multiple token update (Sec 3.3).}
+
+% \ty{May change our title to something like "Improved Techniques for Jailbreaking Large Language Models". Besides, how about naming our method as something like "GCG++"? JAHG only highlights the diverse harmful guidance.}
+
+
+% 1. harmful guidance
+% 2. auto token
+% 3. Initi
+
+
+
+\end{abstract}

@@ -1,0 +1,20 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{wraptable}{r}{0.5\textwidth} 
+\center
+\vspace{-25pt}
+\caption{Ablation study of the proposed method.}
+\resizebox{\linewidth}{!}{
+\begin{tabular}{@{}ccc|cc@{}}
+\toprule
+\begin{tabular}[c]{@{}c@{}}Harmful \\ Guidance\end{tabular} & \begin{tabular}[c]{@{}c@{}}Update \\ Strategy\end{tabular} & \begin{tabular}[c]{@{}c@{}}Suffix \\Initialization\end{tabular} & ASR          & \begin{tabular}[c]{@{}c@{}}Average \\ Iterations\end{tabular} \\ \midrule
+                                                    \multicolumn{3}{c|}{Baseline}                                                                                                              & 54\%         & 510               \\ \midrule \midrule
+\ding{52}                                                         &                                                            &                & 82\%         & 955                                                           \\ \midrule
+\textbf{}                                                   & \ding{52}                                                              &                & 72\%         & 418                                                           \\ \midrule
+                                                            &                                                            & \ding{52}                  &  68\%            &             64                                                 \\ \midrule
+\ding{52}                                                              & \ding{52}                                                             & \ding{52}                  & \textbf{100\%} & \textbf{55}                                                   \\ \bottomrule
+\end{tabular}
+}
+\label{table:ablation}
+\vspace{-10pt}
+\end{wraptable}

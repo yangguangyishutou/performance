@@ -1,0 +1,23 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[t]
+\centering
+\caption{Comparison results with state-of-the-art jailbreak methods on the AdvBench. The notation $^{*}$ denotes the results from the original paper. Number in bold indicates the best jailbreak performance. }
+\label{table:main}
+\scalebox{0.83}{
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+Method         & VICUNA-7B-1.5 & GUANACO-7B & LLAMA2-7B-CHAT & MISTRAL-7B-INSTRUCT-0.2 \\ \midrule
+GCG~\cite{zou2023universal}            & 98\%          & 98\%       & 54\%           & 92\%                    \\
+MAC~\cite{zhang2024boosting}            & 100\%         & 100\%      & 56\%           & 94\%                    \\
+AutoDAN~\cite{liu2023autodan}        & 100\%         & 100\%      & 26\%           & 96\%                    \\
+Probe-Sampling~\cite{zhao2024accelerating} &   100\%            &  100\%          &     56\%           &           94\%              \\
+AmpleGCG~\cite{liao2024amplegcg}       & 66\%          & -          & 28\%           & -                       \\
+AdvPrompter$^{*}$~\cite{paulus2024advprompter}    & 64\%          & -          & 24\%           & 74\%                    \\
+PAIR~\cite{chao2023jailbreaking}           & 94\%          & 100\%      & 10\%           & 90\%                    \\
+TAP~\cite{mehrotra2023tree}            & 94\%          & 100\%      & 4\%            & 92\%                    \\ \midrule
+$\mathcal{I}$-GCG (ours)           & \textbf{100\%}         & \textbf{100\%}      & \textbf{100\%}         & \textbf{100\%}                  \\ \bottomrule
+\end{tabular}
+}
+\vspace{-0mm}
+\end{table}
