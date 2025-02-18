@@ -114,31 +114,42 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > Δ=L(f 
 > θ
 > ​
->  ,x)− 
+> ,x)− 
 > n
 > 1
 > ​
->   
+> 
 > i=1
 > ∑
 > n
 > ​
->  L(f 
+> L(f 
 > θ
 > ​
->  , 
+> , 
 > x
 > ~
->   
+> 
 > i
 > ​
->  ).
+> ).
 > $$
 > <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbors1.png" style="zoom: 67%;" />
 >
 > 在论文中，为了得到表格中列出的**低 FPR**（1%、0.1%、0.01%），需要**有目的地调节这个阈值**，使得他们在这些指定的 FPR 下测量到的 TPR 是多少，从而比较不同攻击方法的效果。
 >
 > ![](F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbor2.png)
+>
+> 思考：
+>
+> 1.目前的 **neighborhood** 决策规则中使用的是当前样本与其 **n** 个邻居样本之间的损失差异，可以引入多层邻居信息。**k-hop 邻居**：第1层邻居（直接邻居），第2层邻居（与第1层邻居的邻居）...
+>
+> <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250218204540804.png" alt="image-20250218204540804" style="zoom: 67%;" />
+>
+> - wi 是第 **i** 层邻居的权重，远离目标样本的邻居权重较小。
+>
+> - ni 是第 **i** 层邻居的数量。
+> - 分别计算每个邻居的损失值最后取加权平均值
 
 2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
