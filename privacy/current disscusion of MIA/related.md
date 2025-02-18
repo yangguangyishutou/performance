@@ -150,6 +150,23 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > - ni 是第 **i** 层邻居的数量。
 > - 分别计算每个邻居的损失值最后取加权平均值
+>
+> 2.目前，对于同一个样本生成的若干个邻居都是相同地位的，可以动态地调整每个邻居的 权重。例如，与样本相似度更高的邻居可以赋予更高的权重，可能会使攻击效果更好。
+>
+> 3.输入构建：
+>
+> - **数据读取**：从 **CSV 文件**（如 Twitter、News、Wiki）加载原始文本。
+>
+> - **数据预处理**：对文本进行清洗、过滤，去掉不必要的字符或空值。
+>
+> - **文本标记化**：使用 **Tokenizer**（BERT、DistilBERT、RoBERTa）将原始文本转换为 **token ids**，并确保符合模型的输入要求（填充和截断）。
+>   - **文本 Tokenization**： 每个文本会通过 `search_tokenizer` 进行 tokenization（标记化）。`search_tokenizer` 依赖于所选模型的 **Tokenizer**（BERT、DistilBERT 或 RoBERTa）。该过程将文本转化为模型可以处理的 **token ids** 格式，并且对超长的文本进行 **截断**，对短文本进行 **填充**，确保每个输入样本的长度符合模型的要求（最大 512 个 token）。
+>   - **特殊 Token**：
+>     - `[CLS]`：每个输入文本会以 `[CLS]` token 开始，用于标识序列的开始。对于分类任务来说，这个 token 的输出通常用于表示整个序列的表示。
+>     - `[SEP]`：如果有两个句子作为输入，它们之间会用 `[SEP]` 进行分隔。在这种情况下，模型会分别对每个句子进行编码。
+>     - 在模型输入时，原始文本会被处理为类似以下格式：[CLS] valkyria chronicles iii = [SEP] (second sentence if available) [SEP]
+>
+> - **模型输入**：将标记化后的文本输入模型进行推理，得到 logits 和其他输出信息（如概率分布）。
 
 2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
