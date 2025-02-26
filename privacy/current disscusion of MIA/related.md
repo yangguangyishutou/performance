@@ -110,49 +110,30 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > TODO：if the model score of the target data is similar to the crafted neighbors, then they are all plausible points from the distribution and the target point is not a member of the training set. However, if a sample is much more likely under the target model’s distribution than its neighbors, we infer that this could only be a result of overfitting ： 用公式如何表示
 >
 > DO: 使用一种基于**neighbors**的决策规则，用来判断一个给定的样本 xxx 是否可能是模型训练集中的成员。具体做法是先构造若干与 xxx 语义、语法上极为相似但不在训练集中的邻居样本 {x~1,…,x~n}，计算目标模型对 xxx 的损失与对这些邻居的平均损失之间的差值，再与某个阈值 γ 进行比较。如果这个差值远小于 γ ，就说明模型对 xxx 可能存在“过拟合”，进而暗示 xxx 可能出现在训练集中。
-> $$
-> Δ=L(f 
-> θ
-> ​
-> ,x)− 
-> n
-> 1
-> ​
 > 
-> i=1
-> ∑
-> n
-> ​
-> L(f 
-> θ
-> ​
-> , 
-> x
-> ~
-> 
-> i
-> ​
-> ).
-> $$
 > <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbors1.png" style="zoom: 67%;" />
->
+> 
+> L(f, x)损失值的具体计算：
+> 
+> <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250226145532918.png" alt="image-20250226145532918" style="zoom: 67%;" />
+> 
 > 在论文中，为了得到表格中列出的**低 FPR**（1%、0.1%、0.01%），需要**有目的地调节这个阈值**，使得他们在这些指定的 FPR 下测量到的 TPR 是多少，从而比较不同攻击方法的效果。
->
+> 
 > ![](F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbor2.png)
->
+> 
 > 思考：
->
+> 
 > 1.目前的 **neighborhood** 决策规则中使用的是当前样本与其 **n** 个邻居样本之间的损失差异，可以引入多层邻居信息。**k-hop 邻居**：第1层邻居（直接邻居），第2层邻居（与第1层邻居的邻居）...
->
+> 
 > <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250218204540804.png" alt="image-20250218204540804" style="zoom: 67%;" />
->
+> 
 > - wi 是第 **i** 层邻居的权重，远离目标样本的邻居权重较小。
->
+> 
 > - ni 是第 **i** 层邻居的数量。
 > - 分别计算每个邻居的损失值最后取加权平均值
->
+> 
 > 2.目前，对于同一个样本生成的若干个邻居都是相同地位的，可以动态地调整每个邻居的 权重。例如，与样本相似度更高的邻居可以赋予更高的权重，可能会使攻击效果更好。
->
+> 
 > 3.输入构建：
 >
 > - **数据读取**：从 **CSV 文件**（如 Twitter、News、Wiki）加载原始文本。
@@ -160,13 +141,13 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > - **数据预处理**：对文本进行清洗、过滤，去掉不必要的字符或空值。
 >
 > - **文本标记化**：使用 **Tokenizer**（BERT、DistilBERT、RoBERTa）将原始文本转换为 **token ids**，并确保符合模型的输入要求（填充和截断）。
->   - **文本 Tokenization**： 每个文本会通过 `search_tokenizer` 进行 tokenization（标记化）。`search_tokenizer` 依赖于所选模型的 **Tokenizer**（BERT、DistilBERT 或 RoBERTa）。该过程将文本转化为模型可以处理的 **token ids** 格式，并且对超长的文本进行 **截断**，对短文本进行 **填充**，确保每个输入样本的长度符合模型的要求（最大 512 个 token）。
+>  - **文本 Tokenization**： 每个文本会通过 `search_tokenizer` 进行 tokenization（标记化）。`search_tokenizer` 依赖于所选模型的 **Tokenizer**（BERT、DistilBERT 或 RoBERTa）。该过程将文本转化为模型可以处理的 **token ids** 格式，并且对超长的文本进行 **截断**，对短文本进行 **填充**，确保每个输入样本的长度符合模型的要求（最大 512 个 token）。
 >   - **特殊 Token**：
->     - `[CLS]`：每个输入文本会以 `[CLS]` token 开始，用于标识序列的开始。对于分类任务来说，这个 token 的输出通常用于表示整个序列的表示。
+>    - `[CLS]`：每个输入文本会以 `[CLS]` token 开始，用于标识序列的开始。对于分类任务来说，这个 token 的输出通常用于表示整个序列的表示。
 >     - `[SEP]`：如果有两个句子作为输入，它们之间会用 `[SEP]` 进行分隔。在这种情况下，模型会分别对每个句子进行编码。
->     - 在模型输入时，原始文本会被处理为类似以下格式：[CLS] valkyria chronicles iii = [SEP] (second sentence if available) [SEP]
->
-> - **模型输入**：将标记化后的文本输入模型进行推理，得到 logits 和其他输出信息（如概率分布）。
+>    - 在模型输入时，原始文本会被处理为类似以下格式：[CLS] valkyria chronicles iii = [SEP] (second sentence if available) [SEP]
+> 
+>- **模型输入**：将标记化后的文本输入模型进行推理，得到 logits 和其他输出信息（如概率分布）。
 
 2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
