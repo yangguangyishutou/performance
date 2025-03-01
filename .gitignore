@@ -228,5 +228,12 @@ TSWLatexianTemp*
 license/main.pdf
 license/fig/xyf_run_copy.sh
 
+# jupyter notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
 # personal note
 defend/note/
+defend/EasyJailbreak/easyjailbreak.egg-info/
+defend/EasyJailbreak/venv/
+defend/EasyJailbreak/zyh-note/
