@@ -141,6 +141,11 @@
   - PEZ
   - AutoPrompt
 - 技术细节
+## PAIR
+-初始数据集：
+JailbreakBench
+-结果：
+![image](https://github.com/user-attachments/assets/05e369e7-427c-495c-8606-8bbe506b0b9a)
 
 ## MasterKey
 
