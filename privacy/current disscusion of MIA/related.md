@@ -110,30 +110,32 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > TODO：if the model score of the target data is similar to the crafted neighbors, then they are all plausible points from the distribution and the target point is not a member of the training set. However, if a sample is much more likely under the target model’s distribution than its neighbors, we infer that this could only be a result of overfitting ： 用公式如何表示
 >
 > DO: 使用一种基于**neighbors**的决策规则，用来判断一个给定的样本 xxx 是否可能是模型训练集中的成员。具体做法是先构造若干与 xxx 语义、语法上极为相似但不在训练集中的邻居样本 {x~1,…,x~n}，计算目标模型对 xxx 的损失与对这些邻居的平均损失之间的差值，再与某个阈值 γ 进行比较。如果这个差值远小于 γ ，就说明模型对 xxx 可能存在“过拟合”，进而暗示 xxx 可能出现在训练集中。
-> 
+>
 > <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbors1.png" style="zoom: 67%;" />
-> 
+>
 > L(f, x)损失值的具体计算：
-> 
+>
 > <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250226145532918.png" alt="image-20250226145532918" style="zoom: 67%;" />
+>
 > 
+>
 > 在论文中，为了得到表格中列出的**低 FPR**（1%、0.1%、0.01%），需要**有目的地调节这个阈值**，使得他们在这些指定的 FPR 下测量到的 TPR 是多少，从而比较不同攻击方法的效果。
-> 
+>
 > ![](F:\GithubSITP\privacy\current disscusion of MIA\assets\neighbor2.png)
-> 
+>
 > 思考：
-> 
+>
 > 1.目前的 **neighborhood** 决策规则中使用的是当前样本与其 **n** 个邻居样本之间的损失差异，可以引入多层邻居信息。**k-hop 邻居**：第1层邻居（直接邻居），第2层邻居（与第1层邻居的邻居）...
-> 
+>
 > <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250218204540804.png" alt="image-20250218204540804" style="zoom: 67%;" />
-> 
+>
 > - wi 是第 **i** 层邻居的权重，远离目标样本的邻居权重较小。
-> 
+>
 > - ni 是第 **i** 层邻居的数量。
 > - 分别计算每个邻居的损失值最后取加权平均值
-> 
+>
 > 2.目前，对于同一个样本生成的若干个邻居都是相同地位的，可以动态地调整每个邻居的 权重。例如，与样本相似度更高的邻居可以赋予更高的权重，可能会使攻击效果更好。
-> 
+>
 > 3.输入构建：
 >
 > - **数据读取**：从 **CSV 文件**（如 Twitter、News、Wiki）加载原始文本。
@@ -144,10 +146,38 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >  - **文本 Tokenization**： 每个文本会通过 `search_tokenizer` 进行 tokenization（标记化）。`search_tokenizer` 依赖于所选模型的 **Tokenizer**（BERT、DistilBERT 或 RoBERTa）。该过程将文本转化为模型可以处理的 **token ids** 格式，并且对超长的文本进行 **截断**，对短文本进行 **填充**，确保每个输入样本的长度符合模型的要求（最大 512 个 token）。
 >   - **特殊 Token**：
 >    - `[CLS]`：每个输入文本会以 `[CLS]` token 开始，用于标识序列的开始。对于分类任务来说，这个 token 的输出通常用于表示整个序列的表示。
->     - `[SEP]`：如果有两个句子作为输入，它们之间会用 `[SEP]` 进行分隔。在这种情况下，模型会分别对每个句子进行编码。
+>         - `[SEP]`：如果有两个句子作为输入，它们之间会用 `[SEP]` 进行分隔。在这种情况下，模型会分别对每个句子进行编码。
 >    - 在模型输入时，原始文本会被处理为类似以下格式：[CLS] valkyria chronicles iii = [SEP] (second sentence if available) [SEP]
+>
+> - **模型输入**：将标记化后的文本输入模型进行推理，得到 logits 和其他输出信息（如概率分布）。
+>
+> 4.问题：缺少数据集中样本的真实标签
+>
+> - 作者将AG News数据集重新分为两个互不相交的子集（各60,000样本）：
+>  - **训练集（Target Model Training Data）**：用于训练目标模型（如GPT-2），对应成员推断攻击中的“正样本”（即训练成员）。
+>   - **非训练集（Non-Training Data）**：未被用于训练目标模型，作为成员推断攻击的“负样本”（即非成员）。
+> - 此外，还有一个**第三子集**（可能来自原始数据集或其他来源，如NewsCatcher）用于训练参考模型（见第3.2节）。
+>
+> TODO:
+>
+> 1. 邮件追踪
+>
+> 2. 看相关的其他文章
+> 3. 代码上的创新和可行性
+>
+> 邻居生成策略的改进
+>
+> 代码具有严格的语法和语义结构，直接替换词语可能导致功能错误。需设计**代码专用的邻居生成方法**：
+>
+> - **语法保留的变换**：
+>   - **变量/函数重命名**：使用代码抽象语法树（AST）解析，安全替换标识符名称，确保作用域一致性。
+>   - **控制流等价转换**：调整循环或条件语句结构（如将 `for` 循环改为 `while` 循环），保持逻辑不变。
+>   - **注释插入或删除**：添加或移除不影响功能的注释。
+>   - **代码格式调整**：修改缩进、空格或换行符，保持功能不变。
+> - **基于代码模型的生成**：
+>   - 使用预训练的代码模型（如 CodeBERT、Codex）生成语义等价的代码片段，例如通过掩码预测或代码补全。
+>
 > 
->- **模型输入**：将标记化后的文本输入模型进行推理，得到 logits 和其他输出信息（如概率分布）。
 
 2. Arxiv2024 Semantic Membership Inference Attack against Large Language Models.pdf	——zhuoyang
 
@@ -270,9 +300,54 @@ TODO Document Inference与现有技术的关系和创新？
 >
 > TODO 总体思路？ 给定文本形式的输出内容，如何inference membership？
 
+### F. Code Model
 
+TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in Code Models
 
-
+>**GOTCHA如何工作?**
+>
+>GOTCHA是一种针对代码补全模型的MIA方法，分为两个主要步骤：
+>
+>1. 训练代理模型(Surrogate Model)1.
+>
+>   - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
+>   - 代理模型会接收训练数据和非训练数据，生成相应的输出。
+>
+>2. 训练成员分类器(MIAClassifier)
+>
+>   - 使用代理模型的输入、输出和真实答案(Ground Truth)，生成代码嵌入(CodeEmbeddings)
+>
+>   - 基于这些嵌入，训练一个二元分类器，判断某段代码是否属于训练集。
+>
+>**关键创新**
+>
+>GOTCHA同时考虑了三类信息:
+>
+>- 模型输入:代码补全任务的初始代码，
+>- 模型输出:代理模型生成的补全代码。
+>- 真实答案:正确的补全代码。 这些信息被编码为嵌入向量，输入到一个神经网络分类器中。
+>
+>**受害者模型（Victim Models）**
+>
+>- 主要使用**CodeGPT**（基于GPT-2架构的代码补全模型），并扩展到其他五个开源模型（CodeGen、CodeParrot、GPT-Neo、PolyCoder-160M/0.4B）。
+>- 模型在JavaCorpus数据集上微调，包含约1.3万训练样本和8千测试样本。
+>
+>**数据集**
+>
+>使用`JavaCorpus`数据集，包含14,000多个GitHub上的Java项目。实验中将数据分为
+>
+>- 受害者模型的训练集(12,934个样本)和测试集(8,268个样本)
+>- 攻击者可访问的部分训练数据(例如10%或20%)用于训练代理型。
+>
+>**训练数据与微调**
+>
+>- 预训练数据: `CodeGPT`最初在`CodeSearchNet`的Java子集上预训练。
+>- 微调数据: 研究者使用`JavaCorpus`数据集(包含14,000多个GitHub Java项目)的1%子集进行微调。
+>
+>**获取训练数据**
+>
+>- **CodeSearchNet:** 这是一个公开数据集，可从GitHub下载:https://github.com/github/CodeSearchNet
+>- **JavaCorpus:** 由Allamanis和Sutton收集，包含大量Java项目。论文中提到`CodeXGLUE`(https://github.com/microsoft/CodeXGLUE)对JavaCorpus进行了预处理(例如移除注释、长字符串等)
 
 ## MIA Defense 
 
