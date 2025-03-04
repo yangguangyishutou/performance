@@ -85,25 +85,35 @@
   单问题攻击：
   
   Top-5初始种子策略：成功越狱了所有46个问题，平均每次攻击需要不到23次查询。
+  
   All初始种子策略：成功越狱了43个问题，平均每次攻击需要177.54次查询。
+  
   Invalid初始种子策略：成功越狱了21个问题，平均每次攻击需要358.91次查询。
   
   多问题攻击：
+  
   Top-1 ASR
+  
   Top-5 ASR
 
 - 被攻击模型
   
 1.Llama-2-7B-Chat
+
 2.ChatGPT
+
 3.Vicuna-7B
+
 4.其他模型：多个开源和商业模型（如Vicuna-13B、Baichuan-13B-Chat、ChatGPT-6B、Llama-2-13B-Chat、Llama-2-70B-Chat、GPT-4、Bard、Claude2、PaLM2）
 
 - 横向对比
   
   GCG：在Llama-2系列模型上表现较差，攻击成功率低于20%。虽然是一种白盒攻击，但由于其依赖于对抗性前缀的优化，攻击效果有限。
+  
   Human-Written：使用人工编写的越狱模板进行攻击。在商业模型上表现较好，但不及GPTFuzzer。
+  
   Masterkey：通过重写人工编写的模板生成新的模板。攻击效果与Human-Written方法相似，不及GPTFuzzer。
+  
   Here Is：在问题前添加“Sure, here's”短语。攻击效果较差，尤其是在Llama-2系列模型上。
 
 
