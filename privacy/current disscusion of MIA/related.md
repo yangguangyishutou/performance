@@ -165,7 +165,7 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > 2. 看相关的其他文章
 > 3. 代码上的创新和可行性
 >
-> 邻居生成策略的改进
+> **（1）邻居生成策略的改进**
 >
 > 代码具有严格的语法和语义结构，直接替换词语可能导致功能错误。需设计**代码专用的邻居生成方法**：
 >
@@ -176,6 +176,13 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >   - **代码格式调整**：修改缩进、空格或换行符，保持功能不变。
 > - **基于代码模型的生成**：
 >   - 使用预训练的代码模型（如 CodeBERT、Codex）生成语义等价的代码片段，例如通过掩码预测或代码补全。
+>
+> **（2）邻居功能等价性验证**
+>
+> 代码的“语义相似性”需通过功能等价性来定义：
+>
+> - **动态验证**：对生成的邻居代码执行自动化测试，确保其输入输出行为与原代码一致。
+> - **静态分析**：利用代码相似性检测工具（如代码克隆检测技术）验证结构或逻辑的等价性。
 >
 > 
 
@@ -308,16 +315,16 @@ TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in
 >
 >GOTCHA是一种针对代码补全模型的MIA方法，分为两个主要步骤：
 >
->1. 训练代理模型(Surrogate Model)1.
+>1. 训练代理模型(Surrogate Model)
 >
->   - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
->   - 代理模型会接收训练数据和非训练数据，生成相应的输出。
+>  - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
+>  - 代理模型会接收训练数据和非训练数据，生成相应的输出。
 >
 >2. 训练成员分类器(MIAClassifier)
 >
->   - 使用代理模型的输入、输出和真实答案(Ground Truth)，生成代码嵌入(CodeEmbeddings)
+>  - 使用代理模型的输入、输出和真实答案(Ground Truth)，生成代码嵌入(CodeEmbeddings)
 >
->   - 基于这些嵌入，训练一个二元分类器，判断某段代码是否属于训练集。
+>  - 基于这些嵌入，训练一个二元分类器，判断某段代码是否属于训练集。
 >
 >**关键创新**
 >
@@ -348,6 +355,20 @@ TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in
 >
 >- **CodeSearchNet:** 这是一个公开数据集，可从GitHub下载:https://github.com/github/CodeSearchNet
 >- **JavaCorpus:** 由Allamanis和Sutton收集，包含大量Java项目。论文中提到`CodeXGLUE`(https://github.com/microsoft/CodeXGLUE)对JavaCorpus进行了预处理(例如移除注释、长字符串等)
+>
+>**实验步骤**
+>
+>1. **训练受害者模型**: 在JavaCorpus上微调CodeGPT（或其他模型）。
+>2. **训练替代模型**: 使用部分训练数据（如20%）训练替代模型。
+>3. **生成MIA数据集**: 用替代模型对正/负样本生成预测结果。
+>4. **训练MIA分类器**: 结合输入、输出、真实标签的嵌入特征。
+>5. **评估攻击效果**: 在独立测试集上计算TPR、FPR、AUC。
+
+
+
+Arxiv 2024 Does Your Neural Code Completion Model Use My Code? A Membership Inference Approach
+
+
 
 ## MIA Defense 
 
