@@ -67,28 +67,40 @@
 ## GPTFuzzer
 
 - 初始数据集
+  
 -- dataset1：在ChatGPT、Llama-2-7B-Chat和Vicuna-7B模型上测试了77个人工编写的越狱模板
+
   指标：
+  
   ASR (Top-1): 最有效的越狱模板的成功率，该模板是根据其在从目标模型中引出越狱反应方面的个人表现而选择的
+  
   ASR (Top-5): 根据它们成功地生成越狱响应的目标模型，选择了5个最有效的越狱模板
+  
   平均成功模板数
+  
   无效模板数
+  
 -- dataset2：在Llama-2-7B-Chat模型上进行了单问题和多问题攻击实验
+
   单问题攻击：
+  
   Top-5初始种子策略：成功越狱了所有46个问题，平均每次攻击需要不到23次查询。
   All初始种子策略：成功越狱了43个问题，平均每次攻击需要177.54次查询。
   Invalid初始种子策略：成功越狱了21个问题，平均每次攻击需要358.91次查询。
+  
   多问题攻击：
   Top-1 ASR
   Top-5 ASR
 
 - 被攻击模型
+  
 1.Llama-2-7B-Chat
 2.ChatGPT
 3.Vicuna-7B
 4.其他模型：多个开源和商业模型（如Vicuna-13B、Baichuan-13B-Chat、ChatGPT-6B、Llama-2-13B-Chat、Llama-2-70B-Chat、GPT-4、Bard、Claude2、PaLM2）
 
 - 横向对比
+  
   GCG：在Llama-2系列模型上表现较差，攻击成功率低于20%。虽然是一种白盒攻击，但由于其依赖于对抗性前缀的优化，攻击效果有限。
   Human-Written：使用人工编写的越狱模板进行攻击。在商业模型上表现较好，但不及GPTFuzzer。
   Masterkey：通过重写人工编写的模板生成新的模板。攻击效果与Human-Written方法相似，不及GPTFuzzer。
