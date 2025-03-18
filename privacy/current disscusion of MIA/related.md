@@ -317,14 +317,14 @@ TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in
 >
 >1. 训练代理模型(Surrogate Model)
 >
->  - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
->  - 代理模型会接收训练数据和非训练数据，生成相应的输出。
+> - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
+> - 代理模型会接收训练数据和非训练数据，生成相应的输出。
 >
 >2. 训练成员分类器(MIAClassifier)
 >
->  - 使用代理模型的输入、输出和真实答案(Ground Truth)，生成代码嵌入(CodeEmbeddings)
+> - 使用代理模型的输入、输出和真实答案(Ground Truth)，生成代码嵌入(CodeEmbeddings)
 >
->  - 基于这些嵌入，训练一个二元分类器，判断某段代码是否属于训练集。
+> - 基于这些嵌入，训练一个二元分类器，判断某段代码是否属于训练集。
 >
 >**关键创新**
 >
@@ -363,6 +363,8 @@ TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in
 >3. **生成MIA数据集**: 用替代模型对正/负样本生成预测结果。
 >4. **训练MIA分类器**: 结合输入、输出、真实标签的嵌入特征。
 >5. **评估攻击效果**: 在独立测试集上计算TPR、FPR、AUC。
+>
+>**负样本**？？？
 
 
 
