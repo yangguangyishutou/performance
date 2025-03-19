@@ -78,6 +78,63 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > 提供了动态基准数据集 WIKIMIA，用于多模型的训练数据检测评估。
 >
 > MIN-K% PROB for Robust and Scalable Pretraining Data Detection in LLMs.
+>
+>
+> TODO
+>
+> **1.收集关键字和符号做成一个字典**
+>
+> ```python
+> set code_elements = {
+>     # 关键字 (Python 3.11)
+>     'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
+>     'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 
+>     'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 
+>     'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
+> 
+>     # 运算符
+>     '+', '-', '*', '/', '//', '%', '**',  # 算术运算符
+>     '<', '>', '<=', '>=', '==', '!=',    # 比较运算符
+>     '&', '|', '^', '~', '<<', '>>',      # 位运算符
+>     '@', ':=',                           # 其他运算符
+> 
+>     # 分隔符
+>     '(', ')', '[', ']', '{', '}',        # 括号
+>     ',', ':', '.', ';',                  # 基本分隔符
+>     '=', '+=', '-=', '*=', '/=', '//=', '%=', '@=', '&=', '|=', '^=', '>>=', '<<=', '**=',  # 赋值和增强赋值运算符
+> 
+>     # 特殊字符
+>     "'", '"', '#', '\\'                  # 引号、注释符号、反斜杠
+> }
+> ```
+>
+> **1.1关键字**
+>
+> - **官方来源**：Python的关键字列表由Python官方文档明确定义（[Python Keywords](https://docs.python.org/3/reference/lexical_analysis.html#keywords)）。这些关键字在Python解释器中被识别为保留字，不允许用作变量名或其他标识符。
+>
+>   <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250318103558586.png" alt="image-20250318103558586" style="zoom:50%;" />
+>
+> - **获取方式**：Python标准库中的keyword模块提供了一种程序化的方法来获取当前版本的所有关键字。
+>
+>   ```python
+>   import keyword
+>   print(keyword.kwlist)
+>   ```
+>
+> **1.2常用符号**
+>
+> - **官方来源**：Python的运算符和标点符号在官方文档中有详细定义（参见 [Python Operators](https://docs.python.org/3/reference/lexical_analysis.html#operators) 和 [Punctuators](https://docs.python.org/3/reference/lexical_analysis.html#punctuators)）。这些符号由Python词法分析器识别，并在语法规则中起到关键作用。
+>
+> <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250318104151510.png" alt="image-20250318104151510" style="zoom: 33%;" />
+>
+> **2.固定搭配**
+>
+> - **定义**：固定搭配是Python代码中由语法规则约束或编程实践约定俗成的token组合，它们在代码中反复出现，且token之间的顺序和搭配具有较高的预期性。
+> - **识别方法**：**抽象语法树（AST）**：Python提供了ast模块，能够精确识别语法结构（如For节点、If节点），从而标记固定搭配中的token。例如，for var in iterable:会被解析为一个For节点，其中的for、in和:是固定搭配的一部分。
+>   - **语法结构识别**：AST能够自动识别代码中的语法模式。例如，一个if语句会被解析为ast.If节点，您无需手动检查['if', '<condition>', ':']这样的token序列。
+>   - **准确性**：AST基于Python的官方语法规则生成，避免了手动匹配可能出现的错误。
+>   - **效率**：直接访问节点类型比遍历token序列更快。
+> - 或者：![image-20250318160448194](F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250318160448194.png)
 
 6. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
 
@@ -317,14 +374,14 @@ TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in
 >
 >1. 训练代理模型(Surrogate Model)
 >
->  - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
->  - 代理模型会接收训练数据和非训练数据，生成相应的输出。
+> - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
+> - 代理模型会接收训练数据和非训练数据，生成相应的输出。
 >
 >2. 训练成员分类器(MIAClassifier)
 >
->  - 使用代理模型的输入、输出和真实答案(Ground Truth)，生成代码嵌入(CodeEmbeddings)
+> - 使用代理模型的输入、输出和真实答案(Ground Truth)，生成代码嵌入(CodeEmbeddings)
 >
->  - 基于这些嵌入，训练一个二元分类器，判断某段代码是否属于训练集。
+> - 基于这些嵌入，训练一个二元分类器，判断某段代码是否属于训练集。
 >
 >**关键创新**
 >
@@ -363,6 +420,8 @@ TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in
 >3. **生成MIA数据集**: 用替代模型对正/负样本生成预测结果。
 >4. **训练MIA分类器**: 结合输入、输出、真实标签的嵌入特征。
 >5. **评估攻击效果**: 在独立测试集上计算TPR、FPR、AUC。
+>
+>**负样本**？？？
 
 
 
