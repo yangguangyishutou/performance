@@ -232,8 +232,3 @@ license/fig/xyf_run_copy.sh
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-# personal note
-defend/dev/
-defend/EasyJailbreak/easyjailbreak.egg-info/
-defend/EasyJailbreak/venv/
-defend/EasyJailbreak/zyh-note/
