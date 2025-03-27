@@ -135,6 +135,17 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >   - **准确性**：AST基于Python的官方语法规则生成，避免了手动匹配可能出现的错误。
 >   - **效率**：直接访问节点类型比遍历token序列更快。
 > - 或者：![image-20250318160448194](F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250318160448194.png)
+>
+> **3.识别后的处理**
+>
+> - 直接去除 / 加权
+> - 加权的方法？
+>
+> todo
+>
+> 把内容加到文章
+>
+> 规则抽象成代码
 
 6. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
 
