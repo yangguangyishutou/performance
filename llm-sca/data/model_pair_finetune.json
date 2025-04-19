@@ -1,0 +1,552 @@
+[
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "qihoo360/TinyR1-32B-Preview",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "cyberagent/DeepSeek-R1-Distill-Qwen-32B-Japanese",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "huihui-ai/DeepSeek-R1-Distill-Qwen-32B-abliterated",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "Skywork/Skywork-OR1-32B-Preview",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "NaniDAO/deepseek-r1-qwen-2.5-32B-ablated",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "qihoo360/Light-R1-32B-DS",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "unsloth/DeepSeek-R1-Distill-Qwen-32B",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "Gen-Verse/ReasonFlux-F1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "mlx-community/DeepSeek-R1-Distill-Qwen-32B",
+        "type": "finetune"
+    },
+    {
+        "base_model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+        "model": "mlx-community/DeepSeek-R1-Distill-Qwen-32B-bf16",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "mlx-community/phi-2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "jartine/phi-2-llamafile",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "yanolja/EEVE-Korean-2.8B-v1.0",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "Amu/spin-phi2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "BramVanroy/fietje-2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "malhajar/phi-2-meditron",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "MaziyarPanahi/phi-2-logical-sft",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "NovoCode/Phi-2-DPO",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "prince-canuma/Damysus-2.7B-Chat",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-2",
+        "model": "openaccess-ai-collective/phi2-alpaca",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "huihui-ai/QwQ-32B-abliterated",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "ArliAI/QwQ-32B-ArliAI-RpR-v1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "VIDraft/QwQ-R1984-32B",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "unsloth/QwQ-32B",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "mlx-community/QwQ-32B-bf16",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "prithivMLmods/Sombrero-QwQ-32B-Elite11",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "Rombo-Org/Rombo-LLM-V3.1-QWQ-32b",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "prithivMLmods/Sombrero-QwQ-32B-Elite10-Fixed",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "prithivMLmods/Sombrero-QwQ-32B-Elite9",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/QwQ-32B",
+        "model": "abeja/ABEJA-QwQ32b-Reasoning-Japanese-v1.0",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "Melady/TEMPO",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "smgriffin/pop-lyrics-generator-v1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "Arjun-G-Ravi/chat-GPT2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "axiomlaborg/Cable",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "juancopi81/mutopia_guitar_mmm",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "alibidaran/medical_transcription_generator",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "isaacus/open-australian-legal-gpt2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "chargoddard/gpt2-mistral-tokenizer",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "bipin/malayalam-gpt2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "openai-community/gpt2",
+        "model": "Toflamus/GPT-2_para3M",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "unsloth/phi-4",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "dnotitia/DNA-R1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "AXCXEPT/phi-4-deepseek-R1K-RL-EZO",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "Orion-zhen/phi-4-abliterated",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "SicariusSicariiStuff/Phi-lthy4",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "prithivMLmods/Phi-4-o1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "AXCXEPT/phi-4-open-R1-Distill-EZOv1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "SicariusSicariiStuff/Phi-Line_14B",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "huihui-ai/phi-4-abliterated",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-4",
+        "model": "prithivMLmods/Phi-4-QwQ",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "all-hands/openhands-lm-32b-v0.1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "open-r1/OlympicCoder-32B",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "huihui-ai/Qwen2.5-Coder-32B-Instruct-abliterated",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "rombodawg/Rombos-Coder-V2.5-Qwen-32b",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "Tesslate/Tessa-T1-32B",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "mlx-community/Qwen2.5-Coder-32B-Instruct-bf16",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "all-hands/openhands-critic-32b-exp-20250417",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "nisten/tqwendo-36b",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "InferenceIllusionist/MilkDropLM-32b-v0.3",
+        "type": "finetune"
+    },
+    {
+        "base_model": "Qwen/Qwen2.5-Coder-32B-Instruct",
+        "model": "SuanChang/rain-SQLCoder",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "ghost-x/ghost-7b-v0.9.0",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "azale-ai/Starstreak-7b-beta",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "MexIvanov/zephyr-python-ru",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "rishiraj/bondhu-7b-alpha",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "Jaykumaran17/Zephyr7b-Beta-sharded-bf16-finetuned-mental-health-conversational-Amod",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "MexIvanov/zephyr-python-ru-merged",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "MaziyarPanahi/zephyr-7b-beta-GPTQ",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "CreitinGameplays/ConvAI-9b",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "mjbuehler/Zephyr_V110",
+        "type": "finetune"
+    },
+    {
+        "base_model": "HuggingFaceH4/zephyr-7b-beta",
+        "model": "DanielSc4/storage_cache",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "OEvortex/EMO-phi-128k",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "paulilioaica/MixtureOfPhi3",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "ai-in-projectmanagement/ProjectManagementLLM",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "praysimanjuntak/llava-phi3-3.8b-lora",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "Muhammad2003/Orpo-Phi3-3B-128K",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "devngho/phi-3-mini-128k-back-to-base",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "aixonlab/RocRacoon-3b",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "sosoai/hansoldeco-phi3-128k-v0.1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "Antonio88/TaliML-PHI3-128K-ITA-V.1.0.FINAL",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-128k-instruct",
+        "model": "PrunaAI/microsoft-Phi-3-mini-128k-instruct-HQQ-1bit-smashed",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "goendalf666/salesGPT_v1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "goendalf666/salesGPT_v2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "isaacus/open-australian-legal-phi-1_5",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "zelalt/titletor-phi_1-5",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "Vasanth/phi-1_5-finetuned-gsm8k",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "BEE-spoke-data/phi-1bee5",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "AlbelTec/phi-1_5-finetuned-financial-ner",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "mrplants/arphiv",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "ssuzana/finetuningLLMs-project-phi-1.5",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/phi-1_5",
+        "model": "KalleV/uplimit-project-3-phi-1.5",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "raidhon/coven_tiny_1.1b_32k_orpo_alpha",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "as-cle-bert/tinyllama-essay-scorer",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "azam25/TinyLlama_instruct_generation",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "alexredna/TinyLlama-1.1B-Chat-v1.0-reasoning-v2",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "ShieldX/manovyadh-1.1B-v1-chat",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "RedHatAI/TinyLlama-1.1B-Chat-v1.0-pruned2.4",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "frankenmerger/MiniLlama-1.8b-Chat-v0.1",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "as-cle-bert/tiny-fungal-llama",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "OpenVINO/TinyLlama-1.1B-Chat-v1.0-fp16-ov",
+        "type": "finetune"
+    },
+    {
+        "base_model": "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+        "model": "JessonWong/uncensored-tiny-llama",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "numind/NuExtract",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "Mozilla/Phi-3-mini-4k-instruct-llamafile",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "rhaymison/phi-3-portuguese-tom-cat-4k-instruct",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "MaziyarPanahi/calme-2.3-phi3-4b",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "lintw/HealthGPT-M3",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "Mike0307/Phi-3-mini-4k-instruct-chinese-lora",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "KrithikV/MedMobile",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "GPD1/DeepSeek-R1-Distill-phi-3-mini-4k-lorar8-alpha16-50000samples",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "emillykkejensen/Phi-3-mini-4k-instruct-dansk",
+        "type": "finetune"
+    },
+    {
+        "base_model": "microsoft/Phi-3-mini-4k-instruct",
+        "model": "MaziyarPanahi/calme-2.2-phi3-4b",
+        "type": "finetune"
+    }
+]
