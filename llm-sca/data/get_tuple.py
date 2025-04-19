@@ -59,12 +59,14 @@ def scrape_huggingface_models(session, url):
         return []
 
 # 读取模型列表
-with open("models.txt", "r") as f:
+# base_model_path = "models.txt"
+base_model_path = "models_manual.txt"
+with open(base_model_path, "r") as f:
     model_ids = [line.strip().split("/") for line in f if "/" in line]
 
-# com_types = ['finetune', 'adapter', 'quantized', 'merge']
+com_types = ['finetune', 'adapter', 'quantized', 'merge']
 # com_types = ['adapter', 'quantized', 'merge']
-com_types = ['merge']
+# com_types = ['merge']
 # 3301 finetune
 # 2443 adapter 
 # 2663 quantized
@@ -88,7 +90,7 @@ for com_type in com_types:
             'base_model': f"{model_id[0]}/{model_id[1]}",
             'model': model,
             'type': com_type
-        } for model in models)
+        } for model in models[:10])
         
     # 保存结果时使用增量写入
     with open(f'model_pair_{com_type}.json', 'w', encoding='utf-8') as f:
