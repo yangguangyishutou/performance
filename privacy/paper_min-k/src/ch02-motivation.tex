@@ -1,0 +1,27 @@
+% !TeX root = ../main.tex
+
+\section{Motivation}\label{motivation}
+The inherent structural duality of source code – simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax} – introduces unique challenges for membership inference in code language models. Our analysis of XXX Python projects reveals that XXX\% of code tokens are bound by syntactic constraints (e.g., \texttt{for-in}, \texttt{try-except}), forming rigid patterns that obscure the memorization signals crucial for membership detection. This syntactic determinism manifests two fundamental barriers:
+
+\begin{itemize}
+\item \textbf{Syntax-Induced Noise Amplification}: Language-mandated tokens like \texttt{in}, \texttt{except}, and \texttt{:} exhibit near-identical probability distributions across member and non-member samples. Their structural predictability drowns out discriminative signals from author-specific patterns.
+\item \textbf{Contextual Ambiguity}: Traditional token-level approaches cannot distinguish between \textit{syntax-enforced occurrences} (e.g., \texttt{in} in \texttt{for x \textbf{in} data}) and \textit{semantically meaningful instances} (e.g., \texttt{if key \textbf{in} dict}). This equivalence creates false attribution pathways.
+
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{xxx.pdf}
+\caption{Proportion of syntax-bound tokens in Python code across domains (Web, ML, Systems). Structural elements dominate regardless of application context.}
+\label{fig:syntax_dom}
+\end{figure}
+
+The root challenge stems from code's \textit{mandatory scaffolding} property: any functionally correct implementation must embed programmer intent within grammatical constraints. Whereas natural language allows infinite paraphrasing, code requires specific token sequences to satisfy the interpreter. This creates an adversarial scenario where the very tokens that define correctness (keywords, delimiters) act as persistent noise sources for membership inference.
+
+Our approach leverages the \textit{dual predictability hierarchy} inherent in code:
+
+\textbf{Language-Level Predictability}: Syntax-enforced tokens follow deterministic patterns dictated by Python's grammar
+
+\textbf{Author-Level Predictability}: Unique implementation choices (variable names, API chains) reflect training data memorization
+
+By surgically separating these predictability layers through syntax-aware filtering, we amplify the discriminative power of membership signals while suppressing structural noise. This paradigm shift addresses the core limitation of existing methods – their inability to account for code's machine-enforced regularity – establishing a foundation for code-specific membership inference.

@@ -86,25 +86,25 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > ```python
 > set code_elements = {
->  # 关键字 (Python 3.11)
->  'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
->  'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 
->  'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 
->  'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
+> # 关键字 (Python 3.11)
+> 'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
+> 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 
+> 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 
+> 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 > 
->  # 运算符
->  '+', '-', '*', '/', '//', '%', '**',  # 算术运算符
->  '<', '>', '<=', '>=', '==', '!=',    # 比较运算符
->  '&', '|', '^', '~', '<<', '>>',      # 位运算符
->  '@', ':=',                           # 其他运算符
+> # 运算符
+> '+', '-', '*', '/', '//', '%', '**',  # 算术运算符
+> '<', '>', '<=', '>=', '==', '!=',    # 比较运算符
+> '&', '|', '^', '~', '<<', '>>',      # 位运算符
+> '@', ':=',                           # 其他运算符
 > 
->  # 分隔符
->  '(', ')', '[', ']', '{', '}',        # 括号
->  ',', ':', '.', ';',                  # 基本分隔符
->  '=', '+=', '-=', '*=', '/=', '//=', '%=', '@=', '&=', '|=', '^=', '>>=', '<<=', '**=',  # 赋值和增强赋值运算符
+> # 分隔符
+> '(', ')', '[', ']', '{', '}',        # 括号
+> ',', ':', '.', ';',                  # 基本分隔符
+> '=', '+=', '-=', '*=', '/=', '//=', '%=', '@=', '&=', '|=', '^=', '>>=', '<<=', '**=',  # 赋值和增强赋值运算符
 > 
->  # 特殊字符
->  "'", '"', '#', '\\'                  # 引号、注释符号、反斜杠
+> # 特殊字符
+> "'", '"', '#', '\\'                  # 引号、注释符号、反斜杠
 > }
 > ```
 >
@@ -157,7 +157,7 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >         ],
 >         "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#if"
 >     },
->     
+> 
 >     "for_in": {
 >         "type": "loop",
 >         "required": ["for", "in"],
@@ -289,7 +289,7 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >       assert "required" in phrase, "必需字段缺失"
 >       assert len(phrase["required"]) >=1, "至少需要1个必需元素"
 >       assert phrase.get("docs_ref"), "必须标注文档来源"
->       
+>   
 >   for name, phrase in syntax_phrases.items():
 >       validate_phrase(phrase)
 >   ```
@@ -304,13 +304,13 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > class SyntaxAnalyzer(ast.NodeVisitor):
 >     def __init__(self):
 >         self.detected_phrases = []
->     
+> 
 >     def visit_For(self, node):
 >         # 检测for-in模式
 >         if isinstance(node.target, ast.Name) and isinstance(node.iter, ast.Expr):
 >             self.detected_phrases.append(("for_in", node.lineno))
 >         self.generic_visit(node)
->     
+> 
 >     def visit_Try(self, node):
 >         # 检测try-except模式
 >         phrase_type = "try_except"
@@ -334,7 +334,15 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > # 输出: [('for_in', 2), ('try_except', 3)]
 > ```
 >
-> 
+> TODO:
+>
+> 负样本：时间筛选+改写片段
+>
+> 正样本：使用the pile训练的相关模型 / 换数据集（stackcoder...）
+>
+> 消融实验：两个方法指标分别去掉其中之一，验证其效果如何
+>
+> 解决实验代码的问题
 
 6. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
 
