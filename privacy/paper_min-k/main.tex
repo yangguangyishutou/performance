@@ -1,57 +1,40 @@
-% \documentclass[sigconf,review,anonymous,screen]{acmart}
 \documentclass{article}
 
-\usepackage{neurips_2024}
-%%
-%% \BibTeX command to typeset BibTeX logo in the docs
-% \AtBeginDocument{%
-%   \providecommand\BibTeX{{%
-%     Bib\TeX}}}
-    
-% \settopmatter{printfolios=true,printccs=false,printacmref=false}
-% \renewcommand\footnotetextcopyrightpermission[1]{}    
+\usepackage{neurips_2025}
 
-% \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
 
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
 \usepackage{tcolorbox}
 \usepackage{xspace}
 \usepackage{flushend}
 \usepackage{enumitem}
 \usepackage{algorithm}
-
-\usepackage{algorithm}
 \usepackage{listings}
-\usepackage{hyperref}
-
-% example style
 \usepackage{amsthm}
 \theoremstyle{acmdefinition}
 \newtheorem{exmp}{Example}[section]
-
-% tables
 \usepackage{multirow}
-\usepackage{booktabs}
 \usepackage{tabularx}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
-
 \usepackage{subcaption}
 
 % fraction
-\usepackage{nicefrac, xfrac}
+\usepackage{xfrac}
 
 % save space
-\usepackage{microtype}
 \setlength\floatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats
 \setlength\textfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats on the top or the bottom and the text
 \setlength\intextsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats inserted inside the text (using h) and the text
 \setlength\dbltextfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between a float spanning both columns and the text
 \setlength\dblfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats spanning both columns.
-
-% \usepackage{fancyhdr}
-% \pagestyle{fancy}
-% \fancyhead{}
-% \fancyhead[LO]{\footnotesize{Killing Two Birds with One Stone}}
-
 
 %itemize
 \newcommand{\SubItem}[1]{
@@ -124,10 +107,11 @@
 
 \clearpage
 
-\bibliographystyle{ACM-Reference-Format}
+% \bibliographystyle{ACM-Reference-Format}
 \bibliography{src/reference}
+\bibliographystyle{abbrv}
 
-\input{src/ch09-appendix}
+% \input{src/ch09-appendix}
 
 \clearpage
 

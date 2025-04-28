@@ -33,12 +33,12 @@ We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference 
     \mathcal{T}_{\text{filtered}} = \mathcal{T} \setminus \{ t_j \mid t_j \in \bigcup_{i=1}^n p_i^{\text{suf}} \}
     \]
     preserving contextual relationships through:
-    \[
-    \textsc{Keep}(t_k) = \begin{cases} 
-    0 & \text{if } t_k \in p_i^{\text{suf}} \land \textsc{IsSyntaxEnforced}(p_i^{\text{pre}}) \\
-    1 & \text{otherwise}
-    \end{cases}
-    \]
+    % \[
+    % \textsc{Keep}(t_k) = \begin{cases} 
+    % 0 & \text{if } t_k \in p_i^{\text{suf}} \land \textsc{IsSyntaxEnforced}(p_i^{\text{pre}}) \\
+    % 1 & \text{otherwise}
+    % \end{cases}
+    % \]
 
     \item \textbf{Adaptive Min-k\% Calculation}:
     Compute membership scores on the filtered token set:
@@ -60,7 +60,7 @@ To enable precise identification of syntax-bound phrases, we construct a validat
 We systematically collect Python's lexical elements through version-sensitive parsing, categorizing them into:
 \begin{itemize}
 \item \textbf{Reserved Keywords}: Programmatically retrieved via Python's \texttt{keyword} module (35 items in 3.11)
-\item \textbf{Operators & Delimiters}: Mapped to Python's operator precedence hierarchy (42 symbols) 
+\item \textbf{Operators \& Delimiters}: Mapped to Python's operator precedence hierarchy (42 symbols) 
 \item \textbf{Context-Sensitive Tokens}: Version-dependent elements like \texttt{match} (3.10+)
 \end{itemize}
 
