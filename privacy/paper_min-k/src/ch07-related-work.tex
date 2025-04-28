@@ -2,24 +2,49 @@
 
 \section{Related work}
 
-
-% MIA in 
-
-% We review previous work related to 
+\textbf{Overfitting in Language Models.}
 
 
+Tirumala et al. analyze the memorization dynamics of different parts of speech and find that models memorize nouns and numbers first, that larger models can memorize a larger portion of the data before over-fitting and tend to forget less throughout the training process\cite{tirumala2022memorization}.
+
+Machine learning turns out that machine learning models memorizes data (overfitting). Privacy attack 
+
+\textbf{Privacy Attack.}
+
+\textbf{Membership inference attack.} Membership inference attack was first introduced by using a Shokri et al.~\cite{shokri2017membership} where it necessasites a shadow model that imitate the behavior of the target model and an attack model to distinguish member/non-member based on the target model's behavior.  Whereas current attack methods all require access to the model's predicted confidence score, Choquette~\cite{choquette2021label} introduce a label-only attack that instead evaluates the robustness of the model's predicted (hard) labels under per- turbations of the input, to infer membership. Salem et al.~\cite{salem2018ml} relax the assumption of using shadow model (not knowning knowledge of the target model structure) and  having a dataset from the same distribution as the target model's training data and showing that such attacks are very broadly applicable at low cost and thereby pose a more severe risk than previously thought. Yeom reveals \cite{yeom2018privacy} that overfitting is sufficient to allow an attacker to perform membership inference. Song et al. \cite{song2019privacy} indicate defensive methods against adversarial examples increases the target model's vulnerability against membership inference attacks. Ye et al. \cite{ye2022enhanced} uses shadow model, which improves by using self-distillation, which further reduce the uncertainty of the attacker about the training data.
+Liu et al.\cite{liu2022membership} exploit target sample’s loss trajectory from the whole training process of the target model leveraging knowledge distillation for improving the attack performance
 
 
-% Membership inference attack in NLP. Membership Inference Attacks (MIAs) aim to determine whether an arbitrary sample is part of a given model’s training data (Shokri et al., 2017; Yeom et al., 2018b).
+He et al.~\cite{he2024difficulty} focus on difficulty calibration.
+
+
+good side: GDPR regulation. auditing.
+Huang et al. \cite{huang2024general} turn any passive membership-inference technique into a proactive data- auditing technique
+
+
+MIAs can exploit the fundamental privacy flaws in deep learning (\eg data). Otherwise, copyright violations. 
+
+
+vs privacy leakage. 
+
+
+
+% privacy attack > membership inference attack
+
+
+data reconstruction attacks. 
+
+% private machine learning %(Jayaraman & Evans, 2019; Jagielski et al., 2020; Zanella-Béguelin et al., 2020; Nasr et al., 2021; Huang et al., 2022; Nasr et al., 2023; Steinke et al., 2023). 
+
+% Defending against membership inference attack by shielding membership signals
 
 
 % These attacks pose substantial privacy risks to individuals and often serve as a basis for more severe attacks, such as data reconstruction (Carlini et al., 2021; Gupta et al., 2022; Cummings et al., 2023). 
 
-% Due to its fundamental association with privacy risk, MIA has more recently found applications in quantifying privacy vulnerabilities within machine learning models and in verifying the accurate implementation of privacy-preserving mechanisms (Jayaraman & Evans, 2019; Jagielski et al., 2020; Zanella-Béguelin et al., 2020; Nasr et al., 2021; Huang et al., 2022; Nasr et al., 2023; Steinke et al., 2023). Initially applied to tabular and computer vision data, the concept of MIA has recently expanded into the realm of language-oriented tasks. However, this expansion has predominantly centered around finetuning data detection (Song & Shmatikov, 2019; Shejwalkar et al., 2021; Mahloujifar et al., 2021; Jagannatha et al., 2021; Mireshghallah et al., 2022b). Our work focuses on the application of MIA to pretraining data detection, an area that has received limited attention in previous research efforts.
+% Due to its fundamental association with privacy risk, 
+% MIA has more recently found applications in quantifying privacy vulnerabilities within machine learning models and in verifying the accurate implementation of privacy-preserving mechanisms 
 
 
 
-
-% Dataset contamination. The dataset contamination issue in LMs has gained attention recently since benchmark evaluation is undermined if evaluation examples are accidentally seen during pre-training. Brown et al. (2020b), Wei et al. (2022), and Du et al. (2022) consider an example contaminated if there is a 13-gram collision between the training data and evaluation example. Chowdhery et al. (2022) further improves this by deeming an example contaminated if 70\% of its 8-grams appear in the training data. Touvron et al. (2023b) builds on these methods by extending the framework to tokenized inputs and judging a token to be contaminated if it appears in any token n-gram longer than 10 tokens. However, their methods require access to retraining corpora, which is largely unavailable for recent model releases. Other approaches try to detect contamination without access to pretraining corpora. Sainz et al. (2023) simply prompts ChatGPT to generate examples from a dataset by providing the dataset’s name and split. They found that the models generate verbatim instances from NLP datasets. Golchin & Surdeanu (2023) extends this framework to extract more memorized instances by incorporating partial instance content into the prompt. Similarly, Weller et al. (2023) demonstrates the ability to extract memorized snippets from Wikipedia via prompting. While these methods study contamination in closed-sourced models, they cannot determine contamination on an instance level. Marone & Van Durme (2023) argues that model-developers should release training data membership testing tools accompanying their LLMs to remedy this. However, this is not yet widely practiced.
 
 
