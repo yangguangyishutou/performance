@@ -2,37 +2,80 @@
 
 \section{Related work}
 
-\textbf{Overfitting in Language Models.}
+
+% Tirumala et al. analyze the memorization dynamics of different parts of speech and find that models memorize nouns and numbers first, that larger models can memorize a larger portion of the data before over-fitting and tend to forget less throughout the training process\cite{tirumala2022memorization}.
+
+% % Machine learning turns out that machine learning models memorizes data (overfitting). Privacy attack 
+
+% including a shadow model that imitate the target model behavior and an attack model that differentiates members/non-members. 
+% Subsequently, a substantial body of literature improved the shadow model attack~. 
+% leveraging knowledge distillation for improving the attack performance.
+% Those attacks may be incomparable as the meaning of their success rates is dependent on specific assumptions about the adversary’s uncertainty about the target,
+% Ye et al. \cite{ye2022enhanced} uses shadow model, which improves by using self-distillation, which further reduce the uncertainty of the attacker.
+% Salem et al.~\cite{salem2018ml} relax the assumption of using shadow model (not knowning knowledge of the target model structure) and having a dataset from the same distribution as the target model's training data and showing that such attacks are very broadly applicable at low cost and thereby pose a more severe risk than previously thought. 
+% Yeom reveals that overfitting is sufficient to allow an attacker to perform membership inference. Yeom assume that the adversary knows the target model's training dataset distribution and size, 
+% Yoem conducts membership inference by relying on the samples' loss.
+
+% \textbf{MIA in ML.} Membership inference attack has gaining popularity by measuring and auditing privacy risks in machine learning~\cite{song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, song2021systematic, truex2019demystifying}. Shokri et al.~\cite{shokri2017membership} first introduced a shadow model-based technique under the assumption where the adversary knows the model structure, and data distribution. 
+% The assumption is not perfect and has subsequently many variations.
+% Salem et al.~\cite{salem2018ml} relaxed the assumptions to the shadow models of using different architectures and parameters. Liu et al.\cite{liu2022membership} assumes that the loss trajectory of the distilled model correlates with the target model's true loss trajectory. 
+% Choquette et al.~\cite{choquette2021label} assumes model's predicted confidence score to be unaccessible.
+% Rezaei et al. \cite{rezaei2021difficulty} pointed out the misleading results due the evaluation threat between well-trained models and overfitted models.
+% Kazmi et al. \cite{kazmi2024panoramia} assumes that generated data as non-members serves same functionality as real data. 
+% Ye et al. \cite{ye2022enhanced} formalize attacks and the assumptions in a consistent framework. 
+% In addition, the shadow model framework has other improvements. Yeom et al.~\cite{yeom2018privacy} reveals that overfitting is sufficient and a threshold classifier based on the predicted confidence achieves similar accuracy as using attack models. 
+% Furthermore, it has been pointed out that existing work focuses only on the aggregate results over data samples, lacking a fine-grained understanding in individual samples~\cite{song2021systematic}.
+% As an answers, difficulty calibration adjusts attack's predicted membership scores to the difficulty of correctly classifying the target sample\cite{watson2021importance, he2024difficulty}. Carlini et al.~\cite{carlini2022membership} explain that attacks should be judged by their TPR only when the FPR is low, instead of considering average-case success metrics.
 
 
-Tirumala et al. analyze the memorization dynamics of different parts of speech and find that models memorize nouns and numbers first, that larger models can memorize a larger portion of the data before over-fitting and tend to forget less throughout the training process\cite{tirumala2022memorization}.
+\textbf{MIA in Machine Learning.} Membership inference attacks (MIAs) have gained traction as tools to audit privacy risks in machine learning~\cite{song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, truex2019demystifying}. Shokri et al.~\cite{shokri2017membership} introduced a shadow model-based approach assuming knowledge of the model architecture and data distribution. Subsequent works relaxed or challenged these assumptions. Salem et al.~\cite{salem2018ml} used diverse shadow model architectures; Liu et al.~\cite{liu2022membership} correlated loss trajectories between distilled models and target model; Choquette et al.~\cite{choquette2021label} assumed confidence scores are unavailable. Rezaei et al.~\cite{rezaei2021difficulty} highlighted evaluation pitfalls between overfitted and well-trained models. Kazmi et al.~\cite{kazmi2024panoramia} assumes synthetic non-member data to be consistent with queried non-member data. Ye et al.~\cite{ye2022enhanced} formalized attack assumptions in a unified framework. Besides, the shadow model framework has seen other advances. Yeom et al.~\cite{yeom2018privacy} showed that overfitting alone enables effective attacks, where a simple threshold on prediction confidence can match the accuracy of complex attack models. Song et al.~{song2021systematic} highlighted the lack of per-sample analysis, prompting difficulty calibration methods that adjust membership scores based on sample hardness~\cite{watson2021importance, he2024difficulty}. Carlini et al.~\cite{carlini2022membership} emphasized evaluating attacks at low FPRs rather than relying on average-case metrics.
 
-Machine learning turns out that machine learning models memorizes data (overfitting). Privacy attack 
-
-\textbf{Privacy Attack.}
-
-\textbf{Membership inference attack.} Membership inference attack was first introduced by using a Shokri et al.~\cite{shokri2017membership} where it necessasites a shadow model that imitate the behavior of the target model and an attack model to distinguish member/non-member based on the target model's behavior.  Whereas current attack methods all require access to the model's predicted confidence score, Choquette~\cite{choquette2021label} introduce a label-only attack that instead evaluates the robustness of the model's predicted (hard) labels under per- turbations of the input, to infer membership. Salem et al.~\cite{salem2018ml} relax the assumption of using shadow model (not knowning knowledge of the target model structure) and  having a dataset from the same distribution as the target model's training data and showing that such attacks are very broadly applicable at low cost and thereby pose a more severe risk than previously thought. Yeom reveals \cite{yeom2018privacy} that overfitting is sufficient to allow an attacker to perform membership inference. Song et al. \cite{song2019privacy} indicate defensive methods against adversarial examples increases the target model's vulnerability against membership inference attacks. Ye et al. \cite{ye2022enhanced} uses shadow model, which improves by using self-distillation, which further reduce the uncertainty of the attacker about the training data.
-Liu et al.\cite{liu2022membership} exploit target sample’s loss trajectory from the whole training process of the target model leveraging knowledge distillation for improving the attack performance
+% Improvements to the shadow model framework include Yeom et al.~\cite{yeom2018privacy}, who showed overfitting alone suffices for successful attacks using simple thresholding. 
 
 
-He et al.~\cite{he2024difficulty} focus on difficulty calibration.
+
+% \textbf{MIA in ML.} Membership inference attacks (MIAs) measure privacy risks in machine learning~\cite{song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, song2021systematic, truex2019demystifying}. Shokri et al.~\cite{shokri2017membership} first proposed a shadow model-based attack assuming known model structure and data distribution. Later work relaxed these assumptions: Salem et al.~\cite{salem2018ml} used different shadow architectures, Liu et al.~\cite{liu2022membership} leveraged loss trajectories of the distilled model which correlates with the target model's true loss trajectory, and Choquette et al.~\cite{choquette2021label} restricted confidence score access. Rezaei et al.~\cite{rezaei2021difficulty} highlighted evaluation pitfalls between overfitted and well-trained models, while Kazmi et al.~\cite{kazmi2024panoramia} used generated non-member data. Ye et al.~\cite{ye2022enhanced} unified attack formalization.
+
+% Improvements include Yeom et al.'s~\cite{yeom2018privacy} threshold classifier showing overfitting suffices for MIAs, and critiques of coarse-grained evaluation~\cite{song2021systematic}. Difficulty calibration adjusts scores by sample hardness~\cite{watson2021importance, he2024difficulty}, and Carlini et al.~\cite{carlini2022membership} advocate judging attacks by TPR at low FPR.
 
 
-good side: GDPR regulation. auditing.
-Huang et al. \cite{huang2024general} turn any passive membership-inference technique into a proactive data- auditing technique
 
 
-MIAs can exploit the fundamental privacy flaws in deep learning (\eg data). Otherwise, copyright violations. 
+% Watson et al.\cite{watson2021importance} proposes difficulty calibration where an attack's predicted membership score is adjusted to the difficulty of correctly classifying the target sample and He et al.~\cite{he2024difficulty} further improves difficulty calibration.
+ 
+% Besides, there are also studies on MIA in visual models~\cite{zhang2024membership, ko2023practical}.
+
+% studies  we show that the way the MI attack performance has been reported is often misleading because they suffer from high false positive rate or false alarm rate (FAR) that has not been reported.
+
+% argue average-case success metrics (\eg accuracy ROC-AUC) reflects average case, and argue that attacks should be judged by their TPR only when the FPR is low, ensuring the attack is both effective (high TPR) and precise (minimal false alarms).
+
+% introduce a label-only attack without access to the 
+
+% Kazmi et al. \cite{kazmi2024panoramia} present PANORAMIA, a privacy leakage measurement framework for machine learning models that relies on membership inference attacks using generated data as non-members. Their limitation is relying on generated non-member data.
 
 
-vs privacy leakage. 
+% Song et al. \cite{song2019privacy} studies the vulnerability of MIA against adversarial examples.
+% by introducing a shortcut in the inference from original outputs to membership status.
+% NN-based attacks.
+% using a threshold on the prediction confidence results
+% C Whereas current attack methods all require access to the model's predicted confidence score, Choquette~\cite{choquette2021label} introduce a label-only attack that instead evaluates the robustness of the model's predicted (hard) labels under perturbations of the input, to infer membership. 
 
+
+
+% visual models 
+%     Zhang et al.\cite{zhang2024membership} propose a rollout-attention-based MIA against ViTs.
+%     Ko et al. \cite{ko2023practical} pilot study of practical MIAs against large-scale multi-modal models.
+
+% indicate defensive methods against adversarial examples increases the target model's vulnerability against membership inference attacks. 
+
+% Truex et al.~\cite{truex2019demystifying} probability vector.
+
+% Huang et al. \cite{huang2024general} turn any passive membership-inference technique into a proactive data- auditing technique
 
 
 % privacy attack > membership inference attack
 
-
-data reconstruction attacks. 
+% data reconstruction attacks. 
 
 % private machine learning %(Jayaraman & Evans, 2019; Jagielski et al., 2020; Zanella-Béguelin et al., 2020; Nasr et al., 2021; Huang et al., 2022; Nasr et al., 2023; Steinke et al., 2023). 
 
@@ -44,7 +87,59 @@ data reconstruction attacks.
 % Due to its fundamental association with privacy risk, 
 % MIA has more recently found applications in quantifying privacy vulnerabilities within machine learning models and in verifying the accurate implementation of privacy-preserving mechanisms 
 
+% The problem of auditing is closely related to the problem of membership inference~\cite{song2019auditing}, but auditing text-generation models requires new technical machinery vs. membership inference in image-classification and categorical models.  studies how deep learning-based, text-generation models memorize their training data.
+% hypothesize that if the model score of the target data is similar to the crafted neighbors, then they are all plausible points from the distribution and the target point is not a member of the training set. However, if a sample is much more likely under the target model’s distribution than its neighbors, we infer that this could only be a result of overfitting and therefore the sample must be a part of the model’s training data.
 
+% for pretraining data detection. The basic idea underlying divergence-from-randomness is that the higher the divergence of the within-document term-frequency of a word in a document from its frequency within the collection, the more information the word carries.
+
+
+% \textbf{MIA in Language Models.} Song et al.~\cite{song2019auditing} studies deep learning-based text-generation models memorize training data and Carlin et al.\cite{carlini2021extracting} demonstrate that large language models memorize and leak verbatim training sentences. 
+% As verbatim training sentences (\ie literal) are easy to distinguish, a more fine-grained non-literal poses challenges. The mainstream is modeling the likelihood of sequence of words occurring in a given context.
+% Duan \cite{duan2024membership} find that MIAs barely outperform random guessing in LLMs  due to an inherently fuzzy boundary between members and non-members.
+% To this end, Mattern et al. \cite{mattern2023membership} relies on determining membership by creating neighboring data and observing their distribution differences. Zhang et al. \cite{zhang2024pretraining} calibrate the token probabilities by observing the divergence between within-document term-frequency and within-collection term-frequency. The higher the divergence is, the more information the word carries.
+% Shi et al. \cite{shi2023detecting} proposes reference-free (free of pretrainig corpus knowledge and additional training) MIN-K\% prob based on the assumption that a member is less likely to contain words with low probabilities than non-members.
+
+
+\textbf{MIA in Language Models.} Song et al.~\cite{song2019auditing} investigated how deep learning-based text generation models memorize training data, while Carlini et al.~\cite{carlini2021extracting} demonstrated that large language models can leak verbatim training sentences. While literal (verbatim) memorization is easier to detect, identifying non-literal memorization remains challenging. Most approaches focus on modeling the likelihood of word sequences in context. Duan~\cite{duan2024membership} found that MIAs perform only slightly better than random guessing in LLMs, due to the inherently fuzzy boundary between members and non-members.
+To address this, Mattern et al.~\cite{mattern2023membership} proposed generating neighboring data and comparing their distribution to infer membership. Zhang et al.~\cite{zhang2024pretraining} calibrated token probabilities by measuring the divergence between within-document and corpus-level term frequencies, hypothesizing that higher divergence signals greater information content. Shi et al.~\cite{shi2023detecting} introduced a reference-free method, MIN-K\% prob, which assumes members are less likely to contain low-probability tokens compared to non-members.
+
+
+% ,  non-members with lower n-gram overlap are more distinguishable by existing MIAs.
+% for most settings across varying LLM sizes and domains 
+
+
+% a non-member contain a few outlier words with low probabilities 
+% , based on a simple hypothesis: an unseen example tends to contain a few outlier words with low probabilities, whereas a seen example is less likely to contain words with such low probabilities. 
+
+% MIN-K\% PROB can be applied without any knowledge about the pretrainig corpus or any additional training.
+% develop legal LLM  , we propose to detect the pre-training data from LLM in a pure blackbox way because the 
+% existing LLM services only return the generated text. But the existing methods are based on analyzing the output probabilities of models which are unrealistic to LLM services.  Then, we investigate a black-box framework named DPDLLM, with the only access to the generated texts from LLM for detecting textual data whether was used to train it.
+
+
+% \textbf{Copyright in LLMs.} Xu et al. \cite{xu2024llms} show that many popular LLMs do not respect copyright information in the user input. The content of books, web pages, and wikipedia pages which may have copyright claim by authors are investigated by Zhou et al. \cite{zhou2024dpdllm}. There are also benchmarks\cite{chen2024copybench, liu2024shield} on LLM copyrights proposed that supports measuring literal (\eg verbatim reproduction) and non-literal copying (\eg stories with identical plots and characters) in LM generations.
+% Meanwhile, some authors mentions the memorization issue of LM. Meeus et al. \cite{meeus2024copyright} confirmed that the LLM would not memorize sufficiently for a document-level membership inference, and justify the the use of document-specific copyright traps to enable membership inference. Shilov et al. \cite{shilov2024mosaic} proposes injection of fuzzy copyright traps, highly unlikely to be removed by any deduplication process and memorization LLM. The previous decades have seen litigations over copyright of the code, and copyleft violation. The copyright of code is well-honored. Yang et al. \cite{yang2024gotcha} present GOTCHA, a novel membership inference attack method designed for code models. Wan et al. \cite{wan2024does} proposes a novel membership inference attack for code completion models. 
+
+
+\textbf{Copyright Sources in Language Models.} Xu et al.~\cite{xu2024llms} found that many popular LLMs fail to respect copyright embedded in user inputs. Zhou et al.~\cite{zhou2024dpdllm} analyzed copyrighted sources such as books, websites, and Wikipedia to assess potential copyright violations. Recent benchmarks~\cite{chen2024copybench, liu2024shield} support evaluation of both literal copying (\eg~verbatim reproduction) and non-literal copying (\eg~replicated plots or characters) in LLM outputs. Documents memorization in LMs is another challenge. Meeus et al.~\cite{meeus2024copyright} observed that LLMs do not memorize enough to enable reliable document-level membership inference, and proposed document-specific copyright traps to support such inference. Shilov et al.~\cite{shilov2024mosaic} introduced fuzzy copyright traps designed to evade deduplication and persist through training. Interestingly, despite the well-established nature of code copyright—supported by numerous litigations and enforcement cases—there has been relatively little research on copyright issues in code-generating LLMs.
+Yang et al.~\cite{yang2024gotcha} presented GOTCHA, a membership inference attack tailored for code models. Similarly, Wan et al.~\cite{wan2024does} proposed a membership inference attack targeting code completion models.
+
+% While code copyright is more firmly established, prior legal disputes over copyleft violations have drawn attention. 
+
+
+
+% Chen et al. \cite{chen2024copybench} proposes COPYBENCH, a benchmark designed to measure both literal (\eg verbatim reproduction) and non-literal (\eg stories with identical plots and characters to those in copyrighted fictional books) copying in LM generations. prior research has focused only on literal similarities..
+% Liu et al. \cite{liu2024shield}  we integrate the benchmark, robustness, and defense method as a comprehensive framework, namely SHIELD.
+
+% designed to measure both literal (\eg verbatim reproduction) and non-literal (\eg stories with identical plots and characters to those in copyrighted fictional books) copying in LM generations.
+
+% Zhou et al. \cite{zhou2024dpdllm} set the real-world scenario of LLM only providing generated texts and develop legal LLM to detect books, web pages, and wikipedia pages that may have copyright claims.
+
+% Maini et al \cite{maini2024llm} observe existing work detect (temporal) distribution shifts rather than the membership of data points.
+
+
+% There is little investigated. 
+% The open-source of copyleft terms are well-understood over the lea
+% In terms of copyright 
 
 
 
