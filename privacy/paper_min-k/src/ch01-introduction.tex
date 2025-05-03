@@ -2,31 +2,27 @@
 
 \section{Introduction}
 
+The fundamentals of large language models (LLMs) stems from their access to vast and diverse datasets for pre-training. However, the copyright issue in the training corpora deserves serious attention. In recent years, numerous legal disputes have arisen concerning the use of copyrighted materials in training data\todo{}. 
+Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments\todo{cite}, but also as a means of fostering a supportive and respectful environment for content creators.
+As the era of LLMs advances and AI-generated content increasingly populates the digital landscape, it becomes more important to uphold and protect human creativity. 
+Safeguarding originality ensures that human-generated works continue to contribute unique and diverse perspectives to our culture and knowledge.
 
-The copyright should be honored, both in literature, required by governments. and in code, evaluated in many legal cases. 
+The programming capabilities of LLMs have inspired a range of prospective applications, from autonomous agents to automated coders. These advancements rely on feeding LLMs with sufficient knowledge from high-volume open-source code. However, such code is typically governed by specific usage obligations. \eg copyleft licenses like the GNU General Public License (GPL). The recent decades have seen many GPL conflicts and litigations~\cite{gpllitigation}. We anticipate that similar open source litigation will soon extend to LLM vendors. Looking back, the GPL was introduced in 1989 as part of the GNU Project~\cite{GNU}. Eighteen years later, we witnessed the first recognized lawsuit for a GPL violation, when Monsoon Multimedia was sued by the Software Freedom Conservancy~\cite{lvcriminaldefense, Informationweek}. This case underscores the importance for LLM developers to fully understand and respect the copyright content~\cite{xu2024llms}.
+Unfortunately, conflicts surrounding the use of pretraining data continue to emerge\todo{cite}, and few have reached resolution due to the protracted nature of litigation. %As a result, the transparency and accountability questions in LLMs remain unanswered.
 
-There is emerging conflicts unresolved. Model providers reluctant to provide. transparency issue exists. 
-
-
-MIA is a long-studied  topic. Initially, MIA was extensively studied in machine learning. 
-
-With the rise of LLMs, MIA was also introduced. 
-
-Yang 
+A few research works have attempts to answer the transparency and accountability issues in LLMs. Zhou et al.~\cite{zhou2024dpdllm} analyzed books, websites, and Wikipedia to assess potential copyright violations. Recent benchmarks~\cite{chen2024copybench, liu2024shield} support evaluation of both literal copying (\eg~verbatim reproduction) and non-literal copying (\eg~replicated plots or characters) from LLM outputs. There are also proactive measures known as copyright traps~\cite{shilov2024mosaic, meeus2024copyright}, which embeds carefully crafted copyrighted content (\ie similar to watermark) to enable precise detection of copyright violations. However, this approach inherently suffers from the limitation that such traps must be prepared in advance.
 
 
-Tirumala et al. analyze the memorization dynamics of different parts of speech and find that models memorize nouns and numbers first, that larger models can memorize a larger portion of the data before over-fitting and tend to forget less throughout the training process\cite{tirumala2022memorization}.
+A more promising approach involves applying membership inference attacks (MIAs) to LLMs. MIAs were initially used to determine whether a specific data point was part of the training dataset of a machine learning model~\cite{shokri2017membership, song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, truex2019demystifying}, thereby exposing potential privacy risks. MIAs in LLMs share the same intuitions that models memorizes data (overfitting)~\cite{song2019auditing, carlini2021extracting}. Tirumala et al.~\cite{tirumala2022memorization} find that models memorize nouns and numbers, and that larger models can memorize a larger portion of the data before over-fitting.
 
-% Machine learning turns out that machine learning models memorizes data (overfitting). Privacy attack 
+Unlike machine learning MIAs that rely on shadow or reference models, MIAs in LLMs typically exploit the model's token-level output and probabilities. Carlini et al.~\cite{carlini2021extracting} demonstrated that LLMs can leak verbatim training sentences. Nevertheless, identifying non-literal memorization remains more challenging compared to literal (verbatim) memorization. \todo{Most approaches focus on modeling the likelihood of word sequences in context.} Duan~\cite{duan2024membership} found that MIAs perform only slightly better than random guessing in LLMs, due to the inherently fuzzy boundary between members and non-members. Several approaches have been proposed, including leveraging neighboring data via synonym substitution~\cite{mattern2023membership}, calibrating token probabilities using term frequency divergence~\cite{zhang2024pretraining}, and detecting low-probability tokens~\cite{shi2023detecting}. However, they focus on general texts instead of code. 
+
+
+\todo{Yang et al.~\cite{yang2024gotcha} presented GOTCHA, a membership inference attack tailored for code models. Similarly, Wan et al.~\cite{wan2024does} proposed a membership inference attack targeting code completion models.}
 
 % privacy attack > membership inference attack
 
 % % data reconstruction attacks. 
-
-% % private machine learning %(Jayaraman & Evans, 2019; Jagielski et al., 2020; Zanella-Béguelin et al., 2020; Nasr et al., 2021; Huang et al., 2022; Nasr et al., 2023; Steinke et al., 2023). 
-
-
-
 
 \todo{Challenge I. Benchmark how to determine member and non-member. }
 
