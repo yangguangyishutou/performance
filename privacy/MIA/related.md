@@ -294,45 +294,7 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >       validate_phrase(phrase)
 >   ```
 >
-> **5.使用AST识别**
->
-> 示例：
->
-> ```python
-> import ast
 > 
-> class SyntaxAnalyzer(ast.NodeVisitor):
->     def __init__(self):
->         self.detected_phrases = []
-> 
->     def visit_For(self, node):
->         # 检测for-in模式
->         if isinstance(node.target, ast.Name) and isinstance(node.iter, ast.Expr):
->             self.detected_phrases.append(("for_in", node.lineno))
->         self.generic_visit(node)
-> 
->     def visit_Try(self, node):
->         # 检测try-except模式
->         phrase_type = "try_except"
->         if node.finalbody:
->             phrase_type += "_finally"
->         self.detected_phrases.append((phrase_type, node.lineno))
->         self.generic_visit(node)
-> 
-> # 使用示例
-> code = """
-> for i in range(10):
->     try:
->         print(i)
->     except ValueError:
->         pass
-> """
-> tree = ast.parse(code)
-> analyzer = SyntaxAnalyzer()
-> analyzer.visit(tree)
-> print(analyzer.detected_phrases)
-> # 输出: [('for_in', 2), ('try_except', 3)]
-> ```
 >
 > TODO:
 >
@@ -343,6 +305,26 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > 消融实验：两个方法指标分别去掉其中之一，验证其效果如何
 >
 > 解决实验代码的问题
+>
+> TODO 4.29 实验：
+>
+> 1. **数据解读**
+>
+> 2. 不同编程语言
+>
+> 3. 去掉部分规则，实现效果变差
+> 4. neighborhood对比实验
+> 5. 代码长度区间（三个）
+>
+> TODO 5.6
+>
+> 1.benchmark 项目 - 多个文件 - 多个函数 - 随机选xxx个    采集函数的规则要一定
+>
+> 如果pile数据集是随机顺序排列的，则顺序搜索下来就可：benchmark补充细节 xx条筛选xx条...
+>
+> 2.《gotcha》对比
+>
+> 3.表格和画图的框架放进文章
 
 6. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
 
