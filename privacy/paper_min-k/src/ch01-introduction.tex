@@ -2,7 +2,7 @@
 
 \section{Introduction}
 
-The fundamentals of large language models (LLMs) stems from their access to vast and diverse datasets for pre-training. However, the copyright issue in the training corpora deserves serious attention. In recent years, numerous legal disputes have arisen concerning the use of copyrighted materials in training data\todo{}. 
+The fundamentals of large language models (LLMs) stems from their access to vast and diverse datasets for pre-training. However, the copyright issue in the training corpora deserves serious attention. In recent years, numerous legal disputes have arisen concerning the use of copyrighted materials in training data\cite{openaisue, newssue}. 
 Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments\todo{cite}, but also as a means of fostering a supportive and respectful environment for content creators.
 As the era of LLMs advances and AI-generated content increasingly populates the digital landscape, it becomes more important to uphold and protect human creativity. 
 Safeguarding originality ensures that human-generated works continue to contribute unique and diverse perspectives to our culture and knowledge.
@@ -19,6 +19,16 @@ Unlike machine learning MIAs that rely on shadow or reference models, MIAs in LL
 
 
 \todo{Yang et al.~\cite{yang2024gotcha} presented GOTCHA, a membership inference attack tailored for code models. Similarly, Wan et al.~\cite{wan2024does} proposed a membership inference attack targeting code completion models.}
+
+
+
+We argue from the essential of copyright. The keywords in the code are inks and brushes, which should not be considered for MIA computation.
+
+Like prior works (Duan et al., 2024; Shi et al., 2024), we assume that we only have access to the target LLM as a black box: we can compute token probabilities for the text to be detected but have no access to the internals of the LLM (e.g., weights and activations).
+
+
+To facilitate this study and the evaluation of pre- training data detection for LLMs, we introduce a new benchmark named PatentMIA, specifically designed for Chinese-language pretraining data detection. PatentMIA is sourced from Google- Patents (Google, 2006) and constructed following Shi et al. (2024), who distinguish between train- ing and non-training data based on cut-off dates of the target LLM, where training data precedes, and non-training data follows, the cut-off date.
+
 
 % privacy attack > membership inference attack
 
