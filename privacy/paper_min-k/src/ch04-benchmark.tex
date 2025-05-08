@@ -25,18 +25,48 @@ As part of dataset construction, we collected and analyzed key Python code compo
 
 
 
+\begin{table}[!t] 
+    \centering
+    \caption{Benchmark Statistics}\label{tab:benchmark}
+    \begin{tabular}{m{2cm}m{2.2cm}m{1cm}m{1cm}m{1cm}m{1cm}m{0.8cm}m{0.8cm}m{0.8cm}}
+    \toprule
+    \multirow{2}{*}{Language}  &  \multirow{2}{*}{Label}  & Proj. (\#) & Files (\#)  & Func. (\#) & LOC (\#)  & \multicolumn{3}{c}{Length}  \\ 
+     \cmidrule(lr){7-9}       
+    &  & & & & & Short & Mid & Long \\
+    \midrule
+    \multirow{2}{*}{Python} & Members & & & & & \\
+    & Non-Members & & & & & \\\hline
+    \multirow{2}{*}{Java} & Members & & & & & \\
+    & Non-Members & & & & & \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
 
 
 \begin{table}[!t] 
     \centering
-    \caption{Benchmark Statistics}\label{tab:benchmark}
-    \begin{tabular}{m{1.8cm}m{1.8cm}m{1.5cm}m{1.6cm}m{1.5cm}m{1cm}m{1cm}m{1cm}}
+    \caption{Top 10 AST Tokens in our Benchmark}\label{tab:benchmark}
+    \begin{tabular}{m{2cm}m{2.2cm}m{1cm}}
     \toprule
-     & \textbf{Projects (\#)} & \textbf{Files (\#)}  & \textbf{Functions (\#)}  & \textbf{LOC (\#)}  & \multicolumn{3}{c}{\textbf{Length}}  \\ 
-            & & & & & Short & Mid & Long \\
-    \midrule
-    Members & & & & & \\
-    Non-Members & & & & & \\
+
+    Language  &  AST Token & Count \\\hline
+    \multirow{6}{*}{Python} & def & 100 \\
+     & in & 10 \\
+     & for & 121 \\
+     & import & 10 \\
+     & : & 121 \\
+     & else & 10 \\
+     & while & 121 \\\hline
+     \multirow{6}{*}{Java} & public & 100 \\
+     & in & 10 \\
+     & for & 121 \\
+     & import & 10 \\
+     & : & 121 \\
+     & else & 10 \\
+     & while & 121 \\
     \bottomrule
     \end{tabular}
 \end{table}
+
