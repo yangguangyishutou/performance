@@ -11,9 +11,9 @@ from tqdm import tqdm
 
 # ------------ Configuration ------------
 # Input: list of base models (one per line, format: namespace/model)
-BASE_MODEL_FILE = "base_models_part_?.txt" # 自己设置
+BASE_MODEL_FILE = "base_models.txt"
 # Output JSON file representing the forest
-OUTPUT_JSON = "model_forest_part_?.json" # 自己设置
+OUTPUT_JSON = "model_forest.json"
 # Maximum depth to avoid infinite recursion
 MAX_DEPTH = 4
 # Types of derivation to consider
