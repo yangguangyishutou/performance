@@ -8,6 +8,8 @@
 
 \textbf{Members.} We refer to Pile dataset which was used as the pre-training corpora for a number of models. Specifically, we select \todo{XXX} Python projects on GitHub ranked by stars. Then, we queried and found that \todo{XXX} of the projects are included in the Pile dataset. The projects represent diverse programming styles, complexities, and application domains. According to \todo{XX}, Pile was constructed in \todo{2023?}. Therefore, we cloned \todo{XXX} Python projects and reset to the time of \todo{2023?}, right before Pile was constructed. Next, we collected a total of \todo{XXX} Python files (\eg~\texttt{.py}) from the \todo{XXX} projects, excluding testing files. It totals \todo{XXX} Python functions. \todo{Sample?}
 
+% Pile --> Project list XXX         ---->            match 12 project       ---> 10 project --> XXX files ---> 300 functions
+%           GitHub projects 20 rank by start     ---filter cookbook -> 12 project   
 
 \textbf{Non-members.} 
 
@@ -18,3 +20,53 @@ To prepare the dataset, we performed the following preprocessing steps:
 \end{itemize}
 
 As part of dataset construction, we collected and analyzed key Python code components, including code elements, keywords, common symbols, and fixed patterns, detailed below.
+
+
+
+
+
+\begin{table}[!t] 
+    \centering
+    \caption{Benchmark Statistics}\label{tab:benchmark}
+    \begin{tabular}{m{2cm}m{2.2cm}m{1cm}m{1cm}m{1cm}m{1cm}m{0.8cm}m{0.8cm}m{0.8cm}}
+    \toprule
+    \multirow{2}{*}{Language}  &  \multirow{2}{*}{Label}  & Proj. (\#) & Files (\#)  & Func. (\#) & LOC (\#)  & \multicolumn{3}{c}{Length}  \\ 
+     \cmidrule(lr){7-9}       
+    &  & & & & & Short & Mid & Long \\
+    \midrule
+    \multirow{2}{*}{Python} & Members & & & & & \\
+    & Non-Members & & & & & \\\hline
+    \multirow{2}{*}{Java} & Members & & & & & \\
+    & Non-Members & & & & & \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
+
+
+\begin{table}[!t] 
+    \centering
+    \caption{Top 10 AST Tokens in our Benchmark}\label{tab:benchmark}
+    \begin{tabular}{m{2cm}m{2.2cm}m{1cm}}
+    \toprule
+
+    Language  &  AST Token & Count \\\hline
+    \multirow{6}{*}{Python} & def & 100 \\
+     & in & 10 \\
+     & for & 121 \\
+     & import & 10 \\
+     & : & 121 \\
+     & else & 10 \\
+     & while & 121 \\\hline
+     \multirow{6}{*}{Java} & public & 100 \\
+     & in & 10 \\
+     & for & 121 \\
+     & import & 10 \\
+     & : & 121 \\
+     & else & 10 \\
+     & while & 121 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
