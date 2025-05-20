@@ -10,17 +10,18 @@ Carlin et al.\cite{carlini2021extracting}. We mark each generation as either mem
 LOSS\cite{yeom2018privacy}
 ZLib\cite{carlini2021extracting}
 Min-K\cite{shi2023detecting}
+Gotcha\cite{yang2024gotcha}
 
 % Main document content
 \subsection{Setup}
 
 
-\textbf{Baselines.} To evaluate the effectiveness of our proposed Code-MiNK method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, and Min-K\%, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model’s uncertainty on less likely tokens, as seen in prior token-level membership inference work.
+\textbf{Baselines.} To evaluate the effectiveness of our proposed Code-Min-K\% method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, DC-PDD, Min-K\% and \todo{Gotcha}, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model’s uncertainty on less likely tokens, as seen in prior token-level membership inference work.\todo{Gotcha...}
 
-\textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{Microsoft/phi-2}, a compact model optimized for text and code tasks in low-resource settings; \textit{huggyllama/llama-7b}, a 7B parameter model based on Meta’s LLaMA architecture with robust contextual modeling; and \textit{TinyLlama/TinyLlama-1.1B-Chat-v1.0}, a lightweight LLaMA-derived model tailored for edge devices and conversational applications.
+\textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \todo{\textit{EleutherAI/pythia-12b...} \text{EleutherAI/gpt-neo-2.7B} \text{StabilityAI/stablelm-base-alpha-3b}}
 
 
-\textbf{Metrics.} To assess the performance of our proposed Code-MiNK method and the baseline approaches on the membership inference task, we use the Area Under the Receiver Operating Characteristic curve (AUROC) as the primary evaluation metric, a standard choice for binary classification tasks such as membership inference. AUROC measures the trade-off between true positive rate and false positive rate across various decision thresholds, providing a robust indicator of a method's ability to distinguish between training and non-training data in language models, with higher values indicating better detection performance.
+\textbf{Metrics.} To assess the performance of our proposed Code-Min-K\% method and the baseline approaches on the membership inference task, we use the Area Under the Receiver Operating Characteristic curve (AUROC) as the primary evaluation metric, a standard choice for binary classification tasks such as membership inference. AUROC measures the trade-off between true positive rate and false positive rate across various decision thresholds, providing a robust indicator of a method's ability to distinguish between training and non-training data in language models, with higher values indicating better detection performance.
 
 \textbf{Environment.} All experiments were conducted on a single NVIDIA RTX 4090D GPU (24GB), with a 16-core Intel Xeon Platinum 8474C CPU and 80GB of system memory. The software stack includes Ubuntu 20.04, Python 3.8, PyTorch 2.0.0, and CUDA 11.8.
 
@@ -42,7 +43,7 @@ Furthermore, the consistent performance gains from large models (LLaMA-7B) to li
 \caption{Comparison of methods across different models with AUROC scores (\%)}\label{tab:main_results}
 \begin{tabular}{m{2cm}m{2.6cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
 \toprule
-\textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{Phi-2} & \textbf{TinyLLaMA} & \textbf{LLaMA-7B}\\
+\textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{Pythia-12B} & \textbf{GPT-Neo-2.7B} & \textbf{StableLM-Alpha-3B}\\
 \midrule
 % Loss & 37.1 & 37.1 & 59.5 & 54.4 & 29.2 & 29.2 & 33.9 & 33.9 \\
 % ZLib & 31.5 & 31.5 & 32.6 & 32.0 & 29.3 & 29.3 & 31.0 & 31.0 \\
@@ -83,7 +84,7 @@ Furthermore, the consistent performance gains from large models (LLaMA-7B) to li
     \caption{AUROC Score of \tool under Different Lengths}
     \begin{tabular}{m{2cm}m{2cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
     \toprule
-    \textbf{Language} &\textbf{Length} & \textbf{Pythia-2.8B} & \textbf{Phi-2} & \textbf{TinyLLaMA} & \textbf{LLaMA-7B}\\
+    \textbf{Language} &\textbf{Length} & \textbf{Pythia-2.8B} & \textbf{Pythia-12B} & \textbf{GPT-Neo-2.7B} & \textbf{StableLM-Alpha-3B}\\
     \midrule
     \multirow{3}{*}{Python} & Short & & & & \\
      & Mid & & & & \\
