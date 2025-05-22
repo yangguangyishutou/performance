@@ -11,14 +11,15 @@ LOSS\cite{yeom2018privacy}
 ZLib\cite{carlini2021extracting}
 Min-K\cite{shi2023detecting}
 Gotcha\cite{yang2024gotcha}
+DC-PDD\cite{}
 
 % Main document content
 \subsection{Setup}
 
 
-\textbf{Baselines.} To evaluate the effectiveness of our proposed Code-Min-K\% method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, DC-PDD, Min-K\% and \todo{Gotcha}, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model’s uncertainty on less likely tokens, as seen in prior token-level membership inference work.\todo{Gotcha...}
+\textbf{Baselines.} To evaluate the effectiveness of our proposed Code-Min-K\% method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, DC-PDD, Min-K\% and Gotcha, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. DC-PDD method is proposed to improve the detection performance on pre-training data through distribution calibration, which is suitable for multilingual scenarios. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model’s uncertainty on less likely tokens, as seen in prior token-level membership inference work. GOTCHA is a MIA approach to code completion models.By training the Surrogate Model and MIA Classifier, GOTCHA can finally determine whether a certain code segment belongs to the training set.
 
-\textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \todo{\textit{EleutherAI/pythia-12b...} \text{EleutherAI/gpt-neo-2.7B} \text{StabilityAI/stablelm-base-alpha-3b}}
+\textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/pythia-12b}, a 12B parameter Transformer model with improved reasoning and instruction-following abilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment. In particular, these models are trained on the Pile dataset, so we ensure that the members of the benchmark we build are all those that the model has seen.
 
 
 \textbf{Metrics.} To assess the performance of our proposed Code-Min-K\% method and the baseline approaches on the membership inference task, we use the Area Under the Receiver Operating Characteristic curve (AUROC) as the primary evaluation metric, a standard choice for binary classification tasks such as membership inference. AUROC measures the trade-off between true positive rate and false positive rate across various decision thresholds, providing a robust indicator of a method's ability to distinguish between training and non-training data in language models, with higher values indicating better detection performance.
@@ -36,7 +37,7 @@ This consistent performance enhancement trend across multiple models highlights 
 
 Second, traditional compression-based metrics (e.g., ZLib) and overall perplexity metrics (e.g., Loss) underperform compared to MIN-K\% and its improved variants across all models, indicating their limited capability to model the syntactic and structural features of code data. For example, on LLaMA-7B, ZLib achieves an AUROC of only 31.0\%, significantly lower than Code-MiNK's best result of 52.7\%.
 
-Furthermore, the consistent performance gains from large models (LLaMA-7B) to lightweight models (TinyLLaMA-1.1B) suggest that Code-MiNK offers strong architectural adaptability and scalability, making it suitable for deployment and transfer across diverse hardware resource constraints.
+Furthermore, the consistent performance gains from large models (Pythia-12B) to lightweight models (GPT-Neo-2.7B) suggest that Code-MiNK offers strong architectural adaptability and scalability, making it suitable for deployment and transfer across diverse hardware resource constraints.
 
 \begin{table}[!t] 
 \centering
@@ -45,18 +46,7 @@ Furthermore, the consistent performance gains from large models (LLaMA-7B) to li
 \toprule
 \textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{Pythia-12B} & \textbf{GPT-Neo-2.7B} & \textbf{StableLM-Alpha-3B}\\
 \midrule
-% Loss & 37.1 & 37.1 & 59.5 & 54.4 & 29.2 & 29.2 & 33.9 & 33.9 \\
-% ZLib & 31.5 & 31.5 & 32.6 & 32.0 & 29.3 & 29.3 & 31.0 & 31.0 \\
-% Min-K\% 0.1 & 47.8 & 56.3 & 60.0 & 51.9 & 37.1 & 51.8 & 38.5 & 52.7 \\
-% Min-K\% 0.2 & 39.2 & 48.2 & 57.9 & 50.1 & 31.2 & 39.9 & 34.4 & 42.2 \\
-% Min-K\% 0.3 & 37.8 & 44.1 & 58.8 & 50.4 & 30.2 & 33.1 & 34.3 & 35.9 \\
-% Min-K\% 0.4 & 37.3 & 36.6 & 59.2 & 49.1 & 29.8 & 32.2 & 33.9 & 34.4 \\
-% Min-K\% 0.5 & 37.3 & 35.2 & 59.5 & 56.0 & 29.2 & 31.6 & 33.7 & 34.1 \\
-% Min-K\% 0.6 & 37.0 & 35.2 & 59.0 & 55.1 & 29.2 & 31.4 & 33.7 & 33.7 \\
-% Min-K\% 0.7 & 37.0 & 35.1 & 59.5 & 54.0 & 29.1 & 31.3 & 33.5 & 33.6 \\
-% Min-K\% 0.8 & 36.9 & 34.8 & 58.5 & 56.5 & 29.1 & 31.1 & 33.8 & 33.5 \\
-% Min-K\% 0.9 & 36.8 & 34.6 & 57.4 & 55.4 & 29.0 & 31.1 & 33.7 & 33.4 \\
-% Min-K\% 1.0 & 37.1 & 34.7 & 59.5 & 60.5 & 29.2 & 31.4 & 33.9 & 33.6 \\
+
 \multirow{6}{*}{Python} & Loss & 37.1 & 59.5 & 29.2 & 33.9 \\
 &ZLib & 31.5 & 32.6 & 29.3 & 31.0 \\
 &Min-K Prob & 39.2  & 57.9  & 31.2  & 34.4  \\ % K=0.2
