@@ -5,6 +5,7 @@
 \subsection{Min-k\% Prob with Syntax-Aware Filtering}
 We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference method specifically designed for code data. This extension addresses the fundamental difference between natural language and programming languages: code contains \textit{syntax-enforced patterns} where specific token sequences are structurally determined (e.g., \texttt{for...in...}, \texttt{if...else...}). The core insight is that suffix tokens in these patterns (e.g., \texttt{in}, \texttt{else}) exhibit high prediction probabilities regardless of their membership status, introducing noise to the Min-k\% Prob metric. Our method introduces a two-stage filtering process:
 
+
 \begin{enumerate}
     \item \textbf{Syntax Rule Construction}: 
     Establish a comprehensive syntax rule set $\mathcal{R}$ based on Python's formal grammar specification. For each syntax-bound phrase $r_i \in \mathcal{R}$, we define:
@@ -54,7 +55,13 @@ We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference 
 
 
 \subsection{Code Element and Syntax Pattern Database}
-To enable precise identification of syntax-bound phrases, we construct a validated database containing two core components:
+To prepare the dataset, we performed the following preprocessing steps:
+\begin{itemize}
+    \item Tokenized the code into individual tokens using Python's built-in \texttt{tokenize} module.
+    \item Filtered out scripts that could not be parsed correctly using the \texttt{ast} module, ensuring syntactic validity of all code snippets.
+\end{itemize}
+
+As part of dataset construction, we collected and analyzed key Python code components, including code elements, keywords, common symbols, and fixed patterns.
 
 \paragraph*{Code Element Dictionary}
 We systematically collect Python's lexical elements through version-sensitive parsing, categorizing them into:

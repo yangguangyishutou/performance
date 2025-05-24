@@ -1,0 +1,37 @@
+Model: pythia-2.8b、pythia-12b、EleutherAI/gpt-neo-2.7B、stabilityai/stablelm-base-alpha-3b
+数据集：基于目前的数据集分为short、meidum、long三个长度
+Baseline：loss、zlib、DC-PDD、
+预处理规则：
+
+1. AST 转换规则
+StripCloserButKeepBody
+去除控制流语句中的 else 和 elif，包括 if、for、while、try 语句中的 else 块
+被去除块中的语句会被保留并提升到外层顺序执行
+MinkSyntaxRemover
+删除终止性语句，包括：return、yield、yield from、break、continue、pass、raise
+方法或函数定义时，移除首参数中的 self 或 cls，适用于同步和异步函数
+EmptyExprRemover
+删除值为 None 的孤立表达式语句（Expr 节点）
+IncompleteStmtRemover
+删除缺失 value 的赋值语句，包括 Assign 和 AugAssign
+保留类型注解赋值语句（AnnAssign），即使没有 value
+
+2. 字符串清理规则
+关键字冒号删除
+移除以下关键字后的冒号：def、class、if、for、while、with、elif、else、try、except、finally
+符号删除
+删除以下符号：]、)、}、;、,
+
+3. Token 处理规则
+需要被 mask 的 token 类型
+控制结构闭合部分：else、elif、except、finally
+控制流语句关键字：return、yield、yield from、break、continue、pass、raise
+括号和语法标记：)、]、}、:
+逻辑与比较运算符：and、or、not、in、is、as
+特殊符号：'、"、,、.、(、[, {、=、+、-、*、/、%、&、|、^、~、<、>、!
+数字与下划线 _
+标识符的一部分（如变量名中被 tokenizer 拆分的部分）
+
+
+
+

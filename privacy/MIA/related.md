@@ -125,8 +125,6 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > - **官方来源**：Python的运算符和标点符号在官方文档中有详细定义（参见 [Python Operators](https://docs.python.org/3/reference/lexical_analysis.html#operators) 和 [Punctuators](https://docs.python.org/3/reference/lexical_analysis.html#punctuators)）。这些符号由Python词法分析器识别，并在语法规则中起到关键作用。
 >
-> <img src="F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250318104151510.png" alt="image-20250318104151510" style="zoom: 33%;" />
->
 > **2.固定搭配**
 >
 > - **定义**：固定搭配是Python代码中由语法规则约束或编程实践约定俗成的token组合，它们在代码中反复出现，且token之间的顺序和搭配具有较高的预期性。
@@ -134,7 +132,6 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >   - **语法结构识别**：AST能够自动识别代码中的语法模式。例如，一个if语句会被解析为ast.If节点，您无需手动检查['if', '<condition>', ':']这样的token序列。
 >   - **准确性**：AST基于Python的官方语法规则生成，避免了手动匹配可能出现的错误。
 >   - **效率**：直接访问节点类型比遍历token序列更快。
-> - 或者：![image-20250318160448194](F:\GithubSITP\privacy\current disscusion of MIA\assets\image-20250318160448194.png)
 >
 > **3.识别后的处理**
 >
@@ -296,7 +293,7 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > 
 >
-> TODO:
+> **TODO:**
 >
 > 负样本：时间筛选+改写片段
 >
@@ -306,25 +303,43 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > 解决实验代码的问题
 >
-> TODO 4.29 实验：
+> **TODO 4.29 实验：**
 >
 > 1. **数据解读**
 >
 > 2. 不同编程语言
 >
 > 3. 去掉部分规则，实现效果变差
-> 4. neighborhood对比实验
+> 4. neighborhood对比实验  **<u>可不做</u>**
 > 5. 代码长度区间（三个）
 >
-> TODO 5.6
+> **TODO 5.6**
 >
-> 1.benchmark 项目 - 多个文件 - 多个函数 - 随机选xxx个    采集函数的规则要一定
+> 1.**benchmark** 
+>
+> 项目 - 多个文件 - 多个函数 - 随机选xxx个    采集函数的规则要一定
 >
 > 如果pile数据集是随机顺序排列的，则顺序搜索下来就可：benchmark补充细节 xx条筛选xx条...
 >
 > 2.《gotcha》对比
 >
 > 3.表格和画图的框架放进文章
+>
+> **TODO 5.20**
+>
+> 1.benchmark：600个项目分长度的分法描述
+>
+> 2.benchmark：JAVA
+>
+> 3.baseline：《gotcha》对比
+>
+> 4.target llm和detaset的呼应
+>
+> 5.方法上precition的提升
+>
+> 6.表格填空
+>
+> 
 
 6. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
 
