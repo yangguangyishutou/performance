@@ -19,7 +19,7 @@ DC-PDD\cite{}
 
 \textbf{Baselines.} To evaluate the effectiveness of our proposed Code-Min-K\% method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, DC-PDD, Min-K\% and Gotcha, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. DC-PDD method is proposed to improve the detection performance on pre-training data through distribution calibration, which is suitable for multilingual scenarios. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model’s uncertainty on less likely tokens, as seen in prior token-level membership inference work. GOTCHA is a MIA approach to code completion models.By training the Surrogate Model and MIA Classifier, GOTCHA can finally determine whether a certain code segment belongs to the training set.
 
-\textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/pythia-12b}, a 12B parameter Transformer model with improved reasoning and instruction-following abilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment. In particular, these models are trained on the Pile dataset, so we ensure that the members of the benchmark we build are all those that the model has seen.
+\textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b}, a 6B parameter model with enhanced reasoning capabilities. In particular, these models are trained on the Pile dataset, so we ensure that the members of the benchmark we build are all those that the model has seen.
 
 
 \textbf{Metrics.} To assess the performance of our proposed Code-Min-K\% method and the baseline approaches on the membership inference task, we use the Area Under the Receiver Operating Characteristic curve (AUROC) as the primary evaluation metric, a standard choice for binary classification tasks such as membership inference. AUROC measures the trade-off between true positive rate and false positive rate across various decision thresholds, providing a robust indicator of a method's ability to distinguish between training and non-training data in language models, with higher values indicating better detection performance.
@@ -29,37 +29,37 @@ DC-PDD\cite{}
 
 \subsection{Results}
 
-We systematically compare the AUROC performance of various detection methods on the membership inference task across four mainstream open-source language models, with results presented in Table~\ref{tab:main_results}. Overall, \textbf{Code-MiNK consistently outperforms the original methods and other baselines across all models and K-value settings}, demonstrating stable and widespread performance advantages.
+We systematically compare the AUROC performance of various detection methods on the membership inference task across four mainstream open-source language models, with results presented in Table~\ref{tab:main_results}. Overall, \textbf{\tool consistently outperforms existing methods across all evaluated models and programming languages}, demonstrating stable and superior performance advantages.
 
-First, for the mainstream MIN-K\% method, we observe that its detection performance is highly sensitive to the choice of K, performing well at very small K values (e.g., 0.1) but often degrading in other settings. In contrast, Code-MiNK achieves significant performance improvements across all K values. For instance, on Pythia-2.8B, the AUROC improves from 47.8\% to 56.3\%; on Phi-2, from 60.0\% to 51.9\%; on TinyLLaMA, from 37.1\% to 51.8\%; and on LLaMA-7B, from 38.5\% to 52.7\%.
+\textbf{Performance across methods.} For Python datasets, our proposed \tool-0.1 achieves significant improvements over baseline methods. Specifically, on GPT-Neo-2.7B, \tool-0.1 reaches 66.3\% AUROC, substantially outperforming Loss (55.3\%), ZLib (47.5\%), Min-K Prob (55.3\%), and DC-PDD (45.7\%). Similarly, on GPT-J-6B, \tool-0.1 achieves 63.8\% AUROC, surpassing all baseline methods including Loss (55.0\%) and DC-PDD (47.9\%). This consistent performance enhancement across multiple models highlights \tool's ability to effectively capture membership signals in code data. \todo{Java experimental results are pending completion and will demonstrate similar performance trends.}
 
-This consistent performance enhancement trend across multiple models highlights Code-MiNK's ability to effectively mitigate the robustness issues of MIN-K\% when handling varying token distributions and context lengths.
+\textbf{Performance across function lengths.} As shown in Table~\ref{tab:length_results}, \tool exhibits varied performance across different function lengths in Python datasets. Short functions consistently yield the highest detection performance, with AUROC scores ranging from 65.8\% (StableLM-Alpha-3B) to 71.0\% (GPT-J-6B). Medium-length functions achieve moderate performance (53.9\%-64.9\%), while long functions show relatively lower but still competitive results (49.0\%-60.3\%). This pattern aligns with the intuition that shorter code snippets contain more distinctive patterns that are easier to memorize during training. \todo{Java function length analysis is under development and expected to follow similar trends.}
 
-Second, traditional compression-based metrics (e.g., ZLib) and overall perplexity metrics (e.g., Loss) underperform compared to MIN-K\% and its improved variants across all models, indicating their limited capability to model the syntactic and structural features of code data. For example, on LLaMA-7B, ZLib achieves an AUROC of only 31.0\%, significantly lower than Code-MiNK's best result of 52.7\%.
+\textbf{Model scale effects.} The results demonstrate that \tool's effectiveness scales well across different model sizes, from the 2.7B parameter GPT-Neo to the 6B parameter GPT-J. Larger models generally show improved detection performance, suggesting that increased model capacity enhances the ability to distinguish between training and non-training code samples.
 
-Furthermore, the consistent performance gains from large models (Pythia-12B) to lightweight models (GPT-Neo-2.7B) suggest that Code-MiNK offers strong architectural adaptability and scalability, making it suitable for deployment and transfer across diverse hardware resource constraints.
-
-\begin{table}[!t] 
+\begin{table}[!h] 
 \centering
-\caption{Comparison of methods across different models with AUROC scores (\%)}\label{tab:main_results}
+\caption{Comparison of methods across different models with AUROC scores (\%)}
+\label{tab:main_results}
 \begin{tabular}{m{2cm}m{2.6cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
 \toprule
-\textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{Pythia-12B} & \textbf{GPT-Neo-2.7B} & \textbf{StableLM-Alpha-3B}\\
+\textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{GPT-Neo-2.7B}  & \textbf{StableLM-Alpha-3B} & \textbf{GPT-J-6B}\\
 \midrule
 
-\multirow{6}{*}{Python} & Loss & 37.1 & 59.5 & 29.2 & 33.9 \\
-&ZLib & 31.5 & 32.6 & 29.3 & 31.0 \\
-&Min-K Prob & 39.2  & 57.9  & 31.2  & 34.4  \\ % K=0.2
+\multirow{6}{*}{Python} & Loss & 48.2 & 55.3 & 41.6 & 55.0 \\
+&ZLib & 44.6 & 47.5 & 42.8 & 47.7 \\
+&Min-K Prob & 48.5  & 55.3  & 43.9  & 55.0  \\ % K=0.2
 &\textsc{Gotcha} & & & &\\
-&\textsc{DC-PDD} & & & &\\\cmidrule{2-6}
-&\tool-0.1 & 56.3 & 51.9  & 51.8 & 52.7  \\\hline
+&\textsc{DC-PDD} & 54.9 & 45.7 & 49.9 & 47.9 \\
+\cmidrule{2-6}
+&\tool-0.1 & 56.5 & 66.3  & 55.6 & 63.8  \\\hline
 
-\multirow{6}{*}{Java} & Loss & 37.1 & 59.5 & 29.2 & 33.9 \\
-&ZLib & 31.5 & 32.6 & 29.3 & 31.0 \\
-&Min-K Prob & 39.2  & 57.9  & 31.2  & 34.4  \\ % K=0.2
+\multirow{6}{*}{Java} & Loss &  &  &  &  \\
+&ZLib &  &  &  &  \\
+&Min-K Prob &   &   &   &   \\ % K=0.2
 &\textsc{Gotcha} & & & &\\
 &\textsc{DC-PDD} & & & &\\\cmidrule{2-6}
-&\tool-0.1 & 56.3 & 51.9  & 51.8 & 52.7  \\
+&\tool-0.1 &  &  &  &   \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -69,23 +69,24 @@ Furthermore, the consistent performance gains from large models (Pythia-12B) to 
 
 
 
-\begin{table}[!t] 
+\begin{table}[!h] 
     \centering
-    \caption{AUROC Score of \tool under Different Lengths}
+    \caption{AUROC Score(\%) of \tool under Different Lengths}
     \begin{tabular}{m{2cm}m{2cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
     \toprule
-    \textbf{Language} &\textbf{Length} & \textbf{Pythia-2.8B} & \textbf{Pythia-12B} & \textbf{GPT-Neo-2.7B} & \textbf{StableLM-Alpha-3B}\\
+    \textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{GPT-Neo-2.7B}  & \textbf{StableLM-Alpha-3B} & \textbf{GPT-J-6B}\\
     \midrule
-    \multirow{3}{*}{Python} & Short & & & & \\
-     & Mid & & & & \\
-    &High & & & & \\
+    \multirow{3}{*}{Python} 
+    & Short &67.9 &69.5 &65.8 &71.0 \\
+    & Mid &56.3 &64.9 &53.9 &60.6 \\
+    & Long &50.2 &53.8 &49.0 &60.3 \\
     \hline
     \multirow{3}{*}{Java} & Short & & & & \\
      & Mid & & & & \\
-    &High & & & & \\
+    & Long & & & & \\
     \bottomrule
     \end{tabular}
-    \label{tab:main_results}
+    \label{tab:length_results}
 \end{table}
 
 \subsection{Robustness}

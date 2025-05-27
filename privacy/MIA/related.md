@@ -286,7 +286,7 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >       assert "required" in phrase, "必需字段缺失"
 >       assert len(phrase["required"]) >=1, "至少需要1个必需元素"
 >       assert phrase.get("docs_ref"), "必须标注文档来源"
->   
+>       
 >   for name, phrase in syntax_phrases.items():
 >       validate_phrase(phrase)
 >   ```
@@ -327,17 +327,17 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >
 > **TODO 5.20**
 >
-> 1.benchmark：600个项目分长度的分法描述
+> 1.benchmark：600个项目分长度的分法描述  √
 >
-> 2.benchmark：JAVA
+> 2.benchmark：JAVA √
 >
-> 3.baseline：《gotcha》对比
+> 3.baseline：《gotcha》对比  √
 >
-> 4.target llm和detaset的呼应
+> 4.target llm和detaset的呼应  √
 >
-> 5.方法上precition的提升
+> 5.方法上precition的提升 √
 >
-> 6.表格填空
+> 6.表格填空  √
 >
 > 
 
@@ -580,7 +580,7 @@ TSE 2024 Gotcha! This Model Uses My Code! Evaluating Membership Leakage Risks in
 >1. 训练代理模型(Surrogate Model)
 >
 > - 攻击者使用部分已知的训练数据训练一个代理模型，模拟目标模型(Victim Model)的行为
-> - 代理模型会接收训练数据和非训练数据，生成相应的输出。
+> - 代理模型会接收训练数据和非训练数据，生成相应的 输出。
 >
 >2. 训练成员分类器(MIAClassifier)
 >
