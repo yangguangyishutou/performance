@@ -2,30 +2,24 @@
 
 \section{\todo{Benchmark Construction}}
 
+\textbf{Benchmark.} Our benchmark consists of two programming language datasets: Python and Java. Each dataset contains both member and non-member samples to evaluate membership inference capabilities across different programming paradigms.
+
 % \textbf{Benchmark.} 
 % Our dataset consists of Python code snippets collected from publicly available repositories on GitHub. 
 % It comprises \textbf{num? Python scripts}, carefully selected to represent diverse programming styles, complexities, and application domains.
 
-\textbf{Members.} We refer to Pile dataset which was used as the pre-training corpora for a number of models. Specifically, we select \todo{XXX} Python projects on GitHub ranked by stars. Then, we queried and found that \todo{XXX} of the projects are included in the Pile dataset. The projects represent diverse programming styles, complexities, and application domains. According to \todo{XX}, Pile was constructed in \todo{2023?}. Therefore, we cloned \todo{XXX} Python projects and reset to the time of \todo{2023?}, right before Pile was constructed. Next, we collected a total of \todo{XXX} Python files (\eg~\texttt{.py}) from the \todo{XXX} projects, excluding testing files. It totals \todo{XXX} Python functions. \todo{Sample?}
+\textbf{Members.} For Python, we refer to the Pile dataset which was used as the pre-training corpora for a number of models. Specifically, we extract Python functions from the code portion of the Pile dataset using scripts to generate a JSONL file. From this file, we systematically sample 30 functions from every 100 consecutive entries starting from the beginning, collecting a total of 3,000 entries to obtain 300 functions, resulting in the positive.jsonl file. For Java, the member sample collection is \todo{to be completed}.
 
 % Pile --> Project list XXX         ---->            match 12 project       ---> 10 project --> XXX files ---> 300 functions
 %           GitHub projects 20 rank by start     ---filter cookbook -> 12 project   
 
-\textbf{Non-members.} 
-
-To prepare the dataset, we performed the following preprocessing steps:
-\begin{itemize}
-    \item Tokenized the code into individual tokens using Python's built-in \texttt{tokenize} module.
-    \item Filtered out scripts that could not be parsed correctly using the \texttt{ast} module, ensuring syntactic validity of all code snippets.
-\end{itemize}
-
-As part of dataset construction, we collected and analyzed key Python code components, including code elements, keywords, common symbols, and fixed patterns, detailed below.
+\textbf{Non-members.} For both Python and Java, we search GitHub repositories using the query "language:python created:>=2024-01-01 pushed:>=2024-01-01" and "language:java created:>=2024-01-01 pushed:>=2024-01-01" respectively to ensure that these codes have not been seen during model training. We extract functions from the repository files using scripts, collecting up to 30 functions from each repository before proceeding to the next one. This process generates the negative\_raw.jsonl file (containing more than 300 entries) for each language. We select the first 300 entries as our negative sample set for both Python and Java.
 
 
+\textbf{Length.} We define the length of a code snippet as the number of characters in the function field. We divide the character length into three categories based on statistical distribution: short (character length < 33rd percentile), medium (33rd percentile ≤ character length < 66th percentile), and long (character length ≥ 66th percentile).
 
 
-
-\begin{table}[!t] 
+\begin{table}[!h] 
     \centering
     \caption{Benchmark Statistics}\label{tab:benchmark}
     \begin{tabular}{m{2cm}m{2.2cm}m{1cm}m{1cm}m{1cm}m{1cm}m{0.8cm}m{0.8cm}m{0.8cm}}
@@ -34,10 +28,10 @@ As part of dataset construction, we collected and analyzed key Python code compo
      \cmidrule(lr){7-9}       
     &  & & & & & Short & Mid & Long \\
     \midrule
-    \multirow{2}{*}{Python} & Members & & & & & \\
-    & Non-Members & & & & & \\\hline
-    \multirow{2}{*}{Java} & Members & & & & & \\
-    & Non-Members & & & & & \\
+    \multirow{2}{*}{Python} & Members & \todo{Pile} & \todo{XXX} & 300 & \todo{XXX} & 100 & 100 & 100 \\
+    & Non-Members & $\geq$ 10 & \todo{XXX} & 300 & \todo{XXX} & 100 & 100 & 100 \\\hline
+    \multirow{2}{*}{Java} & Members & \todo{TBD} & \todo{TBD} & 300 & \todo{TBD} & \todo{TBD} & \todo{TBD} & \todo{TBD} \\
+    & Non-Members & $\geq$ 10 & \todo{XXX} & 300 & \todo{XXX} & 100 & 100 & 100 \\
     \bottomrule
     \end{tabular}
 \end{table}
@@ -45,9 +39,9 @@ As part of dataset construction, we collected and analyzed key Python code compo
 
 
 
-\begin{table}[!t] 
+\begin{table}[!h] 
     \centering
-    \caption{Top 10 AST Tokens in our Benchmark}\label{tab:benchmark}
+    \caption{Top 10 AST Tokens in our Benchmark}\label{tab:benchmark-tokens}
     \begin{tabular}{m{2cm}m{2.2cm}m{1cm}}
     \toprule
 
