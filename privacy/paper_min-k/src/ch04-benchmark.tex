@@ -16,7 +16,7 @@
 \textbf{Non-members.} For both Python and Java, we search GitHub repositories using the query "language:python created:>=2024-01-01 pushed:>=2024-01-01" and "language:java created:>=2024-01-01 pushed:>=2024-01-01" respectively to ensure that these codes have not been seen during model training. We extract functions from the repository files using scripts, collecting up to 30 functions from each repository before proceeding to the next one. This process generates the negative\_raw.jsonl file (containing more than 300 entries) for each language. We select the first 300 entries as our negative sample set for both Python and Java.
 
 
-\textbf{Length.} We define the length of a code snippet as the number of characters in the function field. We divide the character length into three categories based on statistical distribution: short (character length < 33rd percentile), medium (33rd percentile ≤ character length < 66th percentile), and long (character length ≥ 66th percentile).
+\textbf{Length.} We define the length of a code snippet as the number of characters in the function field. We divide the character length into three categories based on statistical distribution: short (character length < 33rd percentile), medium (33rd percentile $ \le $ character length < 66th percentile), and long (character length $\ge$ 66th percentile).
 
 
 \begin{table}[!h] 
