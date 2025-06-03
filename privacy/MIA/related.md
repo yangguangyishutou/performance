@@ -286,7 +286,7 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 >       assert "required" in phrase, "必需字段缺失"
 >       assert len(phrase["required"]) >=1, "至少需要1个必需元素"
 >       assert phrase.get("docs_ref"), "必须标注文档来源"
->       
+>   
 >   for name, phrase in syntax_phrases.items():
 >       validate_phrase(phrase)
 >   ```
@@ -338,8 +338,6 @@ min-k; Neighbourhood, RECALL, blind,DC-PDD;
 > 5.方法上precition的提升 √
 >
 > 6.表格填空  √
->
-> 
 
 6. Arxiv 2024 Min-K%++: Improved Baseline for Detecting Pre-Training Data from Large Language Models.pdf	——yuanheng
 
