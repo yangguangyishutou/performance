@@ -1,12 +1,46 @@
-\documentclass{article}
+%File: anonymous-submission-latex-2026.tex
+\documentclass[letterpaper]{article} % DO NOT CHANGE THIS
+\usepackage[submission]{aaai2026}  % DO NOT CHANGE THIS
+\usepackage{times}  % DO NOT CHANGE THIS
+\usepackage{helvet}  % DO NOT CHANGE THIS
+\usepackage{courier}  % DO NOT CHANGE THIS
+\usepackage[hyphens]{url}  % DO NOT CHANGE THIS
+\usepackage{graphicx} % DO NOT CHANGE THIS
+\urlstyle{rm} % DO NOT CHANGE THIS
+\def\UrlFont{\rm}  % DO NOT CHANGE THIS
+\usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
+\frenchspacing  % DO NOT CHANGE THIS
+\setlength{\pdfpagewidth}{8.5in} % DO NOT CHANGE THIS
+\setlength{\pdfpageheight}{11in} % DO NOT CHANGE THIS
+%
+% These are recommended to typeset algorithms but not required. See the subsubsection on algorithms. Remove them if you don't have algorithms in your paper.
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
-\usepackage{neurips_2025}
-
+%
+% These are are recommended to typeset listings but not required. See the subsubsection on listing. Remove this block if you don't have listings in your paper.
+\usepackage{newfloat}
+\usepackage{listings}
+\DeclareCaptionStyle{ruled}{labelfont=normalfont,labelsep=colon,strut=off} % DO NOT CHANGE THIS
+\lstset{%
+	basicstyle={\footnotesize\ttfamily},% footnotesize acceptable for monospace
+	numbers=left,numberstyle=\footnotesize,xleftmargin=2em,% show line numbers, remove this entire line if you don't want the numbers.
+	aboveskip=0pt,belowskip=0pt,%
+	showstringspaces=false,tabsize=2,breaklines=true}
+\floatstyle{ruled}
+\newfloat{listing}{tb}{lst}{}
+\floatname{listing}{Listing}
+%
+% Keep the \pdfinfo as shown here. There's no need
+% for you to add the /Title and /Author tags.
+\pdfinfo{
+/TemplateVersion (2026.1)
+}
 
 \usepackage[utf8]{inputenc} % allow utf-8 input
 \usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-\usepackage{hyperref}       % hyperlinks
-\usepackage{url}            % simple URL typesetting
+% \usepackage{hyperref}       % hyperlinks
 \usepackage{booktabs}       % professional-quality tables
 \usepackage{amsfonts}       % blackboard math symbols
 \usepackage{nicefrac}       % compact symbols for 1/2, etc.
@@ -14,10 +48,8 @@
 \usepackage{xcolor}         % colors
 \usepackage{tcolorbox}
 \usepackage{xspace}
-\usepackage{flushend}
+% \usepackage{flushend}
 \usepackage{enumitem}
-\usepackage{algorithm}
-\usepackage{listings}
 \usepackage{amsthm}
 \theoremstyle{acmdefinition}
 \newtheorem{exmp}{Example}[section]
@@ -48,9 +80,15 @@
 \newcommand{\ie}{\textit{i.e.,}\xspace}
 \newcommand{\eg}{\textit{e.g.,}\xspace}
 
-\begin{document}
+\setcounter{secnumdepth}{0}
 
 \title{Not your Copyright: Syntax-Based Calibration for Pretraining Code Detection on Large Language Models}
+
+\usepackage{bibentry}
+
+\begin{document}
+
+\maketitle
 
 
 
@@ -94,18 +132,17 @@
 %\keywords{datasets, neural networks, gaze detection, text tagging}
 
 
-\maketitle
 
 
 \input{src/ch00-abstract}
 
 \input{src/ch01-introduction}
-\input{src/ch02-motivation}
+\input{src/ch07-related-work}
+% \input{src/ch02-motivation}
 \input{src/ch03-methodology}
 \input{src/ch04-benchmark}
 \input{src/ch05-experiments}
 \input{src/ch06-case-study}
-\input{src/ch07-related-work}
 \input{src/ch08-conclusion}
 
 \clearpage
@@ -113,14 +150,16 @@
 % \bibliographystyle{ACM-Reference-Format}
 \bibliography{src/reference}
 % \bibliographystyle{abbrv}
-\bibliographystyle{abbrvnat} 
+% \bibliographystyle{abbrvnat} 
 % \input{src/ch09-appendix}
 
-\clearpage
+% \clearpage
 
 
 \end{document}
-\endinput
+
+
+% \endinput
 %%
 %% End of file `sample-sigconf.tex'.
 
