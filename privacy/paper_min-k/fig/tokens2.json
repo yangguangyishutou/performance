@@ -1,0 +1,210 @@
+[
+    {
+        "token": "\u0120add",
+        "probability": "0.00"
+    },
+    {
+        "token": "(",
+        "probability": "0.13"
+    },
+    {
+        "token": "self",
+        "probability": "0.35"
+    },
+    {
+        "token": ",",
+        "probability": "0.87"
+    },
+    {
+        "token": "\u0120row",
+        "probability": "0.00"
+    },
+    {
+        "token": "):",
+        "probability": "0.50"
+    },
+    {
+        "token": "\u010a",
+        "probability": "0.91"
+    },
+    {
+        "token": "    ",
+        "probability": "0.38"
+    },
+    {
+        "token": "for",
+        "probability": "0.12"
+    },
+    {
+        "token": "\u0120i",
+        "probability": "0.48"
+    },
+    {
+        "token": ",",
+        "probability": "0.12"
+    },
+    {
+        "token": "\u0120f",
+        "probability": "0.00"
+    },
+    {
+        "token": "\u0120in",
+        "probability": "0.81"
+    },
+    {
+        "token": "\u0120enumerate",
+        "probability": "0.97"
+    },
+    {
+        "token": "(",
+        "probability": "0.99"
+    },
+    {
+        "token": "row",
+        "probability": "0.83"
+    },
+    {
+        "token": "):",
+        "probability": "0.94"
+    },
+    {
+        "token": "\u010a",
+        "probability": "0.99"
+    },
+    {
+        "token": "        ",
+        "probability": "0.99"
+    },
+    {
+        "token": "if",
+        "probability": "0.29"
+    },
+    {
+        "token": "\u0120len",
+        "probability": "0.03"
+    },
+    {
+        "token": "(",
+        "probability": "0.99"
+    },
+    {
+        "token": "f",
+        "probability": "0.83"
+    },
+    {
+        "token": ")",
+        "probability": "0.85"
+    },
+    {
+        "token": "\u0120>",
+        "probability": "0.54"
+    },
+    {
+        "token": "\u0120self",
+        "probability": "0.73"
+    },
+    {
+        "token": ".",
+        "probability": "0.99"
+    },
+    {
+        "token": "max",
+        "probability": "0.96"
+    },
+    {
+        "token": "_",
+        "probability": "0.99"
+    },
+    {
+        "token": "col",
+        "probability": "0.85"
+    },
+    {
+        "token": "_",
+        "probability": "0.99"
+    },
+    {
+        "token": "size",
+        "probability": "0.99"
+    },
+    {
+        "token": "[",
+        "probability": "0.85"
+    },
+    {
+        "token": "i",
+        "probability": "0.88"
+    },
+    {
+        "token": "]:",
+        "probability": "0.91"
+    },
+    {
+        "token": "\u010a",
+        "probability": "0.99"
+    },
+    {
+        "token": "            ",
+        "probability": "0.99"
+    },
+    {
+        "token": "self",
+        "probability": "0.80"
+    },
+    {
+        "token": ".",
+        "probability": "0.99"
+    },
+    {
+        "token": "max",
+        "probability": "0.97"
+    },
+    {
+        "token": "_",
+        "probability": "0.99"
+    },
+    {
+        "token": "col",
+        "probability": "0.99"
+    },
+    {
+        "token": "_",
+        "probability": "0.99"
+    },
+    {
+        "token": "size",
+        "probability": "0.99"
+    },
+    {
+        "token": "[",
+        "probability": "0.96"
+    },
+    {
+        "token": "i",
+        "probability": "0.99"
+    },
+    {
+        "token": "]",
+        "probability": "0.92"
+    },
+    {
+        "token": "\u0120=",
+        "probability": "0.84"
+    },
+    {
+        "token": "\u0120len",
+        "probability": "0.89"
+    },
+    {
+        "token": "(",
+        "probability": "0.99"
+    },
+    {
+        "token": "f",
+        "probability": "0.99"
+    },
+    {
+        "token": ")",
+        "probability": "0.99"
+    }
+]
