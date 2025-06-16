@@ -37,8 +37,9 @@ We systematically compare the AUROC performance of various detection methods on 
 
 \textbf{Model scale effects.} The results demonstrate that \tool's effectiveness scales well across different model sizes, from the 2.7B parameter GPT-Neo to the 6B parameter GPT-J. Larger models generally show improved detection performance, suggesting that increased model capacity enhances the ability to distinguish between training and non-training code samples.
 
-\begin{table}[!h] 
+\begin{table*}[!h] 
 \centering
+\footnotesize
 \caption{Comparison of methods across different models with AUROC scores (\%)}
 \label{tab:main_results}
 \begin{tabular}{m{2cm}m{2.6cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
@@ -62,7 +63,7 @@ We systematically compare the AUROC performance of various detection methods on 
 &\tool-0.1 & 67.4  &  63.8 & 64.0 &   \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 
 
@@ -71,6 +72,7 @@ We systematically compare the AUROC performance of various detection methods on 
 
 \begin{table}[!h] 
     \centering
+    \footnotesize
     \caption{AUROC Score(\%) of \tool under Different Lengths}
     \begin{tabular}{m{2cm}m{2cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
     \toprule
@@ -116,7 +118,7 @@ We systematically compare the AUROC performance of various detection methods on 
 
 \begin{figure}[!t]
     \centering
-    \includegraphics[width=0.7\textwidth]{./resource/pythia2_8b.png}
+    \includegraphics[width=0.5\textwidth]{./resource/pythia2_8b.png}
     \caption{AUROC performance under Hyperparameter K}
     \label{fig:auroc_trends}
 \end{figure}

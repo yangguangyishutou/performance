@@ -21,17 +21,28 @@
 
 \begin{table}[!h] 
     \centering
+    \footnotesize
     \caption{Benchmark Statistics}\label{tab:benchmark}
-    \begin{tabular}{m{2cm}m{2.2cm}m{1cm}m{1cm}m{1cm}m{1cm}m{0.8cm}m{0.8cm}m{0.8cm}}
+    \begin{tabular}{m{0.8cm}m{1.2cm}m{0.7cm}m{0.7cm}m{0.7cm}m{0.7cm}m{0.7cm}}
     \toprule
-    \multirow{2}{*}{Language}  &  \multirow{2}{*}{Label}  & Proj. (\#) & Files (\#)  & Func. (\#) & LOC (\#)  & \multicolumn{3}{c}{Length}  \\ 
-     \cmidrule(lr){7-9}       
-    &  & & & & & Short & Mid & Long \\
+    \multirow{1}{*}{Lang.}  &  \multirow{1}{*}{Label}  & Proj. (\#) & Files (\#)  & Func. (\#) & LOC (\#)  & \multicolumn{1}{c}{Length}  \\ 
+    %  \cmidrule(lr){7-}       
+    % &  & & & & & Short & Mid & Long \\
     \midrule
-    \multirow{2}{*}{Python} & Members & \todo{Pile} & \todo{XXX} & 300 & \todo{XXX} & 100 & 100 & 100 \\
-    & Non-Members & $\geq$ 10 & \todo{XXX} & 300 & \todo{XXX} & 100 & 100 & 100 \\\hline
-    \multirow{2}{*}{Java} & Members & \todo{TBD} & \todo{TBD} & 300 & \todo{TBD} & \todo{TBD} & \todo{TBD} & \todo{TBD} \\
-    & Non-Members & $\geq$ 10 & \todo{XXX} & 300 & \todo{XXX} & 100 & 100 & 100 \\
+    \multirow{6}{*}{Python} & \multirow{3}{*}{Members}  & \multirow{3}{*}{\todo{Pile}} & \multirow{3}{*}{\todo{XXX}} & \multirow{3}{*}{300} & \multirow{3}{*}{\todo{XXX}} & 100 \\ %& 100 & 100 \\
+    & & & & & &  200 \\ 
+    & & & & & &  300 \\ 
+    \cmidrule(lr){2-7}       
+    & \multirow{3}{*}{\shortstack{Non-\\Members}}  & \multirow{3}{*}{$\geq$ 10} & \multirow{3}{*}{\todo{XXX}} & \multirow{3}{*}{300} & \multirow{3}{*}{\todo{XXX}} & 100 \\ % & 100 & 100 \\\hline
+     & & & & & &  200 \\ 
+    & & & & & &  300 \\ \hline
+    \multirow{6}{*}{Java} &  \multirow{3}{*}{Members} & \multirow{3}{*}{\todo{TBD}} & \multirow{3}{*}{\todo{TBD}} & \multirow{3}{*}{\todo{TBD}}& \multirow{3}{*}{\todo{TBD}} & \todo{TBD} \\ % & \todo{TBD} & \todo{TBD} \\
+    & & & & & &  200 \\ 
+    & & & & & &  300 \\ 
+    \cmidrule(lr){2-7}     
+    & \multirow{3}{*}{\shortstack{Non-\\Members}} & \multirow{3}{*}{\todo{$\geq$ 10}} &  \multirow{3}{*}{\todo{TBD}} &  \multirow{3}{*}{\todo{TBD}} &  \multirow{3}{*}{\todo{TBD}} & 100  \\ % & 100 & 100 \\
+     & & & & & &  200 \\ 
+    & & & & & &  300 \\ 
     \bottomrule
     \end{tabular}
 \end{table}
@@ -41,10 +52,10 @@
 
 \begin{table}[!h] 
     \centering
+    \footnotesize
     \caption{Top 10 AST Tokens in our Benchmark}\label{tab:benchmark-tokens}
     \begin{tabular}{m{2cm}m{2.2cm}m{1cm}}
     \toprule
-
     Language  &  AST Token & Count \\\hline
     \multirow{6}{*}{Python} & def & 100 \\
      & in & 10 \\
