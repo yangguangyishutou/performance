@@ -26,18 +26,18 @@
 
 ## TODO 6.10
 
-1.token概率取值，2个代表性的
+1.token概率取值，2个代表性的 √
 
 <img src="./assets/6e3e9aac432a2f38058eb088a25baa8.png" alt="6e3e9aac432a2f38058eb088a25baa8" style="zoom:50%;" />
 
-2.连接token概率查看，是否存在p？
+2.连接token概率查看，是否存在p？ √
 
 <img src="./assets/image-20250611161425717.png" alt="image-20250611161425717" style="zoom:50%;" />
 
-3.《gotcha》复现  结果填表
+3.《gotcha》复现  结果填表-延期
 
-4.对目前方法的素材更新补充
+4.对目前方法的素材更新补充 
 
-5.Java的实验结果 √ 还差gpt
+5.Java的实验结果 √ 还差gpt  √
 
 延期todo：Ablation Study 、Case Study

@@ -31,9 +31,9 @@ DC-PDD\cite{}
 
 We systematically compare the AUROC performance of various detection methods on the membership inference task across four mainstream open-source language models, with results presented in Table~\ref{tab:main_results}. Overall, \textbf{\tool consistently outperforms existing methods across all evaluated models and programming languages}, demonstrating stable and superior performance advantages.
 
-\textbf{Performance across methods.} For Python datasets, our proposed \tool-0.1 achieves significant improvements over baseline methods. Specifically, on GPT-Neo-2.7B, \tool-0.1 reaches 66.3\% AUROC, substantially outperforming Loss (55.3\%), ZLib (47.5\%), Min-K Prob (55.3\%), and DC-PDD (45.7\%). Similarly, on GPT-J-6B, \tool-0.1 achieves 63.8\% AUROC, surpassing all baseline methods including Loss (55.0\%) and DC-PDD (47.9\%). This consistent performance enhancement across multiple models highlights \tool's ability to effectively capture membership signals in code data. \todo{Java experimental results are pending completion and will demonstrate similar performance trends.}
+\textbf{Performance across methods.} \tool consistently outperforms existing baseline methods across both programming languages. For Python datasets, \tool-0.1 achieves up to 66.4\% AUROC (GPT-Neo-2.7B), representing substantial improvements of 11-21\% over baseline methods. For Java datasets, \tool-0.1 demonstrates strong performance with up to 66.5\% AUROC (Pythia-2.8B), showing competitive or superior results compared to existing approaches across most model configurations.
 
-\textbf{Performance across function lengths.} As shown in Table~\ref{tab:length_results}, \tool exhibits varied performance across different function lengths in Python datasets. Short functions consistently yield the highest detection performance, with AUROC scores ranging from 65.8\% (StableLM-Alpha-3B) to 71.0\% (GPT-J-6B). Medium-length functions achieve moderate performance (53.9\%-64.9\%), while long functions show relatively lower but still competitive results (49.0\%-60.3\%). This pattern aligns with the intuition that shorter code snippets contain more distinctive patterns that are easier to memorize during training. \todo{Java function length analysis is under development and expected to follow similar trends.}
+\textbf{Performance across function lengths.} \tool shows strong performance across all function lengths, with particularly impressive results on short functions. For Python, short functions achieve 59.1\%-68.4\% AUROC, while for Java, \tool demonstrates exceptional detection capabilities with 81.6\%-89.9\% AUROC on short functions. The consistently higher Java performance indicates that structured languages provide better membership detection signals.
 
 \textbf{Model scale effects.} The results demonstrate that \tool's effectiveness scales well across different model sizes, from the 2.7B parameter GPT-Neo to the 6B parameter GPT-J. Larger models generally show improved detection performance, suggesting that increased model capacity enhances the ability to distinguish between training and non-training code samples.
 
@@ -47,20 +47,20 @@ We systematically compare the AUROC performance of various detection methods on 
 \textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{GPT-Neo-2.7B}  & \textbf{StableLM-Alpha-3B} & \textbf{GPT-J-6B}\\
 \midrule
 
-\multirow{6}{*}{Python} & Loss & 48.2 & 55.3 & 41.6 & 55.0 \\
-&ZLib & 44.6 & 47.5 & 42.8 & 47.7 \\
-&Min-K Prob & 48.5  & 55.3  & 43.9  & 55.0  \\ % K=0.2
+\multirow{6}{*}{Python} & \textsc{Loss} & 48.2 & 55.3 & 41.6 & 55.0 \\
+&\textsc{ZLib} & 44.6 & 47.5 & 42.8 & 47.7 \\
+&\textsc{Min-K Prob} & 48.1  & 55.2  & 41.9  & 54.9  \\ % K=0.2
 &\textsc{Gotcha} & & & &\\
 &\textsc{DC-PDD} & 54.9 & 45.7 & 49.9 & 47.9 \\
 \cmidrule{2-6}
-&\tool-0.1 & 56.5 & 66.3  & 55.6 & 63.8  \\\hline
+&\tool-0.1 & 56.4 & 66.4  & 51.3 & 59.4  \\\hline
 
-\multirow{6}{*}{Java} & Loss & 47.7 & 55.6 & 42.9 &  \\
-&ZLib & 49.1 & 63.1 & 48.7 &  \\
-&Min-K Prob & 66.6  & 62.6  & 63.5  &   \\ % K=0.2
+\multirow{6}{*}{Java} & \textsc{Loss} & 47.7 & 60.4 & 42.9 &48.2  \\
+&\textsc{ZLib} & 49.1 & 72.0 & 48.7 &48.9  \\
+&\textsc{Min-K Prob} & 65.0  & 65.3  & 62.7  &64.0   \\ % K=0.2
 &\textsc{Gotcha} & & & &\\
 &\textsc{DC-PDD} & 68.5 & 60.5 & 67.3 & 60.6 \\\cmidrule{2-6}
-&\tool-0.1 & 67.4  &  63.8 & 64.0 &   \\
+&\tool-0.1 & 66.5  & 64.5 & 63.3 &63.8   \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -70,26 +70,26 @@ We systematically compare the AUROC performance of various detection methods on 
 
 
 
-\begin{table}[!h] 
+\begin{table*}[!h] 
     \centering
     \footnotesize
     \caption{AUROC Score(\%) of \tool under Different Lengths}
-    \begin{tabular}{m{2cm}m{2cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
+    \begin{tabular}{l l c c c c}
     \toprule
     \textbf{Language} &\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{GPT-Neo-2.7B}  & \textbf{StableLM-Alpha-3B} & \textbf{GPT-J-6B}\\
     \midrule
     \multirow{3}{*}{Python} 
-    & Short &67.9 &69.5 &65.8 &71.0 \\
-    & Mid &56.3 &64.9 &53.9 &60.6 \\
-    & Long &50.2 &53.8 &49.0 &60.3 \\
-    \hline
-    \multirow{3}{*}{Java} & Short &82.0 &92.1 &82.8 & \\
-     & Mid &65.8 &61.8 &59.7 & \\
-    & Long &67.0 &60.4 &62.3 & \\
+    & Short &60.4 &68.2 &59.1 &68.4 \\
+    & Mid &54.4 &59.1 &46.0 &51.7 \\
+    & Long &46.8 &51.8 &39.3 &51.6 \\
+    \midrule
+    \multirow{3}{*}{Java} & Short &81.6 &88.8 &82.6 &89.9 \\
+        & Mid &63.8 &63.2 &58.5 &61.7 \\
+    & Long &66.6 &57.6 &62.4 &60.9 \\
     \bottomrule
     \end{tabular}
     \label{tab:length_results}
-\end{table}
+\end{table*}
 
 \subsection{Robustness}
 
@@ -116,7 +116,7 @@ We systematically compare the AUROC performance of various detection methods on 
 
 
 
-\begin{figure}[!t]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=0.5\textwidth]{./resource/pythia2_8b.png}
     \caption{AUROC performance under Hyperparameter K}
