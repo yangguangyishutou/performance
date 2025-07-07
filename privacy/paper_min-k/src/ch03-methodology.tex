@@ -4,10 +4,46 @@
 \section{Methodology}
 
 
-\subsection{Motivating Example}
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{fig/overview.pdf}
+    \caption{Overview}
+    \label{fig:overview}
+\end{figure*}
 
 
-The inherent structural duality of source code – simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax} – introduces unique challenges for membership inference in code language models. Our analysis of XXX Python projects reveals that XXX\% of code tokens are bound by syntactic constraints (e.g., \texttt{for-in}, \texttt{try-except}), forming rigid patterns that obscure the memorization signals crucial for membership detection. This syntactic determinism manifests two fundamental barriers:
+We discuss the motivation of our method design as the preliminary. Then we elaborate our method \tool.
+
+
+\subsection{Preliminary}
+
+% We think the not all elements contributes to the copyright.
+
+% https://opensource.stackexchange.com/questions/13758/gpl-v3-code-used-to-train-some-ai-model-can-i-make-any-use-of-this-model-or-do
+% https://news.ycombinator.com/item?id=39589099
+% Microsoft announces new Copilot Copyright Commitment for customers
+% https://blogs.microsoft.com/on-the-issues/2023/09/07/copilot-copyright-commitment-ai-legal-concerns/
+
+% \textbf{Copyright Definition.} 
+
+% \textbf{Code Copyright.}  Source code – simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax}. Therefore, we should remove \textit{machine-enforced syntax}.
+
+% \textbf{AST Node.}
+
+
+Source code is considered a ``literary work'' under copyright law. The ``literary work'' can be viewed as a sequence of tokens arranged to reflect the author's intentions. Existing MIA techniques\todo{CITE} treat all source code tokens equally and compute membership probabilities of a LLM based on a sample of these tokens. Generally, it is recognized that elements such as variable names, data and control flows, and API usage together with the involved variables, embody the author's intent and serve as indicators of source code authorship. However, we observe that some tokens primarily serve a grammatical purpose, functioning to complete the syntax constraint of the programming language.
+
+
+
+\subsection{Syntax Constraints}
+
+We focus on the Python and Java language. To collect a comprehensive list of syntax constraints, we manually inspect the documentation of Python~\cite{python11} and Java~\cite{javadoc}. \todo{Specifically, we }
+
+
+The inherent structural duality of source code – simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax} – introduces unique challenges for membership inference in code language models. 
+
+
+Our analysis of XXX Python projects reveals that XXX\% of code tokens are bound by syntactic constraints (e.g., \texttt{for-in}, \texttt{try-except}), forming rigid patterns that obscure the memorization signals crucial for membership detection. This syntactic determinism manifests two fundamental barriers:
 
 \begin{itemize}
 \item \textbf{Syntax-Induced Noise Amplification}: Language-mandated tokens like \texttt{in}, \texttt{except}, and \texttt{:} exhibit near-identical probability distributions across member and non-member samples. Their structural predictability drowns out discriminative signals from author-specific patterns.
