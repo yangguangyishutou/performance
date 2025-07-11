@@ -37,12 +37,16 @@ Source code is considered a ``literary work'' under copyright law. The ``literar
 
 \subsection{Syntax Constraints}
 
-We focus on the Python and Java language. To collect a comprehensive list of syntax constraints, we manually inspect the documentation of Python~\cite{python11} and Java~\cite{javadoc}. \todo{Specifically, we }
+We focus on the Python and Java language. To build our syntax pattern database, we combine manual inspection of the official documentation~\cite{python11, javadoc} with automated analysis. For Python, we systematically survey the language specification, focusing on Chapter 8, "Compound statements," which defines the core control flow and organizational structures. This chapter's 10 subsections detail the multi-line constructs rich in syntactic patterns relevant to our work.
+
+Our selection process is grounded in Python's lexical structure. We programmatically retrieve reserved keywords using the \texttt{keyword} module (35 in Python 3.11) to ensure our patterns are based on definitive language elements. Based on this, we analyzed the 10 subsections and included 8 in our database: \texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{match}, function (\texttt{def}) and class (\texttt{class}) definitions, and coroutine (\texttt{async}) structures. These were selected because their syntactic forms are rigid multi-token patterns, identifiable via tokenization, that contain both prefix keywords (e.g., \texttt{for}, \texttt{try}) and structurally determined suffix tokens (e.g., \texttt{in}, \texttt{except}).
+
+We excluded two subsections. The \texttt{while} statement was omitted as its core structure (\texttt{while condition:}) lacks a fixed suffix token. "Type parameter lists" was also excluded as it pertains to type-level declarations, not the executable control-flow syntax central to our study. The syntactic validity of all collected patterns is finally verified using Python's \texttt{ast} module.
 
 
 The inherent structural duality of source code – simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax} – introduces unique challenges for membership inference in code language models. 
 
-
+\todo{continue}
 Our analysis of XXX Python projects reveals that XXX\% of code tokens are bound by syntactic constraints (e.g., \texttt{for-in}, \texttt{try-except}), forming rigid patterns that obscure the memorization signals crucial for membership detection. This syntactic determinism manifests two fundamental barriers:
 
 \begin{itemize}
@@ -120,41 +124,3 @@ We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference 
 \textbf{Rationale}: Our dual validation approach ensures \textit{semantic-aware filtering} - we only remove tokens that are both 1) surface-level syntax markers \textit{and} 2) semantically validated by AST structure. For example, the token \texttt{in} is excluded \textit{only} when it appears in a valid \texttt{For} node context, preserving meaningful occurrences in list comprehensions like \texttt{[x for x in y if x \textbf{in} z]}. This focuses the metric on \textit{author-specific patterns} (variable names, API chains) rather than language-mandated syntax.
 \end{tcolorbox}
 
-
-\subsection{Code Element and Syntax Pattern Database}
-To prepare the dataset, we performed the following preprocessing steps:
-\begin{itemize}
-    \item Tokenized the code into individual tokens using Python's built-in \texttt{tokenize} module.
-    \item Filtered out scripts that could not be parsed correctly using the \texttt{ast} module, ensuring syntactic validity of all code snippets.
-\end{itemize}
-
-As part of dataset construction, we collected and analyzed key Python code components, including code elements, keywords, common symbols, and fixed patterns.
-
-\paragraph*{Code Element Dictionary}
-We systematically collect Python's lexical elements through version-sensitive parsing, categorizing them into:
-\begin{itemize}
-\item \textbf{Reserved Keywords}: Programmatically retrieved via Python's \texttt{keyword} module (35 items in 3.11)
-\item \textbf{Operators \& Delimiters}: Mapped to Python's operator precedence hierarchy (42 symbols) 
-\item \textbf{Context-Sensitive Tokens}: Version-dependent elements like \texttt{match} (3.10+)
-\end{itemize}
-
-\paragraph*{Syntax Pattern Dictionary}
-We define 23 core syntactic patterns through grammar rule anchoring:
-\begin{itemize}
-\item \textbf{Structure}: Each entry specifies required tokens, valid variants, and PEP references
-\item \textbf{Validation}: Dual verification via AST node types and surface pattern matching
-\item \textbf{Completeness}: Covers 98.7\% of PEP-specified syntax constructs
-\end{itemize}
-
-The database construction follows rigorous quality control:
-\begin{itemize}
-\item \textbf{Automated Validation}: 152 test cases from CPython's grammar test suite
-\item \textbf{Edge Case Handling}: Supports nested structures and async contexts
-\item \textbf{Version Compatibility}: Covers Python 3.7-3.11 with backward compatibility checks
-\end{itemize}
-
-Full implementation details and pattern specifications appear in Appendix~\ref{app:database}.
-
-
-\paragraph*{AST-Based Detection}
-We implement a hybrid parser that combines surface pattern matching with deep AST validation (see Appendix~\ref{app:database} for implementation).
