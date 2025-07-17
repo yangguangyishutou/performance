@@ -18,7 +18,7 @@ DC-PDD\cite{}
 \subsection{Setup}
 
 
-\textbf{Baselines.} To evaluate the effectiveness of our proposed Code-Min-K\% method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, DC-PDD, Min-K\% and Gotcha, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. DC-PDD method is proposed to improve the detection performance on pre-training data through distribution calibration, which is suitable for multilingual scenarios. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model’s uncertainty on less likely tokens, as seen in prior token-level membership inference work. GOTCHA is a MIA approach to code completion models.By training the Surrogate Model and MIA Classifier, GOTCHA can finally determine whether a certain code segment belongs to the training set.
+\textbf{Baselines.} To evaluate the effectiveness of our proposed Code-Min-K\% method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, DC-PDD, Min-K\% and Gotcha, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. DC-PDD method is proposed to improve the detection performance on pre-training data through distribution calibration, which is suitable for multilingual scenarios. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model's uncertainty on less likely tokens, as seen in prior token-level membership inference work. GOTCHA is a MIA approach to code completion models.By training the Surrogate Model and MIA Classifier, GOTCHA can finally determine whether a certain code segment belongs to the training set.
 
 \textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b}, a 6B parameter model with enhanced reasoning capabilities. In particular, these models are trained on the Pile dataset, so we ensure that the members of the benchmark we build are all those that the model has seen.
 
@@ -58,11 +58,6 @@ We systematically compare the AUROC performance of various detection methods on 
 \bottomrule
 \end{tabular}
 \end{table*}
-
-
-
-
-
 
 \begin{table*}[!h] 
     \centering
