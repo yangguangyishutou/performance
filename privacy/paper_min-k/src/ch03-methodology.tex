@@ -37,7 +37,11 @@ Source code is considered a ``literary work'' under copyright law. The ``literar
 
 \subsection{Syntax Constraints}
 
-We focus on the Python and Java language. To build our syntax pattern database, we combine manual inspection of the official documentation~\cite{python11, javadoc} with automated analysis. For Python, we systematically survey the language specification, focusing on Chapter 8, "Compound statements," which defines the core control flow and organizational structures. This chapter's 10 subsections detail the multi-line constructs rich in syntactic patterns relevant to our work.
+We focus on the Python language. Python is a popular programming language with wide applications, including data analysis, artificial intelligence, and scientific computing.
+To build our syntax pattern database, we combine manual inspection of the official documentation~\cite{python11, javadoc} with automated analysis. 
+
+
+Specifically, we systematically survey the language specification, focusing on Chapter 8, "Compound statements," which defines the core control flow and organizational structures. This chapter's 10 subsections detail the multi-line constructs rich in syntactic patterns relevant to our work.
 
 Our selection process is grounded in Python's lexical structure. We programmatically retrieve reserved keywords using the \texttt{keyword} module (35 in Python 3.11) to ensure our patterns are based on definitive language elements. Based on this, we analyzed the 10 subsections and included 8 in our database: \texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{match}, function (\texttt{def}) and class (\texttt{class}) definitions, and coroutine (\texttt{async}) structures. These were selected because their syntactic forms are rigid multi-token patterns, identifiable via tokenization, that contain both prefix keywords (e.g., \texttt{for}, \texttt{try}) and structurally determined suffix tokens (e.g., \texttt{in}, \texttt{except}).
 
