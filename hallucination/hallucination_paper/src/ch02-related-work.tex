@@ -3,4 +3,79 @@
 \section{Related work}
 
 
-We review previous work related to 
+Cross-language code transformation plays a crucial role in software migration and collaborative multilingual development. Taking Java-to-C conversion as an example, transforming Java code into C enables leveraging C's advantages in low-level system development and performance optimization, facilitating efficient software deployment across different technical scenarios. In recent years, large language models (LLMs) such as GPT-4 and CodeT5 have become mainstream tools for automated code transformation due to their powerful contextual understanding and generation capabilities. However, significant differences between Java and C in syntax rules, programming paradigms, and memory management mechanisms make Java-to-C transformation particularly complex.
+
+Java, as a high-level programming language, features automatic memory management, strong type checking, and rich object-oriented characteristics. In contrast, C, as a relatively low-level language, requires manual memory management, offers more flexible syntax, but demands greater attention to programming details. These differences increase the likelihood of hallucinations or comprehension biases in LLMs during code transformation. Currently, research on hallucination issues in Java-to-C transformation using LLMs remains exploratory, necessitating systematic analysis of their root causes and effective mitigation strategies. This section will delve into this issue, aiming to clarify the current research landscape and its gaps, providing direction for future studies.
+
+\subsection{Core Challenges and Hallucination}
+\subsubsection{Hallucinations Due to Semantic Gaps}
+\paragraph{Type System Differences}
+Java’s class objects and C’s structs differ fundamentally in their type systems. Java employs object-oriented programming, where classes support encapsulation, inheritance, and polymorphism, with object creation and destruction managed automatically by garbage collection. In contrast, C uses structs to organize data, requiring manual memory allocation and deallocation via malloc and free.When converting Java class objects to C structs, LLMs often omit pointer initialization steps. For instance, Li et al. (2023) found that when processing Java classes with complex object references, the generated C code frequently lacked malloc statements, leading to null pointer exceptions and program crashes. Additionally, when converting Java generics (e.g., List<Integer>) to C generic structs, models may incorrectly infer type parameters—such as mistranslating List<Integer> into a char* array—resulting in semantic errors that compromise program logic.
+
+\paragraph{Memory Management Logic}
+Java’s automatic memory management contrasts sharply with C’s manual approach. In Java, developers need not worry about object deallocation, as the garbage collector handles it automatically. In C, failing to call free leads to memory leaks, while accessing freed memory causes dangling pointer issues.Wang et al. (2024) found that memory management-related hallucinations accounted for 40\% of transformation errors. For example, LLM-generated C code might allocate memory repeatedly in a loop without freeing it, eventually exhausting system resources. Alternatively, it might incorrectly assign freed pointers to other variables, creating dangling pointers—errors difficult to detect via simple syntax checks, posing significant risks.
+
+\subsubsection{Hallucinations Due to Syntax and Idiomatic Differences}
+\paragraph{Syntax Incompatibility}
+
+\paragraph{Idiomatic Errors}
+Each language has unique idioms. Java’s collections (e.g., ArrayList, HashMap) provide convenient data storage, whereas C typically uses arrays or linked lists. When converting Java collections to C arrays, LLMs may mishandle dynamic resizing, replacing them with fixed-size arrays. For example, an ArrayList with many elements might be incorrectly translated into a fixed-capacity C array, leading to buffer overflows. Zhou et al. (2023) confirmed this issue’s prevalence in CodeT5’s Java-to-C transformations.
+
+\subsubsection{Hallucinations Due to Logical Complexity}
+\paragraph{Control Flow Mapping}
+Though Java and C share similar control flow constructs, their syntax varies. Java’s for-each loop simplifies iteration, whereas C’s for loop requires explicit conditions and increments. LLMs may miscompute array bounds when converting Java’s for-each to C’s for, causing out-of-bounds access.Multithreading also differs: Java uses Thread classes and synchronization mechanisms, while C relies on pthreads. Zhang et al. (2024) found that 25\% of Java-to-C multithreaded code omitted locks or synchronization, introducing race conditions and data inconsistencies.
+
+\paragraph{Business Logic Misinterpretation}
+For complex business logic, LLMs may misjudge conditions, function calls, or data dependencies. In fields like financial computing or graphics processing, such hallucinations can lead to severe errors (e.g., incorrect calculations or rendering artifacts). Current models still struggle with deep semantic understanding, necessitating further improvements.
+
+\subsection{Existing Hallucination Mitigation Methods and Their Limitations}
+\subsubsection{Data Augmentation and Preprocessing}
+\paragraph{Methods}
+Parallel Corpora: Wang et al. (2022) built CodeXGLUE, a dataset with aligned Java-C samples, explicitly annotating semantic mappings (e.g., Java class fields to C struct members).Adversarial Training: Li et al. (2023) injected type errors and memory leaks into training data, forcing models to learn error detection and correction.
+
+\paragraph{Limitations}
+Scarce High-Quality Data: Java-C parallel corpora are rare and costly to create.
+
+Incomplete Coverage: Adversarial samples cannot anticipate all hallucination patterns.
+
+Overfitting Risks: Excessive augmentation may reduce real-world generalization.
+
+\subsubsection{Model Architecture Improvements}
+
+\paragraph{Methods}
+AST-GNN Integration: Zhou et al. (2023) embedded Tree-Sitter parsers into CodeT5 to model code structure via abstract syntax trees (ASTs).
+
+Multi-Task Learning: Chen et al. (2024) proposed CodeBERT-Adapter, jointly training translation and error correction tasks.
+
+\paragraph{Limitations}
+AST Parsing Failures: Struggles with complex C features (e.g., macros, template metaprogramming).
+
+Task Interference: Multi-task learning may prioritize syntax over semantics.
+
+Lack of Specialization: Generic architectures underperform in Java-C-specific tasks.
+
+\subsubsection{Post-Hoc Verification and Symbolic Reasoning}
+\paragraph{Methods}
+Static/Dynamic Checks: Ahmad et al. (2023) used clang-tidy and test cases to validate generated code.
+
+Formal Verification: Li et al. (2024) applied Z3 theorem provers to ensure memory safety.
+
+\paragraph{Limitations}
+Shallow Error Detection: Static tools miss deep semantic errors.
+
+Dependence on Specifications: Formal methods require precise specifications, often unavailable.
+
+Late-Stage Fixes: Post-processing cannot prevent hallucinations during generation.
+
+\subsection{Summary and This Study’s Innovations}
+Hallucinations in Java-to-C transformation stem from type system mismatches, memory management gaps, syntactic incompatibilities, and logical misinterpretations. Existing mitigation strategies—data-driven, structural, and symbolic—remain limited:
+
+Data methods suffer from corpus scarcity.
+
+Structural approaches falter with complex syntax.
+
+Symbolic reasoning relies on impractical formalisms.
+
+Only 15\% of studies focus on heterogeneous language pairs like Java-C (Sun et al., 2024), highlighting the need for targeted solutions.
+
+

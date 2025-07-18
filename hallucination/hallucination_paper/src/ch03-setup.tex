@@ -1,42 +1,160 @@
-% !TeX root = ../main.tex
+\section{Empirical Setup}
 
-\section{Empirical Setup}\label{sec:approach}
+We chose translating Java files into C++ files, both widely used programming languages which are extensively employed in many domains, such as system development and cross-platform application creation. We targeted two current mainstream LLMs (DeepSeek and ChatGPT) in code translation. The setup of our study includes three steps. The dataset collection step gathers datasets from open-source projects on GitHub. The translation methods step uses two LLMs to translate code for these prompts. Finally, the evaluation metric step uses menu assessment to evaluate the translation results.
 
+\subsection{Dataset Collection}
 
-In this section, we present the design of \tool.
+Both Java and C++ are widely used programming languages in diverse domains, such as:
 
+\begin{itemize}
+    \item Development Tools and Frameworks
+    \item Web Development Frameworks
+    \item Data Science and Analysis
+\end{itemize}
 
+We believe that within mentioned domains, the selected projects represent key software components that are particularly well-suited for code translation. For each project, we applied the following detailed selection criteria to ensure fairness and objectivity:
 
-\begin{table}[!t]
-    \caption{Evaluated Large Language Models (LLMs)}
-    \label{tab:llms}
-    \centering
-    % \renewcommand{\arraystretch}{1.2}
-    \begin{tabular}{l|r|c|c} 
-    \hline
-    \textbf{Model} &  \textbf{\# Params} & \textbf{Python Fine-Tuned}  & \textbf{Open-Source}  \\\hline
-    DeepSeek-1.3b   &  1.3 B  &  \ding{55}  & \ding{51} \\
-    
-    CodeGen-350m    &  350 M  &  \ding{51}  & \ding{51}  \\
-    CodeGen-2b      &  2 B    &  \ding{51}  & \ding{51}  \\
-    CodeGen-6b      &  6 B    &  \ding{51}  & \ding{51}  \\
-    
-    StarCoder2-3b   &  3 B    &  \ding{55}  & \ding{51}    \\
-    CodeLlama-7b    &  7 B    &  \ding{51}  & \ding{51}   \\
-    GPT-3.5         &  175 B  &  \textbf{UNKNOWN}  & \ding{55}      \\ 
-    \hline
-    \end{tabular}
-    
-    % \begin{tabular}{m{1.3cm}m{1cm}m{0.7cm}||m{1.3cm}m{1cm}m{0.7cm}} 
-    % \Xhline{2\arrayrulewidth}
-    % \textbf{Model} &  \textbf{\# Params}  & \textbf{Open-Source} &  \textbf{Model}  & \textbf{\# Params}  & \textbf{Open-Source}  \\
-    % % \Xhline{1.5\arrayrulewidth}          
-    % CodeGen-350m  &  350 M    & \ding{51}  & StarCoder2-3b   &   3 B    &     \ding{51}    \\ \Xhline{1\arrayrulewidth}
-    % CodeGen-2b    &  2 B      & \ding{51}  &  CodeLlama-7b  &  7 B        &     \ding{51}   \\ \Xhline{1\arrayrulewidth}
-    % CodeGen-6b    &    6 B    &  \ding{51}    &  GPT-3.5   &      175 B   &   \ding{55}      \\ 
-    % \Xhline{1\arrayrulewidth}
-    % DeepSeek-1.3b    &     1.3 B          &     \ding{51}   & & &  \\ 
-    % \Xhline{2\arrayrulewidth}
-    % \end{tabular}
+\begin{itemize}
+    \item Minimal External Dependencies: Projects with few complex library dependencies are inherently easier to port.
+    \item Cross-Domain Relevance: The functionality should be widely applicable across different languages and platforms, not tied to language-specific paradigms.
+    \item Popularity and Recognition, split into three sub-criteria:
+    \begin{enumerate}[label=\alph*.]
+        \item Community Mentions and Usage: Frequency of discussions and references in forums, blogs, Q\&A sites
+        \item Dependency Downloads and Integration: Inclusion as a dependency in package managers
+        \item Official Documentation and Tutorial Coverage: Presence in authoritative docs and tutorials
+    \end{enumerate}
+\end{itemize}
 
+For example, \texttt{EnableJUnit4MigrationSupport} is the ideal choice as it's officially recommended by the JUnit team and widely adopted in enterprise environments. Recognized by top Java resources including Baeldung and DEV Community, it's the most reliable way to modernize your test suite without breaking existing tests. So we choose \texttt{EnableJUnit4MigrationSupport} as one of the Java datasets.
+
+Besides, in terms of project scale, to avoid difficulties in subsequent processing caused by overly large scales and to prevent the lack of typicality due to overly small scales, the selected datasets includes several projects of moderate scale. The specific scales of the project are in Table~\ref{tab:projects}.
+
+\begin{table}[htbp]
+\centering
+\caption{Project Dataset Statistics}
+\label{tab:projects}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Domains} & \textbf{Projects} & \textbf{Number of files} \\
+\midrule
+Development tools and frameworks & EnableJUnit4MigrationSupport & 32 \\
+ & NoopIndexDAO & 21 \\
+Web development frameworks & cookie & 10 \\
+ & HoverMenuService & 9 \\
+Data science and analysis & IntMath & 7 \\
+\bottomrule
+\end{tabular}
 \end{table}
+
+Thus, a high-quality and highly representative Java project datasets is obtained for subsequent research.
+
+\subsection{Translation Methods}
+
+Our research is explored through two detailed aspects:
+
+\begin{itemize}
+    \item (RQ1) The performance and issues of different large models in code translation
+    \item (RQ2) The performance and issues of class-based and method-based translation way
+\end{itemize}
+
+To address these research questions, we conducted a series of translation involving two LLMs (DeepSeek and ChatGPT). For each LLMs, we translate in two ways:
+
+\subsubsection{Class-Based Translation}
+
+\paragraph{Prompt of Class-Based Translation}
+The raw data files were generated by scripts that traverse specified project directories, treating each Java file as an independent translation unit.
+
+\begin{itemize}
+    \item Instruction: "Translate the following Java code into C++:"
+    \item Source Code: The entire content of the target Java file.
+    \item Format Requirements: "Your answer should include two parts: header file and source file (if the given java file contains an interface, source file are not required), every part should be surrounded by cpp. assuming that the relevant dependencies have been implemented, provide the code only, no other non code content is required, and no usage examples are required."
+    \item Example: Finally, an "example" string is attached, providing a sample of the expected C++ header and source file
+\end{itemize}
+
+\paragraph{Header File Generation}
+\begin{itemize}
+    \item LLMs parse Java files
+    \item Translate elements (class definitions, member variables, method declarations) into C++ header files
+    \item Follow C++ conventions
+\end{itemize}
+
+\paragraph{Class-Based Translation}
+\begin{itemize}
+    \item Using the generated header files
+    \item LLMs receive the entire Java class as input
+    \item Translate the complete class structure, including fields and methods, into C++
+\end{itemize}
+
+\paragraph{Evaluation and Error Analysis}
+\begin{itemize}
+    \item Evaluating translation consistency and completeness
+    \item Analyzing errors
+    \item Comparing the effectiveness, robustness, and granularity of both strategies
+\end{itemize}
+
+\subsubsection{Method-Based Translation}
+
+\paragraph{Prompt of Method-Based Translation}
+The raw data files were generated by scripts that traverse specified project directories, extracting individual Java classes or interfaces and their method bodies. Each Java file is separated into two parts: a header file section and a body section.
+
+\begin{itemize}
+    \item Instruction: To the header file section: "Following is a Java class/interface declaration along with field and method declarations:\{code\} Please translate it into a header file that conforms to the C++17 standard syntax and performs the same functions. The method only needs to be declared, not implemented. Other classes that appear in the code have been implemented in C++. If necessary, you can use the header file with the same name."
+    
+    To the body section: "\{header\_content\}Please implement the following functions according to the contents of the above header file:{code}It is a Java method that you need to translate into a member function that conforms to the C++17 standard syntax. Other classes that appear in the code have been implemented in C++. If necessary, you can use the header file with the same name. Only the in vitro implementation of the function is required, no other non-code content is required, and no usage examples are required."
+    \item Source Code: The entire content of the target Java file.
+    \item Format Requirements: "Your answer should include two parts: header file and source file (if the given java file contains an interface, source file are not required), every part should be surrounded by cpp. assuming that the relevant dependencies have been implemented, provide the code only, no other non code content is required, and no usage examples are required."
+    \item Example: Finally, an "example" string is attached, providing a sample of the expected C++ header and method implementation.
+\end{itemize}
+
+\paragraph{Header File Generation}
+\begin{itemize}
+    \item LLMs parse Java files
+    \item Translate elements (class definitions, member variables, method declarations) into C++ header files
+    \item Follow C++ conventions
+\end{itemize}
+
+\paragraph{Method-Based Translation}
+\begin{itemize}
+    \item Using the generated header files
+    \item LLMs translate individual Java methods independently
+    \item Each method is translated into C++ without full class context
+\end{itemize}
+
+\paragraph{Evaluation and Error Analysis}
+\begin{itemize}
+    \item Evaluating translation consistency and completeness
+    \item Analyzing errors
+    \item Comparing the effectiveness, robustness, and granularity of both strategies
+\end{itemize}
+
+Both approach ensures a systematic and structured conversion from Java to C++.
+
+\subsection{Evaluation Metric}
+
+The evaluation of the translation results primarily relies on manual assessment, supported by a structured menu assessment approach to ensure consistency and reduce evaluator bias.
+
+The evaluation process includes:
+
+\begin{itemize}
+    \item Line-by-line scrutiny comparing C++ code against original Java files
+    \item Systematic categorization of error types
+    \item Statistical analysis of identified issues
+\end{itemize}
+
+To standardize the process, a menu assessment framework is introduced. This framework provides evaluators with:
+
+\begin{itemize}
+    \item A checklist of common translation criteria such as Reference to non-existent methods or member variables, Parameter table does not match, Missing header files and so on.
+    \item Examples of acceptable and unacceptable translations
+    \item For parts that are difficult to understand or easily confusing, mark notes (e.g., Note: This type of error should be distinguished from types 1,9, and 10: if the problem is solved after adding the missing header file, it is counted as type 3. If there is no such header file, it means that the function or class used is fabricated out of thin air, which is counted as 1, 9, and 10. (Note: These two cases still do not include classes or methods that exist in the project))
+\end{itemize}
+
+This evaluation model:
+
+\begin{itemize}
+    \item Enhances the reliability and repeatability of manual assessments
+    \item Effectively reflects performance disparities among different LLMs
+    \item Offers clear, actionable insights to guide improvements in code translation technologies
+\end{itemize}
+
+This evaluation framework supports in-depth analysis of (RQ1) and (RQ2). Nevertheless, we recognize the value of exploring this issue and leave a broader question for future work: how can we reduce reliance on manual evaluation while still ensuring accurate and reliable assessment of code translation quality?
