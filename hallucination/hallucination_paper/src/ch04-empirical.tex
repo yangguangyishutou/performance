@@ -20,55 +20,55 @@ To systematically quantify and analyze the "hallucination" phenomenon of large l
 This error type refers to calling a method in the translated code that does not exist in a class or its base class. This usually happens when the model attempts to directly migrate a specific API or programming habit from the source language to the target language, but the corresponding class library in the target language does not have a functionally equivalent member function.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code1.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code1.pdf}
 \end{figure}
 \subsubsection{Parameter list mismatch}
 When code calls a function or method, the provided parameters do not match the parameter list of any available overloaded version of that function in terms of quantity, type, or order.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code2.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code2.pdf}
 \end{figure}
 \subsubsection{Missing header file}
 The code uses a class, function, or macro defined in the C++ standard library or other parts of the project, but does not include the corresponding header file via an \#include directive, causing the compiler to fail to find the definition of related symbols, thus leading to compilation failure. This error needs to be distinguished from "Referencing non-existent classes": in type 3, the referenced symbol itself exists, only the declaration is missing; while in type 7, the referenced class is entirely fictitious.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code3.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code3.pdf}
 \end{figure}
 \subsubsection{Method not implemented (entirely missing)}
 This error type refers to a member function being declared in the class's header file or source file, but no implementation for that function is provided at all in the corresponding source file, or the implementation body is empty.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code4.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code4.pdf}
 \end{figure}
 \subsubsection{Variable initialization/usage error}
 This error type typically includes not initializing reference members or constant members in the constructor's member initializer list. Additionally, using uninitialized variables also falls into this category.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code5.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code5.pdf}
 \end{figure}
 \subsubsection{Incorrect pointer usage}
 This error type involves improper operations on C++ pointers (including raw pointers and smart pointers). For example, dereferencing a void pointer and attempting to call its member method, or incorrectly performing pointer type conversions.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code6.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code6.pdf}
 \end{figure}
 \subsubsection{Referencing non-existent classes}
 This error type refers to the code referencing a class that is not defined in the C++ standard library, project dependencies, or the current codebase. This is usually because the translation directly copied Java-specific libraries, and these classes do not have direct corresponding implementations in C++, requiring the use of different libraries or design patterns as alternatives.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code7.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code7.pdf}
 \end{figure}
 \subsubsection{Method partially unimplemented (partially missing)}
 Unlike "Method not implemented (entirely missing)", this error type refers to methods that have an implementation body, but their internal logic is incomplete, contains placeholders, or is severely simplified, failing to achieve the full functionality of the original Java code.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code8.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code8.pdf}
 \end{figure}
 \subsubsection{Improper memory management}
 This error type specifically targets C++'s manual memory management mechanism. It primarily includes memory leaks, double-freeing the same memory block, or using dangling pointers that have been freed.
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Codes/Code9.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code9.pdf}
 \end{figure}
 
 \subsection{Overall Performance Analysis}
@@ -101,7 +101,7 @@ Other significant error types include:
 Other less common but still noteworthy error types included "Missing header file" (13 instances) and "Parameter list mismatch" (11 instances).
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Overall Error Analysis.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Overall Error Analysis.pdf}
 \end{figure}
 
 The overwhelming dominance of “Method not implemented (entirely missing)” is not just a quantitative finding but also qualitatively highlights fundamental limitations of LLMs. This suggests that when faced with complex class translation tasks, LLMs often opt to omit entire methods rather than attempting to translate them. This also points to a structural hallucination, where the model completely fails to produce the expected output, rather than merely generating semantically or syntactically incorrect code.
@@ -120,7 +120,7 @@ Based on existing translation results, we can compare the overall translation ef
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Model Capability Comparison.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Model Capability Comparison.pdf}
 \end{figure}
 
 \begin{itemize}[leftmargin=1.5em]
@@ -133,7 +133,7 @@ It is worth noting that the comparison of DeepSeek and GPT's translation results
 A detailed examination of the error type distribution for each model reveals different characteristics in their hallucination frequencies.
 %\begin{figure}[H]
 %  \centering
-%  \includegraphics[width=0.7\textwidth]{Class_Method_Error_Type_Stacked_Bar_Chart.pdf}
+%  \includegraphics[width=0.5\textwidth]{Class_Method_Error_Type_Stacked_Bar_Chart.pdf}
 %\end{figure}
 
 \begin{itemize}[leftmargin=1.5em]
@@ -143,11 +143,11 @@ A detailed examination of the error type distribution for each model reveals dif
 
 %\begin{figure}[H]
 %  \centering
-%  \includegraphics[width=0.7\textwidth]{Class_Method_Error_Type_Stacked_Bar_Chart.pdf}
+%  \includegraphics[width=0.5\textwidth]{Class_Method_Error_Type_Stacked_Bar_Chart.pdf}
 %\end{figure}
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.7\textwidth]{pdf/Model Error Distribution Comparison.pdf}
+  \includegraphics[width=0.5\textwidth]{pdf/Model Error Distribution Comparison.pdf}
 \end{figure}
 
 \textbf{Key Differences and Strengths/Weaknesses:}
