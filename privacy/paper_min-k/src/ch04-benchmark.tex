@@ -3,22 +3,25 @@
 \section{Benchmark Construction}
 
 Existing MIA benchmarks, \eg WikiMIA~\cite{shi2023detecting} and MIMIR~\cite{duan2024membership}, are designed to evaluate MIAs on generic data elements. They can not accurately capture MIA capabilities on code or the extent to which LLMs utilize copyrighted code.
-\todo{Although the benchmark from Yang et al.\cite{yang2024gotcha} utilized a widely adopted  CodeXGLUE benchmark\cite{lu2021codexglue} for evaluation, their benchmark only covers the Java language.} Therefore, we constructed a new benchmark, named \benchmark, using code from two widely used programming languages, namely Python and Java. Specifically, we collected member and non-member samples as follows.
+\todo{Although the benchmark from Yang et al.~\cite{yang2024gotcha} targeted code, it has several limitations for our study. Their benchmark only covers the Java language and relies on the general-purpose CodeXGLUE~\cite{lu2021codexglue}. Furthermore, their MIA method requires training an auxiliary classifier, which constitutes a complete attack pipeline. Our study, however, requires a purer benchmark consisting only of member and non-member samples to directly evaluate our method's performance on the LLM, rather than assessing a complex attack process involving auxiliary models. Our time-based construction of the benchmark is therefore more direct and better aligned with the goal of evaluating the model's "memory".}
+Therefore, we constructed a new benchmark, named \benchmark, using Python code. Specifically, we collected member and non-member samples as follows.
 
 
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{Statistics of our Benchmark \benchmark}\label{tab:benchmark}
-    \begin{tabular}{l l c p{1.2cm} p{2.3cm}}
+        \caption{Benchmark Statistics}\label{tab:benchmark}
+    \begin{tabular}{m{0.8cm}m{1.2cm}m{0.7cm}m{0.7cm}m{0.7cm}m{0.7cm}m{0.7cm}}
     \toprule
-    \textbf{Lang.} & \textbf{Type} & \textbf{Func. (\#)} & \textbf{Source} & \textbf{Strategy} \\
+    \multirow{1}{*}{Lang.}  &  \multirow{1}{*}{Label}  & Proj. (\#) & Files (\#)  & Func. (\#) & LOC (\#)  & \multicolumn{1}{c}{Length}  \\ 
     \midrule
-    \multirow{2}{*}{Python} & Members & 300 & Pile & 30/100 entries \\
-    & Non-Members & 300 & GitHub & 30/repo \\
-    \midrule
-    \multirow{2}{*}{Java} & Members & \todo{300+} & Pile & From 300 classes \\
-    & Non-Members & 300 & GitHub & 30/repo \\
+    \multirow{6}{*}{Python} & \multirow{3}{*}{Members}  & \multirow{3}{*}{Pile} & \multirow{3}{*}{-} & \multirow{3}{*}{1000} & \multirow{3}{*}{-} & 100 \\ 
+    & & & & & &  200 \\ 
+    & & & & & &  300 \\ 
+    \cmidrule(lr){2-7}       
+    & \multirow{3}{*}{\shortstack{Non-\\Members}}  & \multirow{3}{*}{100} & \multirow{3}{*}{-} & \multirow{3}{*}{1000} & \multirow{3}{*}{-} & 100 \\ 
+     & & & & & &  200 \\ 
+    & & & & & &  300 \\ 
     \bottomrule
     \end{tabular}
 \end{table}
@@ -34,71 +37,33 @@ Existing MIA benchmarks, \eg WikiMIA~\cite{shi2023detecting} and MIMIR~\cite{dua
     \toprule
     \textbf{Language} & \textbf{AST Token} & \textbf{Count} \\
     \midrule
-    \multirow{10}{*}{Python} & Load\todo{INconsistent Granularity} & 19,481 \\
-     & Name & 15,640 \\
-     & Constant & 7,971 \\
-     & Attribute & 5,382 \\
-     & Call & 5,133 \\
-     & Store & 3,258 \\
-     & Assign & 2,334 \\
-     & Expr & 1,702 \\
-     & Keyword & 1,646 \\
-     & FormattedValue & 1,101 \\
+    \multirow{11}{*}{Python} & Load & 31,628 \\
+     & Name & 25,705 \\
+     & Constant & 12,404 \\
+     & Call & 8,516 \\
+     & Attribute & 8,409 \\
+     & Store & 5,471 \\
+     & Assign & 4,043 \\
+     & keyword & 3,340 \\
+     & Expr & 3,177 \\
+     & Subscript & 1,528 \\
      \cmidrule{2-3}
-     & Total & \todo{XXXX} \\
-    \midrule
-    \multirow{10}{*}{Java} & ( & 3,976 \\
-     & ) & 3,942 \\
-     & ; & 2,129 \\
-     & \{ & 1,180 \\
-     & \} & 980 \\
-     & return & 473 \\
-     & String & 428 \\
-     & new & 331 \\
-     & public & 307 \\
-     & if & 263 \\
-      \cmidrule{2-3}
-     & Total & \todo{XXXX} \\
+     & Total & 123,681 \\
     \bottomrule
     \end{tabular}
 \end{table}
 
 
 
-\textbf{Members.} We leveraged The Pile~\cite{pile}, a large-scale open-source language modeling dataset composed of multiple smaller datasets, including 7.6\% of a repository dataset sourced from GitHub~\cite{thepile}. The Pile released in 2021, serving as the training dataset for many LLMs, including Pythia\todo{CITE evidence}, GPT-Neo\todo{CITE evidence}, StableM\todo{CITE evidence}, etc.
+\textbf{Members.} We leveraged The Pile~\cite{pile}, a large-scale open-source language modeling dataset composed of multiple smaller datasets, including 7.6\% of a repository dataset sourced from GitHub~\cite{thepile}. The Pile released in 2021, serving as the training dataset for many LLMs, including Pythia~\cite{biderman2023pythia}, GPT-Neo~\cite{black2021gptneo}, StableLM~\cite{stabilityai2023stablelm}, etc.
 
-For Python, we extract Python functions (methods) from the code portion of the Pile dataset using scripts to generate a JSONL file. 
+We extract Python functions from the code portion of the Pile dataset using scripts to generate a JSONL file. From this file, we systematically sample 10 functions from every 100 consecutive entries starting from the beginning, processing a total of 10,000 entries to obtain 1,000 functions, resulting in the positive.jsonl file.
 
-From this file, we systematically sample 30 functions from every 100 consecutive entries starting from the beginning, collecting a total of 3,000 entries to obtain 300 functions, resulting in the positive.jsonl file. 
+\textbf{Non-members.} For non-members, we searched GitHub using a customized query for Python repositories, limiting the creation time to after January 1, 2024. We sorted the repositories by star count in descending order to ensure quality. We then extracted 10 Python functions from each repository before proceeding to the next one, continuing this process across 100 repositories to collect a total of 1,000 functions. To ensure these functions were genuinely original and not cloned from pre-existing sources, we implemented a rigorous verification process. First, we parsed each candidate function's code using Python's \texttt{ast} module to extract its name, variable names, and function calls. These elements were then used to build search queries for the GitHub API. The verification relied on three heuristics: (1) searching for the exact function name to identify direct duplicates; (2) searching by internal variable names to detect refactored code reuse; and (3) searching for the complete string of function calls to find logic similarities. Two of the authors conducted peer reviews on the search results to ensure that all 1,000 functions were original and created after January 2024.
 
+Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \benchmark. We categorize the functions by character lengths into three groups based on statistical distribution: \textit{short} (character lengths below the 33rd percentile), \textit{middle} (character lengths between the 33rd and 66th percentiles), and \textit{long} (character lengths above the 66th percentile). Generally, the distribution is balanced to ensure fair comparison under varying function lengths.
 
-For Java, we similarly refer to the code portion of the Pile dataset and use scripts to extract 300 Java classes, generating a JSONL file. 
-
-We then employ additional scripts to extract functions from these classes, which serve as our positive samples for the Java dataset.
-
-
-
-% Pile --> Project list XXX         ---->            match 12 project       ---> 10 project --> XXX files ---> 300 functions
-%           GitHub projects 20 rank by start     ---filter cookbook -> 12 project   
-
-\textbf{Non-members.} For non-members, we searched GitHub using a customized query on corresponding repositories limiting the creation time after January 2024 of a particular language, either Python of Java. Then, we randomly sample functions (methods) from each repository, selecting between \todo{1 and 30 functions per repository SOME ISSUE WITH 30}. This process yields 300 new functions per programming language, all created after January 2024. To ensure these functions are genuinely original and not cloned from existing sources, we perform verification using three searching heuristics: (1) Searching by the function name; (2) Searching by variable names within each function, and (3) \todo{Searching by function calls within each function}. Two of the authors conducted peer reviews on the searching results to ensure that all 300 functions are original and were created after January 2024.
-
-
-
-% For both Python and Java, we search GitHub repositories using the query "language:python created:>=2024-01-01 pushed:>=2024-01-01" and "language:java created:>=2024-01-01 pushed:>=2024-01-01" 
-% respectively to ensure that these codes have not been seen during model training. 
-% Then, we randomly extract functions from the repositories, collecting functions from a minimum of 1 function to a maximum of 30 functions for each repository. 
-
-% We extract functions from the repository files using scripts, collecting up to 30 functions from each repository before proceeding to the next one. 
-
-% This process generates the negative\_raw.jsonl file (containing more than 300 entries) for each language. We select the first 300 entries as our negative sample set for both Python and Java.
-
-
-
-Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \benchmark. We categorize the functions by AST token lengths into three groups: \textit{short} (token lengths below the 33rd percentile), \textit{middle} (between the 33rd and 66th percentiles), and \textit{long} (above the 66th percentile). Generally, the distribution is balanced to ensure fair comparison under varying function lengths.
-
-\todo{We also count the number of AST tokens according to their AST node types. }
-
+To further characterize our benchmark, we analyze the Abstract Syntax Tree (AST) tokens present in the collected functions. AST tokens represent the syntactic elements of Python code as defined by Python's official \texttt{ast} module~\cite{python-ast}. Each AST node type corresponds to a specific language construct, such as \texttt{Load} for variable access, \texttt{Call} for function calls, and \texttt{Assign} for assignment statements. Table~\ref{tab:benchmark-tokens} presents the top 10 most frequent AST token types in our benchmark, which demonstrates the syntactic diversity and complexity of the collected functions. The distribution shows that our dataset contains a rich variety of Python programming constructs, with variable operations (\texttt{Load}, \texttt{Name}) and expressions (\texttt{Constant}, \texttt{Call}) being most prevalent.
 
 \todo{Number of projects in table 1?}
 
@@ -107,6 +72,3 @@ Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \b
 
 
 % \textbf{Length.} We define the length of a code snippet as the number of characters in the function field. We divide the character length into three categories based on statistical distribution: short (character length < 33rd percentile), medium (33rd percentile $ \le $ character length < 66th percentile), and long (character length $\ge$ 66th percentile).
-
-
-

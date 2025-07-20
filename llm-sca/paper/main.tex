@@ -1,4 +1,4 @@
-\documentclass[sigconf,review,anonymous,screen]{acmart}
+\documentclass[manuscript,screen]{acmart}
 
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
@@ -16,6 +16,9 @@
 \usepackage{flushend}
 \usepackage{enumitem}
 \usepackage{algorithm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{algorithm}
 % example style
 \usepackage{amsthm}
 \theoremstyle{acmdefinition}
@@ -25,15 +28,19 @@
 \usepackage{multirow}
 \usepackage{booktabs}
 \usepackage{tabularx}
-\usepackage{pifont}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 
 \usepackage{subcaption}
 
-\usepackage{lmodern}
-
 % fraction
 \usepackage{nicefrac, xfrac}
+
+
+%itemize
+\newcommand{\SubItem}[1]{
+    {\setlength\itemindent{15pt} \item[-] #1}
+}
+
 
 % save space
 \usepackage{microtype}
@@ -48,52 +55,37 @@
 % \fancyhead{}
 % \fancyhead[LO]{\footnotesize{Killing Two Birds with One Stone}}
 
+\usepackage{tikz}
+% \newcommand\round[2]{\par
+%     \noindent\begin{tikzpicture}%
+%         \node[draw = #1, fill = #1, rectangle, rounded corners, 
+%               minimum size = 5.5mm, text = white, text width = 2cm](char){#2};
+%     \end{tikzpicture}\par%
+% }%
+\definecolor{s1}{RGB}{179,218,219}
+\definecolor{s2}{RGB}{82,122,154}
+\definecolor{s3}{RGB}{36,53,84}
 
-%itemize
-\newcommand{\SubItem}[1]{
-    {\setlength\itemindent{15pt} \item[-] #1}
+\newcommand\round[2]{%
+    \tikz[baseline=-0.5ex]{
+        \node[draw = #1, fill = #1, rectangle, rounded corners, 
+              minimum size = 5.5mm, text = white, text width = 2cm](char){#2};
+    }%
 }
+    
 
 
 % command
-\newcommand{\todo}[1]{\textcolor{black}{#1}}
-\newcommand{\minor}[1]{\textcolor{black}{#1}}
+\newcommand{\todo}[1]{\textcolor{red}{#1}}
 \newcommand{\tool}{\textsc{tool}\xspace}
+\newcommand{\ie}[0]{\textit{i.e.,}\xspace}
+\newcommand{\eg}[0]{\textit{e.g.,}\xspace}
+
 
 \begin{document}
 
-\title[\tool]{\tool}
+\title{LLM SCA}
 
-
-%%
-%% The "author" command and its associated commands are used to define
-%% the authors and their affiliations.
-%% Of note is the shared affiliation of the first two authors, and the
-%% "authornote" and "authornotemark" commands
-%% used to denote shared contribution to the research.
-\author{Ben Trovato}
-\authornote{Both authors contributed equally to this research.}
-\email{trovato@corporation.com}
-\orcid{1234-5678-9012}
-\author{G.K.M. Tobin}
-\authornotemark[1]
-\email{webmaster@marysville-ohio.com}
-\affiliation{%
-  \institution{Institute for Clarity in Documentation}
-  \streetaddress{P.O. Box 1212}
-  \city{Dublin}
-  \state{Ohio}
-  \country{USA}
-  \postcode{43017-6221}
-}
-
-%%
-%% By default, the full list of authors will be used in the page
-%% headers. Often, this list is too long, and will overlap
-%% other information printed in the page headers. This command allows
-%% the author to define a more concise list
-%% of authors' names for this purpose.
-\renewcommand{\shortauthors}{AAA et al.}
 
 %%
 %% The abstract is a short summary of the work to be presented in the
@@ -109,29 +101,43 @@
 \end{abstract}
 
 \maketitle
+\cite{garousi2016systematic}
 
 \input{src/ch01-introduction}
-\input{src/ch02-related-work}
-\input{src/ch03-setup}
-\input{src/ch04-empirical}
-\input{src/ch05-tool}
-\input{src/ch06-discussion}
-\input{src/ch07-conclusion}
-
-\clearpage
+\input{src/ch02-motivation}
+\input{src/ch03-benchmark}
+\input{src/ch04-approach}
+\input{src/ch05-evaluation}
+\input{src/ch06-related}
+\input{src/ch07-discussion}
+\input{src/ch08-conclusion}
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{src/reference}
 
 
-\clearpage
-
-
 \end{document}
 \endinput
-%%
-%% End of file `sample-sigconf.tex'.
 
-% TODO 与最相关工作的比较 的文字
-% TODO Figure.6 去掉了非0 TP的文字。
-% program repharsing
+
+% TODO
+% 3. Risk， mitigation图的严谨性
+% implant malicious code -> implant maliciousness into artifacts
+% code data, model ,prompt顺序
+% citation是最后一步
+
+
+
+% collect of data.
+% generate abnormal content in risk on LLM apps.
+% legal risk: unauthorized content
+% general risks: introduce performance regression.
+% general risks: terminate service
+% risk on artifacts: leak data
+
+% exploit LLM App vul 里面要介绍用llm生成unsafe 的code
+
+% Discontinue Maintenance -> Degrade Sustainability
+% add leak data
+
+
