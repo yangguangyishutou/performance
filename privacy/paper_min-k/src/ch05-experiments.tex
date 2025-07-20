@@ -38,23 +38,38 @@ We systematically compare the AUROC performance of various detection methods on 
 
 \textbf{Model scale effects.} The results demonstrate that \tool's effectiveness scales well across different model sizes, from the 2.7B parameter GPT-Neo to the 6B parameter GPT-J. Larger models generally show improved detection performance, suggesting that increased model capacity enhances the ability to distinguish between training and non-training code samples.
 
-\begin{table*}[!h] 
+\begin{table*}[!h]
 \centering
 \footnotesize
-\caption{Comparison of methods across different models with AUROC scores (\%)}
+\caption{AUROC (\%) of different methods under varying positive-to-negative ratios (total samples fixed at 1,200).}
 \label{tab:main_results}
-\begin{tabular}{m{2.6cm}m{1.8cm}m{1.8cm}m{1.8cm}m{1.8cm}}
+\begin{tabular}{m{1cm}m{2.3cm}m{2cm}m{2cm}m{2cm}m{2cm}}
 \toprule
-\textbf{Method} & \textbf{Pythia-2.8B} & \textbf{GPT-Neo-2.7B}  & \textbf{StableLM-Alpha-3B} & \textbf{GPT-J-6B}\\
+\textbf{Ratio} & \textbf{Method} & \textbf{Pythia-2.8B} & \textbf{GPT-Neo-2.7B}  & \textbf{StableLM-Alpha-3B} & \textbf{GPT-J-6B}\\
 \midrule
-
-\textsc{Loss} & 48.2 & 55.3 & 41.6 & 55.0 \\
-\textsc{ZLib} & 44.6 & 47.5 & 42.8 & 47.7 \\
-\textsc{Min-K Prob} & 48.1  & 55.2  & 41.9  & 54.9  \\ % K=0.2
-\textsc{Gotcha} & & & &\\
-\textsc{DC-PDD} & 54.9 & 45.7 & 49.9 & 47.9 \\
+\multirow{6}{*}{1:1} & \textsc{Loss} & 36.7 & 41.8 & 32.3 & 41.3 \\
+& \textsc{ZLib} & 31.2 & 33.3 & 30.0 & 33.6 \\
+& \textsc{Min-K Prob} & 37.3 & 40.1 & 33.3 & 39.3 \\
+& \textsc{Gotcha} & -- & -- & -- & -- \\
+& \textsc{DC-PDD} & 49.3 & 40.1 & 42.4 & 40.2 \\
+\cmidrule(lr){2-6}
+& \tool & 62.7 & 61.7 & 62.7 & 63.9 \\
 \midrule
-\tool-0.1 & 56.4 & 64.4  & 51.3 & 59.4  \\
+\multirow{6}{*}{1:5} & \textsc{Loss} & 40.3 & 45.3 & 33.9 & 44.8 \\
+& \textsc{ZLib} & 34.0 & 36.2 & 32.5 & 36.3 \\
+& \textsc{Min-K Prob} & 40.2 & 43.3 & 34.9 & 42.4 \\
+& \textsc{Gotcha} & -- & -- & -- & -- \\
+& \textsc{DC-PDD} & 51.8 & 44.0 & 44.6 & 43.2 \\
+\cmidrule(lr){2-6}
+& \tool & 60.8 & 59.2 & 60.7 & 61.5 \\
+\midrule
+\multirow{6}{*}{5:1} & \textsc{Loss} & 40.0 & 43.8 & 34.9 & 43.6 \\
+& \textsc{ZLib} & 33.1 & 35.0 & 31.9 & 35.2 \\
+& \textsc{Min-K Prob} & 39.9 & 42.2 & 35.1 & 41.6 \\
+& \textsc{Gotcha} & -- & -- & -- & -- \\
+& \textsc{DC-PDD} & 49.4 & 40.9 & 44.1 & 39.6 \\
+\cmidrule(lr){2-6}
+& \tool & 61.6 & 60.6 & 61.6 & 63.1 \\
 \bottomrule
 \end{tabular}
 \end{table*}

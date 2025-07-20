@@ -41,3 +41,10 @@
 5.Java的实验结果 √ 还差gpt  √
 
 延期todo：Ablation Study 、Case Study
+
+## TODO 7.20
+
+1. Methodology讨论
+2. benchmark构建好了，ratio的部分怎么写，写在哪？
+3. Function Length.分类怎么写，是否要做实验？
+4. case study
