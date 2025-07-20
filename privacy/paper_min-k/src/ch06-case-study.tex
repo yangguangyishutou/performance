@@ -26,43 +26,39 @@ self.expect(self.c1, dg)
 \end{figure}
 
 \subsection{Query Design}
-We hide one constant (\texttt{0xDEADBEEF}) while providing the other (\texttt{12345654321}) as context, prompting the model with a natural–language question that uniquely points to the snippet without revealing the answer.  The intuition is that only a model which has memorised (or seen very similar) training data can reproduce the exact constant combination.
-
-If the model replies with \texttt{0xDEADBEEF} when given \texttt{12345654321} as context, we count this as direct evidence that the specific snippet (and thus GPL-licensed code) is memorised.
+We hide one constant (\texttt{0xDEADBEEF}) while providing the other (\texttt{12345654321}) as context, prompting the model with a natural–language question that uniquely points to the snippet without revealing the answer.  The intuition is that only a model which has memorised (or seen very similar) training data can reproduce the exact constant combination.If the model replies with \texttt{0xDEADBEEF} when given \texttt{12345654321} as context, we count this as direct evidence that the specific snippet is memorised.
 
 \begin{center}
 \fbox{\parbox{0.95\linewidth}{\small\textbf{Prompt.}\;``In the unit test that creates a datagram with channel identifier 12345654321, what 32-bit hexadecimal constant is appended to the datagram payload via the add\_uint32 function?  Answer with the exact value, including the 0x prefix.''}}
 \end{center}
 
 \subsection{Models and Evaluation Protocol}
-We query four open-source LLMs (the same models evaluated in Section~\ref{sec:experiments}) and two widely–used closed-source services.  Each model is prompted five times with different random seeds; an answer is marked as \emph{hit} if any of the completions contains \texttt{0xDEADBEEF}.  Results are summarised in
-Table~\ref{tab:case_study}.
+We query four open-source LLMs (the same models evaluated in Section Experiments) and two widely–used closed-source services.  Each model is prompted five times with different random seeds; an answer is marked as \emph{hit} if any of the completions contains \texttt{0xDEADBEEF}.  Results are summarised in Table~\ref{tab:case_study}.
 
 \begin{table*}[!h]
     \centering
     \footnotesize
     \caption{Model responses to the magic number query from a distinctive code fingerprint.}
     \label{tab:case_study}
-    \begin{tabular}{m{4cm}m{4cm}m{2cm}}
+    \begin{tabular}{m{3cm}m{7cm}m{1.5cm}}
     \toprule
     \textbf{Model} & \textbf{Answer by Model} & \textbf{Result} \\
     \midrule
-    Pythia-2.8B & \texttt{No valid response} & $\times$ \\
+    Pythia-2.8B & \texttt{No target constant in 5 attempts} & $\times$ \\
     \midrule
-    GPT-Neo-2.7B & \texttt{0xDEADBEEF} & $\checkmark$ \\
+    GPT-Neo-2.7B & \texttt{-} & $\checkmark$ \\
     \midrule
-    StableLM-3B & \texttt{No valid response} & $\times$ \\
+    StableLM-3B & \texttt{-} & $\times$ \\
     \midrule
-    GPT-J-6B & \texttt{0xDEADBEEF} & $\checkmark$ \\
+    GPT-J-6B & \texttt{-} & $\checkmark$ \\
     \midrule
-    Grok3.0 & \texttt{0xDEADBEEF} & $\checkmark$ \\
+    Grok3.0 & \texttt{0xDEADBEEF (1/5 attempts)} & $\checkmark$ \\
     \midrule
-    Gemini2.5 Flash & \texttt{0xdeadbeef} & $\checkmark$ \\
+    Gemini2.5 Flash & \texttt{0xdeadbeef (1/5 attempts)} & $\checkmark$ \\
     \bottomrule
     \end{tabular}
 \end{table*}
 
-\subsection{Result}
-Both closed-source services and two larger open models emit the exact constant, strongly suggesting that the specific code snippet from The Pile training dataset is memorised. This reproduction demonstrates the methodology's effectiveness in detecting potential code memorisation, which could have implications for code licensing and intellectual property considerations. Our methodology—selecting distinctive fingerprints and querying for them—can be automated to audit LLMs for such potential memorisation at scale.
+%The results reveal varying degrees of memorisation across models. Both closed-source services successfully reproduce the target constant, with Grok3.0 showing consistent performance across multiple attempts while Gemini2.5 Flash exhibits diverse outputs (five different hexadecimal values) with one correct match. Among open-source models, GPT-Neo-2.7B and GPT-J-6B each produced the exact constant in one out of five attempts, suggesting partial memorisation, while smaller models (Pythia-2.8B, StableLM-3B) showed no evidence of memorising this specific snippet. This reproduction demonstrates the methodology's effectiveness in detecting and quantifying different levels of code memorisation, which could have implications for code licensing and intellectual property considerations. Our methodology—selecting distinctive fingerprints and querying for them—can be automated to audit LLMs for such potential memorisation at scale.
 
 The case study targets a single snippet in one language (Python).  Extending this analysis to more projects and languages is left for future work.
