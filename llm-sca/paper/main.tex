@@ -19,6 +19,10 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{algorithm}
+% font
+\usepackage{lmodern}
+\usepackage{hyperref}
+
 % example style
 \usepackage{amsthm}
 \theoremstyle{acmdefinition}
@@ -83,6 +87,8 @@
 
 
 \begin{document}
+% fix overfull
+\begin{sloppypar}
 
 \title{LLM SCA}
 
@@ -101,7 +107,6 @@
 \end{abstract}
 
 \maketitle
-\cite{garousi2016systematic}
 
 \input{src/ch01-introduction}
 \input{src/ch02-motivation}
@@ -115,7 +120,7 @@
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{src/reference}
 
-
+\end{sloppypar}
 \end{document}
 \endinput
 
