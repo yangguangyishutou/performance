@@ -1,5 +1,6 @@
-\section{Data analysis}
-\subsection{Introduction/Overview}
+\section{Results}
+
+% \subsection{Introduction/Overview}
 This section aims to quantitatively analyze and compare the performance of large language models (LLMs) in Java to C++ code translation tasks. By manually analyzing and annotating the types of hallucinations generated during the translation process, compiling statistics, and calculating the frequency of various errors, we further analyze the key factors influencing LLM performance. This provides empirical evidence for evaluating the current capabilities and limitations of LLMs in code project translation.
 
 The dataset analyzed in this study is derived from the work of researchers who translated methods from 5-6 Java projects into C++ using different LLMs and methods. This dataset comprises a total of 1994 translated methods, which have undergone meticulous manual error type annotation.
@@ -10,72 +11,108 @@ We systematically explore LLM performance across three primary analytical dimens
     \item \textbf{Error Type: }Employs a detailed, manually identified error classification scheme to categorize and annotate the most common errors occurring during the translation process by existing large language models. This aids in precisely understanding the common errors and concentration of LLM hallucinations.
 \end{itemize}
 
-\subsection{Statistical Methods}
-The quantitative analysis in this study involves calculating metrics for evaluating LLM translation hallucinations: correctness rate and error rate, which are defined as the number of correctly and incorrectly translated methods divided by the total number of methods, respectively. These metrics were calculated for different groupings to facilitate further comparative analysis.
+\subsection{\todo{Identified Errors}}
 
-\subsection{Error Type Definition and Analysis}
 To systematically quantify and analyze the "hallucination" phenomenon of large language models in Java to C++ code translation tasks, we established a detailed error classification standard. Through meticulous manual review of the translation results, we identified and summarized several core error types that repeatedly occurred during the translation process.
 
+
+\begin{table*}[!t]
+    \caption{\todo{Error Types}}\label{tab:error_type}
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.2}
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{m{6cm}m{3.2cm}m{4cm}} 
+     \toprule    
+    \textbf{Error Type} &  \textbf{Entity} & \textbf{Description}  \\
+    \midrule    
+    Referencing non-existent methods or member variables    &  XX   \\
+    Parameter list mismatch      &  Method Declaration    &  XXX  \\
+    \bottomrule
+  \end{tabular}
+\end{table*}
+
 \subsubsection{Referencing non-existent methods or member variables}
+
 This error type refers to calling a method in the translated code that does not exist in a class or its base class. This usually happens when the model attempts to directly migrate a specific API or programming habit from the source language to the target language, but the corresponding class library in the target language does not have a functionally equivalent member function.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code1.pdf}
-\end{figure}
+
+  \begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.5\textwidth]{pdf/Codes/Code1.pdf}
+  \end{figure}
+
 \subsubsection{Parameter list mismatch}
+
 When code calls a function or method, the provided parameters do not match the parameter list of any available overloaded version of that function in terms of quantity, type, or order.
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{pdf/Codes/Code2.pdf}
-\end{figure}
+  \begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.5\textwidth]{pdf/Codes/Code2.pdf}
+  \end{figure}
+
 \subsubsection{Missing header file}
+
 The code uses a class, function, or macro defined in the C++ standard library or other parts of the project, but does not include the corresponding header file via an \#include directive, causing the compiler to fail to find the definition of related symbols, thus leading to compilation failure. This error needs to be distinguished from "Referencing non-existent classes": in type 3, the referenced symbol itself exists, only the declaration is missing; while in type 7, the referenced class is entirely fictitious.
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code3.pdf}
 \end{figure}
+
 \subsubsection{Method not implemented (entirely missing)}
 This error type refers to a member function being declared in the class's header file or source file, but no implementation for that function is provided at all in the corresponding source file, or the implementation body is empty.
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code4.pdf}
 \end{figure}
+
 \subsubsection{Variable initialization/usage error}
+
 This error type typically includes not initializing reference members or constant members in the constructor's member initializer list. Additionally, using uninitialized variables also falls into this category.
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code5.pdf}
 \end{figure}
+
 \subsubsection{Incorrect pointer usage}
 This error type involves improper operations on C++ pointers (including raw pointers and smart pointers). For example, dereferencing a void pointer and attempting to call its member method, or incorrectly performing pointer type conversions.
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code6.pdf}
 \end{figure}
+
 \subsubsection{Referencing non-existent classes}
 This error type refers to the code referencing a class that is not defined in the C++ standard library, project dependencies, or the current codebase. This is usually because the translation directly copied Java-specific libraries, and these classes do not have direct corresponding implementations in C++, requiring the use of different libraries or design patterns as alternatives.
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code7.pdf}
 \end{figure}
+
 \subsubsection{Method partially unimplemented (partially missing)}
 Unlike "Method not implemented (entirely missing)", this error type refers to methods that have an implementation body, but their internal logic is incomplete, contains placeholders, or is severely simplified, failing to achieve the full functionality of the original Java code.
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code8.pdf}
 \end{figure}
+
 \subsubsection{Improper memory management}
 This error type specifically targets C++'s manual memory management mechanism. It primarily includes memory leaks, double-freeing the same memory block, or using dangling pointers that have been freed.
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code9.pdf}
 \end{figure}
 
-\subsection{Overall Performance Analysis}
-\subsubsection{Overall Correctness Rate/Error Rate}
+
+
+\subsection{Results of \textbf{RQ1}}
+
+The quantitative analysis in this study involves calculating metrics for evaluating LLM translation hallucinations: correctness rate and error rate, which are defined as the number of correctly and incorrectly translated methods divided by the total number of methods, respectively. These metrics were calculated for different groupings to facilitate further comparative analysis.
+
+
+\subsubsection{\todo{Overall Performance}}
+
+
 Across all evaluated LLMs (GPT and DeepSeek), a total of 1994 distinct methods were translated and analyzed. Of these, 1211 methods were accurately translated, while 783 methods contained one or more identified errors. The overall correctness rate was 60.73\%, and the error rate was 39.27\%. This data establishes a baseline reference for LLM performance in Java to C++ code translation.
 
-\begin{table}[H]
+\begin{table}[!t]
   \centering
   \label{tab:translation-stats}
   \begin{tabular}{lrr}
@@ -88,7 +125,51 @@ Across all evaluated LLMs (GPT and DeepSeek), a total of 1994 distinct methods w
   \end{tabular}
 \end{table}
 
-\subsubsection{Overall Error Type Distribution}
+\begin{tcolorbox}[size=title, opacityfill=0.15, after=\vspace{-10pt}]
+
+  \textbf{Summary:} \todo{XXXXX}
+
+\end{tcolorbox}
+
+
+\subsubsection{\todo{Performance w.r.t LLMs}}
+
+
+Based on existing translation results, we can compare the overall translation efficiency of GPT and DeepSeek under both translation methods.
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{GPT: }GPT processed a total of 1099 methods. Of these, 614 methods were correctly translated, and 485 methods were incorrectly translated. This gives GPT an overall correctness rate of 55.87\%.
+    \item \textbf{DeepSeek: }DeepSeek processed a total of 895 methods. It completed 597 correct translations and 298 incorrect translations. This gives DeepSeek a higher overall correctness rate of 66.70\%.
+\end{itemize}
+
+\begin{figure}[!t]
+  \centering
+  \includegraphics[width=0.5\textwidth]{pdf/Model Capability Comparison.pdf}
+  \caption{Performance Results by LLMs}
+\end{figure}
+
+\todo{It is worth noting that the comparison of DeepSeek and GPT's translation results shows that the number of methods contained in the C++ files translated from the same Java source code files is not entirely consistent. This may stem from DeepSeek and GPT employing different model architectures and internal representation mechanisms, potentially leading to variations in how they identify and convert code structures. Although both Java and C++ are object-oriented languages, they have significant differences in syntax, memory management, exception handling, and some advanced features. LLMs may attempt to convert Java code into a more C++-style code, and this process might lead to changes in the number of methods due to different processing approaches.}
+
+\begin{tcolorbox}[size=title, opacityfill=0.15, after=\vspace{-10pt}]
+
+  \textbf{Summary:} \todo{DeepSeek's overall correctness rate (66.70\%) was significantly higher than GPT's (55.87\%), demonstrating an absolute advantage of 10.83 percentage points. This indicates that, in this experimental setup, for the methods it completed, DeepSeek was, on average, more reliable in generating correct Java to C++ translations.}
+
+\end{tcolorbox}
+
+
+\subsubsection{\todo{Performance w.r.t Projects}}
+
+\todo{XXXXXXXXX XXXXx XXX.}
+
+\begin{tcolorbox}[size=title, opacityfill=0.15, after=\vspace{-10pt}]
+
+  \textbf{Summary:} \todo{XXXXXX}
+
+\end{tcolorbox}
+
+
+\subsubsection{\todo{Error Type Distribution}}
+
+
 Analyzing and comparing the distribution of all identified error types across the entire translation corpus, we observed that certain hallucination categories predominated. "Method not implemented (entirely missing)" was the most prevalent, accounting for a total of 624 instances. This single error type constituted approximately 51.53\% of all identified errors, revealing the current LLMs' inadequacy in generating complete code structures.
 
 Other significant error types include:
@@ -99,7 +180,7 @@ Other significant error types include:
 \end{itemize}
 
 Other less common but still noteworthy error types included "Missing header file" (13 instances) and "Parameter list mismatch" (11 instances).
-\begin{figure}[H]
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Overall Error Analysis.pdf}
 \end{figure}
@@ -109,25 +190,6 @@ The overwhelming dominance of “Method not implemented (entirely missing)” is
 If LLMs frequently omit entire methods, it implies significant challenges in maintaining long-term coherence and completeness in medium to large-scale code projects. The occurrence of this error may stem from several factors: First, the LLM's context window might be insufficient to accommodate the entire class definition and its dependencies, preventing a complete analysis of methods and leading to the omission of their entire implementation. Second, when target methods are not explicitly referenced or prompts are too broad, LLMs may fail to fully grasp the implicit requirements of all methods within the translated class. Finally, in situations of high uncertainty or perceived complexity, LLMs struggle to fully convert Java language features to C++. They might choose to omit or fill with TODOs for later completion rather than generating highly erroneous or uncompilable code. This type of hallucination is particularly critical as it results in incomplete or non-functional target code, requiring substantial manual intervention.
 
 The high incidence of method omission suggests that, without explicit, fine-grained guidance, current LLMs may lack an internal coherent understanding of software project structure and code completeness, making them less adept at automating large, multi-component code migration tasks. While they excel at generating syntactically plausible code snippets, their ability to generate complete, coherent, and functionally equivalent project systems remains nascent. To complete the translation and migration of an entire project, LLMs need to understand the complete structure of the target code, not just the internal logic of individual methods. Future LLM development needs to focus on improving their ability to understand code as a structured system, rather than merely translating raw code as a series of independent fragments.
-
-\subsection{Analysis by Model}
-\subsubsection{Model-wise Correctness Rate Comparison}
-Based on existing translation results, we can compare the overall translation efficiency of GPT and DeepSeek under both translation methods.
-\begin{itemize}[leftmargin=1.5em]
-    \item \textbf{GPT: }GPT processed a total of 1099 methods. Of these, 614 methods were correctly translated, and 485 methods were incorrectly translated. This gives GPT an overall correctness rate of 55.87\%.
-    \item \textbf{DeepSeek: }DeepSeek processed a total of 895 methods. It completed 597 correct translations and 298 incorrect translations. This gives DeepSeek a higher overall correctness rate of 66.70\%.
-\end{itemize}
-
-\begin{figure}[H]
-  \centering
-  \includegraphics[width=0.5\textwidth]{pdf/Model Capability Comparison.pdf}
-\end{figure}
-
-\begin{itemize}[leftmargin=1.5em]
-    \item \textbf{Comparative Performance: }DeepSeek's overall correctness rate (66.70\%) was significantly higher than GPT's (55.87\%), demonstrating an absolute advantage of 10.83 percentage points. This indicates that, in this experimental setup, for the methods it completed, DeepSeek was, on average, more reliable in generating correct Java to C++ translations.
-\end{itemize}
-
-It is worth noting that the comparison of DeepSeek and GPT's translation results shows that the number of methods contained in the C++ files translated from the same Java source code files is not entirely consistent. This may stem from DeepSeek and GPT employing different model architectures and internal representation mechanisms, potentially leading to variations in how they identify and convert code structures. Although both Java and C++ are object-oriented languages, they have significant differences in syntax, memory management, exception handling, and some advanced features. LLMs may attempt to convert Java code into a more C++-style code, and this process might lead to changes in the number of methods due to different processing approaches.
 
 \subsubsection{Error Type Distribution by Model}
 A detailed examination of the error type distribution for each model reveals different characteristics in their hallucination frequencies.
@@ -141,24 +203,25 @@ A detailed examination of the error type distribution for each model reveals dif
     \item \textbf{DeepSeek Error Distribution: }For DeepSeek, "Method not implemented (entirely missing)" was also the most common error, but its count was significantly lower than GPT's, at 251 instances. Other errors included "Referencing non-existent classes" (20 instances) and "Referencing non-existent methods or member variables" (8 instances).
 \end{itemize}
 
-%\begin{figure}[H]
-%  \centering
-%  \includegraphics[width=0.5\textwidth]{Class_Method_Error_Type_Stacked_Bar_Chart.pdf}
-%\end{figure}
-\begin{figure}[H]
+
+\begin{figure}[!t]
   \centering
   \includegraphics[width=0.5\textwidth]{pdf/Model Error Distribution Comparison.pdf}
 \end{figure}
 
-\textbf{Key Differences and Strengths/Weaknesses:}
 
-\begin{itemize}[leftmargin=1.5em]
-    \item \textbf{Completeness: }DeepSeek demonstrated a stronger ability to prevent complete method omissions, with 122 fewer "Method not implemented (entirely missing)" errors than GPT. This factor contributed to DeepSeek's higher overall correctness rate.
-\end{itemize}
 
-DeepSeek in code translation accuracy and completeness showed a clear advantage, especially in avoiding "Method not implemented" and "Referencing non-existent" errors. GPT in this type of basic translation method appears to have a higher error rate, especially in generating complete method implementations. If the main goal is to efficiently obtain compilable and functionally correct translated code, then DeepSeek seems to be the preferred choice.
+\begin{tcolorbox}[size=title, opacityfill=0.15, after=\vspace{-10pt}]
 
-\subsection{Data Analysis Summary}
+  \textbf{Summary:} DeepSeek demonstrated a stronger ability to prevent complete method omissions, with 122 fewer "Method not implemented (entirely missing)" errors than GPT. This factor contributed to DeepSeek's higher overall correctness rate. DeepSeek in code translation accuracy and completeness showed a clear advantage, especially in avoiding "Method not implemented" and "Referencing non-existent" errors. GPT in this type of basic translation method appears to have a higher error rate, especially in generating complete method implementations. If the main goal is to efficiently obtain compilable and functionally correct translated code, then DeepSeek seems to be the preferred choice.
+
+\end{tcolorbox}
+
+\subsection{\todo{Results of \textbf{RQ2}}}
+
+\todo{XXX}
+
+\subsection{Summary}
 
 \begin{itemize}[leftmargin=1.5em]
     \item \textbf{Pervasive Hallucinations: }Large Language Models (LLMs), including GPT and DeepSeek, exhibit a significant hallucination rate in Java to C++ code translation. The most prevalent and impactful error type is "Method not implemented (entirely missing)." This phenomenon indicates a deficiency in LLMs' ability to fully comprehend code project structures and migrate complete code.
