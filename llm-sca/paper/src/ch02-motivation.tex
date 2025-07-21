@@ -1,12 +1,47 @@
 \section{Motivation}
 
-% 想要表达啥
-\subsection{Absence of Model Cards}
+The proliferation of Large Language Models (LLMs) has been dramatically accelerated by collaborative platforms like the Hugging Face Hub, which serves as a central repository for model sharing. A cornerstone of this ecosystem is the iterative development of new models by building upon existing ones through techniques such as fine-tuning, merging, and quantization. This process creates a complex web of inter-model dependencies, which we define as \textbf{model genealogy} or \textbf{lineage}. A clear understanding of a model's genealogy is paramount for ensuring traceability, reproducibility, and compliance, as derivative models often inherit biases, vulnerabilities, or licensing constraints from their predecessors.
+
+However, the mechanisms currently available on the Hugging Face Hub for documenting this critical lineage information are frequently inconsistent, incomplete, or entirely absent. This lack of a systematic and enforceable standard for provenance documentation poses a significant barrier to researchers and developers. The most visible symptom of this issue is the difficulty, or outright impossibility, of programmatically constructing a model's lineage—a structure ideally represented as a "Model Tree." This is not a superficial interface problem but a direct consequence of fundamental flaws in how provenance data is recorded at its source.
+
+To illustrate the severity of this challenge, we will dissect three distinct modes of documentation failure, each representing a progressively worsening degree of information obfuscation.
+
+\subsection{Problem 1: Lineage Concealed in Unstructured Text}
+In the most common scenario, lineage information exists but is locked within free-form text, rendering it inaccessible to automated tools. This forces researchers into a manual, error-prone process of discovery.
+
+% 使用 tcolorbox 环境来突出显示案例研究
+\begin{tcolorbox}[
+    title={\textbf{Case Study: \texttt{timdettmers/guanaco-13b}}},
+    colback=gray!5!white, % 盒子背景色
+    colframe=gray!75!black, % 边框颜色
+    fonttitle=\bfseries, % 标题字体加粗
+    sharp corners % 使用直角，更具现代感
+]
+A salient example is the \texttt{timdettmers/guanaco-13b} model. While this model is a fine-tuned version of LLaMA, this pivotal relationship is not captured in any structured, machine-readable metadata. To discover this link, a user must manually navigate to the model's repository, open the ``Model Card'' (a Markdown file), and parse through natural language prose to find the statement:
+% 使用 quote 环境处理引用
+\begin{quote}
+    \textit{Guanaco models are open-source finetuned chatbots obtained through 4-bit QLoRA tuning of LLaMA base models...}
+\end{quote}
+This reliance on unstructured documentation makes the automated construction of a lineage graph infeasible. It imposes a significant manual burden for identifying even a direct parent and completely obstructs any large-scale, systematic analysis of the model ecosystem.
+\end{tcolorbox}
 
 
-\textbf{Example A.}
+\subsection{Problem 2: Lineage Outsourced to Fragile External Links}
+A more precarious situation arises when provenance information is not even located within the Hugging Face platform, but is instead hyperlinked to an external, third-party source.
 
-\textbf{Example A.}
+\begin{tcolorbox}[
+    title={\textbf{Case Study: \texttt{Remilistrasza/Mysterious\_SDXL\_Lah}}},
+    colback=gray!5!white,
+    colframe=gray!75!black,
+    fonttitle=\bfseries,
+    sharp corners
+]
+Consider the \texttt{Remilistrasza/Mysterious\_SDXL\_Lah} model. Its Model Card is starkly empty of descriptive content, offering only a single hyperlink to a page on Civitai, another model-sharing platform. To identify the base model, a user is forced to leave the Hugging Face ecosystem. Only upon navigating to this external page does one discover that the base model is ``\textit{SDXL 1.0}''.
+
+This practice introduces two severe risks: \textbf{information fragmentation} and \textbf{link rot}. The integrity and availability of the lineage information become wholly dependent on the uptime and archival policies of an external website. Should the link become invalid (a 404 error), or the content on the remote page be altered or deleted, the model's traceable lineage is permanently severed. This practice renders the model's provenance fragile and unverifiable from within the Hugging Face ecosystem.
+\end{tcolorbox}
+
+\subsection{Problem 3: Completely Omitted Lineage Information}
 
 
-\textbf{Example A.}
+These documented failures—from information concealed in prose to its complete omission—demonstrate a clear and pressing need for an automated and reliable method to construct model genealogies. The current reliance on inconsistent, manual documentation is an unsustainable bottleneck in a rapidly scaling ecosystem. To bridge this critical gap, we propose an approach to automatically identify and verify the derivative relationships between models, thereby enabling robust and scalable lineage tracing.
