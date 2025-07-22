@@ -23,6 +23,14 @@
 \usepackage{lmodern}
 \usepackage{hyperref}
 
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=cyan,
+}
+
 % example style
 \usepackage{amsthm}
 \theoremstyle{acmdefinition}
@@ -90,35 +98,35 @@
 % fix overfull
 \begin{sloppypar}
 
-\title{LLM SCA}
+    \title{LLM SCA}
 
 
-%%
-%% The abstract is a short summary of the work to be presented in the
-%% article.
+    %%
+    %% The abstract is a short summary of the work to be presented in the
+    %% article.
 
-%%
-%% Keywords. The author(s) should pick words that accurately describe
-%% the work being presented. Separate the keywords with commas.
-%\keywords{datasets, neural networks, gaze detection, text tagging}
+    %%
+    %% Keywords. The author(s) should pick words that accurately describe
+    %% the work being presented. Separate the keywords with commas.
+    %\keywords{datasets, neural networks, gaze detection, text tagging}
 
-\begin{abstract}
-\input{src/ch00-abstract}
-\end{abstract}
+    \begin{abstract}
+        \input{src/ch00-abstract}
+    \end{abstract}
 
-\maketitle
+    \maketitle
 
-\input{src/ch01-introduction}
-\input{src/ch02-motivation}
-\input{src/ch03-benchmark}
-\input{src/ch04-approach}
-\input{src/ch05-evaluation}
-\input{src/ch06-related}
-\input{src/ch07-discussion}
-\input{src/ch08-conclusion}
+    \input{src/ch01-introduction}
+    \input{src/ch02-motivation}
+    \input{src/ch03-benchmark}
+    \input{src/ch04-approach}
+    \input{src/ch05-evaluation}
+    \input{src/ch06-related}
+    \input{src/ch07-discussion}
+    \input{src/ch08-conclusion}
 
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{src/reference}
+    \bibliographystyle{ACM-Reference-Format}
+    \bibliography{src/reference}
 
 \end{sloppypar}
 \end{document}
