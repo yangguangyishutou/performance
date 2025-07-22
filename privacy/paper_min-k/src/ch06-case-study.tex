@@ -2,13 +2,6 @@
 
 \section{Case Study: Detecting Code Memorisation}
 
-Modern LLMs are often trained on large‐scale code corpora that may include open–source projects with various licences.  To demonstrate how our benchmark can be used to identify potential code memorisation, we present a case study that targets a distinctive \emph{magic number} combination from The Pile training dataset.  This example illustrates the methodology for detecting memorisation of potentially licensed code.
-
-\subsection{Selecting a Unique Code Fingerprint}
-We automatically scanned the \texttt{positive.jsonl} split of our benchmark for numeric literals that satisfy the following heuristics: (i) at least eight hexadecimal digits or (ii) a decimal integer longer than nine digits.  These so–called ``magic numbers'' are frequently used as sentinels or protocol identifiers and therefore provide convenient fingerprints.  A regular-expression scan returned \texttt{0xDEADBEEF} together with the decimal channel identifier \texttt{12345654321} inside a unit test of a network \texttt{Datagram} implementation (Listing~\ref{lst:magic}).  
-
-To ensure uniqueness and avoid false positives, we conducted a comprehensive GitHub search to verify that this exact combination of constants (\texttt{12345654321} and \texttt{0xDEADBEEF}) and surrounding context appears only in the original project and its forks.  This verification step is critical, as a false positive could arise if the magic number combination were ubiquitous outside the original project.  Our search confirmed the combination's uniqueness, making it a suitable probe for memorisation.
-
 \begin{figure}[!t]
 \begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
 # tests/test_message_director.py (excerpt)
@@ -25,17 +18,7 @@ self.expect(self.c1, dg)
 \label{lst:magic}
 \end{figure}
 
-\subsection{Query Design}
-We hide one constant (\texttt{0xDEADBEEF}) while providing the other (\texttt{12345654321}) as context, prompting the model with a natural–language question that uniquely points to the snippet without revealing the answer.  The intuition is that only a model which has memorised (or seen very similar) training data can reproduce the exact constant combination.If the model replies with \texttt{0xDEADBEEF} when given \texttt{12345654321} as context, we count this as direct evidence that the specific snippet is memorised.
-
-\begin{center}
-\fbox{\parbox{0.95\linewidth}{\small\textbf{Prompt.}\;``In the unit test that creates a datagram with channel identifier 12345654321, what 32-bit hexadecimal constant is appended to the datagram payload via the add\_uint32 function?  Answer with the exact value, including the 0x prefix.''}}
-\end{center}
-
-\subsection{Models and Evaluation Protocol}
-We query four open-source LLMs (the same models evaluated in Section Experiments) and two widely–used closed-source services.  Each model is prompted five times with different random seeds; an answer is marked as \emph{hit} if any of the completions contains \texttt{0xDEADBEEF}.  Results are summarised in Table~\ref{tab:case_study}.
-
-\begin{table*}[!h]
+\begin{table*}[!t]
     \centering
     \footnotesize
     \caption{Model responses to the magic number query from a distinctive code fingerprint.}
@@ -58,6 +41,29 @@ We query four open-source LLMs (the same models evaluated in Section Experiments
     \bottomrule
     \end{tabular}
 \end{table*}
+
+Modern LLMs are often trained on large‐scale code corpora that may include open–source projects with various licences.  To demonstrate how our benchmark can be used to identify potential code memorisation, we present a case study that targets a distinctive \emph{magic number} combination from The Pile training dataset.  This example illustrates the methodology for detecting memorisation of potentially licensed code.
+
+\subsection{Selecting a Unique Code Fingerprint}
+We automatically scanned the \texttt{positive.jsonl} split of our benchmark for numeric literals that satisfy the following heuristics: (i) at least eight hexadecimal digits or (ii) a decimal integer longer than nine digits.  These so–called ``magic numbers'' are frequently used as sentinels or protocol identifiers and therefore provide convenient fingerprints.  A regular-expression scan returned \texttt{0xDEADBEEF} together with the decimal channel identifier \texttt{12345654321} inside a unit test of a network \texttt{Datagram} implementation (Listing~\ref{lst:magic}).  
+
+To ensure uniqueness and avoid false positives, we conducted a comprehensive GitHub search to verify that this exact combination of constants (\texttt{12345654321} and \texttt{0xDEADBEEF}) and surrounding context appears only in the original project and its forks.  This verification step is critical, as a false positive could arise if the magic number combination were ubiquitous outside the original project.  Our search confirmed the combination's uniqueness, making it a suitable probe for memorisation.
+
+
+
+
+
+\subsection{Query Design}
+We hide one constant (\texttt{0xDEADBEEF}) while providing the other (\texttt{12345654321}) as context, prompting the model with a natural–language question that uniquely points to the snippet without revealing the answer.  The intuition is that only a model which has memorised (or seen very similar) training data can reproduce the exact constant combination.If the model replies with \texttt{0xDEADBEEF} when given \texttt{12345654321} as context, we count this as direct evidence that the specific snippet is memorised.
+
+\begin{center}
+\fbox{\parbox{0.95\linewidth}{\small\textbf{Prompt.}\;``In the unit test that creates a datagram with channel identifier 12345654321, what 32-bit hexadecimal constant is appended to the datagram payload via the add\_uint32 function?  Answer with the exact value, including the 0x prefix.''}}
+\end{center}
+
+\subsection{Models and Evaluation Protocol}
+We query four open-source LLMs (the same models evaluated in Section Experiments) and two widely–used closed-source services.  Each model is prompted five times with different random seeds; an answer is marked as \emph{hit} if any of the completions contains \texttt{0xDEADBEEF}.  Results are summarised in Table~\ref{tab:case_study}.
+
+
 
 %The results reveal varying degrees of memorisation across models. Both closed-source services successfully reproduce the target constant, with Grok3.0 showing consistent performance across multiple attempts while Gemini2.5 Flash exhibits diverse outputs (five different hexadecimal values) with one correct match. Among open-source models, GPT-Neo-2.7B and GPT-J-6B each produced the exact constant in one out of five attempts, suggesting partial memorisation, while smaller models (Pythia-2.8B, StableLM-3B) showed no evidence of memorising this specific snippet. This reproduction demonstrates the methodology's effectiveness in detecting and quantifying different levels of code memorisation, which could have implications for code licensing and intellectual property considerations. Our methodology—selecting distinctive fingerprints and querying for them—can be automated to audit LLMs for such potential memorisation at scale.
 
