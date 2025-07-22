@@ -1,10 +1,5 @@
 \section{Motivation}
 
-
-%         -   小结：在这种情况下，追溯模型谱系需要研究人员进行地毯式的搜索，例如查阅相关论坛或论文，成本极高。
-% --- End of Chinese Logical Chain ---
-
-
 % 大模型用的广泛，需要基于在 HF 等平台使用、共享、寄存
 % 迭代开发新模型，基于已有模型进行微调、合并、量化等
 % 形成了一个复杂的模型间依赖关系
@@ -54,7 +49,18 @@ In the most common scenario, lineage information exists but is locked within fre
 A more precarious situation arises when provenance information is not even located within the Hugging Face platform, but is instead hyperlinked to an external, third-party source.
 
 \begin{tcolorbox}[
-        title={\textbf{Case Study 3: \texttt{Remilistrasza/Mysterious\_SDXL\_Lah}}},
+    title={\textbf{Case Study 3: \texttt{pfnet/plamo-2.1-2b-cpt}}},
+    colback=gray!5!white, % 盒子背景色
+    colframe=gray!75!black, % 边框颜色
+    fonttitle=\bfseries, % 标题字体加粗
+    sharp corners % 使用直角，更具现代感
+]
+The model's homepage lacks a model tree, and its model card merely states that the model was derived by reducing the parameter size from an 8B-parameter model, without explicitly specifying the base model used for this operation. However, the model card provides links to three technical blogs for reference. By following these external links, we can infer that the mentioned 8B-parameter model is \texttt{plano-2-8b}.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[
+        title={\textbf{Case Study 4: \texttt{Remilistrasza/Mysterious\_SDXL\_Lah}}},
         colback=gray!5!white,
         colframe=gray!75!black,
         fonttitle=\bfseries,
