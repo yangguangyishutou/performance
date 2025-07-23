@@ -20,7 +20,7 @@ DC-PDD\cite{}
 \begin{table*}[!h]
 \centering
 \footnotesize
-\caption{AUROC (\%) of different methods under varying positive-to-negative ratios (total samples fixed at 1,200).}
+\caption{AUROC (\%) of different methods under varying member-to-non-member ratios.}
 \label{tab:main_results}
 \begin{tabular}{m{1cm}m{2.3cm}m{2cm}m{2cm}m{2cm}m{2cm}}
 \toprule
@@ -76,21 +76,29 @@ We systematically compare the AUROC performance of various detection methods on 
 
 
 
-\begin{table}[!h] 
+\begin{table*}[!h] 
     \centering
     \footnotesize
-    \caption{AUROC Score(\%) of \tool under Different Lengths}
-    \begin{tabular}{l c c c c}
+    \caption{AUROC Score(\%) of \tool under Different Ratios and Functions Token Lengths}
+    \begin{tabular}{c l c c c c}
     \toprule
-    \rotatebox{45}{\textbf{Length}}  & \rotatebox{45}{\textbf{Pythia-2.8B}} & \rotatebox{45}{\textbf{GPT-Neo-2.7B}} &  \rotatebox{45}{\textbf{StableLM-Alpha-3B}} &  \rotatebox{45}{\textbf{GPT-J-6B}} \\
+    \textbf{Ratio} & \textbf{Length} & \textbf{Pythia-2.8B} & \textbf{GPT-Neo-2.7B} & \textbf{StableLM-Alpha-3B} & \textbf{GPT-J-6B} \\
     \midrule
-    Short &60.4 &68.2 &59.1 &68.4 \\
-    Mid &54.4 &59.1 &46.0 &51.7 \\
-    Long &46.8 &51.8 &39.3 &51.6 \\
+    \multirow{3}{*}{1:1} & Short & -- & -- & -- & -- \\
+    & Mid & -- & -- & -- & -- \\
+    & Long & -- & -- & -- & -- \\
+    \midrule
+    \multirow{3}{*}{1:5} & Short & -- & -- & -- & -- \\
+    & Mid & -- & -- & -- & -- \\
+    & Long & -- & -- & -- & -- \\
+    \midrule
+    \multirow{3}{*}{5:1} & Short & -- & -- & -- & -- \\
+    & Mid & -- & -- & -- & -- \\
+    & Long & -- & -- & -- & -- \\
     \bottomrule
     \end{tabular}
     \label{tab:length_results}
-\end{table}
+\end{table*}
 
 \subsection{Robustness}
 

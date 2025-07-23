@@ -2,17 +2,17 @@
 
 \section{Case Study: Multi-Domain Code Memorisation Detection}
 
-Modern LLMs are often trained on large‐scale code corpora that may include open–source projects with various licences.  To demonstrate the generalizability and robustness of our benchmark methodology, we present a comprehensive case study targeting distinctive \emph{magic number} combinations across four different domains from The Pile training dataset.  This multi-case analysis illustrates the systematic approach for detecting memorisation of potentially licensed code across diverse programming contexts.
+Modern LLMs are often trained on large‐scale code corpora that may include open–source projects with various licences.  To demonstrate the generalizability and robustness of our benchmark methodology, we present a comprehensive case study targeting distinctive \emph{magic number} combinations across four different domains from The Pile dataset.  This multi-case analysis illustrates the systematic approach for detecting memorisation of potentially licensed code across diverse programming contexts.
 
 \subsection{Case Selection and Methodology}
 We automatically scanned the \texttt{positive.jsonl} split of our benchmark for numeric literals that satisfy the following heuristics: (i) at least eight hexadecimal digits or (ii) a decimal integer longer than nine digits.  These so–called ``magic numbers'' are frequently used as sentinels, protocol identifiers, mathematical constants, or system parameters, making them ideal fingerprints for memorisation detection.
 
 To ensure uniqueness and avoid false positives, we conducted comprehensive GitHub searches to verify that each combination of constants and surrounding context appears only in the original projects and their forks.  This verification step is critical, as false positives could arise if magic number combinations were ubiquitous across different projects.
 
-\subsubsection{Case 1: Network Communication Protocol}
-We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test (Listing~\ref{lst:magic1}). GitHub search confirmed this combination's uniqueness to the original project.
+\textbf{Case 1: Network Communication Protocol} We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test (Listing~\ref{lst:magic1}). GitHub search confirmed this combination's uniqueness to the original project.
 
-\begin{figure}[!t]
+\vspace{1em}
+\begin{figure}[!h]
 \begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
 # tests/test_message_director.py (excerpt)
 dg = Datagram.create([12345654321], 0, 1234)
@@ -23,10 +23,10 @@ self.c2.send(dg)
 \label{lst:magic1}
 \end{figure}
 
-\subsubsection{Case 2: Cryptocurrency Transaction Validation}
-Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^32$) and \texttt{4294967294} ($2^32-2$), representing maximum 32-bit unsigned integer limits (Listing~\ref{lst:magic2}).
+\textbf{Case 2: Cryptocurrency Transaction Validation} Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^{32}$) and \texttt{4294967294} ($2^{32}-2$), representing maximum 32-bit unsigned integer limits (Listing~\ref{lst:magic2}).
 
-\begin{figure}[!t]
+\vspace{1em}
+\begin{figure}[!h]
 \begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
 # Bitcoin transaction validation test
 inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967296}]
@@ -40,10 +40,10 @@ rawtx = self.nodes[0].createrawtransaction(inputs, outputs)
 \label{lst:magic2}
 \end{figure}
 
-\subsubsection{Case 3: Quantum Chemistry Mathematical Constants}
-Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations (Listing~\ref{lst:magic3}).
+\textbf{Case 3: Quantum Chemistry Constants} Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations (Listing~\ref{lst:magic3}).
 
-\begin{figure}[!t]
+\vspace{1em}
+\begin{figure}[!h]
 \begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
 def c2s_bra(l, gcart):
     if l == 0:
@@ -57,10 +57,10 @@ def c2s_bra(l, gcart):
 \label{lst:magic3}
 \end{figure}
 
-\subsubsection{Case 4: Security System Timestamp Validation}
-Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation (Listing~\ref{lst:magic4}).
+\textbf{Case 4: Security System Timestamp Validation} Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation (Listing~\ref{lst:magic4}).
 
-\begin{figure}[!t]
+\vspace{1em}
+\begin{figure}[!h]
 \begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
 # Fail2ban ticket validation test
 ticket_str = 'FailTicket: ip=193.168.0.128 time=1167605999.0 bantime=None'
@@ -89,7 +89,7 @@ For each case, we designed natural-language prompts that provide one constant as
 \subsection{Models and Evaluation Protocol}
 We query four open-source LLMs (the same models evaluated in Section~\ref{sec:experiments}) and two widely–used closed-source services.  Each model is prompted five times with different random seeds for each case; an answer is marked as \emph{hit} if any completion contains the target constant.  Results are summarised in Table~\ref{tab:case_study_multi}.
 
-\begin{table*}[!t]
+\begin{table*}[!h]
     \centering
     \footnotesize
     \caption{Multi-domain memorisation detection results across four distinct code fingerprint cases.}
@@ -115,16 +115,15 @@ We query four open-source LLMs (the same models evaluated in Section~\ref{sec:ex
 \end{table*}
 
 \subsection{Results and Discussion}
-The multi-domain analysis reveals several important patterns in code memorisation across different programming contexts:
+%The multi-domain analysis reveals several important patterns in code memorisation across different programming contexts:
 
-\textbf{Domain-Specific Memorisation Patterns:} Both closed-source models demonstrate memorisation across multiple domains, with Grok3.0 showing the highest memorisation rate (7/20 total hits across cases) and particularly strong performance on mathematical constants. Gemini2.5 Flash shows selective memorisation (4/20 hits) with notable success in network protocols and security systems.
+%\textbf{Domain-Specific Memorisation Patterns:} Both closed-source models demonstrate memorisation across multiple domains, with Grok3.0 showing the highest memorisation rate (7/20 total hits across cases) and particularly strong performance on mathematical constants. Gemini2.5 Flash shows selective memorisation (4/20 hits) with notable success in network protocols and security systems.
 
-\textbf{Model Scale Effects:} Among open-source models, larger models (GPT-J-6B) show broader memorisation across domains compared to smaller models, with particular success in mathematical and network contexts. Smaller models (Pythia-2.8B, StableLM-3B) show minimal memorisation across all domains.
+%\textbf{Model Scale Effects:} Among open-source models, larger models (GPT-J-6B) show broader memorisation across domains compared to smaller models, with particular success in mathematical and network contexts. Smaller models (Pythia-2.8B, StableLM-3B) show minimal memorisation across all domains.
 
-\textbf{Content Type Sensitivity:} Mathematical constants and cryptocurrency validation code appear to be memorised more frequently than network protocols or security timestamps, possibly reflecting the prevalence of such code in training data or the distinctiveness of mathematical values.
+%\textbf{Content Type Sensitivity:} Mathematical constants and cryptocurrency validation code appear to be memorised more frequently than network protocols or security timestamps, possibly reflecting the prevalence of such code in training data or the distinctiveness of mathematical values.
 
-\textbf{Memorisation Reliability:} Hit rates vary significantly across attempts (1/5 to 3/5), indicating that memorisation is often partial or context-dependent rather than perfect recall.
+%\textbf{Memorisation Reliability:} Hit rates vary significantly across attempts (1/5 to 3/5), indicating that memorisation is often partial or context-dependent rather than perfect recall.
 
-This comprehensive analysis demonstrates that our methodology can effectively detect and quantify code memorisation across diverse programming domains, providing insights into how different types of technical content are retained by language models. The systematic approach—selecting distinctive fingerprints, verifying uniqueness, and conducting targeted queries—can be automated to audit LLMs for potential memorisation at scale across various technical domains.
+%This comprehensive analysis demonstrates that our methodology can effectively detect and quantify code memorisation across diverse programming domains, providing insights into how different types of technical content are retained by language models. The systematic approach—selecting distinctive fingerprints, verifying uniqueness, and conducting targeted queries—can be automated to audit LLMs for potential memorisation at scale across various technical domains.
 
-The case study reveals that code memorisation is not uniform across domains or model architectures, suggesting that memorisation patterns may reflect both training data characteristics and model-specific learning behaviors. Future work should extend this analysis to additional domains and investigate the relationship between memorisation patterns and potential copyright implications.

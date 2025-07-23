@@ -32,23 +32,17 @@ Therefore, we constructed a new benchmark, named \benchmark, using Python code. 
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{Top 10 AST Tokens in our Benchmark}\label{tab:benchmark-tokens}
-    \begin{tabular}{m{2cm}m{2.2cm}m{1cm}}
+    \caption{Syntax Convention Categories Statistics in our Benchmark}\label{tab:syntax-stats}
+    \begin{tabular}{m{3cm}m{3cm}m{1.5cm}}
     \toprule
-    \textbf{Language} & \textbf{AST Token} & \textbf{Count} \\
+    \textbf{Category} & \textbf{Description} & \textbf{Count} \\
     \midrule
-    \multirow{11}{*}{Python} & Load & 31,628 \\
-     & Name & 25,705 \\
-     & Constant & 12,404 \\
-     & Call & 8,516 \\
-     & Attribute & 8,409 \\
-     & Store & 5,471 \\
-     & Assign & 4,043 \\
-     & keyword & 3,340 \\
-     & Expr & 3,177 \\
-     & Subscript & 1,528 \\
-     \cmidrule{2-3}
-     & Total & 123,681 \\
+    Data Model & Lists, dictionaries, strings, and object access patterns & \_\_\_ \\
+    Expressions & Function calls and related argument patterns & \_\_\_ \\
+    Single Statements & Import statements with alias patterns & \_\_\_ \\
+    Compound Statements & Control flow structures (if, for, try, with, class, function definitions) & \_\_\_ \\
+    \midrule
+    & \textbf{Total Syntax Tokens} & \_\_\_ \\
     \bottomrule
     \end{tabular}
 \end{table}
@@ -61,9 +55,11 @@ We extract Python functions from the code portion of the Pile dataset using scri
 
 \textbf{Non-members.} For non-members, we searched GitHub using a customized query for Python repositories, limiting the creation time to after January 1, 2024. We sorted the repositories by star count in descending order to ensure quality. We then extracted 10 Python functions from each repository before proceeding to the next one, continuing this process across 100 repositories to collect a total of 1,000 functions. To ensure these functions were genuinely original and not cloned from pre-existing sources, we implemented a rigorous verification process. First, we parsed each candidate function's code using Python's \texttt{ast} module to extract its name, variable names, and function calls. These elements were then used to build search queries for the GitHub API. The verification relied on three heuristics: (1) searching for the exact function name to identify direct duplicates; (2) searching by internal variable names to detect refactored code reuse; and (3) searching for the complete string of function calls to find logic similarities. Two of the authors conducted peer reviews on the search results to ensure that all 1,000 functions were original and created after January 2024.
 
-Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \benchmark. We categorize the functions by character lengths into three groups based on statistical distribution: \textit{short} (character lengths below the 33rd percentile), \textit{middle} (character lengths between the 33rd and 66th percentiles), and \textit{long} (character lengths above the 66th percentile). Generally, the distribution is balanced to ensure fair comparison under varying function lengths.
+\textbf{Ratio Division.} After constructing the positive and negative sample datasets, we divided the members and non-members into three different ratio subsets for comprehensive experimental evaluation: 1:1 (1000:1000), 1:5 (200:1000), and 5:1 (1000:200). Due to the constraints of our original benchmark size, the larger subset in both 1:5 and 5:1 ratios is limited to 1000 samples, resulting in 200 samples for the smaller subset. This design enables us to evaluate the performance of our proposed method under different data distributions, particularly its robustness in imbalanced dataset scenarios.
 
-To further characterize our benchmark, we analyze the Abstract Syntax Tree (AST) tokens present in the collected functions. AST tokens represent the syntactic elements of Python code as defined by Python's official \texttt{ast} module~\cite{python-ast}. Each AST node type corresponds to a specific language construct, such as \texttt{Load} for variable access, \texttt{Call} for function calls, and \texttt{Assign} for assignment statements. Table~\ref{tab:benchmark-tokens} presents the top 10 most frequent AST token types in our benchmark, which demonstrates the syntactic diversity and complexity of the collected functions. The distribution shows that our dataset contains a rich variety of Python programming constructs, with variable operations (\texttt{Load}, \texttt{Name}) and expressions (\texttt{Constant}, \texttt{Call}) being most prevalent.
+Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \benchmark. We categorize the functions by token lengths into three groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into three equal groups: \textit{short} (0-33rd percentile, token count $\leq$ \_\_\_), \textit{middle} (33rd-66th percentile, \_\_\_ $<$ token count $\leq$ \_\_\_), and \textit{long} (66th-100th percentile, token count $>$ \_\_\_). This balanced distribution ensures fair comparison under varying function complexities.
+
+To further characterize our benchmark, we analyze the syntax convention patterns present in the collected functions based on the four categories defined in our methodology (Section~\ref{sec:methodology}): Data Model, Expressions, Single Statements, and Compound Statements. Table~\ref{tab:syntax-stats} presents the distribution of these syntax convention categories in our benchmark, which demonstrates the syntactic diversity and complexity of the collected functions. This analysis helps validate that our dataset contains a representative sample of Python programming constructs that follow the syntax conventions we aim to filter in our membership inference approach.
 
 \todo{Number of projects in table 1?}
 
