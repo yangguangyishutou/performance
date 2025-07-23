@@ -33,9 +33,11 @@ We discuss the motivation of our method design as the preliminary. Then we elabo
 
 Source code is considered a ``literary work'' under copyright law. The ``literary work'' can be viewed as a sequence of tokens arranged to reflect the author's intentions. Existing MIA techniques\todo{CITE} treat all source code tokens equally and compute membership probabilities of a LLM based on a sample of these tokens. Generally, it is recognized that elements such as variable names, data and control flows, and API usage together with the involved variables, embody the author's intent and serve as indicators of source code authorship. However, we observe that some tokens primarily serve a grammatical purpose, functioning to complete the syntax constraint of the programming language.
 
+The inherent structural duality of source code—simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax}—introduces unique challenges for membership inference in code language models. A large-scale crawl of open-source Python repositories shows that over half of all tokens belong to such grammar patterns (e.g., \texttt{for-in}, \texttt{try-except}). These ubiquitous structures raise two practical obstacles: Syntax-Induced Noise Amplification(language-mandated tokens exhibit near-identical distributions across samples, drowning discriminative signals) and Contextual Ambiguity (inability to distinguish syntax-enforced vs. meaningful occurrences). The root challenge stems from code's \textit{mandatory scaffolding} property: any correct implementation embeds intent within rigid grammatical constraints, creating persistent noise for MIA.
 
 
 \subsection{Syntax Constraints}
+% “语法要求怎么怎么样，要写什么token的代码”
 
 We focus on the Python language. Python is a popular programming language with wide applications, including data analysis, artificial intelligence, and scientific computing.
 To build our syntax pattern database, we combine manual inspection of the official Python documentation~\cite{python11, javadoc} with automated analysis. Specifically, we chose the Python \todo{3.11} which was released in Oct., 2022. We refer to the Python language reference section. We systematically survey the language specification, including the import system (Section 5), expressions (Section 6), simple statements (Section 7) and compound statements (Section 8). For example, the expressions section describes the \texttt{assert}, \texttt{raise}, \textit{continue} statements, etc. The compound section illustrates the \texttt{if} statement, \texttt{for} statement, \texttt{with} statements, etc.
@@ -46,85 +48,107 @@ To build our syntax pattern database, we combine manual inspection of the offici
 Our selection process is grounded in Python's lexical structure. We programmatically retrieve reserved keywords using the \texttt{keyword} module (35 in Python 3.11) to ensure our patterns are based on definitive language elements. Based on this, we analyzed the 10 subsections and included 8 in our database: \texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{match}, function (\texttt{def}) and class (\texttt{class}) definitions, and coroutine (\texttt{async}) structures. These were selected because their syntactic forms are rigid multi-token patterns, identifiable via tokenization, that contain both prefix keywords (e.g., \texttt{for}, \texttt{try}) and structurally determined suffix tokens (e.g., \texttt{in}, \texttt{except}).
 
 We excluded two subsections. The \texttt{while} statement was omitted as its core structure (\texttt{while condition:}) lacks a fixed suffix token. "Type parameter lists" was also excluded as it pertains to type-level declarations, not the executable control-flow syntax central to our study. The syntactic validity of all collected patterns is finally verified using Python's \texttt{ast} module.
+% Operator 常见标点与运算符、属性访问中的点号 Sec. 2.5
+% Compound Statement Sec. 8 
+% Simple Statement Sec. 7
 
 
-The inherent structural duality of source code – simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax} – introduces unique challenges for membership inference in code language models. 
+To address these issues, we construct an \emph{identifier-aware syntax mask} to filter out grammar noise while preserving semantic integrity. The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}. These spans form a whitelist $\mathcal{W}$ that protects identifiers from removal. Next, we tokenize the code with \texttt{return\_offsets\_mapping=True} to align each subword token with its source offsets. We then initialize a boolean mask $\mathbf{m}$ to true (keep) and set entries to false for tokens matching grammar categories: formatting placeholders (e.g., \texttt{[PAD]}, indents), closing keywords (\texttt{else}, \texttt{except}, etc.), structural symbols (brackets, colons, etc.), punctuation/operators, and attribute dots. If a token's span overlaps $\mathcal{W}$, we revert $\mathbf{m}$ to true.
 
-\todo{continue}
-Our analysis of XXX Python projects reveals that XXX\% of code tokens are bound by syntactic constraints (e.g., \texttt{for-in}, \texttt{try-except}), forming rigid patterns that obscure the memorization signals crucial for membership detection. This syntactic determinism manifests two fundamental barriers:
 
+\begin{table*}[!t]
+    \centering
+    \footnotesize
+    \caption{Syntax Conventions}\label{table:monitor-stats}
+    \vspace{-10pt}
+    \begin{tabular}{m{2.6cm}m{2.4cm}m{7cm}m{3cm}}
+        \toprule
+        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Consequent Token} \\
+        \midrule
+        Data Model & Lists, Dict, String & Must terminate with appropriate delimiters or accessors for syntactic completeness (e.g., closing brackets or dot notation) & ``]'', ``\}'', ``.'' \\\hline
+        Expressions & \texttt{call} expression & Must follow function identifiers and include a parenthesized, comma-separated list of arguments (which may be empty) & ``,'' \\\hline
+        \multirow{1}{*}{Single Statements} 
+        % & \texttt{return} 
+        % & Probably appear within a function and typically at its end to return a value & return \\
+        % & \shortstack{\texttt{break} \\\texttt{continue}} & Probably be enclosed within loops (\texttt{for} or \texttt{while}) to alter control flow & break, continue \\
+        % & \texttt{pass} & Probably be used for completing syntactic structure & pass \\
+        % & \texttt{raise} & Probably be used within an exception handler to re-raise an exception & raise \\
+        & \texttt{import} & Probably with aliases when including external packages  & as \\
+        \hline
+        \multirow{6}{*}{Compound Statements} 
+        & \texttt{if} & Must be followed by a colon and indented block; Probably extended with \texttt{elif} or \texttt{else} branches & ``:'', space, indentation, elif, else, line break \\
+        & \texttt{for}  & Must be followed by a colon and an indented block; typically used to iterate over an iterable & ``:'', space, indentation, \texttt{in}, line break \\
+        & \texttt{try} & Must be followed by a colon and indented block; Must include at least one of: \texttt{except}, \texttt{except*}, \texttt{finally}, or \texttt{else} & ``:'', space, indentation, except, except*, finally, else \\
+        & \texttt{with} & Probably with aliases when wrapping a context-manager-defined code  & with, as \\
+        & \texttt{class} definition & Must follow the class keyword with an identifier and optional parent class list in parentheses, followed by a colon and block & ``:'', space, indentation,``)'', ``,'' \\
+        & \texttt{method} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon. The parameters start with a ``self''. & ``:'', space, indentation, ``)'', ``,'', ``self'' \\
+        & \texttt{function} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon & ``:'', space, indentation, ``)'', ``,'' \\
+        \bottomrule
+        \noalign{\hrule height 1pt}
+    \end{tabular}
+\end{table*}
+
+
+% 
 \begin{itemize}
-\item \textbf{Syntax-Induced Noise Amplification}: Language-mandated tokens like \texttt{in}, \texttt{except}, and \texttt{:} exhibit near-identical probability distributions across member and non-member samples. Their structural predictability drowns out discriminative signals from author-specific patterns.
-\item \textbf{Contextual Ambiguity}: Traditional token-level approaches cannot distinguish between \textit{syntax-enforced occurrences} (e.g., \texttt{in} in \texttt{for x \textbf{in} data}) and \textit{semantically meaningful instances} (e.g., \texttt{if key \textbf{in} dict}). This equivalence creates false attribution pathways.
-
+    \item \textit{Data Model:}
+    \item \textit{Expressions:} 
+    \item \textit{Expressions (Sec. ):} parenthesized expression (`()'), 
+    \item \textit{Simple Statement (Sec. XX)}: \texttt{return}, \texttt{break}, \texttt{continue}, \texttt{pass}, \texttt{raise}.
+    \item \textit{Compound Statement (Sec. XX):} \texttt{else}, \texttt{elif}, \texttt{except}, \texttt{finally}
 \end{itemize}
 
-% \begin{figure}[t]
-% \centering
-% \includegraphics[width=0.8\linewidth]{xxx.pdf}
-% \caption{Proportion of syntax-bound tokens in Python code across domains (Web, ML, Systems). Structural elements dominate regardless of application context.}
-% \label{fig:syntax_dom}
-% \end{figure}
+\todo{Syntax conventions are defined as xxx.}
 
-The root challenge stems from code's \textit{mandatory scaffolding} property: any functionally correct implementation must embed programmer intent within grammatical constraints. Whereas natural language allows infinite paraphrasing, code requires specific token sequences to satisfy the interpreter. This creates an adversarial scenario where the very tokens that define correctness (keywords, delimiters) act as persistent noise sources for membership inference.
 
-Our approach leverages the \textit{dual predictability hierarchy} inherent in code:
+% \begin{table}[!t]
+%     \centering
+%     \footnotesize
+%     \caption{Authorship-Reflecting Elements}\label{table:human}
+%     \vspace{-10pt}
+%     \begin{tabular}{m{2cm}m{2cm}m{3cm}}
+%         \toprule
+%         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Exemplary Token} \\
+%         \midrule
+%         Author-defined variables & identifier & hello\_world \\\hline
+%         Author-defined literals & \texttt{string}, \texttt{bytes}, \texttt{numeric}  & ``0xDEADBEEF'' \\\hline
+%     \end{tabular}
+% \end{table}
 
-\textbf{Language-Level Predictability}: Syntax-enforced tokens follow deterministic patterns dictated by Python's grammar
+% https://github.com/wention/BeautifulSoup4/blob/master/bs4/element.py
 
-\textbf{Author-Level Predictability}: Unique implementation choices (variable names, API chains) reflect training data memorization
+% replace_with, previous_element, next_element, previous_sibling
 
-By surgically separating these predictability layers through syntax-aware filtering, we amplify the discriminative power of membership signals while suppressing structural noise. This paradigm shift addresses the core limitation of existing methods – their inability to account for code's machine-enforced regularity – establishing a foundation for code-specific membership inference.
+% \subsection{Identifiable Design Copyright}
+
+% String and bytes literals.
+
+% There are three types of numeric literals: integers, floating point numbers, and imaginary numbers.
+% $\mathcal{W}$
+
+% Our approach exploits code's dual predictability—grammar tokens are highly deterministic while author choices reveal memorization. By filtering the former, we enhance MIA signals without losing semantic content.
 
 
 \subsection{Min-k\% Prob with Syntax-Aware Filtering}
-We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference method specifically designed for code data. This extension addresses the fundamental difference between natural language and programming languages: code contains \textit{syntax-enforced patterns} where specific token sequences are structurally determined (e.g., \texttt{for...in...}, \texttt{if...else...}). The core insight is that suffix tokens in these patterns (e.g., \texttt{in}, \texttt{else}) exhibit high prediction probabilities regardless of their membership status, introducing noise to the Min-k\% Prob metric. Our method introduces a two-stage filtering process:
+
+% m[i] label
+% = must 
+% == probably,
+
+We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference metric tailored for code.  After applying the identifier-aware mask, we retain only the log-probabilities $\ell_i=-\log p(t_i\,|\,t_{<i})$ at positions where $\mathbf{m}[i]=1$ and renormalise them to $\tilde{\ell}_i$.  Tokens are ordered by $\tilde{\ell}_i$ and the average of the hardest $k\%$ constitutes the score:
+\[
+\text{S}(x)=\frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}}\tilde{\ell}_i, 
+\]
+
+% \qquad \mathcal{S}=\text{top-}k\%\big(\{\tilde{\ell}_i\}\big).
 
 
-\begin{enumerate}
-    \item \textbf{Syntax Rule Construction}: 
-    Establish a comprehensive syntax rule set $\mathcal{R}$ based on Python's formal grammar specification. For each syntax-bound phrase $r_i \in \mathcal{R}$, we define:
-    \[
-    r_i = (\phi_{\text{prefix}}, \phi_{\text{suffix}}, \tau)
-    \]
-    where:
-    \begin{itemize}
-        \item $\phi_{\text{prefix}}$: Context-sensitive prefix tokens (e.g., \texttt{for}, \texttt{try})
-        \item $\phi_{\text{suffix}}$: Structurally determined suffix tokens (e.g., \texttt{in}, \texttt{except})
-        \item $\tau$: AST node type for validation (e.g., \texttt{For}, \texttt{Try})
-    \end{itemize}
-    Our rule set $\mathcal{R}$ covers 23 essential code patterns across 5 categories (control flow, error handling, context management, comprehensions, declarations), rigorously validated against Python 3.11 documentation.
+Filtering grammar tokens ensures the score is dominated by author–specific choices rather than predictable scaffolding.  The whitelist constraint further guarantees that an identifier, even when split into multiple sub-tokens, is scored as a whole rather than partially suppressed.
 
-    \item \textbf{Hybrid Pattern Detection}: 
-    For input code $x$, perform dual validation:
-    \begin{enumerate}
-        \item \textit{Surface-Level Matching}: Scan tokens using regular expressions derived from $\phi_{\text{prefix}}$ and $\phi_{\text{suffix}}$
-        \item \textit{Semantic Validation}: Construct Abstract Syntax Tree (AST) to verify pattern validity through node type checking with $\tau$
-    \end{enumerate}
-    This yields verified syntax phrases $\mathcal{P} = \{(p_1^{\text{pre}}, p_1^{\text{suf}}), ..., (p_n^{\text{pre}}, p_n^{\text{suf}})\}$.
+\paragraph{Renormalisation.}  Let $\mathcal{K}=\{i\mid \mathbf{m}[i]=1\}$ denote the indices kept by the mask.  For each $i\in\mathcal{K}$ we compute a length-normalised log-probability
+\[
+\tilde{\ell}_i\;=\;\frac{\ell_i}{|\mathcal{K}|}, \qquad \ell_i=-\log p(t_i|t_{<i}).
+\]
+This normalisation removes bias from variable sequence lengths once grammar tokens have been excised.
 
-    \item \textbf{Context-Preserving Token Filtering}:
-    For each detected $(p_i^{\text{pre}}, p_i^{\text{suf}})$: 
-    \[
-    \mathcal{T}_{\text{filtered}} = \mathcal{T} \setminus \{ t_j \mid t_j \in \bigcup_{i=1}^n p_i^{\text{suf}} \}
-    \]
-    preserving contextual relationships through:
-    % \[
-    % \textsc{Keep}(t_k) = \begin{cases} 
-    % 0 & \text{if } t_k \in p_i^{\text{suf}} \land \textsc{IsSyntaxEnforced}(p_i^{\text{pre}}) \\
-    % 1 & \text{otherwise}
-    % \end{cases}
-    % \]
-
-    \item \textbf{Adaptive Min-k\% Calculation}:
-    Compute membership scores on the filtered token set:
-    \[
-    \text{Syntax-Min-k\%}(x) = \frac{1}{|\mathcal{S}|} \sum_{t_i \in \mathcal{S}} -\log p(t_i|t_{<i})
-    \]
-    where $\mathcal{S} = \text{argmin}_{|\mathcal{S}'|=k\%|\mathcal{T}_{\text{filtered}}|} \sum_{t_j \in \mathcal{S}'} p(t_j|t_{<j})$
-\end{enumerate}
-
-\begin{tcolorbox}
-\textbf{Rationale}: Our dual validation approach ensures \textit{semantic-aware filtering} - we only remove tokens that are both 1) surface-level syntax markers \textit{and} 2) semantically validated by AST structure. For example, the token \texttt{in} is excluded \textit{only} when it appears in a valid \texttt{For} node context, preserving meaningful occurrences in list comprehensions like \texttt{[x for x in y if x \textbf{in} z]}. This focuses the metric on \textit{author-specific patterns} (variable names, API chains) rather than language-mandated syntax.
-\end{tcolorbox}
-
+Syntax-aware masking converts a token-level metric into a semantics-level one: only tokens that could plausibly encode authorship survive, yet no identifier is ever broken.  This design preserves fidelity to the original Min-$k\%$ principle while eliminating its chief source of noise in code.
