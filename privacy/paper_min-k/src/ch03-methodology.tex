@@ -180,13 +180,13 @@ The second phase is \textit{syntax-convention-based token pruning}. Given the de
 The third phase is \textit{member probabilities calculation}. The \underline{S}yntax-\underline{P}runed MIA \underline{P}robabilities (SPP) is defined as:
 
 \begin{equation}
-\text{SPP}(x)=\frac{1}{|\mathcal{X}_{1}|}\sum_{i \in \mathcal{X}_{1}} p(x_i)  
+\text{SPP}(x)=\frac{1}{|\mathcal{X}_{1}|}\sum_{i \in \mathcal{X}_{1}} -\log p(x_i)  
 \end{equation}
 
 where $ \mathcal{X}_1 = \{x_i \in \mathcal{X} \mid \ell(x_i) = 1\} $.
 
 
-\todo{$-\log p(x_i\,|\,x_{<i}) $}
+% \todo{$-\log p(x_i\,|\,x_{<i}) $}
 
 \todo{The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}.}
 

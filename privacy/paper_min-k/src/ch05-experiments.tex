@@ -125,10 +125,36 @@ We systematically compare the AUROC performance of various detection methods on 
 
 
 
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.5\textwidth]{./resource/pythia2_8b.png}
-    \caption{AUROC performance under Hyperparameter K}
-    \label{fig:auroc_trends}
+\begin{figure}[!t]
+\centering
+\begin{subfigure}[b]{0.22\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./resource/pythia2_8b.png}
+\vspace{-15pt}
+\caption{$th_c$}
+\label{fig:th-c}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./resource/pythia2_8b.png}
+\vspace{-15pt}
+\caption{$th_m^1$}
+\label{fig:th-m1}
+\end{subfigure}
+\begin{subfigure}[b]{0.22\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./resource/pythia2_8b.png}
+\vspace{-15pt}
+\caption{$th_m^2$}
+\label{fig:th-m2}
+\end{subfigure}
+\vspace{-5pt}
+\begin{subfigure}[b]{0.22\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./resource/pythia2_8b.png}
+\vspace{-15pt}
+\caption{$th_m^2$}
+\label{fig:th-m2}
+\end{subfigure}
+\caption{Precision and Recall}\label{fig:sensitivity}
 \end{figure}
-
