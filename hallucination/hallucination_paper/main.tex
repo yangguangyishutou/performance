@@ -1,5 +1,6 @@
 \documentclass[sigconf,review,anonymous,screen]{acmart}
-
+% \usepackage{amsmath,amssymb}  % 修复数学符号
+% \usepackage{newtxtext,newtxmath}  % 推荐 ACM 兼容字体
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -11,7 +12,7 @@
 
 % \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
 
-\usepackage{tcolorbox}
+\usepackage{tcolorbox} 
 \usepackage{xspace}
 \usepackage{flushend}
 \usepackage{enumitem}
@@ -110,6 +111,7 @@
 
 \maketitle
 
+
 \input{src/ch01-introduction}
 \input{src/ch02-related-work}
 \input{src/ch03-setup}
@@ -121,12 +123,13 @@
 \clearpage
 
 \bibliographystyle{ACM-Reference-Format}
-\bibliography{src/reference}
+\bibliography{src/reference.bib}
 
 
 \clearpage
 
-
+% \bibliographystyle{plain}  % 指定样式
+% \bibliography{references}  % 指定.bib文件（无扩展名）
 \end{document}
 \endinput
 %%

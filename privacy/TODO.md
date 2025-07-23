@@ -67,6 +67,6 @@
         - **保护标识符完整**，即使一个变量被 BPE 切成多个子词也不会被部分屏蔽；
         - 降低代码风格、缩进、长度差异对检测指标的干扰，提高对语义难度的敏感度。
 2. benchmark构建好了，ratio的部分怎么写，写在哪？
-3. Function Length.分类怎么写，是否要做实验？
-4. case study
+3. Function Length.分类怎么写，是否要做实验？——统计具体分段的token数。正样本做长度区分
+4. case study——扩展2条
 5. todo：ablation study
