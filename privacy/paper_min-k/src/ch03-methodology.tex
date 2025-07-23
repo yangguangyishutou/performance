@@ -54,83 +54,31 @@ To address these issues, we construct an \emph{identifier-aware syntax mask} to 
     \vspace{-10pt}
     \begin{tabular}{m{2.6cm}m{2.4cm}m{7cm}m{3cm}}
         \toprule
-        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Syntax Token} \\
+        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Consequent Token} \\
         \midrule
         Data Model & Lists, Dict, String & Must terminate with appropriate delimiters or accessors for syntactic completeness (e.g., closing brackets or dot notation) & ``]'', ``\}'', ``.'' \\\hline
         Expressions & \texttt{call} expression & Must follow function identifiers and include a parenthesized, comma-separated list of arguments (which may be empty) & ``,'' \\\hline
-        \multirow{10}{*}{Single Statements} 
-        & \texttt{return} & Probably appear within a function and typically at its end to return a value & return \\
-        & \shortstack{\texttt{break} \\\texttt{continue}} & Probably be enclosed within loops (\texttt{for} or \texttt{while}) to alter control flow & break, continue \\
-        & \texttt{pass} & Probably be used for completing syntactic structure & pass \\
-        & \texttt{raise} & Probably be used within an exception handler to re-raise an exception & raise \\
-        & \texttt{import} & Probably with aliases when including external packages  & import, as \\
-        & \texttt{with} & Probably with aliases when wrapping a context-manager-defined code  & with, as \\
+        \multirow{1}{*}{Single Statements} 
+        % & \texttt{return} 
+        % & Probably appear within a function and typically at its end to return a value & return \\
+        % & \shortstack{\texttt{break} \\\texttt{continue}} & Probably be enclosed within loops (\texttt{for} or \texttt{while}) to alter control flow & break, continue \\
+        % & \texttt{pass} & Probably be used for completing syntactic structure & pass \\
+        % & \texttt{raise} & Probably be used within an exception handler to re-raise an exception & raise \\
+        & \texttt{import} & Probably with aliases when including external packages  & as \\
         \hline
-        \multirow{4}{*}{Compound Statements} 
-        & \texttt{if} & Must be followed by a colon and indented block; Probably extended with \texttt{elif} or \texttt{else} branches & ``:'', indentation, elif, else, line break \\
-        & \texttt{try} & Must be followed by a colon and indented block; Must include at least one of: \texttt{except}, \texttt{except*}, \texttt{finally}, or \texttt{else} & ``:'', indentation, except, except*, finally, else \\
-        & \texttt{class} definition & Must follow the class keyword with an identifier and optional parent class list in parentheses, followed by a colon and block & ``)'', ``,'' \\
-        & \texttt{method} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon & ``)'', ``,'' \\
+        \multirow{6}{*}{Compound Statements} 
+        & \texttt{if} & Must be followed by a colon and indented block; Probably extended with \texttt{elif} or \texttt{else} branches & ``:'', space, indentation, elif, else, line break \\
+        & \texttt{for}  & Must be followed by a colon and an indented block; typically used to iterate over an iterable & ``:'', space, indentation, \texttt{in}, line break \\
+        & \texttt{try} & Must be followed by a colon and indented block; Must include at least one of: \texttt{except}, \texttt{except*}, \texttt{finally}, or \texttt{else} & ``:'', space, indentation, except, except*, finally, else \\
+        & \texttt{with} & Probably with aliases when wrapping a context-manager-defined code  & with, as \\
+        & \texttt{class} definition & Must follow the class keyword with an identifier and optional parent class list in parentheses, followed by a colon and block & ``:'', space, indentation,``)'', ``,'' \\
+        & \texttt{method} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon. The parameters start with a ``self''. & ``:'', space, indentation, ``)'', ``,'', ``self'' \\
+        & \texttt{function} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon & ``:'', space, indentation, ``)'', ``,'' \\
         \bottomrule
         \noalign{\hrule height 1pt}
     \end{tabular}
 \end{table*}
 
-% \begin{table*}[!t]
-%     \centering
-%     \footnotesize
-%     \caption{Syntax Conventions}\label{table:monitor-stats}
-%     \vspace{-10pt}
-%     \begin{tabular}{m{2.6cm}m{3cm}m{7cm}m{3cm}}
-%         % \noalign{\hrule height 1pt}
-%         \toprule
-%         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Syntax Token} \\
-%         \midrule
-%         Data Model &  Lists, Dict, String & accessing objects, completing array, list, and dict definition & ``]'', ``\}'' , ``.''\\\hline
-%         Expressions  &  \texttt{call} expression &  a function call usually accompanied with a possibly empty series of arguments &  ``,''\\     \hline
-
-%         \multirow{5}{*}{Single Statements} & \texttt{return}  & Likely to show up in the end of the function & return \\
-%                           & \texttt{break}, \texttt{continue}  & Likely to show up in the end of the \texttt{for}, \texttt{while} loop & break, continue\\ 
-%                           & \texttt{pass} & null operation as a placeholder to make syntactically right & pass\\ 
-%                           & \texttt{raise}  &  re-raises the exception that is currently being handled in the \texttt{except} clause & raise  \\
-%                           & \texttt{import} & import a particular package & import, as \\
-%                           & \texttt{with} & wrap the execution of a block with context-manager-defined methods & with as\\
-%         \hline
-%         \multirow{4}{*}{Compound Statements} & \texttt{if}  & Usually accompanied with \texttt{elif}, \texttt{else} & ``:'', indentation, elif, else, line break, \\
-%                             & \texttt{try} &  accompanied with \texttt{except}, \texttt{finally} & ``:'', indentation, except, except*, finally, else \\
-%                             & \texttt{class} definition &  syntax convention of defining a class     &  ``)'', ``,'' \\
-%                             & \texttt{method} definition &     syntax convention of defining a method   & ``)'', ``,'' \\
-%         \bottomrule
-%         \noalign{\hrule height 1pt}
-%     \end{tabular}
-% \end{table*}
-
-
-                    % +=*/
-% A. 
-% 7 Single Statements = 再加控制流终结词 `return, break, continue, pass, raise`。
-
-% B. 
-% 8 Compound Statements =  % - **闭合关键词**：`else, elif, except, finally` 等；
-    % 2.1.8 Indentation = 缩进空格／制表符生成的 token。
-    %  `:`, A clause consists of a header and a ‘suite.’ 
-% C.
-% Data Model
-    % 3.1.3. Lists = ]
-    % Dictionary = {}, string = '', "", ```'''
-% D. Semantic
-    % variable convention "_",  variable tokens, - **变量保护**：如果 token 所在区间与步骤 1 得到的任何标识符区间重叠，则**无论上述条件如何**都强制保持 True
-
-% 6.2.3  Parenthesized forms =  )
-
-% E. 2.6 Delimiter
-    % , . +=*/
-        % - **属性访问中的点号**：`self.foo` 或 `obj.bar` 里，用来连接标识符的 `.` 也被屏蔽。
-% ---------------
-
-% - **排版与占位**：`[PAD]`、
-% "纯数字"。
-                            % - **常见标点与运算符**：逗号,、点号.、'引号、加减乘除等。
 
 % 
 \begin{itemize}
@@ -141,38 +89,51 @@ To address these issues, we construct an \emph{identifier-aware syntax mask} to 
     \item \textit{Compound Statement (Sec. XX):} \texttt{else}, \texttt{elif}, \texttt{except}, \texttt{finally}
 \end{itemize}
 
-
-\begin{table}[!t]
-    \centering
-    \footnotesize
-    \caption{Authorship-Reflecting Elements}\label{table:human}
-    \vspace{-10pt}
-    \begin{tabular}{m{2cm}m{2cm}m{3cm}}
-        \toprule
-        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Exemplary Token} \\
-        \midrule
-        Author-defined variables & identifier & hello\_world \\\hline
-        Author-defined literals & \texttt{string}, \texttt{bytes}, \texttt{numeric}  & ``OxBEEFXXXX'' \\\hline
-    \end{tabular}
-\end{table}
+\todo{Syntax conventions are defined as xxx.}
 
 
-\subsection{Identifiable Design Copyright}
+% \begin{table}[!t]
+%     \centering
+%     \footnotesize
+%     \caption{Authorship-Reflecting Elements}\label{table:human}
+%     \vspace{-10pt}
+%     \begin{tabular}{m{2cm}m{2cm}m{3cm}}
+%         \toprule
+%         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Exemplary Token} \\
+%         \midrule
+%         Author-defined variables & identifier & hello\_world \\\hline
+%         Author-defined literals & \texttt{string}, \texttt{bytes}, \texttt{numeric}  & ``0xDEADBEEF'' \\\hline
+%     \end{tabular}
+% \end{table}
 
-String and bytes literals.
+% https://github.com/wention/BeautifulSoup4/blob/master/bs4/element.py
 
-There are three types of numeric literals: integers, floating point numbers, and imaginary numbers.
+% replace_with, previous_element, next_element, previous_sibling
 
-$\mathcal{W}$
+% \subsection{Identifiable Design Copyright}
 
-Our approach exploits code's dual predictability—grammar tokens are highly deterministic while author choices reveal memorization. By filtering the former, we enhance MIA signals without losing semantic content.
+% String and bytes literals.
+
+% There are three types of numeric literals: integers, floating point numbers, and imaginary numbers.
+% $\mathcal{W}$
+
+% Our approach exploits code's dual predictability—grammar tokens are highly deterministic while author choices reveal memorization. By filtering the former, we enhance MIA signals without losing semantic content.
 
 
 \subsection{Min-k\% Prob with Syntax-Aware Filtering}
-We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference metric tailored for code.  After applying the identifier–aware mask, we retain only the log-probabilities $\ell_i=-\log p(t_i\,|\,t_{<i})$ at positions where $\mathbf{m}[i]=1$ and renormalise them to $\tilde{\ell}_i$.  Tokens are ordered by $\tilde{\ell}_i$ and the average of the hardest $k\%$ constitutes the score:
+
+% m[i] label
+% = must 
+% == probably,
+
+We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference metric tailored for code.  After applying the identifier-aware mask, we retain only the log-probabilities $\ell_i=-\log p(t_i\,|\,t_{<i})$ at positions where $\mathbf{m}[i]=1$ and renormalise them to $\tilde{\ell}_i$.  Tokens are ordered by $\tilde{\ell}_i$ and the average of the hardest $k\%$ constitutes the score:
 \[
-\text{SAMin-}k\%(x)=\frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}}\tilde{\ell}_i, \qquad \mathcal{S}=\text{top-}k\%\big(\{\tilde{\ell}_i\}\big).
+\text{S}(x)=\frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}}\tilde{\ell}_i, 
 \]
+
+% \qquad \mathcal{S}=\text{top-}k\%\big(\{\tilde{\ell}_i\}\big).
+
+
 Filtering grammar tokens ensures the score is dominated by author–specific choices rather than predictable scaffolding.  The whitelist constraint further guarantees that an identifier, even when split into multiple sub-tokens, is scored as a whole rather than partially suppressed.
 
 \paragraph{Renormalisation.}  Let $\mathcal{K}=\{i\mid \mathbf{m}[i]=1\}$ denote the indices kept by the mask.  For each $i\in\mathcal{K}$ we compute a length-normalised log-probability
