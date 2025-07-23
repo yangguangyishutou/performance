@@ -1,6 +1,6 @@
 %File: anonymous-submission-latex-2026.tex
 \documentclass[letterpaper]{article} % DO NOT CHANGE THIS
-\usepackage[submission]{aaai2026}  % DO NOT CHANGE THIS
+%\usepackage[submission]{aaai2026}  % DO NOT CHANGE THIS
 \usepackage{times}  % DO NOT CHANGE THIS
 \usepackage{helvet}  % DO NOT CHANGE THIS
 \usepackage{courier}  % DO NOT CHANGE THIS
@@ -63,6 +63,8 @@
     {\setlength\itemindent{15pt} \item[-] #1}
 }
 
+\pagenumbering{gobble} 
+
 
 % command
 \newcommand{\todo}[1]{\textcolor{red}{#1}}
@@ -79,18 +81,9 @@
 \begin{document}
 
 \[
-\text{S}(x)=\frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}} -\log p(t_i\,|\,t_{<i}) 
+\text{SPP}(x)=\frac{1}{|\mathcal{X}_{1}|}\sum_{i \in \mathcal{X}_{1}} p(x_i) 
 \]
 
 
 
 \end{document}
-
-
-% \endinput
-%%
-%% End of file `sample-sigconf.tex'.
-
-
-% TODO verbatim sequences ? s实验结果里面有没有？
-

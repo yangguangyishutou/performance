@@ -15,7 +15,7 @@
 \begin{table*}[!t]
     \centering
     \footnotesize
-    \caption{List of the Collected Syntax Conventions}\label{table:syntax}
+    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, respectively.)}\label{table:syntax}
     \vspace{-10pt}
     \begin{tabular}{m{2.6cm}m{1.7cm}m{4cm}m{6cm}}
         \toprule
@@ -82,7 +82,6 @@ The inherent structural duality of source code—simultaneously embodying \texti
 
 \subsection{Syntax Conventions}
 
-
 We choose Python as our target language for studying syntax conventions, as it is a widely used programming language with broad applications in data analysis, artificial intelligence, and scientific computing. Syntax conventions refer to the specific rules defined by the Python language that programmers \textit{must} follow. Failure to do so will result in syntax errors and prevent the code from executing. Therefore, we consider tokens that follow syntax conventions to be highly predictable patterns and exclude them from the MIA calculation.
 
 In the example provided in our overview, the programmer completes the task by declaring a method named \texttt{add} within an existing class, following both the task specification and the language's syntax requirements. The method contains various syntax elements, such as a method declaration and a \textit{for} statement. The token \texttt{self} represents the class instance and is mandatory. Likewise, tokens such as the closing parenthesis \texttt{)} and colon \texttt{:} after the \texttt{row} parameter, along with the \texttt{[BR]} and \texttt{[IND]}, are also required by Python's grammar and must be present.
@@ -143,75 +142,71 @@ Table \ref{table:syntax} lists our summarized syntax conventions. We categorize 
 
 
 
-
-
-
-% 
-
-
-
-
-% \begin{table}[!t]
-%     \centering
-%     \footnotesize
-%     \caption{Authorship-Reflecting Elements}\label{table:human}
-%     \vspace{-10pt}
-%     \begin{tabular}{m{2cm}m{2cm}m{3cm}}
-%         \toprule
-%         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Exemplary Token} \\
-%         \midrule
-%         Author-defined variables & identifier & hello\_world \\\hline
-%         Author-defined literals & \texttt{string}, \texttt{bytes}, \texttt{numeric}  & ``0xDEADBEEF'' \\\hline
-%     \end{tabular}
-% \end{table}
-
-% https://github.com/wention/BeautifulSoup4/blob/master/bs4/element.py
-
-% replace_with, previous_element, next_element, previous_sibling
-
-% \subsection{Identifiable Design Copyright}
-
-% String and bytes literals.
-
-% There are three types of numeric literals: integers, floating point numbers, and imaginary numbers.
-% $\mathcal{W}$
-
 % Our approach exploits code's dual predictability—grammar tokens are highly deterministic while author choices reveal memorization. By filtering the former, we enhance MIA signals without losing semantic content.
 
 
 \subsection{Syntax-Pruned MIA}
 
-% m[i] label
-% = must 
-% == probably,
+We propose \tool, a syntax-pruned membership inference attack method for inferencing code members. We hypothesize that while programmers express creativity in writing code, certain tokens inevitably occur due to syntax conventions, rather than as a reflection of individual authorship. Our approach can be divided into three phases. 
+
+The first phase is \textit{token preprocessing}. We begin by feeding the target querying code (e.g., a function) into the evaluated LLM. Using the model's embedded tokenizer, we obtain the tokenized sequence along with the predicted probability (derived from the \textit{logits}) for each token. The resulting tokens are denoted as $\mathcal{X}$, where each token $x_i \in \mathcal{X}$ represents the token at position $i$. These tokens are split according to the tokenizer's internal logic, such as byte pair encoding (BPE)~\cite{shibata1999byte} or similar subword segmentation algorithms~\cite{li2021char}. However, to align with our predefined syntax conventions, we further decompose certain tokens. If a token contains sub-tokens that match any elements defined as $\text{condition}$ or $\text{consequence}$ in the constraint set $\mathcal{C}$, we split it accordingly. Concretely, let $\mathcal{X} = \{ x_1, x_2, ..., x_n \}$ be the original tokens, $\mathcal{X}^{\prime} = \{ x_{ij}\}$ be the decomposed sub-tokens. We define the split function:
+
+\begin{equation}
+\mathrm{Split} : \mathcal{X} \rightharpoonup \mathrm{List}(\mathcal{X}')
+\end{equation}
 
 
-We propose a syntax-stripped membership inference attack method for inferencing code members. The approach can be divided into three phases. 
+where each $x_i \in \text{dom}(\mathrm{Split})$ is mapped to an ordered list of sub-tokens $[x_{i1},x_{i2}, ..., x_{im}]$. \text{dom} is the domain function that includes the set of inputs for function. Each original token is equal to the string concatenation of its sub-tokens:
 
-The first phase is token preprocessing, 
+\begin{equation}
+x_i = x_{i1}  \oplus x_{i2} \oplus ... \oplus x_{im}
+\end{equation}
 
-The second phase is syntax-convention-based token pruning.
+The complete set of sub-tokens is 
+\begin{equation}
+\mathcal{X}^{\prime} = \bigcup_{x_{i} \in \text{dom}(\mathrm{Split})} \mathrm{Split}(x_i)
+\end{equation}
 
 
-The third phase is member probabilities calculation. 
+The second phase is \textit{syntax-convention-based token pruning}. Given the decomposed sub-tokens $\mathcal{X}^{\prime}$, we examine each sub-token $x_{ij}$ for tokens $x_i \in \text{dom}(\mathrm{Split})$, and check whether it matches either $c.\text{condition}$ or $c.\text{consequence}$ for each constraint $c \in \mathcal{C}$. If all sub-tokens $[x_{i1}, x_{i2}, \dots, x_{im_i}]$ match elements in $\mathcal{C}$, we label the original token $x_i$ as $0$ (i.e., pruned), otherwise as $1$ (i.e., retained). The function $\ell$ assigns a binary label to each token $x_i \in \mathcal{X}$, where $\ell(x_i) \in \{0, 1\}$. 
+
+\begin{equation}
+\ell : \mathcal{X} \rightarrow \{0,1\}
+\end{equation}
+
+% A label of $\ell(x_i) = 0$ indicates that the token is pruned, while $\ell(x_i) = 1$ indicates that it is retained.
 
 
-To address these issues, we construct an \emph{identifier-aware syntax mask} to filter out grammar noise while preserving semantic integrity. The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}. These spans form a whitelist $\mathcal{W}$ that protects identifiers from removal. Next, we tokenize the code with \texttt{return\_offsets\_mapping=True} to align each subword token with its source offsets. We then initialize a boolean mask $\mathbf{m}$ to true (keep) and set entries to false for tokens matching grammar categories: formatting placeholders (e.g., \texttt{[PAD]}, indents), closing keywords (\texttt{else}, \texttt{except}, etc.), structural symbols (brackets, colons, etc.), punctuation/operators, and attribute dots. If a token's span overlaps $\mathcal{W}$, we revert $\mathbf{m}$ to true.
+The third phase is \textit{member probabilities calculation}. The \underline{S}yntax-\underline{P}runed MIA \underline{P}robabilities (SPP) is defined as:
 
-We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference metric tailored for code.  After applying the identifier-aware mask, we retain only the log-probabilities $\ell_i=-\log p(t_i\,|\,t_{<i})$ at positions where $\mathbf{m}[i]=1$ and renormalise them to $\tilde{\ell}_i$.  Tokens are ordered by $\tilde{\ell}_i$ and the average of the hardest $k\%$ constitutes the score:
-\[
-\text{S}(x)=\frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}}\tilde{\ell}_i, 
-\]
+\begin{equation}
+\text{SPP}(x)=\frac{1}{|\mathcal{X}_{1}|}\sum_{i \in \mathcal{X}_{1}} p(x_i)  
+\end{equation}
+
+where $ \mathcal{X}_1 = \{x_i \in \mathcal{X} \mid \ell(x_i) = 1\} $.
+
+
+\todo{$-\log p(x_i\,|\,x_{<i}) $}
+
+\todo{The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}.}
+
+\todo{These spans form a whitelist $\mathcal{W}$ that protects identifiers from removal. Next, we tokenize the code with \texttt{return\_offsets\_mapping=True} to align each subword token with its source offsets.}
+
+% We then initialize a boolean mask $\mathbf{m}$ to true (keep) and set entries to false for tokens matching grammar categories: formatting placeholders (e.g., \texttt{[PAD]}, indents), closing keywords (\texttt{else}, \texttt{except}, etc.), structural symbols (brackets, colons, etc.), punctuation/operators, and attribute dots. If a token's span overlaps $\mathcal{W}$, we revert $\mathbf{m}$ to true.
+
+% We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference metric tailored for code.  
+
+% After applying the identifier-aware mask, we retain only the log-probabilities $\ell_i=-\log p(t_i\,|\,t_{<i})$ at positions where $\mathbf{m}[i]=1$ and renormalise them to $\tilde{\ell}_i$.  Tokens are ordered by $\tilde{\ell}_i$ and the average of the hardest $k\%$ constitutes the score:
+% \[
+% \text{S}(x)=\frac{1}{|\mathcal{S}|}\sum_{i\in\mathcal{S}}\tilde{\ell}_i, 
+% \]
+% Filtering grammar tokens ensures the score is dominated by author-specific choices rather than predictable scaffolding.  The whitelist constraint further guarantees that an identifier, even when split into multiple sub-tokens, is scored as a whole rather than partially suppressed.
 
 % \qquad \mathcal{S}=\text{top-}k\%\big(\{\tilde{\ell}_i\}\big).
+% \paragraph{Renormalisation.}  Let $\mathcal{K}=\{i\mid \mathbf{m}[i]=1\}$ denote the indices kept by the mask.  For each $i\in\mathcal{K}$ we compute a length-normalised log-probability
+% \[
+% \tilde{\ell}_i\;=\;\frac{\ell_i}{|\mathcal{K}|}, \qquad \ell_i=-\log p(t_i|t_{<i}).
+% \]
+% This normalisation removes bias from variable sequence lengths once grammar tokens have been excised.
 
-
-Filtering grammar tokens ensures the score is dominated by author–specific choices rather than predictable scaffolding.  The whitelist constraint further guarantees that an identifier, even when split into multiple sub-tokens, is scored as a whole rather than partially suppressed.
-
-\paragraph{Renormalisation.}  Let $\mathcal{K}=\{i\mid \mathbf{m}[i]=1\}$ denote the indices kept by the mask.  For each $i\in\mathcal{K}$ we compute a length-normalised log-probability
-\[
-\tilde{\ell}_i\;=\;\frac{\ell_i}{|\mathcal{K}|}, \qquad \ell_i=-\log p(t_i|t_{<i}).
-\]
-This normalisation removes bias from variable sequence lengths once grammar tokens have been excised.
-
-Syntax-aware masking converts a token-level metric into a semantics-level one: only tokens that could plausibly encode authorship survive, yet no identifier is ever broken.  This design preserves fidelity to the original Min-$k\%$ principle while eliminating its chief source of noise in code.
+% Syntax-aware masking converts a token-level metric into a semantics-level one: only tokens that could plausibly encode authorship survive, yet no identifier is ever broken.  This design preserves fidelity to the original Min-$k\%$ principle while eliminating its chief source of noise in code.
