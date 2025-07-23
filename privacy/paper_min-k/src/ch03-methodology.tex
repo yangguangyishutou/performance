@@ -7,10 +7,54 @@
 \begin{figure*}[!t]
     \centering
     \includegraphics[width=0.85\textwidth]{fig/overview.pdf}
-    \caption{Overview}
+    \caption{Illustration of our Approach Motivation and Proposed Solution}
     \label{fig:overview}
 \end{figure*}
 
+
+\begin{table*}[!t]
+    \centering
+    \footnotesize
+    \caption{List of the Collected Syntax Conventions}\label{table:syntax}
+    \vspace{-10pt}
+    \begin{tabular}{m{2.6cm}m{1.7cm}m{4cm}m{6cm}}
+        \toprule
+        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Conditional Token} & \textbf{Consequent Token} \\
+        \midrule
+        
+        \multirow{4}{*}{Data Model}  & Lists & `[' & `]' \\
+        \cmidrule{2-4}
+            & Dict &  `\{' & `\}' \\
+            \cmidrule{2-4}
+            & String/bytes  & ``',`"' &   `'',`"'  \\
+            \cmidrule{2-4}
+            & Object & identifier & `.' \\\hline
+        Expressions & call  & identifier (arguments) & `,' \\\hline
+        \multirow{1}{*}{Single Statements} 
+        & \texttt{import} & \texttt{import} module  & \texttt{as} \\
+        \hline
+        \multirow{10}{*}{Compound Statements} 
+        & \texttt{if} & \texttt{if} \textit{assignment expression} & `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}, \texttt{elif}, \texttt{else}\\
+        \cmidrule{2-4}
+        & \texttt{for}   & \texttt{for} \textit{target list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \multirow{2}{*}{\texttt{try}} &  \texttt{try} &  `:', \texttt{[SP]},  \texttt{BR}, \texttt{[IND]}, \texttt{except}, \texttt{except*},\texttt{finally}, \texttt{else} \\
+        \cmidrule{3-4}
+        &    & \texttt{except} \textit{expression}  &  \texttt{as},  `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+        \cmidrule{2-4}
+        & \texttt{with} & \texttt{with} \textit{with\_stmt\_contents}  & \texttt{as}, `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+        \cmidrule{2-4}
+
+        & \multirow{2}{*}{\texttt{class}}  & \texttt{class} \textit{classname} & `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{3-4}
+        & & \texttt{class} \textit{classname} (identifier &  `,', `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}  \\
+        \cmidrule{2-4}
+        & \multirow{2}{*}{function} & \texttt{def} \textit{funcname} (  & \texttt{self}, `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{3-4}
+        & & \texttt{def} \textit{funcname} (identifier  & `,', `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \bottomrule
+    \end{tabular}
+\end{table*}
 
 We discuss the motivation of our method design as the preliminary. Then we elaborate our method \tool.
 
@@ -36,69 +80,75 @@ Source code is considered a ``literary work'' under copyright law. The ``literar
 The inherent structural duality of source code—simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax}—introduces unique challenges for membership inference in code language models. A large-scale crawl of open-source Python repositories shows that over half of all tokens belong to such grammar patterns (e.g., \texttt{for-in}, \texttt{try-except}). These ubiquitous structures raise two practical obstacles: Syntax-Induced Noise Amplification(language-mandated tokens exhibit near-identical distributions across samples, drowning discriminative signals) and Contextual Ambiguity (inability to distinguish syntax-enforced vs. meaningful occurrences). The root challenge stems from code's \textit{mandatory scaffolding} property: any correct implementation embeds intent within rigid grammatical constraints, creating persistent noise for MIA.
 
 
-\subsection{Syntax Constraints}
-% “语法要求怎么怎么样，要写什么token的代码”
+\subsection{Syntax Conventions}
 
-We focus on the Python language. Python is a popular programming language with wide applications, including data analysis, artificial intelligence, and scientific computing.
-To build our syntax pattern database, we combine manual inspection of the official Python documentation~\cite{python11, javadoc} with automated analysis. Specifically, we chose the Python \todo{3.11} which was released in Oct., 2022. We refer to the Python language reference section. We systematically survey the language specification, including the import system (Section 5), expressions (Section 6), simple statements (Section 7) and compound statements (Section 8). For example, the expressions section describes the \texttt{assert}, \texttt{raise}, \textit{continue} statements, etc. The compound section illustrates the \texttt{if} statement, \texttt{for} statement, \texttt{with} statements, etc.
 
+We choose Python as our target language for studying syntax conventions, as it is a widely used programming language with broad applications in data analysis, artificial intelligence, and scientific computing. Syntax conventions refer to the specific rules defined by the Python language that programmers \textit{must} follow. Failure to do so will result in syntax errors and prevent the code from executing. Therefore, we consider tokens that follow syntax conventions to be highly predictable patterns and exclude them from the MIA calculation.
+
+In the example provided in our overview, the programmer completes the task by declaring a method named \texttt{add} within an existing class, following both the task specification and the language's syntax requirements. The method contains various syntax elements, such as a method declaration and a \textit{for} statement. The token \texttt{self} represents the class instance and is mandatory. Likewise, tokens such as the closing parenthesis \texttt{)} and colon \texttt{:} after the \texttt{row} parameter, along with the \texttt{[BR]} and \texttt{[IND]}, are also required by Python's grammar and must be present.
+
+To compile a comprehensive collection of syntax conventions, two of our authors, each with over \todo{XXX} years of Python development experience, manually reviewed the official Python documentation~\cite{python11}. Specifically, we referred to the Python Language Reference section of the Python 3.11 documentation, released in October 2022. The authors reviewed sections of the documentation that define syntax elements, including the data model (Section 3), the import system (Section 5), expressions (Section 6), as well as statements, and function and class definitions (Sections 7 and 8). A third author is involved to resolve any arguments or disagreements.
+
+Table \ref{table:syntax} lists our summarized syntax conventions. We categorize them into four categories according to their syntax element types. i.e., data model, expressions, single statements and compound statements. The syntax convention is defined as a tuple $\langle \text{condition}, \text{consequence} \rangle$, where $\text{condition}$ represents a prefix under which certain code elements conform to specific language syntax, and $\text{consequence}$ denotes a suffix that must or high-likely to occur given the $\text{condition}$. In total, we obtained \todo{XXX} syntax conventions, denoted as $\mathcal{C}$.
+
+\begin{itemize}
+    \item \textit{Data Model:} Must terminate with appropriate delimiters or accessors for syntactic completeness (e.g., closing brackets or dot notation)
+    \item \textit{Expressions:} Must follow function identifiers and include a parenthesized, comma-separated list of arguments.
+    \item \textit{Simple Statement}: Probably with aliases when including external packages (i.e., \texttt{import})
+    \item \textit{Compound Statement:} These statements must be followed by a colon (`:') and an indented block. The enclosed statements are started with an indentation. The compound statements are probably extended with additional branches such as \texttt{elif}, \texttt{else}, \texttt{except}, \texttt{except*}, or \texttt{finally}. The \texttt{with} statement is typically used with aliases when wrapping code defined by a context manager. Classes and methods are defined using parameters enclosed in parentheses, followed by a colon. Method definitions begin with a \texttt{self} parameter to refer to the instance.
+\end{itemize}
 
 % we systematically survey the language specification, focusing on Chapter 8, "Compound statements," which defines the core control flow and organizational structures. This chapter's 10 subsections detail the multi-line constructs rich in syntactic patterns relevant to our work.
 
-Our selection process is grounded in Python's lexical structure. We programmatically retrieve reserved keywords using the \texttt{keyword} module (35 in Python 3.11) to ensure our patterns are based on definitive language elements. Based on this, we analyzed the 10 subsections and included 8 in our database: \texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{match}, function (\texttt{def}) and class (\texttt{class}) definitions, and coroutine (\texttt{async}) structures. These were selected because their syntactic forms are rigid multi-token patterns, identifiable via tokenization, that contain both prefix keywords (e.g., \texttt{for}, \texttt{try}) and structurally determined suffix tokens (e.g., \texttt{in}, \texttt{except}).
+% Our selection process is grounded in Python's lexical structure. We programmatically retrieve reserved keywords using the \texttt{keyword} module (35 in Python 3.11) to ensure our patterns are based on definitive language elements. Based on this, we analyzed the 10 subsections and included 8 in our database: \texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{match}, function (\texttt{def}) and class (\texttt{class}) definitions, and coroutine (\texttt{async}) structures. 
+% These were selected because their syntactic forms are rigid multi-token patterns, identifiable via tokenization, that contain both prefix keywords (e.g., \texttt{for}, \texttt{try}) and structurally determined suffix tokens (e.g., \texttt{in}, \texttt{except}).
 
-We excluded two subsections. The \texttt{while} statement was omitted as its core structure (\texttt{while condition:}) lacks a fixed suffix token. "Type parameter lists" was also excluded as it pertains to type-level declarations, not the executable control-flow syntax central to our study. The syntactic validity of all collected patterns is finally verified using Python's \texttt{ast} module.
+% We excluded two subsections. The \texttt{while} statement was omitted as its core structure (\texttt{while condition:}) lacks a fixed suffix token. "Type parameter lists" was also excluded as it pertains to type-level declarations, not the executable control-flow syntax central to our study. The syntactic validity of all collected patterns is finally verified using Python's \texttt{ast} module.
 % Operator 常见标点与运算符、属性访问中的点号 Sec. 2.5
 % Compound Statement Sec. 8 
 % Simple Statement Sec. 7
 
 
-To address these issues, we construct an \emph{identifier-aware syntax mask} to filter out grammar noise while preserving semantic integrity. The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}. These spans form a whitelist $\mathcal{W}$ that protects identifiers from removal. Next, we tokenize the code with \texttt{return\_offsets\_mapping=True} to align each subword token with its source offsets. We then initialize a boolean mask $\mathbf{m}$ to true (keep) and set entries to false for tokens matching grammar categories: formatting placeholders (e.g., \texttt{[PAD]}, indents), closing keywords (\texttt{else}, \texttt{except}, etc.), structural symbols (brackets, colons, etc.), punctuation/operators, and attribute dots. If a token's span overlaps $\mathcal{W}$, we revert $\mathbf{m}$ to true.
+% \begin{table*}[!t]
+%     \centering
+%     \footnotesize
+%     \caption{Syntax Conventions}\label{table:syntax}
+%     \vspace{-10pt}
+%     \begin{tabular}{m{2.6cm}m{2.4cm}m{7cm}m{3cm}}
+%         \toprule
+%         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Consequent Token} \\
+%         \midrule
+%         Data Model & Lists, Dict, String & Must terminate with appropriate delimiters or accessors for syntactic completeness (e.g., closing brackets or dot notation) & ``]'', ``\}'', ``.'' \\\hline
+%         Expressions & \texttt{call} expression & Must follow function identifiers and include a parenthesized, comma-separated list of arguments (which may be empty) & ``,'' \\\hline
+%         \multirow{1}{*}{Single Statements} 
+%         % & \texttt{return} 
+%         % & Probably appear within a function and typically at its end to return a value & return \\
+%         % & \shortstack{\texttt{break} \\\texttt{continue}} & Probably be enclosed within loops (\texttt{for} or \texttt{while}) to alter control flow & break, continue \\
+%         % & \texttt{pass} & Probably be used for completing syntactic structure & pass \\
+%         % & \texttt{raise} & Probably be used within an exception handler to re-raise an exception & raise \\
+%         & \texttt{import} & Probably with aliases when including external packages  & as \\
+%         \hline
+%         \multirow{6}{*}{Compound Statements} 
+%         & \texttt{if} & Must be followed by a colon and indented block; Probably extended with \texttt{elif} or \texttt{else} branches & ``:'', space, \texttt{[IND]}, elif, else, \texttt{[BR]} \\
+%         & \texttt{for}  & Must be followed by a colon and an indented block; typically used to iterate over an iterable & ``:'', space, \texttt{[IND]}, \texttt{in}, \texttt{[BR]} \\
+%         & \texttt{try} & Must be followed by a colon and indented block; Must include at least one of: \texttt{except}, \texttt{except*}, \texttt{finally}, or \texttt{else} & ``:'', space, \texttt{[IND]}, except, except*, finally, else \\
+%         & \texttt{with} & Probably with aliases when wrapping a context-manager-defined code  & with, as \\
+%         & \texttt{class} definition & Must follow the class keyword with an identifier and optional parent class list in parentheses, followed by a colon and block & ``:'', space, \texttt{[IND]},``)'', ``,'' \\
+%         & \texttt{method} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon. The parameters start with a ``self''. & ``:'', space, \texttt{[IND]}, ``)'', ``,'', ``self'' \\
+%         & \texttt{function} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon & ``:'', space, \texttt{[IND]}, ``)'', ``,'' \\
+%         \bottomrule
+%         \noalign{\hrule height 1pt}
+%     \end{tabular}
+% \end{table*}
 
 
-\begin{table*}[!t]
-    \centering
-    \footnotesize
-    \caption{Syntax Conventions}\label{table:monitor-stats}
-    \vspace{-10pt}
-    \begin{tabular}{m{2.6cm}m{2.4cm}m{7cm}m{3cm}}
-        \toprule
-        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Consequent Token} \\
-        \midrule
-        Data Model & Lists, Dict, String & Must terminate with appropriate delimiters or accessors for syntactic completeness (e.g., closing brackets or dot notation) & ``]'', ``\}'', ``.'' \\\hline
-        Expressions & \texttt{call} expression & Must follow function identifiers and include a parenthesized, comma-separated list of arguments (which may be empty) & ``,'' \\\hline
-        \multirow{1}{*}{Single Statements} 
-        % & \texttt{return} 
-        % & Probably appear within a function and typically at its end to return a value & return \\
-        % & \shortstack{\texttt{break} \\\texttt{continue}} & Probably be enclosed within loops (\texttt{for} or \texttt{while}) to alter control flow & break, continue \\
-        % & \texttt{pass} & Probably be used for completing syntactic structure & pass \\
-        % & \texttt{raise} & Probably be used within an exception handler to re-raise an exception & raise \\
-        & \texttt{import} & Probably with aliases when including external packages  & as \\
-        \hline
-        \multirow{6}{*}{Compound Statements} 
-        & \texttt{if} & Must be followed by a colon and indented block; Probably extended with \texttt{elif} or \texttt{else} branches & ``:'', space, indentation, elif, else, line break \\
-        & \texttt{for}  & Must be followed by a colon and an indented block; typically used to iterate over an iterable & ``:'', space, indentation, \texttt{in}, line break \\
-        & \texttt{try} & Must be followed by a colon and indented block; Must include at least one of: \texttt{except}, \texttt{except*}, \texttt{finally}, or \texttt{else} & ``:'', space, indentation, except, except*, finally, else \\
-        & \texttt{with} & Probably with aliases when wrapping a context-manager-defined code  & with, as \\
-        & \texttt{class} definition & Must follow the class keyword with an identifier and optional parent class list in parentheses, followed by a colon and block & ``:'', space, indentation,``)'', ``,'' \\
-        & \texttt{method} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon. The parameters start with a ``self''. & ``:'', space, indentation, ``)'', ``,'', ``self'' \\
-        & \texttt{function} definition & Must define a function within a class using \texttt{def}, followed by parameters in parentheses and a colon & ``:'', space, indentation, ``)'', ``,'' \\
-        \bottomrule
-        \noalign{\hrule height 1pt}
-    \end{tabular}
-\end{table*}
+
+
 
 
 % 
-\begin{itemize}
-    \item \textit{Data Model:}
-    \item \textit{Expressions:} 
-    \item \textit{Expressions (Sec. ):} parenthesized expression (`()'), 
-    \item \textit{Simple Statement (Sec. XX)}: \texttt{return}, \texttt{break}, \texttt{continue}, \texttt{pass}, \texttt{raise}.
-    \item \textit{Compound Statement (Sec. XX):} \texttt{else}, \texttt{elif}, \texttt{except}, \texttt{finally}
-\end{itemize}
 
-\todo{Syntax conventions are defined as xxx.}
+
 
 
 % \begin{table}[!t]
@@ -129,11 +179,24 @@ To address these issues, we construct an \emph{identifier-aware syntax mask} to 
 % Our approach exploits code's dual predictability—grammar tokens are highly deterministic while author choices reveal memorization. By filtering the former, we enhance MIA signals without losing semantic content.
 
 
-\subsection{Min-k\% Prob with Syntax-Aware Filtering}
+\subsection{Syntax-Pruned MIA}
 
 % m[i] label
 % = must 
 % == probably,
+
+
+We propose a syntax-stripped membership inference attack method for inferencing code members. The approach can be divided into three phases. 
+
+The first phase is token preprocessing, 
+
+The second phase is syntax-convention-based token pruning.
+
+
+The third phase is member probabilities calculation. 
+
+
+To address these issues, we construct an \emph{identifier-aware syntax mask} to filter out grammar noise while preserving semantic integrity. The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}. These spans form a whitelist $\mathcal{W}$ that protects identifiers from removal. Next, we tokenize the code with \texttt{return\_offsets\_mapping=True} to align each subword token with its source offsets. We then initialize a boolean mask $\mathbf{m}$ to true (keep) and set entries to false for tokens matching grammar categories: formatting placeholders (e.g., \texttt{[PAD]}, indents), closing keywords (\texttt{else}, \texttt{except}, etc.), structural symbols (brackets, colons, etc.), punctuation/operators, and attribute dots. If a token's span overlaps $\mathcal{W}$, we revert $\mathbf{m}$ to true.
 
 We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference metric tailored for code.  After applying the identifier-aware mask, we retain only the log-probabilities $\ell_i=-\log p(t_i\,|\,t_{<i})$ at positions where $\mathbf{m}[i]=1$ and renormalise them to $\tilde{\ell}_i$.  Tokens are ordered by $\tilde{\ell}_i$ and the average of the hardest $k\%$ constitutes the score:
 \[
