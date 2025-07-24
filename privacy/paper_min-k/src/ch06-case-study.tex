@@ -1,19 +1,27 @@
 % !TeX root = ../main.tex
 
-\section{Case Study: Multi-Domain Code Memorisation Detection}
+\section{Case Study}
 
-Modern LLMs are often trained on large‐scale code corpora that may include open–source projects with various licences.  To demonstrate the generalizability and robustness of our benchmark methodology, we present a comprehensive case study targeting distinctive \emph{magic number} combinations across four different domains from The Pile dataset.  This multi-case analysis illustrates the systematic approach for detecting memorisation of potentially licensed code across diverse programming contexts.
+To further evaluate the usefulness of \tool, we conduct case studies on a wide range of popular large language models. Specifically, we select four representative Python functions from the Pile dataset. The four functions are covered from four domains, including network communication protocol, cryptocurrency transaction validation, quantum chemistry constants. 
 
-\subsection{Case Selection and Methodology}
+
+The four functions are representative as they are embedded with unique constants that are unlikely to occur in other functions. We design prompts to query LLMs to validate if those evaluated LLM memorizes the four functions, particularly the magic numbers. 
+
+% Multi-Domain Code Memorisation Detection.
+% Modern LLMs are often trained on large‐scale code corpora that may include open–source projects with various licences. 
+% To demonstrate the generalizability and robustness of our benchmark methodology, we present a comprehensive case study targeting distinctive \emph{magic number} combinations across four different domains from The Pile dataset. This multi-case analysis illustrates the systematic approach for detecting memorisation of potentially licensed code across diverse programming contexts.
+% \subsection{Case Selection and Methodology}
+
+
 We automatically scanned the \texttt{positive.jsonl} split of our benchmark for numeric literals that satisfy the following heuristics: (i) at least eight hexadecimal digits or (ii) a decimal integer longer than nine digits.  These so–called ``magic numbers'' are frequently used as sentinels, protocol identifiers, mathematical constants, or system parameters, making them ideal fingerprints for memorisation detection.
 
 To ensure uniqueness and avoid false positives, we conducted comprehensive GitHub searches to verify that each combination of constants and surrounding context appears only in the original projects and their forks.  This verification step is critical, as false positives could arise if magic number combinations were ubiquitous across different projects.
 
-\textbf{Case 1: Network Communication Protocol} We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test (Listing~\ref{lst:magic1}). GitHub search confirmed this combination's uniqueness to the original project.
+\textbf{Case A: Network Communication Protocol} We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test (Listing~\ref{lst:magic1}). GitHub search confirmed this combination's uniqueness to the original project.
 
 \vspace{1em}
 \begin{figure}[!h]
-\begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
+\begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
 # tests/test_message_director.py (excerpt)
 dg = Datagram.create([12345654321], 0, 1234)
 dg.add_uint32(0xDEADBEEF)
@@ -23,15 +31,14 @@ self.c2.send(dg)
 \label{lst:magic1}
 \end{figure}
 
-\textbf{Case 2: Cryptocurrency Transaction Validation} Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^{32}$) and \texttt{4294967294} ($2^{32}-2$), representing maximum 32-bit unsigned integer limits (Listing~\ref{lst:magic2}).
+\textbf{Case B: Cryptocurrency Transaction Validation} Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^{32}$) and \texttt{4294967294} ($2^{32}-2$), representing maximum 32-bit unsigned integer limits (Listing~\ref{lst:magic2}).
 
 \vspace{1em}
 \begin{figure}[!h]
-\begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
+\begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
 # Bitcoin transaction validation test
 inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967296}]
-assert_raises_rpc_error(-8, 'Invalid parameter, sequence number is out of range', 
-                       self.nodes[0].createrawtransaction, inputs, outputs)
+assert_raises_rpc_error(-8, 'Invalid parameter, sequence number is out of range', self.nodes[0].createrawtransaction, inputs, outputs)
 # Valid boundary case
 inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967294}]
 rawtx = self.nodes[0].createrawtransaction(inputs, outputs)
@@ -40,28 +47,27 @@ rawtx = self.nodes[0].createrawtransaction(inputs, outputs)
 \label{lst:magic2}
 \end{figure}
 
-\textbf{Case 3: Quantum Chemistry Constants} Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations (Listing~\ref{lst:magic3}).
+\textbf{Case C: Quantum Chemistry Constants} Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations (Listing~\ref{lst:magic3}).
 
 \vspace{1em}
 \begin{figure}[!h]
-\begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
+\begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
 def c2s_bra(l, gcart):
     if l == 0:
         return gcart * 0.282094791773878143
     elif l == 1:
         return gcart * 0.488602511902919921
-    else:
-        # ... additional computation
+    ...
 \end{lstlisting}
 \caption{Quantum chemistry normalization constants.}
 \label{lst:magic3}
 \end{figure}
 
-\textbf{Case 4: Security System Timestamp Validation} Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation (Listing~\ref{lst:magic4}).
+\textbf{Case D: Security System Timestamp Validation} Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation (Listing~\ref{lst:magic4}).
 
 \vspace{1em}
 \begin{figure}[!h]
-\begin{lstlisting}[basicstyle=\ttfamily\small,columns=fullflexible,numbers=left,frame=single]
+\begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
 # Fail2ban ticket validation test
 ticket_str = 'FailTicket: ip=193.168.0.128 time=1167605999.0 bantime=None'
 ticket.setTime(1000002000.0)
@@ -71,8 +77,7 @@ self.assertEqual(ticket.getTime(), 1000002000.0)
 \label{lst:magic4}
 \end{figure}
 
-\subsection{Query Design}
-For each case, we designed natural-language prompts that provide one constant as context while querying for the associated value. This approach tests whether models have memorised the specific code snippets rather than general domain knowledge.
+\textbf{Query Design.} For each case, we designed natural-language prompts that provide one constant as context while querying for the associated value. This approach tests whether models have memorised the specific code snippets rather than general domain knowledge.
 
 \begin{center}
 \fbox{\parbox{0.95\linewidth}{\small
@@ -86,18 +91,17 @@ For each case, we designed natural-language prompts that provide one constant as
 }}
 \end{center}
 
-\subsection{Models and Evaluation Protocol}
-We query four open-source LLMs (the same models evaluated in Section~\ref{sec:experiments}) and two widely–used closed-source services.  Each model is prompted five times with different random seeds for each case; an answer is marked as \emph{hit} if any completion contains the target constant.  Results are summarised in Table~\ref{tab:case_study_multi}.
+\textbf{Models and Evaluation Protocol.} We query four open-source LLMs (the same models evaluated in Section~\ref{sec:experiments}) and two widely–used closed-source services.  Each model is prompted five times with different random seeds for each case; an answer is marked as \emph{hit} if any completion contains the target constant.  Results are summarised in Table~\ref{tab:case_study_multi}.
 
-\begin{table*}[!h]
+\begin{table}[!t]
     \centering
     \footnotesize
     \caption{Multi-domain memorisation detection results across four distinct code fingerprint cases.}
     \label{tab:case_study_multi}
-    \begin{tabular}{m{2.8cm}m{3.2cm}m{3.2cm}m{3.2cm}m{3.2cm}}
+    \begin{tabular}{m{2.2cm}m{1cm}m{1cm}m{1cm}m{1cm}}
     \toprule
-    \textbf{Model} & \textbf{Case 1: Network} & \textbf{Case 2: Bitcoin} & \textbf{Case 3: Chemistry} & \textbf{Case 4: Security} \\
-     & \textbf{(0xDEADBEEF)} & \textbf{(4294967296)} & \textbf{(0.48860...)} & \textbf{(1167605999)} \\
+    \textbf{Model} & \textbf{Case A} & \textbf{Case B} & \textbf{Case C} & \textbf{Case D} \\
+    %  & \textbf{(0xDEADBEEF)} & \textbf{(4294967296)} & \textbf{(0.48860...)} & \textbf{(1167605999)} \\
     \midrule
     Pythia-2.8B & $\times$ & $\times$ & $\times$ & $\times$ \\
     \midrule
@@ -112,7 +116,7 @@ We query four open-source LLMs (the same models evaluated in Section~\ref{sec:ex
     Gemini2.5 Flash & $\checkmark$ (1/5) & $\checkmark$ (1/5) & $\times$ & $\checkmark$ (2/5) \\
     \bottomrule
     \end{tabular}
-\end{table*}
+\end{table}
 
 \subsection{Results and Discussion}
 %The multi-domain analysis reveals several important patterns in code memorisation across different programming contexts:
