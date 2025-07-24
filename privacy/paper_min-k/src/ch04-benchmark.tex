@@ -11,17 +11,17 @@ Therefore, we constructed a new benchmark, named \benchmark, using Python code. 
     \centering
     \footnotesize
         \caption{Benchmark Statistics}\label{tab:benchmark}
-    \begin{tabular}{m{0.8cm}m{1.2cm}m{0.7cm}m{0.7cm}m{0.7cm}m{0.7cm}m{0.7cm}}
+    \begin{tabular}{m{1.2cm}m{0.7cm}m{0.7cm}m{0.7cm}m{0.7cm}m{2cm}}
     \toprule
-    \multirow{1}{*}{Lang.}  &  \multirow{1}{*}{Label}  & Proj. (\#) & Files (\#)  & Func. (\#) & LOC (\#)  & \multicolumn{1}{c}{Length}  \\ 
+    \multirow{1}{*}{Label}  & Proj. (\#) & Files (\#)  & Func. (\#) & LOC (\#)  & \multicolumn{1}{c}{Length Category}  \\ 
     \midrule
-    \multirow{6}{*}{Python} & \multirow{3}{*}{Members}  & \multirow{3}{*}{Pile} & \multirow{3}{*}{-} & \multirow{3}{*}{1000} & \multirow{3}{*}{-} & 100 \\ 
-    & & & & & &  200 \\ 
-    & & & & & &  300 \\ 
-    \cmidrule(lr){2-7}       
-    & \multirow{3}{*}{\shortstack{Non-\\Members}}  & \multirow{3}{*}{100} & \multirow{3}{*}{-} & \multirow{3}{*}{1000} & \multirow{3}{*}{-} & 100 \\ 
-     & & & & & &  200 \\ 
-    & & & & & &  300 \\ 
+    \multirow{3}{*}{Members}  & \multirow{3}{*}{-} & \multirow{3}{*}{-} & \multirow{3}{*}{1000} & \multirow{3}{*}{-} & Short (334) \\ 
+    & & & & &  Mid (333) \\ 
+    & & & & &  Long (333) \\ 
+    \cmidrule(lr){1-6}       
+         \multirow{3}{*}{\shortstack{Non-\\Members}}  & \multirow{3}{*}{100} & \multirow{3}{*}{-} & \multirow{3}{*}{1000} & \multirow{3}{*}{-} & - \\ 
+     & & & & &  - \\ 
+     & & & & &  - \\ 
     \bottomrule
     \end{tabular}
 \end{table}
@@ -48,6 +48,7 @@ Therefore, we constructed a new benchmark, named \benchmark, using Python code. 
 \end{table}
 
 
+Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \benchmark.
 
 \textbf{Members.} We leveraged The Pile~\cite{pile}, a large-scale open-source language modeling dataset composed of multiple smaller datasets, including 7.6\% of a repository dataset sourced from GitHub~\cite{thepile}. The Pile released in 2021, serving as the training dataset for many LLMs, including Pythia~\cite{biderman2023pythia}, GPT-Neo~\cite{black2021gptneo}, StableLM~\cite{stabilityai2023stablelm}, etc.
 
@@ -55,11 +56,13 @@ We extract Python functions from the code portion of the Pile dataset using scri
 
 \textbf{Non-members.} For non-members, we searched GitHub using a customized query for Python repositories, limiting the creation time to after January 1, 2024. We sorted the repositories by star count in descending order to ensure quality. We then extracted 10 Python functions from each repository before proceeding to the next one, continuing this process across 100 repositories to collect a total of 1,000 functions. To ensure these functions were genuinely original and not cloned from pre-existing sources, we implemented a rigorous verification process. First, we parsed each candidate function's code using Python's \texttt{ast} module to extract its name, variable names, and function calls. These elements were then used to build search queries for the GitHub API. The verification relied on three heuristics: (1) searching for the exact function name to identify direct duplicates; (2) searching by internal variable names to detect refactored code reuse; and (3) searching for the complete string of function calls to find logic similarities. Two of the authors conducted peer reviews on the search results to ensure that all 1,000 functions were original and created after January 2024.
 
-\textbf{Ratio Division.} After constructing the positive and negative sample datasets, we divided the members and non-members into three different ratio subsets for comprehensive experimental evaluation: 1:1 (1000:1000), 1:5 (200:1000), and 5:1 (1000:200). Due to the constraints of our original benchmark size, the larger subset in both 1:5 and 5:1 ratios is limited to 1000 samples, resulting in 200 samples for the smaller subset. This design enables us to evaluate the performance of our proposed method under different data distributions, particularly its robustness in imbalanced dataset scenarios.
 
-Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \benchmark. We categorize the functions by token lengths into three groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into three equal groups: \textit{short} (0-33rd percentile, token count $\leq$ \_\_\_), \textit{middle} (33rd-66th percentile, \_\_\_ $<$ token count $\leq$ \_\_\_), and \textit{long} (66th-100th percentile, token count $>$ \_\_\_). This balanced distribution ensures fair comparison under varying function complexities.
+\textbf{Length.}  We categorize the member functions by token lengths into three groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into three equal groups: \textit{short} (0--33rd percentile, token count $\leq$ 152), \textit{middle} (33rd--66th percentile, 152 $<$ token count $\leq$ 473), and \textit{long} (66th--100th percentile, token count $>$ 473). This balanced distribution ensures fair comparison under varying function complexities. 
 
 To further characterize our benchmark, we analyze the syntax convention patterns present in the collected functions based on the four categories defined in our methodology (Section~\ref{sec:methodology}): Data Model, Expressions, Single Statements, and Compound Statements. Table~\ref{tab:syntax-stats} presents the distribution of these syntax convention categories in our benchmark, which demonstrates the syntactic diversity and complexity of the collected functions. This analysis helps validate that our dataset contains a representative sample of Python programming constructs that follow the syntax conventions we aim to filter in our membership inference approach.
+
+\textbf{Ratio Division.} After constructing the positive and negative sample datasets, we divided the members and non-members into three different ratio subsets for comprehensive experimental evaluation: 1:1 (1000:1000), 1:5 (200:1000), and 5:1 (1000:200). Due to the constraints of our original benchmark size, the larger subset in both 1:5 and 5:1 ratios is limited to 1000 samples, resulting in 200 samples for the smaller subset. This design enables us to evaluate the performance of our proposed method under different data distributions, particularly its robustness in imbalanced dataset scenarios.
+
 
 \todo{Number of projects in table 1?}
 

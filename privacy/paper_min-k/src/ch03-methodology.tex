@@ -2,7 +2,7 @@
 
 
 \section{Methodology}
-
+\label{sec:methodology}
 
 \begin{figure*}[!t]
     \centering
@@ -17,26 +17,46 @@
     \footnotesize
     \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, respectively.)}\label{table:syntax}
     \vspace{-10pt}
-    \begin{tabular}{m{2.6cm}m{1.7cm}m{4cm}m{6cm}}
+    \begin{tabular}{m{2.8cm}m{2cm}m{4cm}m{6cm}}
         \toprule
         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Conditional Token} & \textbf{Consequent Token} \\
         \midrule
         
-        \multirow{4}{*}{Data Model}  & Lists & `[' & `]' \\
+        \multirow{7}{*}{Data Model}  & Lists & `[' & `]' \\
         \cmidrule{2-4}
             & Dict &  `\{' & `\}' \\
             \cmidrule{2-4}
             & String/bytes  & ``',`"' &   `'',`"'  \\
             \cmidrule{2-4}
-            & Object & identifier & `.' \\\hline
-        Expressions & call  & identifier (arguments) & `,' \\\hline
-        \multirow{1}{*}{Single Statements} 
-        & \texttt{import} & \texttt{import} module  & \texttt{as} \\
-        \hline
-        \multirow{10}{*}{Compound Statements} 
-        & \texttt{if} & \texttt{if} \textit{assignment expression} & `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}, \texttt{elif}, \texttt{else}\\
+            & Object & \textit{identifier} & `.' \\
+            \cmidrule{2-4}
+            & Tuple & `(' & `)' \\
+            \cmidrule{2-4}
+            & Set &  `\{' & `\}' \\
+            \cmidrule{2-4}
+            & Slice &  `[' & `]' \\\hline
+        \multirow{5}{*}{Expressions} & call & \textit{identifier}( & `)' \\
         \cmidrule{2-4}
-        & \texttt{for}   & \texttt{for} \textit{target list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
+            & lambda & \texttt{lambda} \textit{params} & `:' \\
+        \cmidrule{2-4}
+            & comprehension & \textit{expr} \texttt{for} \textit{target} & \texttt{in}, `]', `\}', `)'  \\
+        \cmidrule{2-4}
+            & conditional & \textit{expr} \texttt{if} \textit{cond} & \texttt{else} \\
+        \cmidrule{2-4}
+            & \shortstack{Chained\\Comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
+        \multirow{4}{*}{Single Statements} 
+        & \texttt{import} & \texttt{import} \textit{module}  & \texttt{as} \\
+        \cmidrule{2-4}
+        & \texttt{from-import} & \texttt{from} \textit{module} & \texttt{import} \\
+        \cmidrule{2-4}
+        & \texttt{assert} & \texttt{assert} \textit{test} & `,', \textit{msg} \\
+        \cmidrule{2-4}
+        & \shortstack{Scope\\Declaration} & \texttt{global}/\texttt{nonlocal} & \textit{identifier}, `,' \\
+        \hline
+        \multirow{15}{*}{Compound Statements} 
+        & \texttt{if} & \texttt{if} \textit{assignment\_expression} & `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}, \texttt{elif}, \texttt{else}\\
+        \cmidrule{2-4}
+        & \texttt{for}   & \texttt{for} \textit{target\_list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
         \cmidrule{2-4}
         & \multirow{2}{*}{\texttt{try}} &  \texttt{try} &  `:', \texttt{[SP]},  \texttt{BR}, \texttt{[IND]}, \texttt{except}, \texttt{except*},\texttt{finally}, \texttt{else} \\
         \cmidrule{3-4}
@@ -44,14 +64,25 @@
         \cmidrule{2-4}
         & \texttt{with} & \texttt{with} \textit{with\_stmt\_contents}  & \texttt{as}, `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
         \cmidrule{2-4}
-
         & \multirow{2}{*}{\texttt{class}}  & \texttt{class} \textit{classname} & `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
         \cmidrule{3-4}
-        & & \texttt{class} \textit{classname} (identifier &  `,', `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}  \\
+        & & \texttt{class} \textit{classname}(\textit{identifier}) &  `,', `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}  \\
         \cmidrule{2-4}
-        & \multirow{2}{*}{function} & \texttt{def} \textit{funcname} (  & \texttt{self}, `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        & \multirow{3}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `/', `*', `)' \\
         \cmidrule{3-4}
-        & & \texttt{def} \textit{funcname} (identifier  & `,', `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        & & \texttt{def} \textit{funcname}(\textit{identifier}) & `,` \\
+        \cmidrule{3-4}
+        & & \texttt{def} \textit{funcname}(...) & `->`, `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \texttt{while} & \texttt{while} \textit{condition} & `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}, \texttt{else}\\
+        \cmidrule{2-4}
+        & \texttt{match} & \texttt{match} \textit{subject} & \texttt{case}, `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \texttt{async def} & \texttt{async def} \textit{funcname}(...) & `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \texttt{async for} & \texttt{async for} \textit{target\_list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \texttt{async with} & \texttt{async with} \textit{expr}  & \texttt{as}, `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
         \bottomrule
     \end{tabular}
 \end{table*}
@@ -91,10 +122,10 @@ To compile a comprehensive collection of syntax conventions, two of our authors,
 Table \ref{table:syntax} lists our summarized syntax conventions. We categorize them into four categories according to their syntax element types. i.e., data model, expressions, single statements and compound statements. The syntax convention is defined as a tuple $\langle \text{condition}, \text{consequence} \rangle$, where $\text{condition}$ represents a prefix under which certain code elements conform to specific language syntax, and $\text{consequence}$ denotes a suffix that must or high-likely to occur given the $\text{condition}$. In total, we obtained \todo{XXX} syntax conventions, denoted as $\mathcal{C}$.
 
 \begin{itemize}
-    \item \textit{Data Model:} Must terminate with appropriate delimiters or accessors for syntactic completeness (e.g., closing brackets or dot notation)
-    \item \textit{Expressions:} Must follow function identifiers and include a parenthesized, comma-separated list of arguments.
-    \item \textit{Simple Statement}: Probably with aliases when including external packages (i.e., \texttt{import})
-    \item \textit{Compound Statement:} These statements must be followed by a colon (`:') and an indented block. The enclosed statements are started with an indentation. The compound statements are probably extended with additional branches such as \texttt{elif}, \texttt{else}, \texttt{except}, \texttt{except*}, or \texttt{finally}. The \texttt{with} statement is typically used with aliases when wrapping code defined by a context manager. Classes and methods are defined using parameters enclosed in parentheses, followed by a colon. Method definitions begin with a \texttt{self} parameter to refer to the instance.
+    \item \textit{Data Model:} Delimiter-bound or accessor-driven structures that must terminate with a corresponding token, such as lists \texttt{[]}, tuples \texttt{()}, dicts/sets \texttt{\{\}}, slices \texttt{[\,]}, and attribute access (`.`).
+    \item \textit{Expressions:} In-line constructs whose syntax mandates specific separators or terminators, including function calls `()`, \texttt{lambda} expressions (`:`), comprehension headers (\texttt{for}/\texttt{in}), conditional expressions (\texttt{if}/\texttt{else}), and chained comparisons (`<`, `>`).
+    \item \textit{Single Statement}: One-line statements with a strong "prefix implies suffix" pattern, such as aliased imports (\texttt{import...as}), module member imports (\texttt{from...import}), assertions with messages, and scope declarations (`global`, `nonlocal`).
+    \item \textit{Compound Statement:} Multi-line blocks introduced by keywords that must end with a colon and be followed by an indented suite. This set includes \texttt{if}/\texttt{elif}/\texttt{else}, \texttt{for}/\texttt{while}/\texttt{else}, \texttt{try}/\texttt{except}/\texttt{finally}, \texttt{with}, \texttt{match}/\texttt{case}, and various \texttt{async} statements, as well as class/function definitions, which include parameter separators (`/`, `*`) and return type hints (`->`).
 \end{itemize}
 
 % we systematically survey the language specification, focusing on Chapter 8, "Compound statements," which defines the core control flow and organizational structures. This chapter's 10 subsections detail the multi-line constructs rich in syntactic patterns relevant to our work.
