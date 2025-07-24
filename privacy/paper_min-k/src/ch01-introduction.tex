@@ -2,50 +2,63 @@
 
 \section{Introduction}
 
-The fundamentals of large language models (LLMs) stems from their access to vast and diverse datasets for pre-training. However, the copyright issue in the training corpora deserves serious attention. In recent years, numerous legal disputes have arisen concerning the use of copyrighted materials in training data\cite{openaisue, newssue}. 
-Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments\todo{cite}, but also as a means of fostering a supportive and respectful environment for content creators.
-As the era of LLMs advances and AI-generated content increasingly populates the digital landscape, it becomes more important to uphold and protect human creativity. 
-Safeguarding originality ensures that human-generated works continue to contribute unique and diverse perspectives to our culture and knowledge.
+The fundamentals of large language models (LLMs) stems from the vast pre-training datasets.% However, the copyright issue in the training corpora deserves serious attention. 
+Recently, several legal disputes have arisen concerning the use of copyrighted materials in training data~\cite{openaisue, newssue}. 
+Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments, but also as a means of fostering supportive and respectful environments for content creators. As LLMs proliferate and AI-generated content grows, safeguarding human creativity is vital to preserving unique and diverse~perspectives.
 
-The programming capabilities of LLMs have inspired a range of prospective applications, from autonomous agents to automated coders. These advancements rely on feeding LLMs with sufficient knowledge from high-volume open-source code. However, such code is typically governed by specific usage obligations. \eg copyleft licenses like the GNU General Public License (GPL). The recent decades have seen many GPL conflicts and litigations~\cite{gpllitigation}. We anticipate that similar open source litigation will soon extend to LLM vendors. Looking back, the GPL was introduced in 1989 as part of the GNU Project~\cite{gnu}. Eighteen years later, we witnessed the first recognized lawsuit for a GPL violation, when Monsoon Multimedia was sued by the Software Freedom Conservancy~\cite{lvcriminaldefense, Informationweek}. This case underscores the importance for LLM developers to fully understand and respect the copyright content~\cite{xu2024llms}.
-Unfortunately, conflicts surrounding the use of pretraining data continue to emerge\todo{cite}, and few have reached resolution due to the protracted nature of litigation. %As a result, the transparency and accountability questions in LLMs remain unanswered.
+% As the era of LLMs advances and AI-generated content increasingly populates the digital landscape, it becomes more important to uphold and protect human creativity ensures that human-generated works continue to contribute unique and diverse perspectives
+% Safeguarding originality ensures that human-generated works continue to contribute unique and diverse perspectives to our culture and knowledge.
 
+% The coding capabilities of LLMs have inspired a range of prospective applications, from autonomous agents to automated coders. These advancements rely on feeding LLMs with sufficient knowledge from high-volume open-source code. 
 
-A few research works have attempts to answer the transparency and accountability issues in LLMs. Zhou et al.~\cite{zhou2024dpdllm} analyzed books, websites, and Wikipedia to assess potential copyright violations. Recent benchmarks~\cite{chen2024copybench, liu2024shield} support evaluation of both literal copying (\eg~verbatim reproduction) and non-literal copying (\eg~replicated plots or characters) from LLM outputs. There are also proactive measures known as copyright traps~\cite{shilov2024mosaic, meeus2024copyright}, which embeds carefully crafted copyrighted content (\ie similar to watermark) to enable precise detection of copyright violations. However, this approach inherently suffers from the limitation that such traps must be prepared in advance.
-
-
-A more promising approach involves applying membership inference attacks (MIAs) to LLMs. MIAs were initially used to determine whether a specific data point was part of the training dataset of a machine learning model~\cite{shokri2017membership, song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, truex2019demystifying}, thereby exposing potential privacy risks. MIAs in LLMs share the same intuitions that models memorizes data (overfitting)~\cite{song2019auditing, carlini2021extracting}. Tirumala et al.~\cite{tirumala2022memorization} find that models memorize nouns and numbers, and that larger models can memorize a larger portion of the data before over-fitting. \todo{Impractical for pretraining data due to black box and high computational cost.} \todo{LLM unavailability of pretraining data distribution.}
-
-Unlike machine learning MIAs that rely on shadow or reference models, MIAs in LLMs typically exploit the model's token-level output and probabilities. Carlini et al.~\cite{carlini2021extracting} demonstrated that LLMs can leak verbatim training sentences. Nevertheless, identifying non-literal memorization remains more challenging compared to literal (verbatim) memorization. \todo{Most approaches focus on modeling the likelihood of word sequences in context.} Duan~\cite{duan2024membership} found that MIAs perform only slightly better than random guessing in LLMs, due to the inherently fuzzy boundary between members and non-members. Several approaches have been proposed, including leveraging neighboring data via synonym substitution~\cite{mattern2023membership}, detecting low-probability tokens~\cite{shi2023detecting}, calibrating token probabilities using term frequency divergence~(\cite{zhang2024pretraining}). However, they focus on general texts instead of code. 
-
-
-\todo{Yang et al.~\cite{yang2024gotcha} presented GOTCHA, a membership inference attack tailored for code models. Similarly, Wan et al.~\cite{wan2024does} proposed a membership inference attack targeting code completion models.}
-
-Our method based on assumption that: language grammar require certain must-appear-after patterns, that elicit key word pairs, where the language models remember for this language and tend to have high probabilities if keyword appears.
+LLMs' coding abilities have enabled applications from autonomous agents to automated coding.
+However, these coding abilities stem from large-scale training on open-source code, which often comes with specific usage obligations.% However, such code is typically governed by specific usage obligations.
+A well-known example is the copyleft license, such as the GNU General Public License (GPL). 
+The recent decades have seen many GPL conflicts and litigations~\cite{gpllitigation}. Looking back, the GPL was introduced in 1989 as part of the GNU Project~\cite{gnu}. Eighteen years later, we witnessed the first recognized lawsuit for a GPL violation, when Monsoon Multimedia was sued by the Software Freedom Conservancy~\cite{lvcriminaldefense, Informationweek}. This case underscores the importance of respecting copyrighted content~\cite{xu2024llms}, and we anticipate that similar open-source litigation may soon target LLM vendors. % This case underscores the importance to respect the copyright content~\cite{xu2024llms}, which we anticipate that similar open source litigation will soon extend to LLM vendors. % for LLM developers to fully understand and 
+In fact, disputes over the use of code for pretraining have already emerged~\cite{githubsue}.
+% , and few have reached resolution due to the protracted nature of litigation. %As a result, the transparency and accountability questions in LLMs remain unanswered.
 
 
-We argue from the essential of copyright. The keywords in the code are inks and brushes, which should not be considered for MIA computation.
+Several research works attempt to answer the transparency and accountability issues in LLMs. Zhou et al.~\cite{zhou2024dpdllm} analyzed books, websites, and Wikipedia to assess potential copyright violations. Recent benchmarks~\cite{chen2024copybench, liu2024shield} support evaluation of both literal copying (\eg~verbatim reproduction) and non-literal copying (\eg~replicated plots or characters) from LLM outputs. There are also proactive measures known as copyright traps~\cite{shilov2024mosaic, meeus2024copyright}, which embeds carefully crafted copyrighted content (\ie similar to watermark) to enable precise detection of copyright violations. However, this approach  suffers from the inherent limitation that such traps must be prepared in advance.
 
-Like prior works (Duan et al., 2024; Shi et al., 2024), we assume that we only have access to the target LLM as a black box: we can compute token probabilities for the text to be detected but have no access to the internals of the LLM (e.g., weights and activations).
+A more promising approach involves applying membership inference attacks (MIAs) to LLMs, which initially determine whether a specific data point was part of the training dataset of a machine learning model~\cite{shokri2017membership, song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, truex2019demystifying}, thereby exposing potential privacy risks. MIAs in LLMs share the same intuitions that models memorizes data (overfitting)~\cite{song2019auditing, carlini2021extracting}. Tirumala et al.~\cite{tirumala2022memorization} find that models memorize nouns and numbers, and that larger models can memorize a larger portion of the data before over-fitting. These methods assume access to pretraining data to train shadow or reference models. Yang et al.~\cite{yang2024gotcha} presented \textsc{GotCha}, a membership inference attack using surrogate models tailored for code LLMs.
+However, training such models is computationally expensive, and pretraining data is often unavailable, especially for commercial LLMs.
+
+% and data transparency is often lacking—particularly for commercial LLMs, where pretraining datasets are rarely disclosed.
+% However, training shadow or reference models involves high computational cost. Meanwhile, such data availability and transparency does not always hold for LLMs, especially for commercial LLMs.
+% \todo{Impractical for pretraining data due to black box and high computational cost.} \todo{LLM unavailability of pretraining data distribution.}
+% \todo{ Similarly, Wan et al.~\cite{wan2024does} proposed a membership inference attack targeting code completion models.}
 
 
-To facilitate this study and the evaluation of pre- training data detection for LLMs, we introduce a new benchmark named PatentMIA, specifically designed for Chinese-language pretraining data detection. PatentMIA is sourced from Google- Patents (Google, 2006) and constructed following Shi et al. (2024), who distinguish between train- ing and non-training data based on cut-off dates of the target LLM, where training data precedes, and non-training data follows, the cut-off date.
+Unlike machine learning MIAs that rely on shadow or reference models, MIAs in LLMs typically exploit the model's token-level output and probabilities. Carlini et al.~\cite{carlini2021extracting} demonstrated that LLMs can leak verbatim training sentences. Nevertheless, identifying non-literal memorization remains more challenging compared to literal (verbatim) memorization. Most approaches focus on modeling the likelihood of word sequences in context. Duan~\cite{duan2024membership} found that MIAs perform only slightly better than random guessing in LLMs, due to the inherently fuzzy boundary between members and non-members. Several approaches have been proposed, including leveraging neighboring data via synonym substitution~\cite{mattern2023membership}, detecting low-probability tokens~\cite{shi2023detecting}, calibrating token probabilities using term frequency divergence~(\cite{zhang2024pretraining}). However, they focus on general texts instead of code. 
+
+Although code can be viewed as another form of text, which can be similarly tackled using existing MIA techniques. The limitation is hindered. We hypothesize the limitation is that the existing methods did not consider the syntactic rules when programmers completing code tasks. 
+
+Imaginging a programmer writing code. She/he may 
+
+
+
+
+Our method based on assumption that: language grammar require certain must-appear-after patterns, that elicit key word pairs, where the language models remember for this language and tend to have high probabilities if keyword appears. We argue from the essential of copyright. The keywords in the code are inks and brushes, which should not be considered for MIA computation. Like prior works (Duan et al., 2024; Shi et al., 2024), we assume that we only have access to the target LLM as a black box: we can compute token probabilities for the text to be detected but have no access to the internals of the LLM (e.g., weights and activations).
+
+
+To facilitate this study and the evaluation of pre-training data detection for LLMs, we introduce a new benchmark named PatentMIA, specifically designed for Chinese-language pretraining data detection. PatentMIA is sourced from Google-Patents (Google, 2006) and constructed following Shi et al. (2024), who distinguish between train-ing and non-training data based on cut-off dates of the target LLM, where training data precedes, and non-training data follows, the cut-off date.
 
 
 % privacy attack > membership inference attack
-
 % % data reconstruction attacks. 
-
-\todo{Challenge I. Benchmark how to determine member and non-member. }
-
-
-\todo{Challenge II. code syntax. }
 
 
 challenge: verbatim instances
 
 
-\textbf{Contribution.} We summarize our contributions as follows:
+\textbf{Contribution.} We make the following contributions in detecting pretraining code in LLMs. 
+
+\begin{itemize}
+    \item ZXZZ
+    \item XXXXX
+    \item XXX
+\end{itemize}
 
 
 
