@@ -2,185 +2,259 @@
 
 \section{Appendix: Code Element and Syntax Pattern Database}\label{app:database}
 
-\subsection*{Code elements}
-To enable detailed analysis of Python code, we compiled a comprehensive set of code elements, encompassing keywords, operators, delimiters, and special characters. These elements are fundamental to Python syntax and critical for identifying structural patterns within the code.
-The following code snippet illustrates the collected elements:
 
-\begin{lstlisting}[
-  language=Python, 
-  caption={Set of Python code elements}, 
-  label={lst:code_elements}, 
-  breaklines=true, 
-  basicstyle=\small\ttfamily
-]
-code_elements = {
-    # Keywords (Python 3.11)
-    'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
-    'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 
-    'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 
-    'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
-
-    # Operators
-    '+', '-', '*', '/', '//', '%', '**',  # Arithmetic operators
-    '<', '>', '<=', '>=', '==', '!=',    # Comparison operators
-    '&', '|', '^', '~', '<<', '>>',      # Bitwise operators
-    '@', ':=',                           # Other operators
-
-    # Delimiters
-    '(', ')', '[', ']', '{', '}',        # Brackets
-    ',', ':', '.', ';',                  # Basic delimiters
-    '=', '+=', '-=', '*=', '/=', '//=', '%=', '@=', '&=', '|=', '^=', '>>=', '<<=', '**=',  # Assignment and augmented assignment operators
-
-    # Special characters
-    "'", '"', '#', '\textbackslash{}'    # Quotes, comment symbol, backslash
-}
-\end{lstlisting}
-
-
-\subsection*{Complete Syntax Pattern Dictionary}
-Full specification of all 23 core patterns with version compatibility markers. Each entry contains:
-\begin{itemize}
-\item Pattern variants and allowed token wildcards
-\item Minimum Python version requirement
-\item Associated PEP documents
-\item Test case identifiers from CPython's test suite
-\end{itemize}
-
-\begin{lstlisting}[
-  language=Python, 
-  caption={Complete syntax pattern specification},
-  breaklines=true, 
-  basicstyle=\small\ttfamily,
-  label={lst:full_syntax}]
-syntax_phrases = {
-    # =============== Control Flow Structure ================
-    "if_else": {
-        "type": "conditional",
-        "required": ["if", "elif", "else"],
-        "patterns": [
-            ("if", ":", ["elif", ":"], ["else", ":"]), 
-            ("if", ":", ["else", ":"]) 
-        ],
-        "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#if"
-    },
-
-    "for_in": {
-        "type": "loop",
-        "required": ["for", "in"],
-        "pattern": ("for", "...", "in", "...", ":"), 
-        "variants": [
-            ("for", "...", "in", "...", ":", ["else", ":"]) 
-        ],
-        "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#for"
-    },
-
-    "try_except": {
-        "type": "exception",
-        "required": ["try", "except", "finally"],
-        "patterns": [
-            ("try", ":", ["except", "...", ":"], ["finally", ":"]),
-            ("try", ":", ["except", "...", ":"]) 
-        ],
-        "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#try"
-    },
-
-    # ============== Function/Class Definition ================
-    "function_def": {
-        "type": "declaration",
-        "required": ["def"],
-        "pattern": ("def", "...", "(", "...", ")", "->", "...", ":"),
-        "variants": [
-            ("async", "def", "...") 
-        ],
-        "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#function-definitions"
-    },
-
-    "class_def": {
-        "type": "declaration",
-        "required": ["class"],
-        "pattern": ("class", "...", "(", "...", ")", ":"),
-        "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#class-definitions"
-    },
-
-    # ============== Context Management ================
-    "with_as": {
-        "type": "context",
-        "required": ["with", "as"],
-        "pattern": ("with", "...", "as", "...", ":"),
-        "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#with"
-    },
-
-    # ============== Pattern Matching (Python 3.10+) ================
-    "match_case": {
-        "type": "pattern",
-        "required": ["match", "case"],
-        "pattern": ("match", "...", ":", ["case", "...", ":", "..."]),
-        "docs_ref": "https://peps.python.org/pep-0634/"
-    },
-
-    # ============== Derived Structure ================
-    "list_comp": {
-        "type": "comprehension",
-        "required": ["for", "in"],
-        "pattern": ("[", "...", "for", "...", "in", "...", "if", "...", "]"),
-        "docs_ref": "https://docs.python.org/3/reference/expressions.html#list-displays"
-    },
-
-    # ============== Assignment Operation ================
-    "walrus_operator": {
-        "type": "assignment",
-        "required": [":="],
-        "pattern": ("...", ":=", "..."),
-        "docs_ref": "https://peps.python.org/pep-0572/"
-    }
-}
-
-# ============== Indicators for Completeness Verification ================
-completeness_metrics = {
-    "coverage": {
-        "syntax_categories": ["control_flow", "declaration", "exception", "comprehension"],
-        "verified_versions": ["3.7", "3.8", "3.9", "3.10", "3.11"],
-        "missing_items": [
-            "Lambda_Expression",  # Already processed through a separate model
-            "Decorator_syntax"    # Needs to be defined separately
-        ]
-    },
-    "validation": {
-        "test_cases": 152,  # Based on CPython test suite
-        "edge_cases": [
-            "Nested_structure_depth>5_layers",
-            "Generic_Functions_with_Type_Annotations",
-            "Asynchronous_Context_Manager"
-        ],
-        "false_positive_rate": "<0.3%"
-    }
-}
-\end{lstlisting}
+\begin{table*}[!t]
+    \centering
+    \footnotesize
+    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
+    \vspace{-10pt}
+    \begin{tabular}{m{2.8cm}m{2cm}m{4cm}m{6cm}}
+        \toprule
+        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Conditional Token} & \textbf{Consequent Token} \\
+        \midrule
+        
+        \multirow{7}{*}{Data Model}  & Lists, Slice & `[' & `]' \\
+        \cmidrule{2-4}
+            & Dict, Set &  `\{' & `\}' \\
+            \cmidrule{2-4}
+            & String, Bytes  & ``',`"' &   `'',`"'  \\
+            \cmidrule{2-4}
+            & Object & \textit{identifier} & `.' \\
+            \cmidrule{2-4}
+            & Tuple & `(' & `)' \\\hline
+        \multirow{5}{*}{Expressions} & call & \textit{identifier}( & `)' \\
+        \cmidrule{2-4}
+            & lambda & \texttt{lambda} \textit{params} & `:' \\
+        \cmidrule{2-4}
+            & conditional & \textit{expr} \texttt{if} \textit{cond} & \texttt{else} \\
+        \cmidrule{2-4}
+            & comprehension & \textit{expr} \texttt{for} \textit{target} & \texttt{in}, `]', `\}', `)'  \\
+        \cmidrule{2-4}
+            & \shortstack{Chained\\Comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
+        \multirow{4}{*}{Single Statements} 
+        & \multirow{2}{*}{\texttt{import}} & \texttt{import} \textit{module}  & \texttt{as} \\
+        \cmidrule{3-4}
+        & & \texttt{from} \textit{module} & \texttt{import} \\
+        \cmidrule{2-4}
+        & \texttt{assert} & \texttt{assert} \textit{test} & `,', \textit{msg} \\
+        \cmidrule{2-4}
+        & \shortstack{Scope\\Declaration} & \texttt{global}/\texttt{nonlocal} & \textit{identifier}, `,' \\
+        \hline
+        \multirow{15}{*}{Compound Statements} 
+        & \texttt{if} & \texttt{if} \textit{assignment\_expression} & `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}, \texttt{elif}, \texttt{else}\\
+        \cmidrule{2-4}
+        & \texttt{for}   & \texttt{for} \textit{target\_list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \multirow{2}{*}{\texttt{try}} &  \texttt{try} &  `:', \texttt{[SP]},  \texttt{BR}, \texttt{[IND]}, \texttt{except}, \texttt{except*},\texttt{finally}, \texttt{else} \\
+        \cmidrule{3-4}
+        &    & \texttt{except} \textit{expression}  &  \texttt{as},  `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+        \cmidrule{2-4}
+        & \texttt{with} & \texttt{with} \textit{with\_stmt\_contents}  & \texttt{as}, `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+        \cmidrule{2-4}
+        & \multirow{2}{*}{\texttt{class}}  & \texttt{class} \textit{classname} & `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{3-4}
+        & & \texttt{class} \textit{classname}(\textit{identifier}) &  `,', `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}  \\
+        \cmidrule{2-4}
+        & \multirow{3}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `/', `*', `)' \\
+        \cmidrule{3-4}
+        & & \texttt{def} \textit{funcname}(\textit{identifier}) & `,` \\
+        \cmidrule{3-4}
+        & & \texttt{def} \textit{funcname}(...) & `->`, `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \texttt{while} & \texttt{while} \textit{condition} & `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}, \texttt{else}\\
+        \cmidrule{2-4}
+        & \texttt{match} & \texttt{match} \textit{subject} & \texttt{case}, `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{2-4}
+        & \multirow{3}{*}{\texttt{async}} & \texttt{async def} \textit{funcname}(...) & `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
+        \cmidrule{3-4}
+        & & \texttt{async for} \textit{target\_list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
+        \cmidrule{3-4}
+        & & \texttt{async with} \textit{expr}  & \texttt{as}, `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+        \bottomrule
+    \end{tabular}
+\end{table*}
 
 
 
-\subsection*{AST Parser Implementation}
-Complete source code of the hybrid AST parser with pattern anchoring:
+% \subsection*{Code elements}
+% To enable detailed analysis of Python code, we compiled a comprehensive set of code elements, encompassing keywords, operators, delimiters, and special characters. These elements are fundamental to Python syntax and critical for identifying structural patterns within the code.
+% The following code snippet illustrates the collected elements:
 
-\begin{lstlisting}[language=Python,caption={AST pattern detector},label={lst:ast_impl}, breaklines=true, 
-  basicstyle=\small\ttfamily]
-class SyntaxValidator(ast.NodeVisitor):
-def init(self):
-self.patterns = defaultdict(list)
-self.current_ctx = []
-def visit_For(self, node):
-    if self._match_for_loop(node):
-        self._register_pattern('for_in', node)
-    self.generic_visit(node)
+% \begin{lstlisting}[
+%   language=Python, 
+%   caption={Set of Python code elements}, 
+%   label={lst:code_elements}, 
+%   breaklines=true, 
+%   basicstyle=\small\ttfamily
+% ]
+% code_elements = {
+%     # Keywords (Python 3.11)
+%     'False', 'None', 'True', 'and', 'as', 'assert', 'async', 'await', 'break', 
+%     'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 
+%     'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 
+%     'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield',
 
-def _match_for_loop(self, node):
-    return (isinstance(node.target, ast.Name) 
-            and isinstance(node.iter, ast.Expr)
-            and any(isinstance(n, ast.In) 
-                  for n in ast.walk(node.iter)))
-\end{lstlisting}
+%     # Operators
+%     '+', '-', '*', '/', '//', '%', '**',  # Arithmetic operators
+%     '<', '>', '<=', '>=', '==', '!=',    # Comparison operators
+%     '&', '|', '^', '~', '<<', '>>',      # Bitwise operators
+%     '@', ':=',                           # Other operators
+
+%     # Delimiters
+%     '(', ')', '[', ']', '{', '}',        # Brackets
+%     ',', ':', '.', ';',                  # Basic delimiters
+%     '=', '+=', '-=', '*=', '/=', '//=', '%=', '@=', '&=', '|=', '^=', '>>=', '<<=', '**=',  # Assignment and augmented assignment operators
+
+%     # Special characters
+%     "'", '"', '#', '\textbackslash{}'    # Quotes, comment symbol, backslash
+% }
+% \end{lstlisting}
 
 
-% \section{Appendix B: Code Listings}
-% Content of Appendix B
+% \subsection*{Complete Syntax Pattern Dictionary}
+% Full specification of all 23 core patterns with version compatibility markers. Each entry contains:
+% \begin{itemize}
+% \item Pattern variants and allowed token wildcards
+% \item Minimum Python version requirement
+% \item Associated PEP documents
+% \item Test case identifiers from CPython's test suite
+% \end{itemize}
+
+% \begin{lstlisting}[
+%   language=Python, 
+%   caption={Complete syntax pattern specification},
+%   breaklines=true, 
+%   basicstyle=\small\ttfamily,
+%   label={lst:full_syntax}]
+% syntax_phrases = {
+%     # =============== Control Flow Structure ================
+%     "if_else": {
+%         "type": "conditional",
+%         "required": ["if", "elif", "else"],
+%         "patterns": [
+%             ("if", ":", ["elif", ":"], ["else", ":"]), 
+%             ("if", ":", ["else", ":"]) 
+%         ],
+%         "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#if"
+%     },
+
+%     "for_in": {
+%         "type": "loop",
+%         "required": ["for", "in"],
+%         "pattern": ("for", "...", "in", "...", ":"), 
+%         "variants": [
+%             ("for", "...", "in", "...", ":", ["else", ":"]) 
+%         ],
+%         "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#for"
+%     },
+
+%     "try_except": {
+%         "type": "exception",
+%         "required": ["try", "except", "finally"],
+%         "patterns": [
+%             ("try", ":", ["except", "...", ":"], ["finally", ":"]),
+%             ("try", ":", ["except", "...", ":"]) 
+%         ],
+%         "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#try"
+%     },
+
+%     # ============== Function/Class Definition ================
+%     "function_def": {
+%         "type": "declaration",
+%         "required": ["def"],
+%         "pattern": ("def", "...", "(", "...", ")", "->", "...", ":"),
+%         "variants": [
+%             ("async", "def", "...") 
+%         ],
+%         "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#function-definitions"
+%     },
+
+%     "class_def": {
+%         "type": "declaration",
+%         "required": ["class"],
+%         "pattern": ("class", "...", "(", "...", ")", ":"),
+%         "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#class-definitions"
+%     },
+
+%     # ============== Context Management ================
+%     "with_as": {
+%         "type": "context",
+%         "required": ["with", "as"],
+%         "pattern": ("with", "...", "as", "...", ":"),
+%         "docs_ref": "https://docs.python.org/3/reference/compound_stmts.html#with"
+%     },
+
+%     # ============== Pattern Matching (Python 3.10+) ================
+%     "match_case": {
+%         "type": "pattern",
+%         "required": ["match", "case"],
+%         "pattern": ("match", "...", ":", ["case", "...", ":", "..."]),
+%         "docs_ref": "https://peps.python.org/pep-0634/"
+%     },
+
+%     # ============== Derived Structure ================
+%     "list_comp": {
+%         "type": "comprehension",
+%         "required": ["for", "in"],
+%         "pattern": ("[", "...", "for", "...", "in", "...", "if", "...", "]"),
+%         "docs_ref": "https://docs.python.org/3/reference/expressions.html#list-displays"
+%     },
+
+%     # ============== Assignment Operation ================
+%     "walrus_operator": {
+%         "type": "assignment",
+%         "required": [":="],
+%         "pattern": ("...", ":=", "..."),
+%         "docs_ref": "https://peps.python.org/pep-0572/"
+%     }
+% }
+
+% # ============== Indicators for Completeness Verification ================
+% completeness_metrics = {
+%     "coverage": {
+%         "syntax_categories": ["control_flow", "declaration", "exception", "comprehension"],
+%         "verified_versions": ["3.7", "3.8", "3.9", "3.10", "3.11"],
+%         "missing_items": [
+%             "Lambda_Expression",  # Already processed through a separate model
+%             "Decorator_syntax"    # Needs to be defined separately
+%         ]
+%     },
+%     "validation": {
+%         "test_cases": 152,  # Based on CPython test suite
+%         "edge_cases": [
+%             "Nested_structure_depth>5_layers",
+%             "Generic_Functions_with_Type_Annotations",
+%             "Asynchronous_Context_Manager"
+%         ],
+%         "false_positive_rate": "<0.3%"
+%     }
+% }
+% \end{lstlisting}
+
+
+
+% \subsection*{AST Parser Implementation}
+% Complete source code of the hybrid AST parser with pattern anchoring:
+
+% \begin{lstlisting}[language=Python,caption={AST pattern detector},label={lst:ast_impl}, breaklines=true, 
+%   basicstyle=\small\ttfamily]
+% class SyntaxValidator(ast.NodeVisitor):
+% def init(self):
+% self.patterns = defaultdict(list)
+% self.current_ctx = []
+% def visit_For(self, node):
+%     if self._match_for_loop(node):
+%         self._register_pattern('for_in', node)
+%     self.generic_visit(node)
+
+% def _match_for_loop(self, node):
+%     return (isinstance(node.target, ast.Name) 
+%             and isinstance(node.iter, ast.Expr)
+%             and any(isinstance(n, ast.In) 
+%                   for n in ast.walk(node.iter)))
+% \end{lstlisting}
+
+
+% % \section{Appendix B: Code Listings}
+% % Content of Appendix B
 

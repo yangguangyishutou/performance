@@ -1,91 +1,34 @@
 % !TeX root = ../main.tex
 
 
-\section{Methodology}
-\label{sec:methodology}
+\section{Methodology}\label{sec:methodology}
 
-\begin{figure*}[!t]
-    \centering
-    \includegraphics[width=0.85\textwidth]{fig/overview.pdf}
-    \caption{Illustration of our Approach Motivation and Proposed Solution}
-    \label{fig:overview}
-\end{figure*}
 
 
 \begin{table*}[!t]
     \centering
     \footnotesize
-    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, respectively.)}\label{table:syntax}
+    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
     \vspace{-10pt}
-    \begin{tabular}{m{2.8cm}m{2cm}m{4cm}m{6cm}}
+    \begin{tabular}{m{2cm}m{5cm}m{1.5cm}m{3.9cm}m{3.2cm}}
         \toprule
-        \textbf{Category} &\textbf{Syntax Node}  & \textbf{Conditional Token} & \textbf{Consequent Token} \\
+        \textbf{Category} &\textbf{Syntax Nodes}  & \textbf{Example Syntax Node} & \textbf{Conditional Token} & \textbf{Consequent Token} \\
         \midrule
         
-        \multirow{7}{*}{Data Model}  & Lists & `[' & `]' \\
-        \cmidrule{2-4}
-            & Dict &  `\{' & `\}' \\
-            \cmidrule{2-4}
-            & String/bytes  & ``',`"' &   `'',`"'  \\
-            \cmidrule{2-4}
-            & Object & \textit{identifier} & `.' \\
-            \cmidrule{2-4}
-            & Tuple & `(' & `)' \\
-            \cmidrule{2-4}
-            & Set &  `\{' & `\}' \\
-            \cmidrule{2-4}
-            & Slice &  `[' & `]' \\\hline
-        \multirow{5}{*}{Expressions} & call & \textit{identifier}( & `)' \\
-        \cmidrule{2-4}
-            & lambda & \texttt{lambda} \textit{params} & `:' \\
-        \cmidrule{2-4}
-            & comprehension & \textit{expr} \texttt{for} \textit{target} & \texttt{in}, `]', `\}', `)'  \\
-        \cmidrule{2-4}
-            & conditional & \textit{expr} \texttt{if} \textit{cond} & \texttt{else} \\
-        \cmidrule{2-4}
-            & \shortstack{Chained\\Comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
-        \multirow{4}{*}{Single Statements} 
-        & \texttt{import} & \texttt{import} \textit{module}  & \texttt{as} \\
-        \cmidrule{2-4}
-        & \texttt{from-import} & \texttt{from} \textit{module} & \texttt{import} \\
-        \cmidrule{2-4}
-        & \texttt{assert} & \texttt{assert} \textit{test} & `,', \textit{msg} \\
-        \cmidrule{2-4}
-        & \shortstack{Scope\\Declaration} & \texttt{global}/\texttt{nonlocal} & \textit{identifier}, `,' \\
-        \hline
-        \multirow{15}{*}{Compound Statements} 
-        & \texttt{if} & \texttt{if} \textit{assignment\_expression} & `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}, \texttt{elif}, \texttt{else}\\
-        \cmidrule{2-4}
-        & \texttt{for}   & \texttt{for} \textit{target\_list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
-        \cmidrule{2-4}
-        & \multirow{2}{*}{\texttt{try}} &  \texttt{try} &  `:', \texttt{[SP]},  \texttt{BR}, \texttt{[IND]}, \texttt{except}, \texttt{except*},\texttt{finally}, \texttt{else} \\
-        \cmidrule{3-4}
-        &    & \texttt{except} \textit{expression}  &  \texttt{as},  `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
-        \cmidrule{2-4}
-        & \texttt{with} & \texttt{with} \textit{with\_stmt\_contents}  & \texttt{as}, `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
-        \cmidrule{2-4}
-        & \multirow{2}{*}{\texttt{class}}  & \texttt{class} \textit{classname} & `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
-        \cmidrule{3-4}
-        & & \texttt{class} \textit{classname}(\textit{identifier}) &  `,', `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}  \\
-        \cmidrule{2-4}
-        & \multirow{3}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `/', `*', `)' \\
-        \cmidrule{3-4}
-        & & \texttt{def} \textit{funcname}(\textit{identifier}) & `,` \\
-        \cmidrule{3-4}
-        & & \texttt{def} \textit{funcname}(...) & `->`, `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
-        \cmidrule{2-4}
-        & \texttt{while} & \texttt{while} \textit{condition} & `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]}, \texttt{else}\\
-        \cmidrule{2-4}
-        & \texttt{match} & \texttt{match} \textit{subject} & \texttt{case}, `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
-        \cmidrule{2-4}
-        & \texttt{async def} & \texttt{async def} \textit{funcname}(...) & `)', `:', \texttt{[SP]}, \texttt{[IND]}, \texttt{[BR]} \\
-        \cmidrule{2-4}
-        & \texttt{async for} & \texttt{async for} \textit{target\_list}  & \texttt{in}, `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
-        \cmidrule{2-4}
-        & \texttt{async with} & \texttt{async with} \textit{expr}  & \texttt{as}, `:', \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+        \multirow{1}{*}{Data Model}  & List, Slice, Dict, Set, String, Bytes, Object, Tuple & List & `[' & `]' \\\hline
+        \multirow{2}{*}{Expr.} & \multirow{2}{*}{\shortstack[l]{call, lambda, conditional, comprehension,\\ Chained Comparison}} & \multirow{2}{*}{call} & \textit{identifier}( & `)' \\ \cmidrule{4-5}
+         &  &      & \textit{identifier}(\textit{identifier} & `,' \\\hline
+        \multirow{1}{*}{Single Stmts}  &  \texttt{import}, \texttt{assert}, \texttt{global} & \texttt{import} & \texttt{import} \textit{module}  & \texttt{as} \\\hline
+         \multirow{2}{*}{Compound Stmts} & \multirow{2}{*}{\shortstack[l]{\texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{class}, function,\\\texttt{while}, \texttt{match}, \texttt{async}}} & \multirow{2}{*}{\texttt{for}}  
+         & \texttt{for} \textit{target\_list}  & \texttt{in}  \\
+         \cmidrule{4-5}
+         &  &  & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}   &  `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
         \bottomrule
     \end{tabular}
 \end{table*}
+
+
+
 
 We discuss the motivation of our method design as the preliminary. Then we elaborate our method \tool.
 
@@ -105,10 +48,16 @@ We discuss the motivation of our method design as the preliminary. Then we elabo
 
 % \textbf{AST Node.}
 
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{fig/overview.pdf}
+    \caption{Illustration of our Approach Motivation and Proposed Solution}
+    \label{fig:overview}
+\end{figure*}
 
-Source code is considered a ``literary work'' under copyright law. The ``literary work'' can be viewed as a sequence of tokens arranged to reflect the author's intentions. Existing MIA techniques\todo{CITE} treat all source code tokens equally and compute membership probabilities of a LLM based on a sample of these tokens. Generally, it is recognized that elements such as variable names, data and control flows, and API usage together with the involved variables, embody the author's intent and serve as indicators of source code authorship. However, we observe that some tokens primarily serve a grammatical purpose, functioning to complete the syntax constraint of the programming language.
+Source code is considered a ``literary work'' under copyright law. The ``literary work'' can be viewed as a sequence of tokens arranged to reflect the author's intentions. Existing MIA techniques~\cite{meeus2024copyright, yang2024gotcha, wan2024does} treat all source code tokens equally and compute membership probabilities of a LLM based on a sample of these tokens. Generally, it is recognized that elements such as variable names, data and control flows, and API usage together with the involved variables, embody the author's intent and serve as indicators of source code authorship. However, we observe that some tokens primarily serve a grammatical purpose, functioning to complete the syntax constraint of the programming language.
 
-The inherent structural duality of source code—simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax}—introduces unique challenges for membership inference in code language models. A large-scale crawl of open-source Python repositories shows that over half of all tokens belong to such grammar patterns (e.g., \texttt{for-in}, \texttt{try-except}). These ubiquitous structures raise two practical obstacles: Syntax-Induced Noise Amplification(language-mandated tokens exhibit near-identical distributions across samples, drowning discriminative signals) and Contextual Ambiguity (inability to distinguish syntax-enforced vs. meaningful occurrences). The root challenge stems from code's \textit{mandatory scaffolding} property: any correct implementation embeds intent within rigid grammatical constraints, creating persistent noise for MIA.
+% The inherent structural duality of source code—simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax}—introduces unique challenges for membership inference in code language models. A large-scale crawl of open-source Python repositories shows that over half of all tokens belong to such grammar patterns (\eg~\texttt{for-in}, \texttt{try-except}). These ubiquitous structures raise two practical obstacles: Syntax-Induced Noise Amplification(language-mandated tokens exhibit near-identical distributions across samples, drowning discriminative signals) and Contextual Ambiguity (inability to distinguish syntax-enforced vs. meaningful occurrences). The root challenge stems from code's \textit{mandatory scaffolding} property: any correct implementation embeds intent within rigid grammatical constraints, creating persistent noise for MIA.
 
 
 \subsection{Syntax Conventions}
@@ -117,21 +66,31 @@ We choose Python as our target language for studying syntax conventions, as it i
 
 In the example provided in our overview, the programmer completes the task by declaring a method named \texttt{add} within an existing class, following both the task specification and the language's syntax requirements. The method contains various syntax elements, such as a method declaration and a \textit{for} statement. The token \texttt{self} represents the class instance and is mandatory. Likewise, tokens such as the closing parenthesis \texttt{)} and colon \texttt{:} after the \texttt{row} parameter, along with the \texttt{[BR]} and \texttt{[IND]}, are also required by Python's grammar and must be present.
 
-To compile a comprehensive collection of syntax conventions, two of our authors, each with over \todo{XXX} years of Python development experience, manually reviewed the official Python documentation~\cite{python11}. Specifically, we referred to the Python Language Reference section of the Python 3.11 documentation, released in October 2022. The authors reviewed sections of the documentation that define syntax elements, including the data model (Section 3), the import system (Section 5), expressions (Section 6), as well as statements, and function and class definitions (Sections 7 and 8). A third author is involved to resolve any arguments or disagreements.
+To compile a comprehensive collection of syntax conventions, two of our authors %each with over \todo{XXX} years of Python development experience, 
+manually reviewed the official Python documentation~\cite{python11}. Specifically, we referred to the Python Language Reference section of the Python 3.11 documentation, released in October 2022. The authors reviewed sections of the documentation that define syntax elements, including the data model (Section 3), the import system (Section 5), expressions (Section 6), as well as statements, and function and class definitions (Sections 7 and 8). A third author is involved to resolve any arguments or disagreements.
 
 Table \ref{table:syntax} lists our summarized syntax conventions. We categorize them into four categories according to their syntax element types. i.e., data model, expressions, single statements and compound statements. The syntax convention is defined as a tuple $\langle \text{condition}, \text{consequence} \rangle$, where $\text{condition}$ represents a prefix under which certain code elements conform to specific language syntax, and $\text{consequence}$ denotes a suffix that must or high-likely to occur given the $\text{condition}$. In total, we obtained \todo{XXX} syntax conventions, denoted as $\mathcal{C}$.
 
+% \begin{itemize}
+%     \item \textit{Data Model:} Delimiter-bound or accessor-driven structures that must terminate with a corresponding token, such as lists \texttt{[]}, tuples \texttt{()}, dicts/sets \texttt{\{\}}, slices \texttt{[\,]}, and attribute access (`.`).
+%     \item \textit{Expressions:} In-line constructs whose syntax mandates specific separators or terminators, including function calls `()`, \texttt{lambda} expressions (`:`), comprehension headers (\texttt{for}/\texttt{in}), conditional expressions (\texttt{if}/\texttt{else}), and chained comparisons (`<`, `>`).
+%     \item \textit{Single Statement}: One-line statements with a strong "prefix implies suffix" pattern, such as aliased imports (\texttt{import...as}), module member imports (\texttt{from...import}), assertions with messages, and scope declarations (`global`, `nonlocal`).
+%     \item \textit{Compound Statement:} Multi-line blocks introduced by keywords that must end with a colon and be followed by an indented suite. This set includes \texttt{if}/\texttt{elif}/\texttt{else}, \texttt{for}/\texttt{while}/\texttt{else}, \texttt{try}/\texttt{except}/\texttt{finally}, \texttt{with}, \texttt{match}/\texttt{case}, and various \texttt{async} statements, as well as class/function definitions, which include parameter separators (`/`, `*`) and return type hints (`->`).
+% \end{itemize}
+
 \begin{itemize}
-    \item \textit{Data Model:} Delimiter-bound or accessor-driven structures that must terminate with a corresponding token, such as lists \texttt{[]}, tuples \texttt{()}, dicts/sets \texttt{\{\}}, slices \texttt{[\,]}, and attribute access (`.`).
-    \item \textit{Expressions:} In-line constructs whose syntax mandates specific separators or terminators, including function calls `()`, \texttt{lambda} expressions (`:`), comprehension headers (\texttt{for}/\texttt{in}), conditional expressions (\texttt{if}/\texttt{else}), and chained comparisons (`<`, `>`).
-    \item \textit{Single Statement}: One-line statements with a strong "prefix implies suffix" pattern, such as aliased imports (\texttt{import...as}), module member imports (\texttt{from...import}), assertions with messages, and scope declarations (`global`, `nonlocal`).
-    \item \textit{Compound Statement:} Multi-line blocks introduced by keywords that must end with a colon and be followed by an indented suite. This set includes \texttt{if}/\texttt{elif}/\texttt{else}, \texttt{for}/\texttt{while}/\texttt{else}, \texttt{try}/\texttt{except}/\texttt{finally}, \texttt{with}, \texttt{match}/\texttt{case}, and various \texttt{async} statements, as well as class/function definitions, which include parameter separators (`/`, `*`) and return type hints (`->`).
+    \item \textit{Data Model:} Must terminate with appropriate delimiters or accessors for syntactic completeness (\eg~closing brackets `]' or dot notation)
+    \item \textit{Expressions:} Must follow function identifiers and include a parenthesized, comma-separated list of arguments (\eg~`)').
+    \item \textit{Simple Statement}: Probably with aliases when including external packages (\eg~\texttt{import} \textit{module} \texttt{as})
+    \item \textit{Compound Statement:} These statements must be followed by a colon (`:') and an indented block. The enclosed statements are started with an indentation. The compound statements are probably extended with additional branches such as \texttt{elif}, \texttt{else}, \texttt{except}, \texttt{except*}, or \texttt{finally}. The \texttt{with} statement is typically used with aliases when wrapping code defined by a context manager. Classes and methods are defined using parameters enclosed in parentheses, followed by a colon. Method definitions begin with a \texttt{self} parameter to refer to the instance.
 \end{itemize}
+
+
 
 % we systematically survey the language specification, focusing on Chapter 8, "Compound statements," which defines the core control flow and organizational structures. This chapter's 10 subsections detail the multi-line constructs rich in syntactic patterns relevant to our work.
 
 % Our selection process is grounded in Python's lexical structure. We programmatically retrieve reserved keywords using the \texttt{keyword} module (35 in Python 3.11) to ensure our patterns are based on definitive language elements. Based on this, we analyzed the 10 subsections and included 8 in our database: \texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{match}, function (\texttt{def}) and class (\texttt{class}) definitions, and coroutine (\texttt{async}) structures. 
-% These were selected because their syntactic forms are rigid multi-token patterns, identifiable via tokenization, that contain both prefix keywords (e.g., \texttt{for}, \texttt{try}) and structurally determined suffix tokens (e.g., \texttt{in}, \texttt{except}).
+% These were selected because their syntactic forms are rigid multi-token patterns, identifiable via tokenization, that contain both prefix keywords ( \texttt{for}, \texttt{try}) and structurally determined suffix tokens (\texttt{in}, \texttt{except}).
 
 % We excluded two subsections. The \texttt{while} statement was omitted as its core structure (\texttt{while condition:}) lacks a fixed suffix token. "Type parameter lists" was also excluded as it pertains to type-level declarations, not the executable control-flow syntax central to our study. The syntactic validity of all collected patterns is finally verified using Python's \texttt{ast} module.
 % Operator 常见标点与运算符、属性访问中的点号 Sec. 2.5
@@ -148,7 +107,7 @@ Table \ref{table:syntax} lists our summarized syntax conventions. We categorize 
 %         \toprule
 %         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Consequent Token} \\
 %         \midrule
-%         Data Model & Lists, Dict, String & Must terminate with appropriate delimiters or accessors for syntactic completeness (e.g., closing brackets or dot notation) & ``]'', ``\}'', ``.'' \\\hline
+%         Data Model & Lists, Dict, String & Must terminate with appropriate delimiters or accessors for syntactic completeness ( closing brackets or dot notation) & ``]'', ``\}'', ``.'' \\\hline
 %         Expressions & \texttt{call} expression & Must follow function identifiers and include a parenthesized, comma-separated list of arguments (which may be empty) & ``,'' \\\hline
 %         \multirow{1}{*}{Single Statements} 
 %         % & \texttt{return} 
@@ -180,7 +139,7 @@ Table \ref{table:syntax} lists our summarized syntax conventions. We categorize 
 
 We propose \tool, a syntax-pruned membership inference attack method for inferencing code members. We hypothesize that while programmers express creativity in writing code, certain tokens inevitably occur due to syntax conventions, rather than as a reflection of individual authorship. Our approach can be divided into three phases. 
 
-The first phase is \textit{token preprocessing}. We begin by feeding the target querying code (e.g., a function) into the evaluated LLM. Using the model's embedded tokenizer, we obtain the tokenized sequence along with the predicted probability (derived from the \textit{logits}) for each token. The resulting tokens are denoted as $\mathcal{X}$, where each token $x_i \in \mathcal{X}$ represents the token at position $i$. These tokens are split according to the tokenizer's internal logic, such as byte pair encoding (BPE)~\cite{shibata1999byte} or similar subword segmentation algorithms~\cite{li2021char}. However, to align with our predefined syntax conventions, we further decompose certain tokens. If a token contains sub-tokens that match any elements defined as $\text{condition}$ or $\text{consequence}$ in the constraint set $\mathcal{C}$, we split it accordingly. Concretely, let $\mathcal{X} = \{ x_1, x_2, ..., x_n \}$ be the original tokens, $\mathcal{X}^{\prime} = \{ x_{ij}\}$ be the decomposed sub-tokens. We define the split function:
+The first phase is \textit{token preprocessing}. We begin by feeding the target querying code (\eg~a function) into the evaluated LLM. Using the model's embedded tokenizer, we obtain the tokenized sequence along with the predicted probability (derived from the \textit{logits}) for each token. The resulting tokens are denoted as $\mathcal{X}$, where each token $x_i \in \mathcal{X}$ represents the token at position $i$. These tokens are split according to the tokenizer's internal logic, such as byte pair encoding (BPE)~\cite{shibata1999byte} or similar subword segmentation algorithms~\cite{li2021char}. However, to align with our predefined syntax conventions, we further decompose certain tokens. If a token contains sub-tokens that match any elements defined as $\text{condition}$ or $\text{consequence}$ in the constraint set $\mathcal{C}$, we split it accordingly. Concretely, let $\mathcal{X} = \{ x_1, x_2, ..., x_n \}$ be the original tokens, $\mathcal{X}^{\prime} = \{ x_{ij}\}$ be the decomposed sub-tokens. We define the split function:
 
 \begin{equation}
 \mathrm{Split} : \mathcal{X} \rightharpoonup \mathrm{List}(\mathcal{X}')
@@ -199,7 +158,9 @@ The complete set of sub-tokens is
 \end{equation}
 
 
-The second phase is \textit{syntax-convention-based token pruning}. Given the decomposed sub-tokens $\mathcal{X}^{\prime}$, we examine each sub-token $x_{ij}$ for tokens $x_i \in \text{dom}(\mathrm{Split})$, and check whether it matches either $c.\text{condition}$ or $c.\text{consequence}$ for each constraint $c \in \mathcal{C}$. If all sub-tokens $[x_{i1}, x_{i2}, \dots, x_{im_i}]$ match elements in $\mathcal{C}$, we label the original token $x_i$ as $0$ (i.e., pruned), otherwise as $1$ (i.e., retained). The function $\ell$ assigns a binary label to each token $x_i \in \mathcal{X}$, where $\ell(x_i) \in \{0, 1\}$. 
+The second phase is \textit{syntax-convention-based token pruning}. Given the decomposed sub-tokens $\mathcal{X}^{\prime}$, we examine each sub-token $x_{ij}$ for tokens $x_i \in \text{dom}(\mathrm{Split})$, and check whether it matches either $c.\text{condition}$ or $c.\text{consequence}$ for each constraint $c \in \mathcal{C}$. The matching process first aligns a candidate token with $c.\text{consequence}$ and records its token offset (\ie, \texttt{lineno} for the starting character position and \texttt{col\_offset} for the token length). Once a match is found, \tool traverses the Abstract Syntax Tree (AST) parsed using Python's \texttt{ast} module to locate the corresponding AST node based on the recorded character position and token length. Finally, \tool validates the associated conditional tokens according to the AST hierarchy.
+
+If all sub-tokens $[x_{i1}, x_{i2}, \dots, x_{im_i}]$ match elements in $\mathcal{C}$, we label the original token $x_i$ as $0$ (i.e., pruned), otherwise as $1$ (i.e., retained). The function $\ell$ assigns a binary label to each token $x_i \in \mathcal{X}$, where $\ell(x_i) \in \{0, 1\}$. 
 
 \begin{equation}
 \ell : \mathcal{X} \rightarrow \{0,1\}
@@ -217,13 +178,13 @@ The third phase is \textit{member probabilities calculation}. The \underline{S}y
 where $ \mathcal{X}_1 = \{x_i \in \mathcal{X} \mid \ell(x_i) = 1\} $.
 
 
+% \todo{The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}.}
+% \todo{These spans form a whitelist $\mathcal{W}$ that protects identifiers from removal. Next, we tokenize the code with \texttt{return\_offsets\_mapping=True} to align each subword token with its source offsets.}
+
 % \todo{$-\log p(x_i\,|\,x_{<i}) $}
 
-\todo{The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}.}
 
-\todo{These spans form a whitelist $\mathcal{W}$ that protects identifiers from removal. Next, we tokenize the code with \texttt{return\_offsets\_mapping=True} to align each subword token with its source offsets.}
-
-% We then initialize a boolean mask $\mathbf{m}$ to true (keep) and set entries to false for tokens matching grammar categories: formatting placeholders (e.g., \texttt{[PAD]}, indents), closing keywords (\texttt{else}, \texttt{except}, etc.), structural symbols (brackets, colons, etc.), punctuation/operators, and attribute dots. If a token's span overlaps $\mathcal{W}$, we revert $\mathbf{m}$ to true.
+% We then initialize a boolean mask $\mathbf{m}$ to true (keep) and set entries to false for tokens matching grammar categories: formatting placeholders (\texttt{[PAD]}, indents), closing keywords (\texttt{else}, \texttt{except}, etc.), structural symbols (brackets, colons, etc.), punctuation/operators, and attribute dots. If a token's span overlaps $\mathcal{W}$, we revert $\mathbf{m}$ to true.
 
 % We propose \textbf{Syntax-Aware Min-k\% Prob}, an enhanced membership inference metric tailored for code.  
 
