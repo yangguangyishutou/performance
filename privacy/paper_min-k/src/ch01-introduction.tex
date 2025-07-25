@@ -32,33 +32,38 @@ However, training such models is computationally expensive, and pretraining data
 
 Unlike machine learning MIAs that rely on shadow or reference models, MIAs in LLMs typically exploit the model's token-level output and probabilities. Carlini et al.~\cite{carlini2021extracting} demonstrated that LLMs can leak verbatim training sentences. Nevertheless, identifying non-literal memorization remains more challenging compared to literal (verbatim) memorization. Most approaches focus on modeling the likelihood of word sequences in context. Duan~\cite{duan2024membership} found that MIAs perform only slightly better than random guessing in LLMs, due to the inherently fuzzy boundary between members and non-members. Several approaches have been proposed, including leveraging neighboring data via synonym substitution~\cite{mattern2023membership}, detecting low-probability tokens~\cite{shi2023detecting}, calibrating token probabilities using term frequency divergence~(\cite{zhang2024pretraining}). However, they focus on general texts instead of code. 
 
-Although code can be viewed as another form of text, which can be similarly tackled using existing MIA techniques. The limitation is hindered. We hypothesize the limitation is that the existing methods did not consider the syntactic rules when programmers completing code tasks. 
 
-Imaginging a programmer writing code. She/he may 
+% Although code members can be detecting using existing text-based MIA techniques. The full potential is not yet unleashed. The most important aspect of code that different from text is that the syntax and its structures. While developers are performing programming tasks, she/he is thinking about the logic of the tasks while conforming to the language syntax. We hypothesize that the effectiveness of MIA techniques of LLMs in code is hindered by not considering the syntactic characteristics. We observe that certain language syntax elements (e.g., data models, expressions, statements) following certain condition-consequent rules. That is to say, certain consequent tokens are must or highly likely to occur if conditioned structure are satisfied. We propose \tool, a syntax-pruned membership inference attack method for inferencing code members. We hypothesize that while programmers express creativity in writing code, certain tokens inevitably occur due to syntax conventions, rather than as a reflection of individual authorship. The pruning process is based on \todo{XXX} syntax conventions that we collected from the Python language reference.
 
+% We conducted experiments on a constructed benchmark of Python functions. We ensure each function, either member, or non-member to be true by looking the documents of the LLMs and search on the online resource. Experiments show that \tool outperforms existing state-of-the-art MIA techniques, improving an average AUROC score of \todo{XXX} among four models. We also demonstrate that \tool is robust under various function lengths. We also created ablated versions of \tool to see the effectiveness of each syntax convention categories. Furthermore, we conducted case study to observe that in real-world, several LLMs have probably seen the function and \tool can detect \todo{XXX} out of the \todo{XXX} models.
 
+Although existing text-based MIA techniques can be applied to code, their full potential remains untapped. A key distinction between code and natural language is the presence of formal syntax and structured constructs. When developers write code, they reason about task logic while adhering to the programming language's syntax rules. We hypothesize that the effectiveness of MIA techniques on code-related LLMs is limited by their failure to leverage these syntactic characteristics. Through our observations, we find that certain syntax elements (e.g., data models, expressions, and statements) follow syntax conventions, rather than expressing individual authorship. That is, once specific syntax \textit{conditions} are met, certain \textit{consequent tokens} must or are highly likely to appear. Therefore, \textit{consequent tokens} should be excluded from attribution when computing MIA scores. Based on this insight, we propose \tool, a syntax-pruned membership inference attack method tailored for code. We summarize a set of \todo{XXX} syntax conventions derived from the official Python language reference.
 
-
-Our method based on assumption that: language grammar require certain must-appear-after patterns, that elicit key word pairs, where the language models remember for this language and tend to have high probabilities if keyword appears. We argue from the essential of copyright. The keywords in the code are inks and brushes, which should not be considered for MIA computation. Like prior works (Duan et al., 2024; Shi et al., 2024), we assume that we only have access to the target LLM as a black box: we can compute token probabilities for the text to be detected but have no access to the internals of the LLM (e.g., weights and activations).
-
-
-To facilitate this study and the evaluation of pre-training data detection for LLMs, we introduce a new benchmark named PatentMIA, specifically designed for Chinese-language pretraining data detection. PatentMIA is sourced from Google-Patents (Google, 2006) and constructed following Shi et al. (2024), who distinguish between train-ing and non-training data based on cut-off dates of the target LLM, where training data precedes, and non-training data follows, the cut-off date.
-
-
-% privacy attack > membership inference attack
-% % data reconstruction attacks. 
-
-
-challenge: verbatim instances
+We evaluate \tool on a curated benchmark of Python functions, as no existing benchmark provides verified member and non-member Python functions. Member functions are sourced from the Pile dataset, which is widely used in the pretraining of many LLMs. Non-member functions are collected from sources published after the release cut-off dates of the evaluated LLMs, ensuring that none of the models have encountered them during training. Experimental results show that \tool consistently outperforms state-of-the-art MIA techniques, achieving an average AUROC improvement of \todo{XXX} across \todo{four} models. Additionally, we demonstrate that \tool remains robust across varying function lengths. Through ablation studies, we assess the contribution of each syntax convention category. Finally, in a real-world case study, we show that several LLMs likely memorized specific functions, with \tool successfully identifying \todo{XXX} out of \todo{XXX} such instances.
 
 
 \textbf{Contribution.} We make the following contributions in detecting pretraining code in LLMs. 
 
 \begin{itemize}
-    \item ZXZZ
-    \item XXXXX
-    \item XXX
+    \item We propose \tool, a syntax-pruned membership inference attack method for code, which excludes from attribution tokens that are inherently determined by Python syntax conventions.
+    \item We evaluate the effectiveness of \tool against state-of-the-art approaches, examine its robustness across varying function lengths, and analyze the impact of different syntax convention categories through ablation studies.
+    \item We conduct a real-world case study demonstrating that several LLMs are likely to memorize specific functions, with \tool successfully identifying \todo{XXX} out of \todo{XXX} such instances.
 \end{itemize}
+
+% A Syntax-Aware Attribution Approach
+
+% Members are sourced from the Pile dataset, which is a popular dataset that is widely used in LLMs. 
+% Non-members are collected from the GitHub after the cut-off date , where we select the newly created functions and meanwhile we search the functions to make sure they are new.
+
+
+
+
+
+% To facilitate this study and the evaluation of pre-training data detection for LLMs, we introduce a new benchmark named PatentMIA, specifically designed for Chinese-language pretraining data detection. PatentMIA is sourced from Google-Patents (Google, 2006) and constructed following Shi et al. (2024), who distinguish between train-ing and non-training data based on cut-off dates of the target LLM, where training data precedes, and non-training data follows, the cut-off date.
+
+% challenge: verbatim instances
+
+
 
 
 

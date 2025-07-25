@@ -4,11 +4,12 @@
 \begin{abstract}
 
 
-The copyright issue in the training corpora of large language models (LLMs) deserves serious attention.
-Respecting copyright and intellectual property is essential, not only as a legal obligation, but also as a means of fostering a supportive and respectful environment for content creators.
-Particularly, we focus our attention on copyright (or copyleft) protection of code used during the pre-training process of LLMs.
+As large language models (LLMs) become increasingly capable, concerns over the unauthorized use of copyrighted and licensed content in their training data have grown, especially in the context of code. Open-source code, often protected by open source licenses (e.g, GPL), poses legal and ethical challenges when used in pretraining. Detecting whether specific code samples were included in LLM training data is thus critical for transparency, accountability, and copyright compliance.
 
+We propose \tool, a syntax-pruned membership inference attack method tailored for code. Unlike prior MIA approaches that treat code as plain text, \tool leverages the structured and rule-governed nature of programming languages. Specifically, it identifies and excludes consequent tokens that are syntactically required and not reflective of authorship, from attribution when computing membership scores. Experimental results show that \tool consistently outperforms the state-of-the-arts.%, achieving an average AUROC improvement of \todo{XXX} across \todo{four} models. 
+Our method is also robust across varying function lengths and syntax categories. A real-world case study further indicates that existing LLMs memorize certain copyleft functions. % , while \tool can successfully uncover \todo{XXX} instances across \todo{XXX} models.
 
-we investigates the ownership of the copyright. 
-    
 \end{abstract}
+
+
+% We propose a syntax-aware membership inference attack for code LLMs that excludes tokens dictated by programming syntax. Unlike prior approaches, we leverage Python syntax conventions to more accurately detect whether a code was used in pretraining.
