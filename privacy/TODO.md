@@ -75,6 +75,8 @@
 
 1. method完备性
 
+   ![image-20250724221402390](./assets/image-20250724221402390.png)
+
 2. case license
 
    1. **Case A - 网络协议单元测试**
