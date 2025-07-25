@@ -96,6 +96,8 @@ We systematically compare the AUROC performance of various detection methods on 
 
 \subsection{Robustness on Different Functions}
 
+We categorize the member functions by token lengths into three groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into three equal groups: \textit{short} (0--33rd percentile, token count $\leq$ 152), \textit{middle} (33rd--66th percentile, 152 $<$ token count $\leq$ 473), and \textit{long} (66th--100th percentile, token count $>$ 473). This balanced distribution ensures fair comparison under varying function complexities. 
+
 
 \subsection{Ablation Study}
 
