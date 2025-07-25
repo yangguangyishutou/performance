@@ -70,22 +70,14 @@ DC-PDD\cite{}
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{AUROC Score(\%) of \tool under Different Ratios and Functions Token Lengths}
-    \begin{tabular}{m{0.4cm}m{1.3cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1cm}}
+    \caption{False-Negative Rate (\%) of \tool on Positive Samples with Different Function Token Lengths}
+    \begin{tabular}{m{1.3cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}}
     \toprule
-    \textbf{Ratio} & \textbf{Length} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
+    \textbf{Length} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
     \midrule
-    \multirow{3}{*}{1:1} & Short & -- & -- & -- & -- \\
-    & Mid & -- & -- & -- & -- \\
-    & Long & -- & -- & -- & -- \\
-    \midrule
-    \multirow{3}{*}{1:5} & Short & -- & -- & -- & -- \\
-    & Mid & -- & -- & -- & -- \\
-    & Long & -- & -- & -- & -- \\
-    \midrule
-    \multirow{3}{*}{5:1} & Short & -- & -- & -- & -- \\
-    & Mid & -- & -- & -- & -- \\
-    & Long & -- & -- & -- & -- \\
+    Short & -- & -- & -- & -- \\
+    Mid & -- & -- & -- & -- \\
+    Long & -- & -- & -- & -- \\
     \bottomrule
     \end{tabular}
     \label{tab:length_results}

@@ -66,7 +66,61 @@
         - **剔除语法噪声**（括号、冒号、闭合关键字……），让分数聚焦于真正承载语义的 token；
         - **保护标识符完整**，即使一个变量被 BPE 切成多个子词也不会被部分屏蔽；
         - 降低代码风格、缩进、长度差异对检测指标的干扰，提高对语义难度的敏感度。
-2. benchmark构建好了，ratio的部分怎么写，写在哪？
+2. benchmark构建好了，ratio的部分怎么写，写在哪？✔
 3. Function Length.分类怎么写，是否要做实验？——统计具体分段的token数。正样本做长度区分
-4. case study——扩展2条
+4. case study——扩展2条 ✔
 5. todo：ablation study
+
+## TODO 7.23
+
+1. method完备性
+
+2. case license
+
+   1. **Case A - 网络协议单元测试**
+
+   - 代码片段：tests/test_message_director.py 中的 Datagram.create / add_uint32
+
+   - 上游项目：Astron（Toontown/OpenToontown 服务器的网络中间件）
+
+   - 仓库地址：https://github.com/Astron/Astron
+
+   - Licence：BSD-3-Clause
+
+   2. **Case B - Bitcoin 交易序号边界检查**
+
+   - 代码片段：test/functional/abc_tx_sequence.py（或同类脚本）
+
+   - 上游项目：Bitcoin Core
+
+   - 仓库地址：https://github.com/bitcoin/bitcoin
+
+   - Licence：MIT
+
+   3. **Case C - 球谐函数归一化常数**
+
+   - 代码片段：pyscf/gto/spheric_eval.py::c2s_bra (或 pyscf 内其他同名函数)
+
+   - 上游项目：PySCF (Python-based Simulations of Chemistry Framework)
+
+   - 仓库地址：https://github.com/pyscf/pyscf
+
+   - Licence：Apache-2.0
+
+   4. **Case D - Fail2ban ticket 时间戳测试**
+
+   - 代码片段：fail2ban/tests/test_ticket.py 中的 FailTicket … setTime/ getTime
+
+   - 上游项目：Fail2ban
+
+   - 仓库地址：https://github.com/fail2ban/fail2ban
+
+   - Licence：GPL-2.0-or-later
+
+3. benchmark数据
+
+4. 四张AUROC图
+
+5. 方法长度实验结果
+
+6. ablation 48行结果
