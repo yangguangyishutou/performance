@@ -4,12 +4,20 @@
 
 
 
-To further evaluate the practical utility of \tool, we conduct a case study across a range of popular large language models. Specifically, we select four representative Python functions from the Pile dataset, each drawn from a distinct domain. i.e., network communication protocols, cryptocurrency transaction validation, quantum chemistry constants, and numerical computation. These four functions are representative because they contain ``magic numbers'' (i.e., unique constants) that are unlikely to appear in other code. To validate whether the evaluated LLMs have seen and memorized these functions, we design targeted prompts that query the models for the exact unique constants. To ensure the uniqueness of the selected functions, we conducted comprehensive GitHub searches to confirm that each combination of constants and its surrounding context appears only in the original projects or their direct forks.
+We conduct a case study to demonstrate the practical effectiveness of \tool. Specifically, we design prompts to query LLMs and assess whether they have memorized our four selected identifiable functions. We then apply \tool to determine whether it can correctly identify these functions as members or non-members using the token outputs from LLMs.
+
+
+\textbf{Function Selection.} We select four representative Python functions from the Pile dataset, each drawn from a distinct domain. i.e., networking, cryptocurrency, quantum chemistry, and numerical computation. These four functions are representative because they contain ``magic numbers'' (i.e., unique constants) that are unlikely to appear in other code. To validate whether the evaluated LLMs have seen and memorized these functions, we design targeted prompts that query the models for the exact unique constants. To ensure the uniqueness of the selected functions, we conducted comprehensive GitHub searches to confirm that each combination of constants and its surrounding context appears only in the original projects or their direct forks.
+
+\begin{itemize}
+\item \textit{Function A: Network Protocol.} We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test. 
+\item \textit{Function B: Cryptocurrency Transaction Validation} Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^{32}$) and \texttt{4294967294} ($2^{32}-2$), representing maximum 32-bit unsigned integer limits.
+\item \textit{Function C: Quantum Chemistry Constants} Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations.
+\item \textit{Function D: Security System Timestamp Validation} Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation.
+\end{itemize}
 
 % To ensure uniqueness, we conducted comprehensive GitHub searches to verify that each combination of constants and surrounding context appears only in the original projects and their forks. 
-
 % This verification step is critical, as false positives could arise if magic number combinations were ubiquitous across different projects.
-
 % The four functions are representative as they are embedded with unique constants that are unlikely to occur in other functions. We design prompts to several LLMs to validate if those evaluated LLM have seen and memorized the four functions, by querying if the LLMs can answer the exact unique constants.
 % memorizes the four functions, particularly the magic numbers. 
 % Multi-Domain Code Memorisation Detection.
@@ -20,100 +28,17 @@ To further evaluate the practical utility of \tool, we conduct a case study acro
 
 
 
-\textbf{Function A: Network Communication Protocol.} We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test (Listing~\ref{lst:magic1}). GitHub search confirmed this combination's uniqueness to the original project.
-
-% \vspace{1em}
-% \begin{figure}[!h]
-% \begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
-% # tests/test_message_director.py (excerpt)
-% dg = Datagram.create([12345654321], 0, 1234)
-% dg.add_uint32(0xDEADBEEF)
-% self.c2.send(dg)
-% \end{lstlisting}
-% \caption{Network protocol test with unique magic numbers.}
-% \label{lst:magic1}
-% \end{figure}
 
 \begin{figure}[!t]
     \centering
-    \includegraphics[width=0.4\textwidth]{fig/code_a.pdf}
+    \includegraphics[width=0.45\textwidth]{fig/code.pdf}
     \vspace{-8pt}
-    \caption{Function A}
-    \label{fig:fa}
-\end{figure}
-
-\textbf{Function B: Cryptocurrency Transaction Validation} Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^{32}$) and \texttt{4294967294} ($2^{32}-2$), representing maximum 32-bit unsigned integer limits (Listing~\ref{lst:magic2}).
-
-% \vspace{1em}
-% \begin{figure}[!h]
-% \begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
-% # Bitcoin transaction validation test
-% inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967296}]
-% assert_raises_rpc_error(-8, 'Invalid parameter, sequence number is out of range', self.nodes[0].createrawtransaction, inputs, outputs)
-% # Valid boundary case
-% inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967294}]
-% rawtx = self.nodes[0].createrawtransaction(inputs, outputs)
-% \end{lstlisting}
-% \caption{Bitcoin sequence number boundary validation.}
-% \label{lst:magic2}
-% \end{figure}
-
-\begin{figure}[!t]
-    \centering
-    \includegraphics[width=0.45\textwidth]{fig/code_b.pdf}
-    \vspace{-8pt}
-    \caption{Function B}
-    \label{fig:fb}
-\end{figure}
-
-\textbf{Function C: Quantum Chemistry Constants} Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations (Listing~\ref{lst:magic3}).
-
-% \vspace{1em}
-% \begin{figure}[!h]
-% \begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
-% def c2s_bra(l, gcart):
-%     if l == 0:
-%         return gcart * 0.282094791773878143
-%     elif l == 1:
-%         return gcart * 0.488602511902919921
-%     ...
-% \end{lstlisting}
-% \caption{Quantum chemistry normalization constants.}
-% \label{lst:magic3}
-% \end{figure}
-
-\begin{figure}[!t]
-    \centering
-    \includegraphics[width=0.38\textwidth]{fig/code_c.pdf}
-    \vspace{-8pt}
-    \caption{Function C}
-    \label{fig:fc}
-\end{figure}
-
-\textbf{Function D: Security System Timestamp Validation} Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation (Listing~\ref{lst:magic4}).
-
-% \vspace{1em}
-% \begin{figure}[!h]
-% \begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
-% # Fail2ban ticket validation test
-% ticket_str = 'FailTicket: ip=193.168.0.128 time=1167605999.0 bantime=None'
-% ticket.setTime(1000002000.0)
-% self.assertEqual(ticket.getTime(), 1000002000.0)
-% \end{lstlisting}
-% \caption{Security system timestamp validation.}
-% \label{lst:magic4}
-% \end{figure}
-
-\begin{figure}[!t]
-    \centering
-    \includegraphics[width=0.45\textwidth]{fig/code_d.pdf}
-    \vspace{-8pt}
-    \caption{Function D}
-    \label{fig:fd}
+    \caption{Function}
+    \label{fig:fabcd}
 \end{figure}
 
 
-\textbf{Query Design.} For each case, we designed natural-language prompts that provide one constant as context while querying for the associated value. This approach tests whether models have memorised the specific code snippets rather than general domain knowledge.
+\textbf{Prompt Design.} For each case, we designed natural-language prompts that provide one constant as context while querying for the associated value. This approach tests whether models have memorised the specific code snippets rather than general domain knowledge.
 
 \begin{center}
 \fbox{\parbox{0.95\linewidth}{\small
