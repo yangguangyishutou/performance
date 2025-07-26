@@ -20,15 +20,16 @@ To further evaluate the practical utility of \tool, we conduct a case study acro
 
 
 
-\textbf{Function A: Network Communication Protocol.} We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test (Listing~\ref{lst:magic1}). GitHub search confirmed this combination's uniqueness to the original project.
+\textbf{Function A: Network Communication Protocol.} We identified \texttt{0xDEADBEEF} paired with the decimal channel identifier \texttt{12345654321} in a network \texttt{Datagram} implementation unit test (Figure~\ref{fig:fa}). This test validates message subscription functionality where the decimal value serves as a unique channel identifier for message routing, while the hexadecimal constant acts as a sentinel value to verify payload integrity during network transmission. GitHub search confirmed this combination's uniqueness to the original project.
 
 % \vspace{1em}
 % \begin{figure}[!h]
 % \begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
-% # tests/test_message_director.py (excerpt)
-% dg = Datagram.create([12345654321], 0, 1234)
-% dg.add_uint32(0xDEADBEEF)
-% self.c2.send(dg)
+% def test_subscribe(self):
+%     ···
+%     dg = Datagram.create([12345654321], 0, 1234)
+%     dg.add_uint32(0xDEADBEEF)
+%     self.c2.send(dg)
 % \end{lstlisting}
 % \caption{Network protocol test with unique magic numbers.}
 % \label{lst:magic1}
@@ -42,17 +43,19 @@ To further evaluate the practical utility of \tool, we conduct a case study acro
     \label{fig:fa}
 \end{figure}
 
-\textbf{Function B: Cryptocurrency Transaction Validation} Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^{32}$) and \texttt{4294967294} ($2^{32}-2$), representing maximum 32-bit unsigned integer limits (Listing~\ref{lst:magic2}).
+\textbf{Function B: Cryptocurrency Transaction Validation} Bitcoin transaction sequence number validation code containing boundary values \texttt{4294967296} ($2^{32}$) and \texttt{4294967294} ($2^{32}-2$), representing maximum 32-bit unsigned integer limits (Figure~\ref{fig:fb}). This test validates input parameter bounds for Bitcoin raw transaction creation, where the larger value represents an invalid upper boundary that should trigger an error, while the smaller serves as a valid boundary case to ensure proper transaction processing.
 
 % \vspace{1em}
 % \begin{figure}[!h]
 % \begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
-% # Bitcoin transaction validation test
-% inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967296}]
-% assert_raises_rpc_error(-8, 'Invalid parameter, sequence number is out of range', self.nodes[0].createrawtransaction, inputs, outputs)
-% # Valid boundary case
-% inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967294}]
-% rawtx = self.nodes[0].createrawtransaction(inputs, outputs)
+% def run_test(self):
+%     ···
+%     # Bitcoin transaction validation test
+%     inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967296}]
+%     assert_raises_rpc_error(-8, 'Invalid parameter, sequence number is out of range', self.nodes[0].createrawtransaction, inputs, outputs)
+%     # Valid boundary case
+%     inputs = [{'txid': txid, 'vout': 1, 'sequence': 4294967294}]
+%     rawtx = self.nodes[0].createrawtransaction(inputs, outputs)
 % \end{lstlisting}
 % \caption{Bitcoin sequence number boundary validation.}
 % \label{lst:magic2}
@@ -66,7 +69,7 @@ To further evaluate the practical utility of \tool, we conduct a case study acro
     \label{fig:fb}
 \end{figure}
 
-\textbf{Function C: Quantum Chemistry Constants} Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations (Listing~\ref{lst:magic3}).
+\textbf{Function C: Quantum Chemistry Constants} Spherical harmonic transformation coefficients \texttt{0.282094791773878143} and \texttt{0.488602511902919921} used in quantum chemistry computations (Figure~\ref{fig:fc}). This function performs coordinate system conversion from Cartesian to spherical harmonics, where these high-precision constants represent pre-computed normalization factors for s-orbital and p-orbital transformations respectively.
 
 % \vspace{1em}
 % \begin{figure}[!h]
@@ -76,7 +79,6 @@ To further evaluate the practical utility of \tool, we conduct a case study acro
 %         return gcart * 0.282094791773878143
 %     elif l == 1:
 %         return gcart * 0.488602511902919921
-%     ...
 % \end{lstlisting}
 % \caption{Quantum chemistry normalization constants.}
 % \label{lst:magic3}
@@ -90,15 +92,16 @@ To further evaluate the practical utility of \tool, we conduct a case study acro
     \label{fig:fc}
 \end{figure}
 
-\textbf{Function D: Security System Timestamp Validation} Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation (Listing~\ref{lst:magic4}).
+\textbf{Function D: Security System Timestamp Validation} Fail2ban security system test containing specific Unix timestamps \texttt{1167605999} and \texttt{1000002000} for ticket validation (Figure~\ref{fig:fd}). This test validates the timestamp handling mechanism in the Fail2ban intrusion prevention system, where the first timestamp represents a historical value embedded in a security ticket string for parsing validation, while the second serves as a test value to verify the ticket's time modification and retrieval functionality.
 
 % \vspace{1em}
 % \begin{figure}[!h]
 % \begin{lstlisting}[basicstyle=\ttfamily\tiny,columns=fullflexible,numbers=left,frame=single]
-% # Fail2ban ticket validation test
-% ticket_str = 'FailTicket: ip=193.168.0.128 time=1167605999.0 bantime=None'
-% ticket.setTime(1000002000.0)
-% self.assertEqual(ticket.getTime(), 1000002000.0)
+% def testbanOK(self):
+%     ···
+%     ticket_str = 'FailTicket: ip=193.168.0.128 time=1167605999.0 bantime=None'
+%     ticket.setTime(1000002000.0)
+%     self.assertEqual(ticket.getTime(), 1000002000.0)
 % \end{lstlisting}
 % \caption{Security system timestamp validation.}
 % \label{lst:magic4}
