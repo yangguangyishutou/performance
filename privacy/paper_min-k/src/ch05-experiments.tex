@@ -26,13 +26,13 @@ DC-PDD\cite{}
 \toprule
 \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
 \midrule
-\multirow{6}{*}{1:1} & \textsc{Loss} & 36.7 & 41.8 & 32.3 & 41.3 \\
-& \textsc{ZLib} & 31.2 & 33.3 & 30.0 & 33.6 \\
-& \textsc{Min-K} & 37.3 & 40.1 & 33.3 & 39.3 \\
+\multirow{6}{*}{1:1} & \textsc{Loss} & 38.4 & 43.7 & 33.3 & 43.3 \\
+& \textsc{ZLib} & 33.2 & 35.5 & 32.0 & 35.7 \\
+& \textsc{Min-K} & 38.8 & 41.8 & 34.2 & 41.1 \\
 & \textsc{Gotcha} & -- & -- & -- & -- \\
-& \textsc{DC-PDD} & 49.3 & 40.1 & 42.4 & 40.2 \\
+& \textsc{DC-PDD} & 50.1 & 41.2 & 43.7 & 41.3 \\
 \cmidrule(lr){2-6}
-& \tool & 62.7 & 61.7 & 62.7 & 63.9 \\
+& \tool & 61.3 & 59.7 & 61.3 & 59.7 \\
 \midrule
 \multirow{6}{*}{1:5} & \textsc{Loss} & 40.3 & 45.3 & 33.9 & 44.8 \\
 & \textsc{ZLib} & 34.0 & 36.2 & 32.5 & 36.3 \\
@@ -40,7 +40,7 @@ DC-PDD\cite{}
 & \textsc{Gotcha} & -- & -- & -- & -- \\
 & \textsc{DC-PDD} & 51.8 & 44.0 & 44.6 & 43.2 \\
 \cmidrule(lr){2-6}
-& \tool & 60.8 & 59.2 & 60.7 & 61.5 \\
+& \tool & 61.2 & 59.4 & 61.1 & 61.5 \\
 \midrule
 \multirow{6}{*}{5:1} & \textsc{Loss} & 40.0 & 43.8 & 34.9 & 43.6 \\
 & \textsc{ZLib} & 33.1 & 35.0 & 31.9 & 35.2 \\
@@ -48,7 +48,7 @@ DC-PDD\cite{}
 & \textsc{Gotcha} & -- & -- & -- & -- \\
 & \textsc{DC-PDD} & 49.4 & 40.9 & 44.1 & 39.6 \\
 \cmidrule(lr){2-6}
-& \tool & 61.6 & 60.6 & 61.6 & 63.1 \\
+& \tool & 62.0 & 60.7 & 62.0 & 63.1 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -75,9 +75,9 @@ DC-PDD\cite{}
     \toprule
     \textbf{Length} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
     \midrule
-    Short & -- & -- & -- & -- \\
-    Mid & -- & -- & -- & -- \\
-    Long & -- & -- & -- & -- \\
+    Short & 2.1 & 10.5 & 99.7 & 0.0 \\
+    Mid & 0.0 & 99.7 & 0.0 & 87.1 \\
+    Long & 94.6 & 44.7 & 0.0 & 32.4 \\
     \bottomrule
     \end{tabular}
     \label{tab:length_results}
