@@ -111,20 +111,20 @@ We categorize the member functions by token lengths into three groups based on s
     \toprule
     \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
     \midrule
-    \multirow{3}{*}{1:1} & w/o DM & $\downarrow$  7.3 & -- & -- & -- \\
-                        &  w/o E & -- & -- & -- & -- \\
-                        &  w/o SS & -- & -- & -- & -- \\
-                        & w/o CS & -- & -- & -- & -- \\
+    \multirow{4}{*}{1:1} & w/o DM & $\downarrow$\,5.1 & $\downarrow$\,2.9 & $\downarrow$\,5.8 & $\downarrow$\,1.8 \\
+                        &  w/o E & $\downarrow$\,4.5 & $\downarrow$\,3.6 & $\downarrow$\,5.6 & $\downarrow$\,2.4 \\
+                        &  w/o SS & $\downarrow$\,5.0 & $\downarrow$\,2.5 & $\downarrow$\,6.0 & $\downarrow$\,1.6 \\
+                        & w/o CS & $\downarrow$\,6.1 & $\downarrow$\,6.7 & $\downarrow$\,7.1 & $\downarrow$\,3.8 \\
     \midrule
-    \multirow{3}{*}{1:5} & w/o DM & $\downarrow$  7.3 & -- & -- & -- \\
-                        &  w/o E & -- & -- & -- & -- \\
-                        &  w/o SS & -- & -- & -- & -- \\
-                        & w/o CS & -- & -- & -- & -- \\
+    \multirow{4}{*}{1:5} & w/o DM & $\downarrow$\,4.1 & $\downarrow$\,0.1 & $\downarrow$\,4.7 & $\downarrow$\,1.0 \\
+                        &  w/o E & $\downarrow$\,3.1 & $\downarrow$\,2.6 & $\downarrow$\,4.5 & $\downarrow$\,3.1 \\
+                        &  w/o SS & $\downarrow$\,4.4 & $\downarrow$\,2.2 & $\downarrow$\,5.1 & $\downarrow$\,2.6 \\
+                        & w/o CS & $\downarrow$\,4.8 & $\downarrow$\,6.5 & $\downarrow$\,6.2 & $\downarrow$\,4.9 \\
     \midrule
-    \multirow{3}{*}{5:1} & w/o DM & $\downarrow$  7.3 & -- & -- & -- \\
-                        &  w/o E & -- & -- & -- & -- \\
-                        &  w/o SS & -- & -- & -- & -- \\
-                        & w/o CS & -- & -- & -- & -- \\
+    \multirow{4}{*}{5:1} & w/o DM & $\downarrow$\,2.7 & $\downarrow$\,0.1 & $\downarrow$\,3.6 & $\downarrow$\,1.2 \\
+                        &  w/o E & $\downarrow$\,2.6 & $\downarrow$\,4.4 & $\downarrow$\,4.1 & $\downarrow$\,3.0 \\
+                        &  w/o SS & $\downarrow$\,3.2 & $\downarrow$\,0.7 & $\downarrow$\,3.9 & $\downarrow$\,1.8 \\
+                        & w/o CS & $\downarrow$\,4.1 & $\downarrow$\,3.2 & $\downarrow$\,5.2 & $\downarrow$\,3.9 \\
     \bottomrule
     \end{tabular}\label{tab:ablation}
 \end{table}
