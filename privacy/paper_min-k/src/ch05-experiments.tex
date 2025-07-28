@@ -101,38 +101,36 @@ We categorize the member functions by token lengths into three groups based on s
 
 \subsection{Ablation Study}
 
+We created four ablated versions of \tool by individually removing syntax conventions from each of the following categories: data model (w/o DM), expressions (w/o Expr.), single statements (w/o S.Stmt), and compound statements (w/o C.Stmt). We evaluated the four ablated versions on the three ratios, with the results presented in Fig. \ref{tab:ablation}. Each cell shows the difference in AUROC compared to the original \tool. We observe that all ablated versions exhibit an AUROC drop across all three ratios, demonstrating the contribution of the syntax conventions in each category.
+
 % ε
 
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{Ablation Study}
-    \begin{tabular}{m{0.35cm}m{1.1cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1cm}}
+    \caption{Ablation Study (Each cell indicates the difference in AUROC compared to the original \tool.)}\label{tab:ablation}
+    \begin{tabular}{m{0.35cm}m{1.5cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{0.95cm}}
     \toprule
     \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
     \midrule
     \multirow{4}{*}{1:1} & w/o DM & $\downarrow$\,5.1 & $\downarrow$\,2.9 & $\downarrow$\,5.8 & $\downarrow$\,1.8 \\
-                        &  w/o E & $\downarrow$\,4.5 & $\downarrow$\,3.6 & $\downarrow$\,5.6 & $\downarrow$\,2.4 \\
-                        &  w/o SS & $\downarrow$\,5.0 & $\downarrow$\,2.5 & $\downarrow$\,6.0 & $\downarrow$\,1.6 \\
-                        & w/o CS & $\downarrow$\,6.1 & $\downarrow$\,6.7 & $\downarrow$\,7.1 & $\downarrow$\,3.8 \\
+                        &  w/o Expr. & $\downarrow$\,4.5 & $\downarrow$\,3.6 & $\downarrow$\,5.6 & $\downarrow$\,2.4 \\
+                        &  w/o S.Stmt & $\downarrow$\,5.0 & $\downarrow$\,2.5 & $\downarrow$\,6.0 & $\downarrow$\,1.6 \\
+                        & w/o C.Stmt & $\downarrow$\,6.1 & $\downarrow$\,6.7 & $\downarrow$\,7.1 & $\downarrow$\,3.8 \\
     \midrule
     \multirow{4}{*}{1:5} & w/o DM & $\downarrow$\,4.1 & $\downarrow$\,0.1 & $\downarrow$\,4.7 & $\downarrow$\,1.0 \\
-                        &  w/o E & $\downarrow$\,3.1 & $\downarrow$\,2.6 & $\downarrow$\,4.5 & $\downarrow$\,3.1 \\
-                        &  w/o SS & $\downarrow$\,4.4 & $\downarrow$\,2.2 & $\downarrow$\,5.1 & $\downarrow$\,2.6 \\
-                        & w/o CS & $\downarrow$\,4.8 & $\downarrow$\,6.5 & $\downarrow$\,6.2 & $\downarrow$\,4.9 \\
+                        &  w/o Expr. & $\downarrow$\,3.1 & $\downarrow$\,2.6 & $\downarrow$\,4.5 & $\downarrow$\,3.1 \\
+                        &  w/o S.Stmt & $\downarrow$\,4.4 & $\downarrow$\,2.2 & $\downarrow$\,5.1 & $\downarrow$\,2.6 \\
+                        & w/o C.Stmt & $\downarrow$\,4.8 & $\downarrow$\,6.5 & $\downarrow$\,6.2 & $\downarrow$\,4.9 \\
     \midrule
     \multirow{4}{*}{5:1} & w/o DM & $\downarrow$\,2.7 & $\downarrow$\,0.1 & $\downarrow$\,3.6 & $\downarrow$\,1.2 \\
-                        &  w/o E & $\downarrow$\,2.6 & $\downarrow$\,4.4 & $\downarrow$\,4.1 & $\downarrow$\,3.0 \\
-                        &  w/o SS & $\downarrow$\,3.2 & $\downarrow$\,0.7 & $\downarrow$\,3.9 & $\downarrow$\,1.8 \\
-                        & w/o CS & $\downarrow$\,4.1 & $\downarrow$\,3.2 & $\downarrow$\,5.2 & $\downarrow$\,3.9 \\
+                        &  w/o Expr. & $\downarrow$\,2.6 & $\downarrow$\,4.4 & $\downarrow$\,4.1 & $\downarrow$\,3.0 \\
+                        &  w/o S.Stmt & $\downarrow$\,3.2 & $\downarrow$\,0.7 & $\downarrow$\,3.9 & $\downarrow$\,1.8 \\
+                        & w/o C.Stmt & $\downarrow$\,4.1 & $\downarrow$\,3.2 & $\downarrow$\,5.2 & $\downarrow$\,3.9 \\
     \bottomrule
-    \end{tabular}\label{tab:ablation}
+    \end{tabular}
 \end{table}
 
-
-\textbf{\todo{Ablation on the external method calls.}}
-
-\textbf{\todo{Ablation on the keywords.}}
 
 
 \subsection{Parameter Analysis}
