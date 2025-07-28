@@ -61,18 +61,21 @@ We conduct a case study to demonstrate the practical effectiveness of \tool. Spe
     \midrule
     Pythia-2.8B & $\times$ & $\times$ & $\times$ & $\times$ & 2/4\\
     \midrule
-    GPT-Neo-2.7B & $\checkmark$ (1/5) & $\times$ & $\times$ & $\times$ \\
+    GPT-Neo-2.7B & $\checkmark$ (1/5) & $\times$ & $\times$ & $\times$ & 2/4\\
     \midrule
-    StableLM-3B & $\times$ & $\times$ & $\times$ & $\times$ \\
+    StableLM-3B & $\times$ & $\times$ & $\times$ & $\times$ & 2/4 \\
     \midrule
-    GPT-J-6B & $\checkmark$ (1/5) & $\times$ & $\checkmark$ (1/5) & $\times$ \\
+    GPT-J-6B & $\checkmark$ (1/5) & $\times$ & $\checkmark$ (1/5) & $\times$ & 4/4\\
     \midrule
-    Grok3.0 & $\checkmark$ (1/5) & $\checkmark$ (2/5) & $\checkmark$ (3/5) & $\checkmark$ (1/5) \\
+    Grok3.0 & $\checkmark$ (1/5) & $\checkmark$ (2/5) & $\checkmark$ (3/5) & $\checkmark$ (1/5) & - \\
     \midrule
-    Gemini2.5 Flash & $\checkmark$ (1/5) & $\checkmark$ (1/5) & $\times$ & $\checkmark$ (2/5) \\
+    Gemini2.5 Flash & $\checkmark$ (1/5) & $\checkmark$ (1/5) & $\times$ & $\checkmark$ (2/5) & - \\
     \bottomrule
     \end{tabular}
 \end{table}
+
+
+We set the $\epsilon$ as 0.2.
 
 %The multi-domain analysis reveals several important patterns in code memorisation across different programming contexts:
 %\textbf{Domain-Specific Memorisation Patterns:} Both closed-source models demonstrate memorisation across multiple domains, with Grok3.0 showing the highest memorisation rate (7/20 total hits across cases) and particularly strong performance on mathematical constants. Gemini2.5 Flash shows selective memorisation (4/20 hits) with notable success in network protocols and security systems.
