@@ -82,9 +82,6 @@ class ExperimentTools:
                 if self.find_relationship(model_A.model_name, model_B.model_name) == (None, None):
                     return model_A.model_name, model_B.model_name, None
 
-    from huggingface_hub import HfApi, hf_hub_download, get_repo_discussions
-import os
-
 def get_model_weights(self, model_name, save_path):
     """
     下载Hugging Face模型权重文件到指定路径
