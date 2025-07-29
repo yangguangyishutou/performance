@@ -82,64 +82,64 @@ class ExperimentTools:
                 if self.find_relationship(model_A.model_name, model_B.model_name) == (None, None):
                     return model_A.model_name, model_B.model_name, None
 
-def get_model_weights(self, model_name, save_path):
-    """
-    下载Hugging Face模型权重文件到指定路径
+    def get_model_weights(self, model_name, save_path):
+        """
+        下载Hugging Face模型权重文件到指定路径
     
-    参数:
-        model_name: Hugging Face模型ID 
-        save_path: 本地保存目录路径
+        参数:
+            model_name: Hugging Face模型ID 
+            save_path: 本地保存目录路径
     
-    备注：
-        AI生成 使用api下载 文件路径在 .../(model)/snapshots/(md5)/model.safetensors
-    """
-    # 确保保存路径存在
-    os.makedirs(save_path, exist_ok=True)
+        备注：
+            AI生成 使用api下载 文件路径在 .../(model)/snapshots/(md5)/model.safetensors
+        """
+        # 确保保存路径存在
+        os.makedirs(save_path, exist_ok=True)
     
-    # 创建Hugging Face API客户端
-    api = HfApi()
+        # 创建Hugging Face API客户端
+        api = HfApi()
     
-    # 获取仓库文件列表
-    repo_files = api.list_repo_files(model_name)
+        # 获取仓库文件列表
+        repo_files = api.list_repo_files(model_name)
     
-    # 过滤出权重文件 (常见格式)
-    weight_files = [
-        f for f in repo_files
-        if f.endswith(('.bin', '.safetensors', '.h5', '.ckpt', '.pth', '.pt'))
-    ]
-    
-    # 如果没有找到权重文件，尝试使用默认名称
-    if not weight_files:
+        # 过滤出权重文件 (常见格式)
         weight_files = [
             f for f in repo_files
-            if f in ['pytorch_model.bin', 'model.safetensors', 'tf_model.h5']
+            if f.endswith(('.bin', '.safetensors', '.h5', '.ckpt', '.pth', '.pt'))
         ]
     
-    # 如果仍然找不到，获取仓库中最大的文件作为权重文件
-    if not weight_files:
-        file_sizes = {}
-        for file in repo_files:
-            try:
-                file_info = api.get_paths_info(model_name, [file])[0]
-                file_sizes[file] = file_info.size
-            except Exception:
-                continue
+        # 如果没有找到权重文件，尝试使用默认名称
+        if not weight_files:
+            weight_files = [
+                f for f in repo_files
+                if f in ['pytorch_model.bin', 'model.safetensors', 'tf_model.h5']
+            ]
+    
+        # 如果仍然找不到，获取仓库中最大的文件作为权重文件
+        if not weight_files:
+            file_sizes = {}
+            for file in repo_files:
+                try:
+                    file_info = api.get_paths_info(model_name, [file])[0]
+                    file_sizes[file] = file_info.size
+                except Exception:
+                    continue
         
-        if file_sizes:
-            weight_files = [max(file_sizes, key=file_sizes.get)]
+            if file_sizes:
+                weight_files = [max(file_sizes, key=file_sizes.get)]
     
-    # 下载权重文件
-    for weight_file in weight_files:
-        file_path = hf_hub_download(
-            repo_id=model_name,
-            filename=weight_file,
-            cache_dir=save_path,
-            force_download=True,
-            resume_download=False
-        )
-        print(f"下载完成: {os.path.basename(file_path)}")
+        # 下载权重文件
+        for weight_file in weight_files:
+            file_path = hf_hub_download(
+                repo_id=model_name,
+                filename=weight_file,
+                cache_dir=save_path,
+                force_download=True,
+                resume_download=False
+            )
+            print(f"下载完成: {os.path.basename(file_path)}")
     
-    print(f"所有权重已保存至: {save_path}")
+        print(f"所有权重已保存至: {save_path}")
     
 if __name__ == "__main__":
     tools = ExperimentTools("./experiments/adjacent_pairs_without_error.json")
