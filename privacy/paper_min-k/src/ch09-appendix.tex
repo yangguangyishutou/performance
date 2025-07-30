@@ -8,7 +8,7 @@
     \footnotesize
     \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{[BR]}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
     \vspace{-10pt}
-    \begin{tabular}{m{2.8cm}m{2cm}m{4cm}m{6cm}}
+    \begin{tabular}{m{2.8cm}m{2cm}m{5.5cm}m{5cm}}
         \toprule
         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Conditional Token} & \textbf{Consequent Token} \\
         \midrule
@@ -32,15 +32,15 @@
         \cmidrule{3-4}
             & & \textit{expr} \texttt{for} \textit{target} \texttt{in} \textit{iterable} & `]', `\}', `)'  \\
         \cmidrule{2-4}
-            & \shortstack{Chained\\Comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
+            & \shortstack[l]{chained\\comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
         \multirow{4}{*}{Single Statements} 
         & \multirow{2}{*}{\texttt{import}} & \texttt{import} \textit{module}  & \texttt{as} \\
         \cmidrule{3-4}
         & & \texttt{from} \textit{module} & \texttt{import} \\
-        \cmidrule{2-4}
-        & \texttt{assert} & \texttt{assert} \textit{test} & `,', \textit{msg} \\
-        \cmidrule{2-4}
-        & \shortstack{Scope\\Declaration} & \texttt{global}/\texttt{nonlocal} & \textit{identifier}, `,' \\
+        % \cmidrule{2-4}
+        % & \texttt{assert} & \texttt{assert} \textit{test} & `,', \textit{msg} \\
+        % \cmidrule{2-4}
+        % & \shortstack[l]{scope\\declaration} & \texttt{global}/\texttt{nonlocal} & `,' \\
         \hline
         \multirow{31}{*}{Compound Statements} 
         & \multirow{3}{*}{\texttt{if}} & \texttt{if} \textit{assignment\_expression} & `:'\\
@@ -59,15 +59,17 @@
         \cmidrule{3-4}
         & & \texttt{try:} & \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]} \\
         \cmidrule{3-4}
-        & & \texttt{try:} & \texttt{except}, \texttt{except*},\texttt{finally}, \texttt{else} \\
+        & & \texttt{try:} \textit{suite} & \texttt{except}, \texttt{except*},\texttt{finally}, \texttt{else} \\
         \cmidrule{3-4}
         & & \texttt{except} \textit{expression}  &  \texttt{as} \\
         \cmidrule{3-4}
-        & & \texttt{except} \textit{expression} [\texttt{as} \textit{name}] & `:' \\
+        & & \texttt{except} \textit{expression} \texttt{as} \textit{name} & `:' \\
+         \cmidrule{3-4}
+        & & \texttt{except} \textit{expression} \texttt{as} \textit{name}: &  \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]}\\
         \cmidrule{2-4}
         & \multirow{3}{*}{\texttt{with}} & \texttt{with} \textit{with\_item} & \texttt{as} \\
         \cmidrule{3-4}
-        & & \texttt{with} \textit{with\_item} [\texttt{as} \textit{target}] & `:' \\
+        & & \texttt{with} \textit{with\_item} \texttt{as} \textit{target} & `:' \\
         \cmidrule{3-4}
         & & \texttt{with} \textit{with\_item}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
         \cmidrule{2-4}
@@ -79,7 +81,7 @@
         \cmidrule{2-4}
         & \multirow{5}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `/', `*', `)' \\
         \cmidrule{3-4}
-        & & \texttt{def} \textit{funcname}(\textit{identifier}) & `,` \\
+        & & \texttt{def} \textit{funcname}(\textit{identifier} & `,` \\
         \cmidrule{3-4}
         & & \texttt{def} \textit{funcname}(\textit{parameters}) & `->` \\
         \cmidrule{3-4}
@@ -91,7 +93,7 @@
         \cmidrule{3-4}
         & & \texttt{while} \textit{condition}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
         \cmidrule{3-4}
-        & & \texttt{while} \textit{condition}\text{:} & \texttt{else}\\
+        & & \texttt{while} \textit{condition}\text{:} \textit{suite}& \texttt{else}\\
         \cmidrule{2-4}
         & \multirow{2}{*}{\texttt{match}} & \texttt{match} \textit{subject} & `:' \\
         \cmidrule{3-4}
