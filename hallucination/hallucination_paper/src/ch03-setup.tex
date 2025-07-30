@@ -62,9 +62,9 @@ Thus, a high-quality and highly representative Java project datasets is obtained
 
 
 
-\subsection{\todo{Evaluated Models}}
+\subsection{Evaluated Models}
 
-\todo{XXXXXXXX}
+We selected two state-of-the-art large language models (LLMs) for evaluation: GPT-4 and DeepSeek-Coder-V3. GPT-4 is a proprietary, general-purpose model developed by OpenAI, known for its strong reasoning and few-shot capabilities across a wide range of natural language and code-related tasks. While OpenAI has not disclosed GPT-4’s parameter size, it is considered significantly larger than prior models like GPT-3.5 and trained on a mixture of natural language and programming language data. DeepSeek-Coder-V3, on the other hand, is an open-source, code-specialized LLM developed by DeepSeek, optimized for programming understanding and generation. DeepSeek-Coder-V3 is available in multiple sizes; for this study, we selected the 7B Instruct variant, which is fine-tuned for instruction-following tasks in code translation and completion scenarios. The selected models are summarized in Table 2, including their parameter sizes, training data characteristics, and open-source availability.
 
 \begin{table}[!t]
     \caption{\todo{Evaluated Large Language Models (LLMs)}}
@@ -92,8 +92,18 @@ Thus, a high-quality and highly representative Java project datasets is obtained
 
 \end{table}
 
-\subsection{\todo{RQ1 Setup}}
+\subsection{RQ1 Setup}
+To evaluate the translation quality of Large Language Models (LLMs) in realistic settings, we design a task that mirrors end-to-end class-level code translation. Specifically, each Java class file is treated as an atomic translation unit, containing both interface declarations and full method bodies. For each selected Java file, we prompt the LLMs with the complete content, instructing them to generate corresponding C++ header and source files. The format explicitly requires:
 
+\begin{itemize}
+    \item Structured separation into *.h and *.cpp components
+	\item Omission of any non-code explanation or usage examples
+	\item Conformity with C++17 syntax conventions
+\end{itemize}
+This setup ensures that the model must understand the Java class holistically, including its internal logic, data types, visibility modifiers, and any implicit dependencies.
+This experimental setting tests the LLMs’ ability to handle coherent, multi-method class translation, which is considerably more challenging than isolated method-level conversion. Prior studies have shown that LLMs perform worse on class-level tasks due to increased complexity and longer token contexts (Liu et al. 2023). For example, evaluations on class translation have reported a 51.14–79.05\% drop in computational correctness compared to method-level tasks due to semantic inconsistency and hallucinations (Chen et al. 2023; Wu et al. 2023). Moreover, large language models often struggle with preserving internal structure, managing variable scope across methods, and maintaining cross-reference integrity—issues that are not prominent in method-based tests (Ding et al. 2023). As such, class-based translation serves as a strong indicator of model robustness and practical deployability in codebase refactoring tasks.
+To further ensure fairness, we fix the decoding strategy (greedy decoding, temperature = 0) and maintain identical prompts across both ChatGPT and DeepSeek-Coder. The evaluation relies on post-translation manual review guided by a structured error taxonomy introduced in Section 4.
+This setup directly addresses RQ1: How well do existing LLMs perform in full class-level code translation from Java to C++? It enables us to assess not only translation fidelity but also structural completeness and hallucination tendencies. Unlike simplistic method-level tests, this approach highlights nuanced issues such as incorrect memory management, misaligned access specifiers, and syntactic loss across inheritance hierarchies—providing a realistic benchmark of LLM capabilities in practical software engineering scenarios.
 \subsection{\todo{RQ2 Setup}}
 
 To address these research questions, we conducted a series of translation involving two LLMs (DeepSeek and ChatGPT). For each LLMs, we translate in two ways:
