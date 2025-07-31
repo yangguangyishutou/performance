@@ -55,31 +55,43 @@
         \cmidrule{3-4}
         & & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
         \cmidrule{2-4}
-        & \multirow{5}{*}{\texttt{try}} &  \texttt{try} &  `:' \\
+        & \multirow{7}{*}{\texttt{try}} &  \texttt{try} &  `:' \\
         \cmidrule{3-4}
         & & \texttt{try:} & \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]} \\
         \cmidrule{3-4}
-        & & \texttt{try:} \textit{suite} & \texttt{except}, \texttt{except*},\texttt{finally}, \texttt{else} \\
+        & & \texttt{try:} \textit{suite} & \texttt{except}, \texttt{except*} \\
         \cmidrule{3-4}
-        & & \texttt{except} \textit{expression}  &  \texttt{as} \\
+        & & \texttt{try:} \textit{suite} \texttt{except} \textit{expression}  &  \texttt{as} \\
         \cmidrule{3-4}
-        & & \texttt{except} \textit{expression} \texttt{as} \textit{name} & `:' \\
+        & & \texttt{try:} \textit{suite} \texttt{except} \textit{expression} \texttt{as} \textit{name} & `:' \\
          \cmidrule{3-4}
-        & & \texttt{except} \textit{expression} \texttt{as} \textit{name}: &  \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]}\\
+         & & \texttt{try:} \textit{suite} \texttt{except} \textit{expression} \texttt{as} \textit{name:} & \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]}\\
+         \cmidrule{3-4}
+
+        & & \texttt{try:} \textit{suite} \texttt{except} \textit{expr} \texttt{as} \textit{identifier:} \textit{suite} & \texttt{finally}, \texttt{else} \\
         \cmidrule{2-4}
+        % & & \texttt{except} \textit{expression} \texttt{as} \textit{name}: &  \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]}\\
+        % \cmidrule{2-4}
         & \multirow{3}{*}{\texttt{with}} & \texttt{with} \textit{with\_item} & \texttt{as} \\
         \cmidrule{3-4}
         & & \texttt{with} \textit{with\_item} \texttt{as} \textit{target} & `:' \\
         \cmidrule{3-4}
+
         & & \texttt{with} \textit{with\_item}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+        \cmidrule{3-4}
+
+        & & \texttt{with} \textit{with\_item} \texttt{as} \textit{target}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
         \cmidrule{2-4}
+
         & \multirow{3}{*}{\texttt{class}}  & \texttt{class} \textit{classname} & `:' \\
         \cmidrule{3-4}
         & & \texttt{class} \textit{classname}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
         \cmidrule{3-4}
-        & & \texttt{class} \textit{classname}(\textit{identifier}) &  `,', `)', `:'  \\
+        & & \texttt{class} \textit{classname}(\textit{identifier} &  `,', `)'  \\
+        \cmidrule{3-4}
+         & & \texttt{class} \textit{classname}(\textit{identifier}) &   `:'  \\
         \cmidrule{2-4}
-        & \multirow{5}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `/', `*', `)' \\
+        & \multirow{5}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `)' \\
         \cmidrule{3-4}
         & & \texttt{def} \textit{funcname}(\textit{identifier} & `,` \\
         \cmidrule{3-4}
@@ -97,15 +109,17 @@
         \cmidrule{2-4}
         & \multirow{2}{*}{\texttt{match}} & \texttt{match} \textit{subject} & `:' \\
         \cmidrule{3-4}
-        & & \texttt{match} \textit{subject}\text{:} & \texttt{case}, \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
-        \cmidrule{2-4}
-        & \multirow{4}{*}{\texttt{async}} & \texttt{async def} \textit{funcname}(\textit{parameters}) & `:' \\
-        \cmidrule{3-4}
-        & & \texttt{async for} \textit{target\_list} & \texttt{in} \\
-        \cmidrule{3-4}
-        & & \texttt{async for} \textit{target\_list} \texttt{in} \textit{iterable} & `:' \\
-        \cmidrule{3-4}
-        & & \texttt{async with} \textit{expr} & \texttt{as}, `:' \\
+        & & \texttt{match} \textit{subject}\text{:} &\texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}, \texttt{case}  \\
+        % \cmidrule{2-4}
+        
+        % & \multirow{4}{*}{\texttt{async}} 
+        % & \texttt{async def} \textit{funcname}(\textit{parameters}) & `:' \\
+        % \cmidrule{3-4}
+        % & & \texttt{async for} \textit{target\_list} & \texttt{in} \\
+        % \cmidrule{3-4}
+        % & & \texttt{async for} \textit{target\_list} \texttt{in} \textit{iterable} & `:' \\
+        % \cmidrule{3-4}
+        % & & \texttt{async with} \textit{expr} & \texttt{as}, `:' \\
         \bottomrule
     \end{tabular}
 \end{table*}
