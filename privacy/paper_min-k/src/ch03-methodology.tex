@@ -20,7 +20,7 @@
         & & Dict &  `\{' & `\}' \\
         & & Tuple & `(' & `)' \\\hline
 
-        \multirow{4}{*}{Expr.} 
+        \multirow{4}{*}{Expression} 
         
         & \multirow{4}{*}{\shortstack[l]{call, lambda, conditional, comprehension,\\ Chained Comparison}} 
         
@@ -96,7 +96,7 @@ In the example provided in our overview, the programmer completes the task by de
 To compile a comprehensive collection of syntax conventions, two of our authors %each with over \todo{XXX} years of Python development experience, 
 manually reviewed the official Python documentation~\cite{python11}. Specifically, we referred to the Python Language Reference section of the Python 3.11 documentation, released in October 2022. The authors reviewed sections of the documentation that define syntax elements, including the data model (Section 3), the import system (Section 5), expressions (Section 6), as well as statements, and function and class definitions (Sections 7 and 8). A third author is involved to resolve any arguments or disagreements.
 
-Table \ref{table:syntax} lists our summarized syntax conventions. We categorize them into four categories according to their syntax element types. i.e., data model, expressions, single statements and compound statements. The syntax convention is defined as a tuple $\langle \text{condition}, \text{consequence} \rangle$, where $\text{condition}$ represents a prefix under which certain code elements conform to specific language syntax, and $\text{consequence}$ denotes a suffix that must or high-likely to occur given the $\text{condition}$. In total, we obtained \todo{XXX} syntax conventions, denoted as $\mathcal{C}$.
+Table \ref{table:syntax} lists our summarized syntax conventions. We categorize them into four categories according to their syntax element types. i.e., data model, expressions, single statements and compound statements. The syntax convention is defined as a tuple $\langle \text{condition}, \text{consequence} \rangle$, where $\text{condition}$ represents a prefix under which certain code elements conform to specific language syntax, and $\text{consequence}$ denotes a suffix that must or high-likely to occur given the $\text{condition}$. In total, we obtained \todo{47} syntax conventions, denoted as $\mathcal{C}$.
 
 % \begin{itemize}
 %     \item \textit{Data Model:} Delimiter-bound or accessor-driven structures that must terminate with a corresponding token, such as lists \texttt{[]}, tuples \texttt{()}, dicts/sets \texttt{\{\}}, slices \texttt{[\,]}, and attribute access (`.`).

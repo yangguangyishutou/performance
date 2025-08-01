@@ -136,12 +136,15 @@ Compared to state-of-the-art methods, \tool achieves AUROC improvements ranging 
 
 \subsection{Robustness under Different Function Lengths}
 
-We categorize the member functions by token lengths into two groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into two equal groups using the median as the split point: \textit{short} (token count $\leq$ 55) and \textit{long} (token count $>$ 55). This balanced distribution ensures fair comparison under varying function complexities. 
+We categorize the member functions by token lengths into two groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into two groups (500:500) using the median number as the split point: \textit{short} (token count $\leq$ 55) and \textit{long} (token count $>$ 55). This balanced distribution ensures fair comparison under varying function complexities. 
 
+Table~\ref{tab:length_results} shows \tool's effectiveness in terms of false negative rate. The results demonstrate that \tool generates fewer false positives with shorter functions. Notably, \tool achieved perfect member recall when evaluated on both StableLM-Alpha 3B and GPT-J 6B, correctly identifying all members without any misses. Meanwhile, longer functions correlate with increased false negative rates, indicating future improvements of MIA techniques in handling longer functions. 
 
 \subsection{Ablation Study}
 
-We created four ablated versions of \tool by individually removing syntax conventions from each of the following categories: data model (w/o DM), expressions (w/o Expr.), single statements (w/o S.Stmt), and compound statements (w/o C.Stmt). We evaluated the four ablated versions on the three ratios, with the results presented in Fig. \ref{tab:ablation}. Each cell shows the difference in AUROC compared to the original \tool. We observe that all ablated versions exhibit an AUROC drop across all three ratios, demonstrating the contribution of the syntax conventions in each category.
+We created four ablated versions of \tool by individually removing syntax conventions from each of the following categories: data model (w/o DM), expressions (w/o Expr.), single statements (w/o S.Stmt), and compound statements (w/o C.Stmt). 
+
+We evaluated the four ablated versions on the three ratios, with the results presented in Fig. \ref{tab:ablation}. Each cell shows the difference in AUROC compared to the original \tool. We observe that all ablated versions exhibit an AUROC drop across all three ratios, demonstrating the contribution of the syntax conventions in each category. Our ablation study reveals the impact of syntax convention removal on model performance. Eliminating data model syntax conventions resulted in average AUROC decreases of 3.9\% (1:1), 2.5\% (1:5), and 1.9\% (5:1). Similarly, removing expression syntax conventions led to reductions of 4.0\%, 3.3\%, and 3.5\%, while ablating single statement conventions caused drops of 3.8\%, 3.6\%, and 2.4\% across the respective ratios. The most significant impact came from compound statement syntax removal, with AUROC losses of 5.9\%, 5.6\%, and 4.1\%.
 
 % ε
 
@@ -179,26 +182,28 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 
 
 
+
+
 \begin{figure}[!t]
 \centering
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/pythia.pdf}
-\vspace{-15pt}
+% \vspace{-15pt}
 \caption{Pythia}
 \label{fig:pythia}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt2_7.pdf}
-\vspace{-15pt}
+% \vspace{-15pt}
 \caption{GPT-Neo}
 \label{fig:gpt27}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/stable.pdf}
-\vspace{-15pt}
+% \vspace{-15pt}
 \caption{StableLM-Alpha}
 \label{fig:stable}
 \end{subfigure}
@@ -206,7 +211,7 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt6b.pdf}
-\vspace{-15pt}
+% \vspace{-15pt}
 \caption{GPT-J}
 \label{fig:gpt6b}
 \end{subfigure}

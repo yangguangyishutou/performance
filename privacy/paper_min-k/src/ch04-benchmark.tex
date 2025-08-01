@@ -47,19 +47,22 @@ Table~\ref{tab:benchmark} summarizes the statistics of our collected benchmark. 
     \toprule
     \textbf{Category} & \textbf{Count} \\
     \midrule
-    Data Model & 63594 \\
-    Expressions & 30988 \\
+    Data Model & 63,594 \\
+    Expressions & 30,988 \\
     Single Statements & 321 \\
-    Compound Statements & 11816 \\
+    Compound Statements & 11,816 \\
     \midrule
-    \multicolumn{2}{l}{\textbf{Total Syntax Tokens:} 95257} \\
-    \multicolumn{2}{l}{\textbf{Total Tokens:} 248218} \\
-    \multicolumn{2}{l}{\textbf{Syntax Tokens Ratio:} 0.3838} \\
+    \multicolumn{1}{l}{\textbf{Total Syntax Tokens:}} & 95,257 \\
+    \multicolumn{1}{l}{\textbf{Total Tokens:} } & 248,218 \\
+    \multicolumn{1}{l}{\textbf{Syntax Tokens Ratio:} } & 0.3838 \\
     \bottomrule
     \end{tabular}
 \end{table}
 
-\todo{We count the occurrences of the syntax conventions (\ie~conditions and consequences) that existed in our benchmark. Table~\ref{tab:syntax-stats} presents the distribution of these syntax convention categories in our benchmark.hich demonstrates the syntactic diversity and complexity of the collected functions. This analysis helps validate that our dataset contains a representative sample of Python programming constructs that follow the syntax conventions we aim to filter in our membership inference approach.}
+We count the occurrences of the syntax conventions (\ie~conditions and consequences) that existed in our benchmark. Table~\ref{tab:syntax-stats} presents the distribution of these syntax convention categories in our benchmark, which demonstrates the syntactic diversity and complexity of the collected functions. The data model accounts for the largest portion of syntax convention tokens, contributing 63,594 tokens, followed by expressions with 30,988 tokens. In total, the four categories result in 95,257 tokens that would be pruned by \tool for MIA, representing 38.4\% of the overall token set.
+
+% This analysis helps validate that our dataset contains a representative sample of Python programming constructs that follow the syntax conventions we aim to filter in our membership inference approach.
+
 
 % present in the collected functions based on the four categories defined in our methodology (Section~\ref{sec:methodology}).
 % : Data Model, Expressions, Single Statements, and Compound Statements. 
