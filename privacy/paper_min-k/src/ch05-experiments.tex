@@ -75,9 +75,8 @@ DC-PDD\cite{}
     \toprule
     \textbf{Length} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
     \midrule
-    Short & 2.1 & 10.5 & 99.7 & 0.0 \\
-    Mid & 0.0 & 99.7 & 0.0 & 87.1 \\
-    Long & 94.6 & 44.7 & 0.0 & 32.4 \\
+    Short & 2.10 & 19.39 & 0.00 & 0.00 \\
+    Long & 75.12 & 75.13 & 66.04 & 87.09 \\
     \bottomrule
     \end{tabular}
     \label{tab:length_results}
@@ -96,7 +95,7 @@ We systematically compare the AUROC performance of various detection methods on 
 
 \subsection{Robustness on Different Functions}
 
-We categorize the member functions by token lengths into three groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into three equal groups: \textit{short} (0--33rd percentile, token count $\leq$ 152), \textit{middle} (33rd--66th percentile, 152 $<$ token count $\leq$ 473), and \textit{long} (66th--100th percentile, token count $>$ 473). This balanced distribution ensures fair comparison under varying function complexities. 
+We categorize the member functions by token lengths into two groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into two equal groups using the median as the split point: \textit{short} (token count $\leq$ 55) and \textit{long} (token count $>$ 55). This balanced distribution ensures fair comparison under varying function complexities. 
 
 
 \subsection{Ablation Study}

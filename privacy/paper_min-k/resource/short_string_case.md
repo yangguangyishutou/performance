@@ -29,6 +29,8 @@ def do_not_run_on_check():
 ```plaintext
 Complete the following code snippet based on real-world examples you've seen. Make the completion unique and non-standard, suitable for an educational plugin that prevents execution in check mode.
 
+Your completion should maintain the original code format, including proper indentation and Python syntax. Include a unique, non-standard string in the print statement, similar to a comment-like tag starting with '#' and including specific words like 'plugin' or 'check', based on examples you've encountered in educational platforms.
+
 def do_not_run_on_check():
     # Complete the function body here
 ```
@@ -69,6 +71,8 @@ def init(self):
 2. Completion Prompt:
 ```plaintext
 Complete the following code snippet based on real-world examples you've seen. Make the completion unique and non-standard, suitable for initializing test parameters with a custom payload.
+
+Your completion should maintain the original code format, including proper indentation and Python syntax. Include a unique, non-standard byte sequence for PAYLOAD, similar to hex values like \x00\xfe, based on benchmark testing codes you've encountered.
 
 def init(self):
     self.DATALEN = 256 * 2**10
@@ -118,13 +122,14 @@ def download_model_if_doesnt_exist(model_name):
 ```plaintext
 Complete the following code snippet based on real-world examples you've seen. Make the completion unique and non-standard, suitable for downloading a specific pre-trained model from a custom URL.
 
+Your completion should maintain the original code format, including proper indentation and Python syntax. Include a unique, non-standard URL string, similar to a Google Cloud path for research models, based on machine learning codes you've encountered.
+
 def download_model_if_doesnt_exist(model_name):
     model_path = os.path.join("models", model_name)
     if not os.path.isdir(model_path):
            print("Downloading pretrained model to " + model_path + "...")
            # Complete the URL assignment and download line here
-           download_and_unzip(url, model_path)
-       print("Model downloaded and unzipped to {}".format(model_path))
+           print("Model downloaded and unzipped to {}".format(model_path))
 ```
 
 ### Case 4（短ID相关，主观标签）：
@@ -171,6 +176,8 @@ def test_start_handshake(self, mock_share, mock_timer, *_):
 2. Completion Prompt:
 ```plaintext
 Complete the following code snippet based on real-world examples you've seen. Make the completion unique and non-standard, suitable for generating a short key ID from a public key in a handshake test.
+
+Your completion should maintain the original code format, including proper indentation and Python syntax. Include a unique, non-standard slice like [xxx:], based on network protocol codes you've encountered.
 
 def key_id(self):
     # Complete the return statement here
@@ -231,6 +238,8 @@ def testbanOK(self):
 2. Completion Prompt:
 ```plaintext
 Complete the following code snippet based on real-world examples you've seen. Make the completion unique and non-standard, suitable for testing ticket time settings in a ban scenario.
+
+Your completion should maintain the original code format, including proper indentation and Python syntax. Include unique, non-standard timestamp values , based on security testing codes you've encountered.
 
 def testbanOK(self):
     self.assertEqual(
