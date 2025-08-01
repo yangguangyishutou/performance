@@ -82,7 +82,10 @@ We evaluate \tool through comprehensive experiments.
 % \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b},
 
 
-\textbf{Metrics.} We use the Area Under the Receiver Operating Characteristic curve (AUROC) as our evaluation metric. AUROC is widely adopted for binary classification tasks and is particularly suitable for membership inference. It captures the trade-off between true positive rate and false positive rate across different thresholds (e.g., $\epsilon$), offering a robust measure of a method's ability to distinguish between training and non-training data in language models. We also use the false negative rate (FNR) to measure the percentage of members missed by the detection techniques, and the f1-score to select the most effective threshold in different models.
+\textbf{Metrics.} We use the Area Under the Receiver Operating Characteristic curve (AUROC) as our evaluation metric. AUROC is widely adopted for binary classification tasks and is particularly suitable for membership inference. It captures the trade-off between true positive rate and false positive rate, providing an aggregate judge of the effect of all possible thresholds (e.g., $\epsilon$). It offers a robust measure of a method's ability to distinguish between training and non-training data in language models. We also use the false negative rate (FNR) to measure the percentage of members missed by the detection techniques, and the f1-score to select the most effective threshold in different models.
+
+
+
 
 
 \textbf{Environment.} Our experiments were conducted on a single NVIDIA RTX 4090D GPU (24GB), supported by a 16-core Intel Xeon Platinum 8474C CPU and 80GB of RAM. The software environment consisted of Ubuntu 20.04, Python 3.8, PyTorch 2.0.0, and CUDA 11.8.
@@ -108,7 +111,8 @@ We evaluate \tool through comprehensive experiments.
 
 Table~\ref{tab:main_results} presents the effectiveness of \tool compared to baseline methods across four models, demonstrating consistent superiority in 1:1, 1:5, and 5:1 ratios. Specifically, \tool achieves average AUROCs of 61.5\%, 59.9\%, 61.4\%, and 61.4\% in Pythia 2.8B, GPT-Neo 2.7B, StableLM-Alpha 3B, and GPT-J 6B, respectively. 
 \tool maintains consistent and similar effectiveness across difference model architectures and scales.
-Compared to state-of-the-art methods, \tool achieves AUROC improvements ranging from 11.2\% to 17.6\% (1:1 ratio), 9.4\% to 16.7\% (1:5 ratio), and 12.6\% to 19.5\% (5:1 ratio), underscoring its robust performance advantages.
+Compared to state-of-the-art methods, \tool achieves AUROC improvements ranging from 11.2\% to 17.6\% (1:1 ratio), 9.4\% to 16.7\% (1:5 ratio), and 12.6\% to 19.5\% (5:1 ratio), underscoring its robust performance advantages. Overall, \tool achieves an average AUROC improvement of 15.4\% across four models and three data ratios compared to the state-of-the-art.
+% Overall, \tool improves an average AUROC score of 15.4\% across four models and three ratios against state-of-the-art.
 
 
 % Table~\ref{tab:main_results} presents the effectiveness results of \tool compared with baseline methods in four models. Overall, \tool consistently outperforms existing methods across all evaluated models in the 1:1, 1:5 and 5:1 ratios, demonstrating consistent and superior performance advantages.
@@ -123,7 +127,7 @@ Compared to state-of-the-art methods, \tool achieves AUROC improvements ranging 
 % ----
 % 11.1  15.7    17.3    17.5
 
-
+% 15.4\%
 
 % \textbf{Performance across methods.} \tool consistently outperforms existing baseline methods on Python datasets. \tool-0.1 achieves up to 64.4\% AUROC (GPT-Neo-2.7B), representing substantial improvements of 11-21\% over baseline methods, showing competitive or superior results compared to existing approaches across most model configurations.
 
@@ -190,21 +194,21 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/pythia.pdf}
 % \vspace{-15pt}
-\caption{Pythia}
+\caption{Pythia 2.8B}
 \label{fig:pythia}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt2_7.pdf}
 % \vspace{-15pt}
-\caption{GPT-Neo}
+\caption{GPT-Neo 2.7B}
 \label{fig:gpt27}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/stable.pdf}
 % \vspace{-15pt}
-\caption{StableLM-Alpha}
+\caption{StableLM-Alpha 3B}
 \label{fig:stable}
 \end{subfigure}
 \vspace{-5pt}
@@ -212,8 +216,14 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt6b.pdf}
 % \vspace{-15pt}
-\caption{GPT-J}
+\caption{GPT-J 6B}
 \label{fig:gpt6b}
 \end{subfigure}
 \caption{F1-Score of \tool Across Varying Thresholds}\label{fig:sensitivity}
 \end{figure}
+
+
+\subsection{Limitations}
+
+While \tool is currently implemented and evaluated using Python's grammar, its design readily extends to other languages (e.g., Java, C/C++, JavaScript). This generalizability stems from shared language conventions and the universal requirement of strict grammatical correctness across programming languages. We therefore anticipate \tool would achieve similar effectiveness when applied to these other languages. Besides, our evaluation is currently limited to four LLMs due to resource constraints. Nevertheless, the consistent results across all models suggest strong generalizability of our approach to other large language models.
+

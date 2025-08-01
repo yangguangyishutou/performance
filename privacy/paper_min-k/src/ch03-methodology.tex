@@ -34,17 +34,20 @@
 
         & & & \texttt{from} \textit{module} & \texttt{import} \\
         \hline
-         \multirow{6}{*}{Compound Stmts} & \multirow{6}{*}{\shortstack[l]{\texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{class}, function,\\\texttt{while}, \texttt{match}, \texttt{async}}} & \multirow{2}{*}{\texttt{for}}  
+         \multirow{6}{*}{Compound Stmts} & \multirow{6}{*}{\shortstack[l]{\texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{class}, function,\\\texttt{while}, \texttt{match}}} & \multirow{2}{*}{\texttt{for}}  
          & \texttt{for} \textit{target\_list}  & \texttt{in}  \\
          
          
          &  &  & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}   &  `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\\cmidrule{4-5}
 
+
+         & & \multirow{1}{*}{\texttt{if}} & \texttt{if} \textit{assignment\_expression} & `:'\\
          & & \texttt{try} & \texttt{try:} \textit{suite} \texttt{except} \textit{expression}  &  \texttt{as} \\
          &   & function & \texttt{def} \textit{funcname}(\textit{identifier} & `,', `)' \\
          &   & \multirow{1}{*}{\texttt{with}} & \texttt{with} \textit{with\_item} & \texttt{as} \\
 
          &   & \multirow{1}{*}{\texttt{while}} & \texttt{while} \textit{condition} & `:'\\
+         & & \multirow{1}{*}{\texttt{match}} & \texttt{match} \textit{subject} & `:' \\
         \bottomrule
     \end{tabular}
 \end{table*}
