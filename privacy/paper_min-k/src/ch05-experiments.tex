@@ -77,16 +77,9 @@ We evaluate \tool through comprehensive experiments.
 
 \textbf{Targeted LLMs.} We found evidence that the following four models were trained on the Pile dataset: \textit{EleutherAI/pythia-2.8b}~\cite{pilepythis}, \textit{EleutherAI/gpt-neo-2.7B}~\cite{pilegpt_neo}, \textit{StabilityAI/stablelm-base-alpha-3b}~\cite{pilestable}, and \textit{EleutherAI/gpt-j-6b}~\cite{pilegpt}. Therefore, these four models can be evaluated on member and non-member samples from our constructed benchmark. Specifically, \textit{EleutherAI/gpt-neo-2.7B} is a 2.7B parameter Transformer model designed for text generation and creative tasks. \textit{StabilityAI/stablelm-base-alpha-3b} is a 3B parameter model optimized for code generation and low-resource deployment. \textit{EleutherAI/gpt-j-6b} is a 6B parameter model with enhanced reasoning capabilities. 
 
-   
-
-
 % The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: 
-
 % \textit{EleutherAI/pythia-2.8b} is a 2.8B parameter Transformer model with strong code generation capabilities.
-
 % \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b},
-
-
 
 
 \textbf{Metrics.} We use the Area Under the Receiver Operating Characteristic curve (AUROC) as our evaluation metric. AUROC is widely adopted for binary classification tasks and is particularly suitable for membership inference. It captures the trade-off between true positive rate and false positive rate across different thresholds (e.g., $\epsilon$), offering a robust measure of a method's ability to distinguish between training and non-training data in language models. We also use the false negative rate (FNR) to measure the percentage of members missed by the detection techniques, and the f1-score to select the most effective threshold in different models.
@@ -113,16 +106,36 @@ We evaluate \tool through comprehensive experiments.
 
 \subsection{Results}
 
-We systematically compare the AUROC performance of various detection methods on the membership inference task across four mainstream open-source language models, with results presented in Table~\ref{tab:main_results}. Overall, \textbf{\tool consistently outperforms existing methods across all evaluated models}, demonstrating stable and superior performance advantages.
 
-\textbf{Performance across methods.} \tool consistently outperforms existing baseline methods on Python datasets. \tool-0.1 achieves up to 64.4\% AUROC (GPT-Neo-2.7B), representing substantial improvements of 11-21\% over baseline methods, showing competitive or superior results compared to existing approaches across most model configurations.
-
-\textbf{Performance across function lengths.} \tool shows strong performance across all function lengths, with particularly impressive results on short functions. For Python, short functions achieve 59.1\%-68.4\% AUROC, demonstrating \tool's effectiveness across different complexity levels of code samples.
-
-\textbf{Model scale effects.} The results demonstrate that \tool's effectiveness scales well across different model sizes, from the 2.7B parameter GPT-Neo to the 6B parameter GPT-J. Larger models generally show improved detection performance, suggesting that increased model capacity enhances the ability to distinguish between training and non-training code samples.
+Table~\ref{tab:main_results} presents the effectiveness of \tool compared to baseline methods across four models, demonstrating consistent superiority in 1:1, 1:5, and 5:1 ratios. Specifically, \tool achieves average AUROCs of 61.5\%, 59.9\%, 61.4\%, and 61.4\% in Pythia 2.8B, GPT-Neo 2.7B, StableLM-Alpha 3B, and GPT-J 6B, respectively. 
+\tool maintains consistent and similar effectiveness across difference model architectures and scales.
+Compared to state-of-the-art methods, \tool achieves AUROC improvements ranging from 11.2\% to 17.6\% (1:1 ratio), 9.4\% to 16.7\% (1:5 ratio), and 12.6\% to 19.5\% (5:1 ratio), underscoring its robust performance advantages.
 
 
-\subsection{Robustness on Different Functions}
+% Table~\ref{tab:main_results} presents the effectiveness results of \tool compared with baseline methods in four models. Overall, \tool consistently outperforms existing methods across all evaluated models in the 1:1, 1:5 and 5:1 ratios, demonstrating consistent and superior performance advantages.
+% Specifically, from the perspective of the models, \tool achieves an average AUROC of 61.5\%, 59.9\%, 61.4\% and 61.4\% in the Pythia 2.8B, GPT-Neo 2.B, StableLM-Alpha 3B and GPT-J 6B, respectively. Compared with the other state-of-the-arts, \tool achieves a minimum AUROC increase of 11.2\% and maximum of 17.6\% over the state-of-the-art when the ratio is 1:1, a minimum AUROC increase of 9.4\% and maximum of 16.7\% over the state-of-the-art when the ratio is 1:5, a minimum AUROC increase of 12.6\% and maximum of 19.5\% over the state-of-the-art when the ratio is 5:1. 
+% We systematically compare the AUROC performance of various detection methods on the membership inference task across four mainstream open-source language models, with results presented in Table~\ref{tab:main_results}. 
+% 
+% 11.2  16      17.6    16.4
+
+% 9.4   14.1    16.5    16.7
+
+% 12.6  16.9    17.9    19.5
+% ----
+% 11.1  15.7    17.3    17.5
+
+
+
+% \textbf{Performance across methods.} \tool consistently outperforms existing baseline methods on Python datasets. \tool-0.1 achieves up to 64.4\% AUROC (GPT-Neo-2.7B), representing substantial improvements of 11-21\% over baseline methods, showing competitive or superior results compared to existing approaches across most model configurations.
+
+% \textbf{Model scale effects.} The results demonstrate that \tool's effectiveness scales well across different model sizes, from the 2.7B parameter GPT-Neo to the 6B parameter GPT-J. Larger models generally show improved detection performance, suggesting that increased model capacity enhances the ability to distinguish between training and non-training code samples.
+
+% \textbf{Performance across function lengths.} \tool shows strong performance across all function lengths, with particularly impressive results on short functions. For Python, short functions achieve 59.1\%-68.4\% AUROC, demonstrating \tool's effectiveness across different complexity levels of code samples.
+
+
+
+
+\subsection{Robustness under Different Function Lengths}
 
 We categorize the member functions by token lengths into three groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into three equal groups: \textit{short} (0--33rd percentile, token count $\leq$ 152), \textit{middle} (33rd--66th percentile, 152 $<$ token count $\leq$ 473), and \textit{long} (66th--100th percentile, token count $>$ 473). This balanced distribution ensures fair comparison under varying function complexities. 
 
@@ -174,21 +187,21 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 \includegraphics[width=0.99\textwidth]{./fig/pythia.pdf}
 \vspace{-15pt}
 \caption{Pythia}
-\label{fig:th-c}
+\label{fig:pythia}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt2_7.pdf}
 \vspace{-15pt}
 \caption{GPT-Neo}
-\label{fig:th-m1}
+\label{fig:gpt27}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/stable.pdf}
 \vspace{-15pt}
 \caption{StableLM-Alpha}
-\label{fig:th-m2}
+\label{fig:stable}
 \end{subfigure}
 \vspace{-5pt}
 \begin{subfigure}[b]{0.23\textwidth}
@@ -196,7 +209,7 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 \includegraphics[width=0.99\textwidth]{./fig/gpt6b.pdf}
 \vspace{-15pt}
 \caption{GPT-J}
-\label{fig:th-m2}
+\label{fig:gpt6b}
 \end{subfigure}
 \caption{F1-Score of \tool Across Varying Thresholds}\label{fig:sensitivity}
 \end{figure}

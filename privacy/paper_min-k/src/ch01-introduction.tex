@@ -2,9 +2,9 @@
 
 \section{Introduction}
 
-The fundamentals of large language models (LLMs) stems from the vast pre-training datasets. % However, the copyright issue in the training corpora deserves serious attention. 
+The fundamentals of large language models (LLMs) stems from the vast pre-training datasets. However, the copyright issue in the training corpora deserves serious attention. 
 Recently, several legal disputes have arisen concerning the use of copyrighted materials in training data~\cite{openaisue, newssue}. 
-Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments, but also as a means of fostering supportive and respectful environments for content creators. %As LLMs proliferate and AI-generated content grows, safeguarding human creativity is vital to preserving unique and diverse~perspectives.
+Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments, but also as a means of fostering supportive and respectful environments for content creators. As LLMs proliferate and AI-generated content grows, safeguarding human creativity is vital to preserving unique and diverse~perspectives.
 
 % As the era of LLMs advances and AI-generated content increasingly populates the digital landscape, it becomes more important to uphold and protect human creativity ensures that human-generated works continue to contribute unique and diverse perspectives
 % Safeguarding originality ensures that human-generated works continue to contribute unique and diverse perspectives to our culture and knowledge.
@@ -12,9 +12,9 @@ Respecting copyright and intellectual property is essential, not only as a legal
 % The coding capabilities of LLMs have inspired a range of prospective applications, from autonomous agents to automated coders. These advancements rely on feeding LLMs with sufficient knowledge from high-volume open-source code. 
 
 LLMs' coding abilities have enabled applications from autonomous agents to automated coding. 
-However, these coding abilities stem from large-scale training on open-source code, which often comes with specific usage obligations.% However, such code is typically governed by specific usage obligations.
+However, these coding abilities stem from large-scale training on open-source code, which often comes with specific usage obligations. However, such code is typically governed by specific usage obligations.
 A well-known example is the copyleft license (\eg~GPL~\cite{gnu}). %, such as the GNU General Public License (GPL). 
-The GPL was introduced in 1989 as part of the GNU Project~\cite{gnu}. Eighteen years later, we witnessed the first recognized lawsuit for a GPL violation~\cite{lvcriminaldefense, Informationweek}.  % , when Monsoon Multimedia was sued by the Software Freedom Conservancy
+The GPL was introduced in 1989 as part of the GNU Project~\cite{gnu}. Eighteen years later, we witnessed the first recognized lawsuit for a GPL violation~\cite{lvcriminaldefense, Informationweek}, when Monsoon Multimedia was sued by the Software Freedom Conservancy
 The following decades have seen many GPL conflicts and litigations~\cite{gpllitigation}, which underscores the importance of respecting copyrighted content~\cite{xu2024llms}. 
 We anticipate that similar open-source litigation may soon target LLM vendors.  % This case underscores the importance to respect the copyright content~\cite{xu2024llms}, which we anticipate that similar open source litigation will soon extend to LLM vendors. % for LLM developers to fully understand and 
 In fact, disputes over the use of code for pretraining have already emerged~\cite{githubsue}.
@@ -26,8 +26,8 @@ Several studies attempt to answer the transparency and accountability issues in 
 % However, this approach suffers from the limitation that those are advancedly placed traps must be prepared in~advance.
 
 
-A another approach involves applying membership inference attacks (MIAs) to LLMs%, which initially determine whether a specific data point was part of the training dataset of a machine learning model
-~\cite{shokri2017membership, song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, truex2019demystifying}. %, thereby exposing potential privacy risks. 
+A another approach involves applying membership inference attacks (MIAs) to LLMs, which initially determine whether a specific data point was part of the training dataset of a machine learning model
+~\cite{shokri2017membership, song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, truex2019demystifying}, thereby exposing potential privacy risks. 
 MIAs in LLMs share the same intuitions of MIAs in machine learning that models memorizes data (overfitting)~\cite{song2019auditing, carlini2021extracting, tirumala2022memorization}. %$Tirumala et al.~\cite{tirumala2022memorization} find that models memorize nouns and numbers, and that larger models can memorize a larger portion of the data before over-fitting. 
 These methods assume access to pretraining data to train shadow or reference models. Yang et al.~\cite{yang2024gotcha} presented \textsc{GotCha}, a membership inference attack using surrogate models tailored for code LLMs.
 However, training such models is computationally expensive, and pretraining data is often unavailable, especially for commercial LLMs.
