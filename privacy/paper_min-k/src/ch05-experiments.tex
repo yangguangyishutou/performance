@@ -1,18 +1,12 @@
 % !TeX root = ../main.tex
 
-\section{Experiments}
-\label{sec:experiments}
+\section{Experiments}\label{sec:experiments}
 
 % We evaluate \tool based on the following research questions.
+We evaluate \tool through comprehensive experiments.
+% Carlin et al.\cite{carlini2021extracting}. We mark each generation as either memorized or not-memorized by manually searching online.
 
-Carlin et al.\cite{carlini2021extracting}. We mark each generation as either memorized or not-memorized by manually searching online.
 
-
-LOSS\cite{yeom2018privacy}
-ZLib\cite{carlini2021extracting}
-Min-K\cite{shi2023detecting}
-Gotcha\cite{yang2024gotcha}
-DC-PDD\cite{}
 
 % Main document content
 \subsection{Setup}
@@ -54,24 +48,57 @@ DC-PDD\cite{}
 \end{tabular}
 \end{table*}
 
+% LOSS
+% ZLib
+% Min-K
+% Gotcha\cite{yang2024gotcha}
+% DC-PDD\cite{}
+
+
+\textbf{Baselines.} We replicate four recent and representative baselines that represent the current state-of-the-art.
+
+\begin{itemize}
+    \item \textsc{Loss}~\cite{yeom2018privacy}. \textsc{Loss} uses the overall perplexity (i.e., cross-entropy loss) of a language model as the detection score, based on the standard assumption in membership inference attacks that training data yields lower perplexity than unseen data.
+    \item \textsc{ZLib}~\cite{carlini2021extracting}. \textsc{ZLib} applies the ZLib compression algorithm to each sample's tokenized representation, using the compressed length as a detection score.,
+    \item \textsc{Min-K\%}~\cite{shi2023detecting}. \textsc{Min-K\%} ranks tokens by likelihood and computes a score using the bottom K (ranging from 10 to 100) based on their aggregated likelihoods. This approach captures the model's uncertainty over less likely tokens, as explored in prior token-level membership inference studies.
+    \item \textsc{DC-PDD}~\cite{zhang2024pretraining}. The \textsc{DC-PDD} improves detection performance on pre-training data by calibrating distributional differences, making it suitable for multilingual scenarios.
+\end{itemize}
+
+
+% ZLib leverages data compression by applying the ZLib algorithm to the tokenized representation of each sample and using the resulting compressed length as the detection score
+%  as explored in prior privacy auditing research.
+% We compare it against several established approaches, including \textsc{Loss}~\cite{yeom2018privacy}, \textsc{ZLib}~\cite{carlini2021extracting}, , \textsc{Min-K\%}~\cite{shi2023detecting}, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques.
+% The \textsc{Loss} uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. 
+% ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies.
+
+% % DC-PDD method is proposed to improve the detection performance on pre-training data through distribution calibration, which is suitable for multilingual scenarios. 
+
+% Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model's uncertainty on less likely tokens, as seen in prior token-level membership inference work. GOTCHA is a MIA approach to code completion models.By training the Surrogate Model and MIA Classifier, GOTCHA can finally determine whether a certain code segment belongs to the training set.
+
+\textbf{Targeted LLMs.} We found evidence that the following four models were trained on the Pile dataset: \textit{EleutherAI/pythia-2.8b}~\cite{pilepythis}, \textit{EleutherAI/gpt-neo-2.7B}~\cite{pilegpt_neo}, \textit{StabilityAI/stablelm-base-alpha-3b}~\cite{pilestable}, and \textit{EleutherAI/gpt-j-6b}~\cite{pilegpt}. Therefore, these four models can be evaluated on member and non-member samples from our constructed benchmark. Specifically, \textit{EleutherAI/gpt-neo-2.7B} is a 2.7B parameter Transformer model designed for text generation and creative tasks. \textit{StabilityAI/stablelm-base-alpha-3b} is a 3B parameter model optimized for code generation and low-resource deployment. \textit{EleutherAI/gpt-j-6b} is a 6B parameter model with enhanced reasoning capabilities. 
+
+   
+
+
+% The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: 
+
+% \textit{EleutherAI/pythia-2.8b} is a 2.8B parameter Transformer model with strong code generation capabilities.
+
+% \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b},
 
 
 
-\textbf{Baselines.} To evaluate the effectiveness of our proposed Code-Min-K\% method on the membership inference task, we compare it against several established approaches, including Loss, ZLib, DC-PDD, Min-K\% and Gotcha, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques. The Loss baseline uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies. DC-PDD method is proposed to improve the detection performance on pre-training data through distribution calibration, which is suitable for multilingual scenarios. Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model's uncertainty on less likely tokens, as seen in prior token-level membership inference work. GOTCHA is a MIA approach to code completion models.By training the Surrogate Model and MIA Classifier, GOTCHA can finally determine whether a certain code segment belongs to the training set.
 
-\textbf{Targeted LLMs.} The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b}, a 6B parameter model with enhanced reasoning capabilities. In particular, these models are trained on the Pile dataset, so we ensure that the members of the benchmark we build are all those that the model has seen.
-
+\textbf{Metrics.} We use the Area Under the Receiver Operating Characteristic curve (AUROC) as our evaluation metric. AUROC is widely adopted for binary classification tasks and is particularly suitable for membership inference. It captures the trade-off between true positive rate and false positive rate across different thresholds (e.g., $\epsilon$), offering a robust measure of a method's ability to distinguish between training and non-training data in language models. We also use the false negative rate (FNR) to measure the percentage of members missed by the detection techniques, and the f1-score to select the most effective threshold in different models.
 
 
-\textbf{Metrics.} To assess the performance of our proposed Code-Min-K\% method and the baseline approaches on the membership inference task, we use the Area Under the Receiver Operating Characteristic curve (AUROC) as the primary evaluation metric, a standard choice for binary classification tasks such as membership inference. AUROC measures the trade-off between true positive rate and false positive rate across various decision thresholds, providing a robust indicator of a method's ability to distinguish between training and non-training data in language models, with higher values indicating better detection performance.
-
-\textbf{Environment.} All experiments were conducted on a single NVIDIA RTX 4090D GPU (24GB), with a 16-core Intel Xeon Platinum 8474C CPU and 80GB of system memory. The software stack includes Ubuntu 20.04, Python 3.8, PyTorch 2.0.0, and CUDA 11.8.
+\textbf{Environment.} Our experiments were conducted on a single NVIDIA RTX 4090D GPU (24GB), supported by a 16-core Intel Xeon Platinum 8474C CPU and 80GB of RAM. The software environment consisted of Ubuntu 20.04, Python 3.8, PyTorch 2.0.0, and CUDA 11.8.
 
 
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{False-Negative Rate (\%) of \tool on Positive Samples with Different Function Token Lengths}
+    \caption{False Negative Rate (\%) of \tool on Members under Short and Long Function Lengths}
     \begin{tabular}{m{1.3cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}}
     \toprule
     \textbf{Length} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
@@ -134,31 +161,29 @@ We created four ablated versions of \tool by individually removing syntax conven
 
 
 
-\subsection{Parameter Analysis}
+\subsection{Threshold Analysis}
 
-\textbf{AUROC w.r.t Hyperparameter k\%.}
-
-\textbf{AUROC Curve.}
+Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four models across varying thresholds. Note that we applied multiple axis scales to better illustrate the results, as the SPP scores are typically very small. Observing from the graph, we can see that all four models undergo an minor increase of F1-score when $\epsilon$ increases and confront a plunge after $\epsilon$ exceeds around 0.01. We selected the most effective $\epsilon$ for the four models. Specifically, Pythia achieves an F1-score of \todo{XX} at $\epsilon = \todo{XXX}$; GPT-Neo reaches \todo{XX} at $\epsilon = \todo{XXX}$; StableLM-Alpha records \todo{XX} at $\epsilon = \todo{XXX}$; and GPT-J achieves \todo{XX} at $\epsilon = \todo{XXX}$.
 
 
 
 \begin{figure}[!t]
 \centering
-\begin{subfigure}[b]{0.22\textwidth}
+\begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/pythia.pdf}
 \vspace{-15pt}
 \caption{Pythia}
 \label{fig:th-c}
 \end{subfigure}
-\begin{subfigure}[b]{0.22\textwidth}
+\begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt2_7.pdf}
 \vspace{-15pt}
 \caption{GPT-Neo}
 \label{fig:th-m1}
 \end{subfigure}
-\begin{subfigure}[b]{0.22\textwidth}
+\begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/stable.pdf}
 \vspace{-15pt}
@@ -166,12 +191,12 @@ We created four ablated versions of \tool by individually removing syntax conven
 \label{fig:th-m2}
 \end{subfigure}
 \vspace{-5pt}
-\begin{subfigure}[b]{0.22\textwidth}
+\begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt6b.pdf}
 \vspace{-15pt}
 \caption{GPT-J}
 \label{fig:th-m2}
 \end{subfigure}
-\caption{Precision and Recall}\label{fig:sensitivity}
+\caption{F1-Score of \tool Across Varying Thresholds}\label{fig:sensitivity}
 \end{figure}
