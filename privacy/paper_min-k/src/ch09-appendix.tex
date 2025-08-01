@@ -6,9 +6,9 @@
 \begin{table*}[!t]
     \centering
     \footnotesize
-    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{[BR]}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
+    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{[BR]}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax_full}
     \vspace{-10pt}
-    \begin{tabular}{m{2.8cm}m{2cm}m{5.5cm}m{5cm}}
+    \begin{tabular}{m{2.8cm}m{2cm}m{6.5cm}m{5cm}}
         \toprule
         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Conditional Token} & \textbf{Consequent Token} \\
         \midrule
@@ -93,9 +93,9 @@
         \cmidrule{2-4}
         & \multirow{5}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `)' \\
         \cmidrule{3-4}
-        & & \texttt{def} \textit{funcname}(\textit{identifier} & `,` \\
+        & & \texttt{def} \textit{funcname}(\textit{identifier} & `,', `)' \\
         \cmidrule{3-4}
-        & & \texttt{def} \textit{funcname}(\textit{parameters}) & `->` \\
+        & & \texttt{def} \textit{funcname}(\textit{parameters}) &  `->' \\
         \cmidrule{3-4}
         & & \texttt{def} \textit{funcname}(\textit{parameters}) [\texttt{->} \textit{type}] & `:' \\
         \cmidrule{3-4}
@@ -123,6 +123,57 @@
         \bottomrule
     \end{tabular}
 \end{table*}
+
+           
+
+%         \multirow{7}{*}{Data Model}  & Lists, Slice & `[' & `]' \\
+
+%             & String, Bytes  & ``',`"' &   `'',`"'  \\
+%             & Object & \textit{identifier} & `.' \\
+
+%         \multirow{6}{*}{Expressions} & call & \textit{identifier}( & `)' \\
+%             & lambda & \texttt{lambda} \textit{params} & `:' \\
+%             
+%             & \multirow{2}{*}{comprehension} & \textit{expr} \texttt{for} \textit{target} & \texttt{in}  \\
+%             & & \textit{expr} \texttt{for} \textit{target} \texttt{in} \textit{iterable} & `]', `\}', `)'  \\
+%             
+%         \multirow{4}{*}{Single Statements} 
+%         & \multirow{2}{*}{\texttt{import}} & \texttt{import} \textit{module}  & \texttt{as} \\
+%        
+%         % & \texttt{assert} & \texttt{assert} \textit{test} & `,', \textit{msg} \\
+%         % & \shortstack[l]{scope\\declaration} & \texttt{global}/\texttt{nonlocal} & `,' \\
+%         & \multirow{3}{*}{\texttt{if}} & \texttt{if} \textit{assignment\_expression} & `:'\\
+%         & & \texttt{if} \textit{assignment\_expression}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+%         & & \texttt{if} \textit{assignment\_expression}\text{:} & \texttt{elif}, \texttt{else}\\
+%         & \multirow{3}{*}{\texttt{for}}   & \texttt{for} \textit{target\_list}  & \texttt{in}\\
+%         & & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}  & `:' \\
+%         & & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
+%         & \multirow{7}{*}{\texttt{try}} &  \texttt{try} &  `:' \\
+%         & & \texttt{try:} & \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]} \\
+%         & & \texttt{try:} \textit{suite} & \texttt{except}, \texttt{except*} \\
+
+%         & & \texttt{try:} \textit{suite} \texttt{except} \textit{expression} \texttt{as} \textit{name} & `:' \\
+%          & & \texttt{try:} \textit{suite} \texttt{except} \textit{expression} \texttt{as} \textit{name:} & \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]}\\
+%         & & \texttt{try:} \textit{suite} \texttt{except} \textit{expr} \texttt{as} \textit{identifier:} \textit{suite} & \texttt{finally}, \texttt{else} \\
+%         % & & \texttt{except} \textit{expression} \texttt{as} \textit{name}: &  \texttt{[SP]},  \texttt{[BR]}, \texttt{[IND]}\\
+%         & \multirow{3}{*}{\texttt{with}} & \texttt{with} \textit{with\_item} & \texttt{as} \\
+%         & & \texttt{with} \textit{with\_item} \texttt{as} \textit{target} & `:' \\
+%         & & \texttt{with} \textit{with\_item}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+%         & & \texttt{with} \textit{with\_item} \texttt{as} \textit{target}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]} \\
+%         & \multirow{3}{*}{\texttt{class}}  & \texttt{class} \textit{classname} & `:' \\
+%         & & \texttt{class} \textit{classname}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
+%         & & \texttt{class} \textit{classname}(\textit{identifier} &  `,', `)'  \\
+%          & & \texttt{class} \textit{classname}(\textit{identifier}) &   `:'  \\
+%         & \multirow{5}{*}{function} & \texttt{def} \textit{funcname}( & \texttt{self}, `)' \\
+%         & & \texttt{def} \textit{funcname}(\textit{identifier} & `,` \\
+%         & & \texttt{def} \textit{funcname}(\textit{parameters}) & `->` \\
+%         & & \texttt{def} \textit{funcname}(\textit{parameters}) [\texttt{->} \textit{type}] & `:' \\
+%         & & \texttt{def} \textit{funcname}(\textit{parameters})\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
+%         & \multirow{3}{*}{\texttt{while}} & \texttt{while} \textit{condition} & `:'\\
+%         & & \texttt{while} \textit{condition}\text{:} & \texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}  \\
+%         & & \texttt{while} \textit{condition}\text{:} \textit{suite}& \texttt{else}\\
+%         & \multirow{2}{*}{\texttt{match}} & \texttt{match} \textit{subject} & `:' \\
+%         & & \texttt{match} \textit{subject}\text{:} &\texttt{[SP]}, \texttt{[BR]}, \texttt{[IND]}, \texttt{case}  \\
 
 
 

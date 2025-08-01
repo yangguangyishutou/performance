@@ -9,24 +9,51 @@
     \centering
     \footnotesize
     \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
-    \vspace{-10pt}
-    \begin{tabular}{m{2cm}m{5cm}m{1.5cm}m{3.9cm}m{3.2cm}}
+    % \vspace{-10pt}
+    \begin{tabular}{m{2cm}m{5cm}m{1.5cm}m{4cm}m{3cm}}
         \toprule
         \textbf{Category} &\textbf{Syntax Nodes}  & \textbf{Example Syntax Node} & \textbf{Conditional Token} & \textbf{Consequent Token} \\
         \midrule
         
-        \multirow{1}{*}{Data Model}  & List, Slice, Dict, Set, String, Bytes, Object, Tuple & List & `[' & `]' \\\hline
-        \multirow{2}{*}{Expr.} & \multirow{2}{*}{\shortstack[l]{call, lambda, conditional, comprehension,\\ Chained Comparison}} & \multirow{2}{*}{call} & \textit{identifier}( & `)' \\ \cmidrule{4-5}
-         &  &      & \textit{identifier}(\textit{identifier} & `,' \\\hline
-        \multirow{1}{*}{Single Stmts}  &  \texttt{import}, \texttt{assert}, \texttt{global} & \texttt{import} & \texttt{import} \textit{module}  & \texttt{as} \\\hline
+        \multirow{3}{*}{Data Model}  & List, Slice, Dict, Set, String, Bytes, Object, Tuple 
+        & List & `[' & `]' \\
+        & & Dict &  `\{' & `\}' \\
+        & & Tuple & `(' & `)' \\\hline
+
+        \multirow{4}{*}{Expr.} 
+        
+        & \multirow{4}{*}{\shortstack[l]{call, lambda, conditional, comprehension,\\ Chained Comparison}} 
+        
+        & \multirow{2}{*}{call} & \textit{identifier}( & `)' \\
+         &  &      & \textit{identifier}(\textit{identifier} & `,' \\ \cmidrule{4-5}
+        
+        &  & conditional & \textit{expr} \texttt{if} \textit{cond} & \texttt{else} \\
+        & & \shortstack[l]{chained\\comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
+
+        \multirow{2}{*}{Single Stmts}  &  \multirow{2}{*}{\texttt{import}, \texttt{assert}, \texttt{global}} & \multirow{2}{*}{\texttt{import}} & \texttt{import} \textit{module}  & \texttt{as} \\
+
+        & & & \texttt{from} \textit{module} & \texttt{import} \\
+        \hline
          \multirow{2}{*}{Compound Stmts} & \multirow{2}{*}{\shortstack[l]{\texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{class}, function,\\\texttt{while}, \texttt{match}, \texttt{async}}} & \multirow{2}{*}{\texttt{for}}  
          & \texttt{for} \textit{target\_list}  & \texttt{in}  \\
-         \cmidrule{4-5}
-         &  &  & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}   &  `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\
+         
+         
+         &  &  & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}   &  `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\\cmidrule{4-5}
+
+         & & \texttt{try} & \texttt{try:} \textit{suite} \texttt{except} \textit{expression}  &  \texttt{as} \\
+         &   & function & \texttt{def} \textit{funcname}(\textit{identifier} & `,', `)' \\
+         &   & \multirow{1}{*}{\texttt{with}} & \texttt{with} \textit{with\_item} & \texttt{as} \\
+
+         &   & \multirow{1}{*}{\texttt{while}} & \texttt{while} \textit{condition} & `:'\\
         \bottomrule
     \end{tabular}
 \end{table*}
 
+
+            
+            
+            
+           
 
 
 
@@ -50,7 +77,7 @@ We discuss the motivation of our method design as the preliminary. Then we elabo
 
 \begin{figure*}[!t]
     \centering
-    \includegraphics[width=0.85\textwidth]{fig/overview.pdf}
+    \includegraphics[width=0.98\textwidth]{fig/overview.pdf}
     \caption{Illustration of our Approach Motivation and Proposed Solution}
     \label{fig:overview}
 \end{figure*}
@@ -175,7 +202,7 @@ The third phase is \textit{member probabilities calculation}. The \underline{S}y
 \text{SPP}(x)=\frac{1}{|\mathcal{X}_{1}|}\sum_{i \in \mathcal{X}_{1}} -\log p(x_i)  
 \end{equation}
 
-where $ \mathcal{X}_1 = \{x_i \in \mathcal{X} \mid \ell(x_i) = 1\} $.
+where $ \mathcal{X}_1 = \{x_i \in \mathcal{X} \mid \ell(x_i) = 1\} $. We set a threshold $\epsilon$ to determine code membership. If $\text{SPP}(x) > \epsilon$, the sample is predicted as a member. Otherwise, it is classified as a non-member.
 
 
 % \todo{The process begins by parsing the code snippet using Python 3.11's \texttt{ast} module to extract all variable, function, and class names, mapping them to their exact character spans in the source via \texttt{lineno} and \texttt{col\_offset}.}
