@@ -17,19 +17,20 @@ DC-PDD\cite{}
 % Main document content
 \subsection{Setup}
 
-\begin{table}[!t]
+\begin{table*}[!t]
 \centering
 \footnotesize
 \caption{AUROC (\%) of different methods under varying member-to-non-member ratios.}
 \label{tab:main_results}
-\begin{tabular}{m{0.4cm}m{1.3cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1cm}}
+\begin{tabular}{m{1cm}m{2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}}
 \toprule
-\textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
+% \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
+\textbf{Ratio} & \textbf{Method} & \textbf{Pythia 2.8B} & \textbf{GPT-Neo 2.7B}  & \textbf{StableLM-Alpha 3B} & \textbf{GPT-J 6B}\\
 \midrule
 \multirow{6}{*}{1:1} & \textsc{Loss} & 38.4 & 43.7 & 33.3 & 43.3 \\
 & \textsc{ZLib} & 33.2 & 35.5 & 32.0 & 35.7 \\
 & \textsc{Min-K} & 38.8 & 41.8 & 34.2 & 41.1 \\
-& \textsc{Gotcha} & -- & -- & -- & -- \\
+% & \textsc{Gotcha} & -- & -- & -- & -- \\
 & \textsc{DC-PDD} & 50.1 & 41.2 & 43.7 & 41.3 \\
 \cmidrule(lr){2-6}
 & \tool & 61.3 & 59.7 & 61.3 & 59.7 \\
@@ -37,7 +38,7 @@ DC-PDD\cite{}
 \multirow{6}{*}{1:5} & \textsc{Loss} & 40.3 & 45.3 & 33.9 & 44.8 \\
 & \textsc{ZLib} & 34.0 & 36.2 & 32.5 & 36.3 \\
 & \textsc{Min-K} & 40.2 & 43.3 & 34.9 & 42.4 \\
-& \textsc{Gotcha} & -- & -- & -- & -- \\
+% & \textsc{Gotcha} & -- & -- & -- & -- \\
 & \textsc{DC-PDD} & 51.8 & 44.0 & 44.6 & 43.2 \\
 \cmidrule(lr){2-6}
 & \tool & 61.2 & 59.4 & 61.1 & 61.5 \\
@@ -45,13 +46,13 @@ DC-PDD\cite{}
 \multirow{6}{*}{5:1} & \textsc{Loss} & 40.0 & 43.8 & 34.9 & 43.6 \\
 & \textsc{ZLib} & 33.1 & 35.0 & 31.9 & 35.2 \\
 & \textsc{Min-K} & 39.9 & 42.2 & 35.1 & 41.6 \\
-& \textsc{Gotcha} & -- & -- & -- & -- \\
+% & \textsc{Gotcha} & -- & -- & -- & -- \\
 & \textsc{DC-PDD} & 49.4 & 40.9 & 44.1 & 39.6 \\
 \cmidrule(lr){2-6}
 & \tool & 62.0 & 60.7 & 62.0 & 63.1 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 
 
