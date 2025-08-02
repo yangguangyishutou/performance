@@ -7,7 +7,7 @@
 As large language models (LLMs) become increasingly capable, concerns over the unauthorized use of copyrighted and licensed content in their training data have grown, especially in the context of code. Open-source code, often protected by open source licenses (e.g, GPL), poses legal and ethical challenges when used in pretraining. Detecting whether specific code samples were included in LLM training data is thus critical for transparency, accountability, and copyright compliance.
 
 We propose \tool, a syntax-pruned membership inference attack method tailored for code. Unlike prior MIA approaches that treat code as plain text, \tool leverages the structured and rule-governed nature of programming languages. Specifically, it identifies and excludes consequent tokens that are syntactically required and not reflective of authorship, from attribution when computing membership scores. Experimental results show that \tool consistently outperforms the state-of-the-arts.%, achieving an average AUROC improvement of \todo{XXX} across \todo{four} models. 
-Our method is also robust across varying function lengths and syntax categories. A real-world case study further indicates that existing LLMs memorize certain copyleft functions. % , while \tool can successfully uncover \todo{XXX} instances across \todo{XXX} models.
+Our method is also robust across varying function lengths and syntax categories. %A real-world case study further indicates that existing LLMs memorize certain copyleft functions. % , while \tool can successfully uncover \todo{XXX} instances across \todo{XXX} models.
 
 \end{abstract}
 
