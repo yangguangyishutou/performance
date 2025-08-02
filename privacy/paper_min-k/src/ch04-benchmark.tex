@@ -5,7 +5,9 @@
 % Existing MIA benchmarks, \eg WikiMIA~\cite{shi2023detecting} and MIMIR~\cite{duan2024membership}, are designed to evaluate MIAs on generic data elements instead of code. 
 
 Existing MIA benchmarks, such as WikiMIA~\cite{shi2023detecting} and MIMIR~\cite{duan2024membership}, are designed to evaluate membership inference attacks on general textual data, rather than source code.
-The source code benchmark used in Yang et al.\cite{yang2024gotcha} consists of members and non-members randomly sampled from CodeXGLUE\cite{lu2021codexglue}, with labels assigned afterward. We argue that such a design fails to reflect the real-world distinctions between members and non-members. To address this, we constructed a real-world benchmark in which members are traceable to the public datasets declared by the evaluated models, and non-members are created after the release cut-off date of the LLMs.Table~\ref{tab:benchmark} presents the statistics of our collected benchmark on the Python language. Specifically, we collected member and non-member samples as follows.
+The source code benchmark used in Yang et al.\cite{yang2024gotcha} consists of members and non-members randomly sampled from CodeXGLUE\cite{lu2021codexglue}, with labels assigned afterward. We argue that such a design fails to reflect the real-world distinctions between members and non-members. To address this, we constructed an authentic and verifiable benchmark in which members are traceable to the public datasets declared by the evaluated models, and non-members are created after the release cut-off date of the LLMs. Table~\ref{tab:benchmark} presents the statistics of our collected benchmark on the Python language. Specifically, we collected member and non-member samples as follows.
+
+
 
 % They can not accurately capture MIA capabilities on code or the extent to which LLMs utilize copyrighted code.
 % The source code benchmark in Yang et al.'s~\cite{yang2024gotcha} work is constructed from CodeXGLUE~\cite{lu2021codexglue}, whose members and non-members are randomly sampled from CodeXGLUE, which we believe can not reflect the real-world characteristic difference between members and non-members.
