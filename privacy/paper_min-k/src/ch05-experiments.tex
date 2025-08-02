@@ -82,7 +82,7 @@ We evaluate \tool through comprehensive experiments. We have provided the replic
 % \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b},
 
 
-\textbf{Metrics.} We use the Area Under the Receiver Operating Characteristic curve (AUROC) as our evaluation metric. AUROC is widely adopted for binary classification tasks and is particularly suitable for membership inference. It captures the trade-off between true positive rate and false positive rate, providing an aggregate judge of the effect of all possible thresholds (e.g., $\epsilon$). It offers a robust measure of a method's ability to distinguish between training and non-training data in language models. We also use the false negative rate (FNR) to measure the percentage of members missed by the detection techniques, and the f1-score to select the most effective threshold in different models.
+\textbf{Metrics.} We use the Area Under the Receiver Operating Characteristic curve (AUROC) as our evaluation metric. AUROC is widely adopted for binary classification tasks and is particularly suitable for membership inference. It captures the trade-off between true positive rate and false positive rate, providing an aggregate judge of the effect of all possible thresholds (i.e., $\epsilon$). It offers a robust measure of a method's ability to distinguish between training and non-training data in language models. We also use the false negative rate (FNR) to measure the percentage of members missed by the detection techniques, and the f1-score to select the most effective threshold in different models.
 
 
 
@@ -193,29 +193,24 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/pythia.pdf}
-% \vspace{-15pt}
 \caption{Pythia 2.8B}
 \label{fig:pythia}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt2_7.pdf}
-% \vspace{-15pt}
 \caption{GPT-Neo 2.7B}
 \label{fig:gpt27}
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/stable.pdf}
-% \vspace{-15pt}
 \caption{StableLM-Alpha 3B}
 \label{fig:stable}
 \end{subfigure}
-\vspace{-5pt}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
 \includegraphics[width=0.99\textwidth]{./fig/gpt6b.pdf}
-% \vspace{-15pt}
 \caption{GPT-J 6B}
 \label{fig:gpt6b}
 \end{subfigure}

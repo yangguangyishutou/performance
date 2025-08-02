@@ -5,52 +5,6 @@
 
 
 
-\begin{table*}[!t]
-    \centering
-    \footnotesize
-    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
-    % \vspace{-10pt}
-    \begin{tabular}{m{2cm}m{5cm}m{1.5cm}m{4cm}m{3cm}}
-        \toprule
-        \textbf{Category} &\textbf{Syntax Nodes}  & \textbf{Example Syntax Node} & \textbf{Conditional Token} & \textbf{Consequent Token} \\
-        \midrule
-        
-        \multirow{3}{*}{Data Model}  & List, Slice, Dict, Set, String, Bytes, Object, Tuple 
-        & List & `[' & `]' \\
-        & & Dict &  `\{' & `\}' \\
-        & & Tuple & `(' & `)' \\\hline
-
-        \multirow{4}{*}{Expression} 
-        
-        & \multirow{4}{*}{\shortstack[l]{call, lambda, conditional, comprehension,\\ Chained Comparison}} 
-        
-        & \multirow{2}{*}{call} & \textit{identifier}( & `)' \\
-         &  &      & \textit{identifier}(\textit{identifier} & `,' \\ \cmidrule{4-5}
-        
-        &  & conditional & \textit{expr} \texttt{if} \textit{cond} & \texttt{else} \\
-        & & \shortstack[l]{chained\\comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
-
-        \multirow{2}{*}{Single Stmts}  &  \multirow{2}{*}{\texttt{import}, \texttt{assert}, \texttt{global}} & \multirow{2}{*}{\texttt{import}} & \texttt{import} \textit{module}  & \texttt{as} \\
-
-        & & & \texttt{from} \textit{module} & \texttt{import} \\
-        \hline
-         \multirow{6}{*}{Compound Stmts} & \multirow{6}{*}{\shortstack[l]{\texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{class}, function,\\\texttt{while}, \texttt{match}}} & \multirow{2}{*}{\texttt{for}}  
-         & \texttt{for} \textit{target\_list}  & \texttt{in}  \\
-         
-         
-         &  &  & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}   &  `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\\cmidrule{4-5}
-
-
-         & & \multirow{1}{*}{\texttt{if}} & \texttt{if} \textit{assignment\_expression} & `:'\\
-         & & \texttt{try} & \texttt{try:} \textit{suite} \texttt{except} \textit{expression}  &  \texttt{as} \\
-         &   & function & \texttt{def} \textit{funcname}(\textit{identifier} & `,', `)' \\
-         &   & \multirow{1}{*}{\texttt{with}} & \texttt{with} \textit{with\_item} & \texttt{as} \\
-
-         &   & \multirow{1}{*}{\texttt{while}} & \texttt{while} \textit{condition} & `:'\\
-         & & \multirow{1}{*}{\texttt{match}} & \texttt{match} \textit{subject} & `:' \\
-        \bottomrule
-    \end{tabular}
-\end{table*}
 
 
             
@@ -132,7 +86,6 @@ Table \ref{table:syntax} lists our summarized syntax conventions. We categorize 
 %     \centering
 %     \footnotesize
 %     \caption{Syntax Conventions}\label{table:syntax}
-%     \vspace{-10pt}
 %     \begin{tabular}{m{2.6cm}m{2.4cm}m{7cm}m{3cm}}
 %         \toprule
 %         \textbf{Category} &\textbf{Syntax Node}  & \textbf{Constraint Description} & \textbf{Consequent Token} \\

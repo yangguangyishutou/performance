@@ -103,6 +103,51 @@
 \textbf{MIA in Language Models.} Song et al.~\cite{song2019auditing} investigated how deep learning-based text generation models memorize training data, while Carlini et al.~\cite{carlini2021extracting} demonstrated that large language models can leak verbatim training sentences. While literal (verbatim) memorization is easier to detect, identifying non-literal memorization remains challenging. Most approaches focus on modeling the likelihood of word sequences in context. Duan~\cite{duan2024membership} found that MIAs perform only slightly better than random guessing in LLMs, due to the inherently fuzzy boundary between members and non-members.
 To address this, Mattern et al.~\cite{mattern2023membership} proposed generating neighboring data and comparing their distribution to infer membership. Zhang et al.~\cite{zhang2024pretraining} calibrated token probabilities by measuring the divergence between within-document and corpus-level term frequencies, hypothesizing that higher divergence signals greater information content. Shi et al.~\cite{shi2023detecting} introduced a reference-free method, MIN-K\% prob, which assumes members are less likely to contain low-probability tokens compared to non-members.
 
+\begin{table*}[!t]
+    \centering
+    \footnotesize
+    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
+    \begin{tabular}{m{2cm}m{5cm}m{1.5cm}m{4cm}m{3cm}}
+        \toprule
+        \textbf{Category} &\textbf{Syntax Nodes}  & \textbf{Example Syntax Node} & \textbf{Conditional Token} & \textbf{Consequent Token} \\
+        \midrule
+        
+        \multirow{3}{*}{Data Model}  & List, Slice, Dict, Set, String, Bytes, Object, Tuple 
+        & List & `[' & `]' \\
+        & & Dict &  `\{' & `\}' \\
+        & & Tuple & `(' & `)' \\\hline
+
+        \multirow{4}{*}{Expression} 
+        
+        & \multirow{4}{*}{\shortstack[l]{call, lambda, conditional, comprehension,\\ Chained Comparison}} 
+        
+        & \multirow{2}{*}{call} & \textit{identifier}( & `)' \\
+         &  &      & \textit{identifier}(\textit{identifier} & `,' \\ \cmidrule{4-5}
+        
+        &  & conditional & \textit{expr} \texttt{if} \textit{cond} & \texttt{else} \\
+        & & \shortstack[l]{chained\\comparison} & \textit{expr comp\_op expr} & \textit{comp\_op} \\\hline
+
+        \multirow{2}{*}{Single Stmts}  &  \multirow{2}{*}{\texttt{import}, \texttt{assert}, \texttt{global}} & \multirow{2}{*}{\texttt{import}} & \texttt{import} \textit{module}  & \texttt{as} \\
+
+        & & & \texttt{from} \textit{module} & \texttt{import} \\
+        \hline
+         \multirow{6}{*}{Compound Stmts} & \multirow{6}{*}{\shortstack[l]{\texttt{if}, \texttt{for}, \texttt{try}, \texttt{with}, \texttt{class}, function,\\\texttt{while}, \texttt{match}}} & \multirow{2}{*}{\texttt{for}}  
+         & \texttt{for} \textit{target\_list}  & \texttt{in}  \\
+         
+         
+         &  &  & \texttt{for} \textit{target\_list} \texttt{in} \textit{starred\_list}   &  `:', \texttt{[SP]}, \texttt{[IND]},  \texttt{[BR]} \\\cmidrule{4-5}
+
+
+         & & \multirow{1}{*}{\texttt{if}} & \texttt{if} \textit{assignment\_expression} & `:'\\
+         & & \texttt{try} & \texttt{try:} \textit{suite} \texttt{except} \textit{expression}  &  \texttt{as} \\
+         &   & function & \texttt{def} \textit{funcname}(\textit{identifier} & `,', `)' \\
+         &   & \multirow{1}{*}{\texttt{with}} & \texttt{with} \textit{with\_item} & \texttt{as} \\
+
+         &   & \multirow{1}{*}{\texttt{while}} & \texttt{while} \textit{condition} & `:'\\
+         & & \multirow{1}{*}{\texttt{match}} & \texttt{match} \textit{subject} & `:' \\
+        \bottomrule
+    \end{tabular}
+\end{table*}
 
 % ,  non-members with lower n-gram overlap are more distinguishable by existing MIAs.
 % for most settings across varying LLM sizes and domains 
