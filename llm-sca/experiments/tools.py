@@ -2,6 +2,10 @@ import json
 import random
 from huggingface_hub import HfApi, hf_hub_download, get_repo_discussions
 import os
+from transformers import AutoModelForCausalLM
+import torch
+import numpy as np
+import matplotlib.pyplot as plt
 
 class Model:
     def __init__(self, model_name, derive_type = None, father_model = None):
@@ -141,6 +145,80 @@ class ExperimentTools:
     
         print(f"所有权重已保存至: {save_path}")
     
+
+class RelationshipDetector:
+    def __init__(self, model_A, model_B):
+        self.model_A = model_A
+        self.model_B = model_B
+    
+    # 返回模型A和模型B的余弦相似度列表
+    def compare_models_cos(self, ignore_layers = None):
+        if ignore_layers is None:
+            ignore_layers = {"transformer.wte.weight", "lm_head.weight"}
+        model_A = AutoModelForCausalLM.from_pretrained(self.model_A)
+        model_B = AutoModelForCausalLM.from_pretrained(self.model_B)
+        sd1 = model_A.state_dict()
+        sd2 = model_B.state_dict()
+        cos_ne = []
+
+        for name in sd1.keys() & sd2.keys():
+            if name in ignore_layers:
+                continue
+            p1 = sd1[name].view(-1).float()
+            p2 = sd2[name].view(-1).float()
+            if p1.numel() == 0 or p1.shape != p2.shape:
+                continue
+
+            # 计算余弦相似度
+            dot = torch.dot(p1, p2)
+            norm = torch.norm(p1) * torch.norm(p2)
+            cos_sim = (dot / (norm + 1e-12)).item()
+            ne = p1.numel()
+
+            cos_ne.append((cos_sim, ne))
+
+        return cos_ne
+
+    def plot_cosine_similarity(self, save_path = None):
+        cos_ne = self.compare_models_cos()
+        sims = np.array([c for c, w in cos_ne])
+        weights = np.array([w for c, w in cos_ne])
+        total = weights.sum()
+
+        order = np.argsort(sims)
+        sims_sorted = sims[order]
+        weights_sorted = weights[order]
+
+        cum_weights = np.cumsum(weights_sorted)
+        y_pct = cum_weights / total * 100
+
+        idx_start = np.searchsorted(y_pct, 1.0)
+        x_start = sims_sorted[idx_start] if idx_start < len(sims_sorted) else sims_sorted[-1]
+
+        plt.rcParams['font.family'] = 'SimHei'
+        plt.figure(figsize=(8, 5))
+        plt.plot(sims_sorted, y_pct, marker='.', linewidth=1)
+        plt.xlabel("余弦相似度")
+        plt.ylabel("余弦相似度 <=x 的张量的占比（根据张量大小加权）")
+        plt.title(f"{self.model_A} vs {self.model_B}", fontsize=12)
+        plt.xlim(x_start, 1.0)
+        plt.ylim(0, 100)
+        plt.grid(True)
+
+        plt.axhline(y=1.0, color='r', linestyle='--', label='1% Threshold')
+        plt.legend()
+
+        if save_path:
+            plt.savefig(save_path)
+            print(f"图形已保存至: {save_path}")
+        
+        plt.show()
+
+    def detect_cos_similarity(self):
+        self.compare_models_cos()
+        self.plot_cosine_similarity()
+        pass
+
 if __name__ == "__main__":
     tools = ExperimentTools("./experiments/adjacent_pairs_without_error.json")
     print(f"当前文件路径： {tools.path}")
@@ -148,3 +226,6 @@ if __name__ == "__main__":
     print(tools.find_relationship("deepseek-ai/DeepSeek-R1", "unsloth/MAI-DS-R1"))
     print(tools.find_relationship("unsloth/MAI-DS-R1", "wanlige/QWQ-stock"))
     print(tools.get_random_pair(False))
+
+    detector = RelationshipDetector("amitom/gpt2-Distilgpt-SLERP", "openai-community/gpt2")
+    detector.detect_cos_similarity()
