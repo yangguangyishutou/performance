@@ -60,7 +60,7 @@
 
 
 
-We discuss the motivation of our method design as the preliminary. Then we elaborate our method \tool.
+We discuss the motivation for our method design as the preliminary. Then we elaborate our method \tool.
 
 
 \subsection{Preliminary}
@@ -85,14 +85,14 @@ We discuss the motivation of our method design as the preliminary. Then we elabo
     \label{fig:overview}
 \end{figure*}
 
-Source code is considered a ``literary work'' under copyright law. The ``literary work'' can be viewed as a sequence of tokens arranged to reflect the author's intentions. Existing MIA techniques~\cite{meeus2024copyright, yang2024gotcha, wan2024does} treat all source code tokens equally and compute membership probabilities of a LLM based on a sample of these tokens. Generally, it is recognized that elements such as variable names, data and control flows, and API usage together with the involved variables, embody the author's intent and serve as indicators of source code authorship. However, we observe that some tokens primarily serve a grammatical purpose, functioning to complete the syntax constraint of the programming language.
+Source code is considered a ``literary work'' under copyright law. The ``literary work'' can be viewed as a sequence of tokens arranged to reflect the author's intentions. Existing MIA techniques~\cite{meeus2024copyright, yang2024gotcha, wan2024does} treat all source code tokens equally and compute membership probabilities of an LLM based on a sample of these tokens. Generally, it is recognized that elements such as variable names, data and control flows, and API usage, together with the involved variables, embody the author's intent and serve as indicators of source code authorship. However, we observe that some tokens primarily serve a grammatical purpose, functioning to complete the syntax constraint of the programming language.
 
 % The inherent structural duality of source code—simultaneously embodying \textit{human design intent} and \textit{machine-enforced syntax}—introduces unique challenges for membership inference in code language models. A large-scale crawl of open-source Python repositories shows that over half of all tokens belong to such grammar patterns (\eg~\texttt{for-in}, \texttt{try-except}). These ubiquitous structures raise two practical obstacles: Syntax-Induced Noise Amplification(language-mandated tokens exhibit near-identical distributions across samples, drowning discriminative signals) and Contextual Ambiguity (inability to distinguish syntax-enforced vs. meaningful occurrences). The root challenge stems from code's \textit{mandatory scaffolding} property: any correct implementation embeds intent within rigid grammatical constraints, creating persistent noise for MIA.
 
 
 \subsection{Syntax Conventions}
 
-We choose Python as our target language for studying syntax conventions, as it is a widely used programming language with broad applications in data analysis, artificial intelligence, and scientific computing. Syntax conventions refer to the specific rules defined by the Python language that programmers \textit{must} follow. Failure to do so will result in syntax errors and prevent the code from executing. Therefore, we consider tokens that follow syntax conventions to be highly predictable patterns and exclude them from the MIA calculation.
+We chose Python as our target language for studying syntax conventions, as it is a widely used programming language with broad applications in data analysis, artificial intelligence, and scientific computing. Syntax conventions refer to the specific rules defined by the Python language that programmers \textit{must} follow. Failure to do so will result in syntax errors and prevent the code from executing. Therefore, we consider tokens that follow syntax conventions to be highly predictable patterns and exclude them from the MIA calculation.
 
 In the example provided in our overview, the programmer completes the task by declaring a method named \texttt{add} within an existing class, following both the task specification and the language's syntax requirements. The method contains various syntax elements, such as a method declaration and a \textit{for} statement. The token \texttt{self} represents the class instance and is mandatory. Likewise, tokens such as the closing parenthesis \texttt{)} and colon \texttt{:} after the \texttt{row} parameter, along with the \texttt{[BR]} and \texttt{[IND]}, are also required by Python's grammar and must be present.
 
@@ -112,7 +112,7 @@ Table \ref{table:syntax} lists our summarized syntax conventions. We categorize 
     \item \textit{Data Model:} Must terminate with appropriate delimiters or accessors for syntactic completeness (\eg~closing brackets `]' or dot notation)
     \item \textit{Expressions:} Must follow function identifiers and include a parenthesized, comma-separated list of arguments (\eg~`)').
     \item \textit{Simple Statement}: Probably with aliases when including external packages (\eg~\texttt{import} \textit{module} \texttt{as})
-    \item \textit{Compound Statement:} These statements must be followed by a colon (`:') and an indented block. The enclosed statements are started with an indentation. The compound statements are probably extended with additional branches such as \texttt{elif}, \texttt{else}, \texttt{except}, \texttt{except*}, or \texttt{finally}. The \texttt{with} statement is typically used with aliases when wrapping code defined by a context manager. Classes and methods are defined using parameters enclosed in parentheses, followed by a colon. Method definitions begin with a \texttt{self} parameter to refer to the instance.
+    \item \textit{Compound Statement:} These statements must be followed by a colon (`:') and an indented block. The enclosed statements start with an indentation. The compound statements are probably extended with additional branches such as \texttt{elif}, \texttt{else}, \texttt{except}, \texttt{except*}, or \texttt{finally}. The \texttt{with} statement is typically used with aliases when wrapping code defined by a context manager. Classes and methods are defined using parameters enclosed in parentheses, followed by a colon. Method definitions begin with a \texttt{self} parameter to refer to the instance.
 \end{itemize}
 
 

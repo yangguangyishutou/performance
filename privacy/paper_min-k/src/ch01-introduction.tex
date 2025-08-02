@@ -4,7 +4,7 @@
 
 The fundamentals of large language models (LLMs) stems from the vast pre-training datasets. However, the copyright issue in the training corpora deserves serious attention. 
 Recently, several legal disputes have arisen concerning the use of copyrighted materials in training data~\cite{openaisue, newssue}. 
-Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments, but also as a means of fostering supportive and respectful environments for content creators. As LLMs proliferate and AI-generated content grows, safeguarding human creativity is vital to preserving unique and diverse~perspectives.
+Respecting copyright and intellectual property is essential, not only as a legal obligation enforced by governments, but also as a means of fostering supportive and respectful environments for content creators. As LLMs proliferate and AI-generated content grows, safeguarding human creativity is vital to preserving unique and diverse perspectives.
 
 % As the era of LLMs advances and AI-generated content increasingly populates the digital landscape, it becomes more important to uphold and protect human creativity ensures that human-generated works continue to contribute unique and diverse perspectives
 % Safeguarding originality ensures that human-generated works continue to contribute unique and diverse perspectives to our culture and knowledge.
@@ -14,20 +14,20 @@ Respecting copyright and intellectual property is essential, not only as a legal
 LLMs' coding abilities have enabled applications from autonomous agents to automated coding. 
 However, these coding abilities stem from large-scale training on open-source code, which often comes with specific usage obligations. However, such code is typically governed by specific usage obligations.
 A well-known example is the copyleft license (\eg~GPL~\cite{gnu}). %, such as the GNU General Public License (GPL). 
-The GPL was introduced in 1989 as part of the GNU Project~\cite{gnu}. Eighteen years later, we witnessed the first recognized lawsuit for a GPL violation~\cite{lvcriminaldefense, Informationweek}, when Monsoon Multimedia was sued by the Software Freedom Conservancy
-The following decades have seen many GPL conflicts and litigations~\cite{gpllitigation}, which underscores the importance of respecting copyrighted content~\cite{xu2024llms}. This case underscores the importance to respect the copyright content~\cite{xu2024llms}.
+The GPL was introduced in 1989 as part of the GNU Project~\cite{gnu}. Eighteen years later, we witnessed the first recognized lawsuit for a GPL violation~\cite{lvcriminaldefense, Informationweek}, when Monsoon Multimedia was sued by the Software Freedom Conservancy.
+The following decades have seen many GPL conflicts and litigations~\cite{gpllitigation}, which underscores the importance of respecting copyrighted content~\cite{xu2024llms}. This case underscores the importance of respecting the copyright content~\cite{xu2024llms}.
 We anticipate that similar open-source litigation may soon target LLM vendors.  % This case underscores the importance to respect the copyright content~\cite{xu2024llms}, which we anticipate that similar open source litigation will soon extend to LLM vendors. % for LLM developers to fully understand and 
 In fact, disputes over the use of code for pretraining have already emerged~\cite{githubsue}, and few have reached resolution due to the protracted nature of litigation. As a result, the transparency and accountability questions in LLMs remain unanswered.
 
 
-Several studies attempt to answer the transparency and accountability issues in LLMs. Zhou et al.~\cite{zhou2024dpdllm} analyzed books, websites, and Wikipedia to assess potential copyright violations. Recent benchmarks~\cite{chen2024copybench, liu2024shield} support evaluation of both literal copying (\eg~verbatim reproduction) and non-literal copying (\eg~replicated plots or characters) from LLM outputs. There are also proactive measures known as copyright traps~\cite{shilov2024mosaic, meeus2024copyright}, which embeds crafted copyrighted content to enable precise copyright violation detection. However, this approach is limited by the use of pre-inserted traps rather than those derived from real-world scenarios.
+Several studies attempt to answer the transparency and accountability issues in LLMs. Zhou et al.~\cite{zhou2024dpdllm} analyzed books, websites, and Wikipedia to assess potential copyright violations. Recent benchmarks~\cite{chen2024copybench, liu2024shield} support evaluation of both literal copying (\eg~verbatim reproduction) and non-literal copying (\eg~replicated plots or characters) from LLM outputs. There are also proactive measures known as copyright traps~\cite{shilov2024mosaic, meeus2024copyright}, which embed crafted copyrighted content to enable precise copyright violation detection. However, this approach is limited by the use of pre-inserted traps rather than those derived from real-world scenarios.
 
 % However, this approach suffers from the limitation that those are advancedly placed traps must be prepared in~advance.
 
 
-A another approach involves applying membership inference attacks (MIAs) to LLMs, which initially determine whether a specific data point was part of the training dataset of a machine learning model
+Another approach involves applying membership inference attacks (MIAs) to LLMs, which initially determine whether a specific data point was part of the training dataset of a machine learning model
 ~\cite{shokri2017membership, song2021systematic, song2019privacy, huang2024general, yeom2018privacy, leino2020stolen, long2018understanding, nasr2019comprehensive, sablayrolles2019white, salem2018ml, truex2019demystifying}, thereby exposing potential privacy risks. 
-MIAs in LLMs share the same intuitions of MIAs in machine learning that models memorizes data (overfitting)~\cite{song2019auditing, carlini2021extracting, tirumala2022memorization}. Tirumala et al.~\cite{tirumala2022memorization} find that models memorize nouns and numbers, and that larger models can memorize a larger portion of the data before over-fitting. 
+MIAs in LLMs share the same intuitions of MIAs in machine learning that models memorize data (overfitting)~\cite{song2019auditing, carlini2021extracting, tirumala2022memorization}. Tirumala et al.~\cite{tirumala2022memorization} find that models memorize nouns and numbers, and that larger models can memorize a larger portion of the data before over-fitting. 
 These methods assume access to pretraining data to train shadow or reference models. Yang et al.~\cite{yang2024gotcha} presented \textsc{GotCha}, a membership inference attack using surrogate models tailored for code LLMs.
 However, training such models is computationally expensive, and pretraining data is often unavailable, especially for commercial LLMs.
 Differently, several MIAs on LLMs typically exploit the model's token-level outputs and probabilities~\cite{carlini2021extracting}, often in combination with techniques such as synonym substitution to leverage neighboring data~\cite{mattern2023membership}, detection of low-probability tokens~\cite{shi2023detecting}, or calibration of token probabilities using term frequency divergence~\cite{zhang2024pretraining}. 
@@ -82,10 +82,3 @@ Experimental results show that \tool outperforms state-of-the-art MIA techniques
 % To facilitate this study and the evaluation of pre-training data detection for LLMs, we introduce a new benchmark named PatentMIA, specifically designed for Chinese-language pretraining data detection. PatentMIA is sourced from Google-Patents (Google, 2006) and constructed following Shi et al. (2024), who distinguish between train-ing and non-training data based on cut-off dates of the target LLM, where training data precedes, and non-training data follows, the cut-off date.
 
 % challenge: verbatim instances
-
-
-
-
-
-
-
