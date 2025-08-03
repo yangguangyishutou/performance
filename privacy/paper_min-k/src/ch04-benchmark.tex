@@ -1,0 +1,85 @@
+% !TeX root = ../main.tex
+
+\section{Benchmark Construction}
+
+% Existing MIA benchmarks, \eg WikiMIA~\cite{shi2023detecting} and MIMIR~\cite{duan2024membership}, are designed to evaluate MIAs on generic data elements instead of code. 
+
+Existing MIA benchmarks, such as WikiMIA~\cite{shi2023detecting} and MIMIR~\cite{duan2024membership}, are designed to evaluate membership inference attacks on general textual data, rather than source code.
+The source code benchmark used in Yang et al.\cite{yang2024gotcha} consists of members and non-members randomly sampled from CodeXGLUE\cite{lu2021codexglue}, with labels assigned afterward. We argue that such a design fails to reflect the real-world distinctions between members and non-members. To address this, we constructed an authentic and verifiable benchmark in which members are traceable to the public datasets declared by the evaluated models, and non-members are created after the release cut-off date of the LLMs. Table~\ref{tab:benchmark} presents the statistics of our collected benchmark on the Python language. Specifically, we collected member and non-member samples as follows.
+
+
+
+% They can not accurately capture MIA capabilities on code or the extent to which LLMs utilize copyrighted code.
+% The source code benchmark in Yang et al.'s~\cite{yang2024gotcha} work is constructed from CodeXGLUE~\cite{lu2021codexglue}, whose members and non-members are randomly sampled from CodeXGLUE, which we believe can not reflect the real-world characteristic difference between members and non-members.
+% Yang et al.'s benchmark~\cite{yang2024gotcha} includes member and non-members that 
+% \todo{Although the benchmark from Yang et al.~\cite{yang2024gotcha} targeted code, it has several limitations for our study. Their benchmark only covers the Java language and relies on the general-purpose CodeXGLUE~\cite{lu2021codexglue}. Furthermore, their MIA method requires training an auxiliary classifier, which constitutes a complete attack pipeline. Our study, however, requires a purer benchmark consisting only of member and non-member samples to directly evaluate our method's performance on the LLM, rather than assessing a complex attack process involving auxiliary models. Our time-based construction of the benchmark is therefore more direct and better aligned with the goal of evaluating the model's "memory".}
+% , named \benchmark, using Python code. 
+
+\textbf{Members.} We leveraged the Pile~\cite{pile}, a large-scale open-source dataset composed of multiple smaller datasets, including 7.6\% of a repository dataset sourced from GitHub~\cite{thepile}. The Pile was released in 2021, serving as the training dataset for many LLMs, including Pythia~\cite{biderman2023pythia}, GPT-Neo~\cite{black2021gptneo}, StableLM~\cite{stabilityai2023stablelm}, etc. We randomly sampled 1,000 Python functions by selecting 10 functions from every 100 consecutive entries in the Pile dataset.
+
+% using scripts to generate a JSONL file. From this file, we systematically sample 10 functions from every 100 consecutive entries starting from the beginning, processing a total of 10,000 entries to obtain 1,000 functions. %, resulting in the positive.jsonl file.
+
+\textbf{Non-members.} For non-members, we searched GitHub using a customized query for Python repositories, limiting the creation time to after January 1, 2024 (All four evaluated LLMs had been released prior to this date.). We sorted the repositories by star count in descending order to ensure quality. We then extracted 10 Python functions from each repository before proceeding to the next one, continuing this process across 100 repositories to collect a total of 1,000 functions. To ensure these functions were genuinely original and not cloned from pre-existing sources, we implemented a rigorous verification process. First, we parsed each candidate function's code using Python's \texttt{ast} module to extract its name, variable names, and function calls. These elements were then used to build search queries for the GitHub API. The verification relied on three heuristics: (1) searching for the exact function name to identify direct duplicates; (2) searching by internal variable names to detect refactored code reuse; and (3) searching for the complete string of function calls to find logic similarities. Two of the authors conducted peer reviews on the search results to ensure that all 1,000 functions were original and created after January 2024.
+
+
+Table~\ref{tab:benchmark} summarizes the statistics of our collected benchmark. The benchmark includes 214 non-member function files with an average of 25.34 lines of code (LOC). For member functions, file counts are unavailable as this information was not provided in the Pile dataset.
+
+\begin{table}[!t] 
+    \centering
+    \footnotesize
+        \caption{Benchmark Statistics}\label{tab:benchmark}
+    \begin{tabular}{m{1.2cm}m{1.2cm}m{1.2cm}m{1.5cm}}
+    \toprule
+    \multirow{1}{*}{\textbf{Label}}   & \textbf{Files (\#)}  & \textbf{Func. (\#)}   & \textbf{Aver. LOC (\#)}   \\ 
+    \midrule
+    \multirow{2}{*}{Members}   & \multirow{2}{*}{-} & \multirow{2}{*}{1000} & \multirow{2}{*}{14.03}  \\ 
+     & & & \\ 
+    \cmidrule(lr){1-4}       
+         \multirow{2}{*}{\shortstack{Non-\\Members}}  & \multirow{2}{*}{214} & \multirow{2}{*}{1000}  & \multirow{2}{*}{25.34} \\ 
+     & & & \\ 
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!t] 
+    \centering
+    \footnotesize
+    \caption{Syntax Convention Counts in our Benchmark}\label{tab:syntax-stats}
+    \begin{tabular}{m{4cm}m{2cm}}
+    \toprule
+    \textbf{Category} & \textbf{Count} \\
+    \midrule
+    Data Model & 63,594 \\
+    Expressions & 30,988 \\
+    Single Statements & 321 \\
+    Compound Statements & 11,816 \\
+    \midrule
+    \multicolumn{1}{l}{\textbf{Total Syntax Tokens:}} & 95,257 \\
+    \multicolumn{1}{l}{\textbf{Total Tokens:} } & 248,218 \\
+    \multicolumn{1}{l}{\textbf{Syntax Tokens Ratio:} } & 38.4\% \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+We count the occurrences of the syntax conventions (\ie~conditions and consequences) that existed in our benchmark. Table~\ref{tab:syntax-stats} presents the distribution of these syntax convention categories in our benchmark, which demonstrates the syntactic diversity and complexity of the collected functions. The data model accounts for the largest portion of syntax convention tokens, contributing 63,594 tokens, followed by expressions with 30,988 tokens. In total, the four categories result in 95,257 tokens that would be pruned by \tool for MIA, representing 38.4\% of the overall token set.
+
+% This analysis helps validate that our dataset contains a representative sample of Python programming constructs that follow the syntax conventions we aim to filter in our membership inference approach.
+
+
+% present in the collected functions based on the four categories defined in our methodology (Section~\ref{sec:methodology}).
+% : Data Model, Expressions, Single Statements, and Compound Statements. 
+
+
+\textbf{Ratio Settings.} We evaluated the MIAs under three different member-to-non-member ratios: 1:1, 1:5, and 5:1. For the 1:1 setting, we used 1,000 members and 1,000 non-members. For the 1:5 setting, we randomly sampled 200 members and combined them with 1,000 non-members. Conversely, the 5:1 setting consisted of 1,000 members and a random sample of 200 non-members. These varied distributions were designed to assess the performance and robustness of performing MIAs of code members in LLMs, particularly under imbalanced dataset scenarios.
+
+%  subsets for comprehensive experimental evaluation: 1:1 (1000:1000), 1:5 (200:1000), and 5:1 (1000:200). 
+ 
+
+
+%  Due to the constraints of our original benchmark size, the larger subset in both 1:5 and 5:1 ratios is limited to 1000 samples, resulting in 200 samples for the smaller subset. 
+
+%  To explore the effectiveness of MIA techniques under various data distribution, 
+
+
+% Table~\ref{tab:benchmark} presents the statistics of our collected benchmark, \benchmark. We categorize the functions by length into three groups: short (functions with character counts below the 33rd percentile), medium (33rd percentile ≤ length < 66th percentile), and long (length ≥ 66th percentile).
+% \textbf{Length.} We define the length of a code snippet as the number of characters in the function field. We divide the character length into three categories based on statistical distribution: short (character length < 33rd percentile), medium (33rd percentile $ \le $ character length < 66th percentile), and long (character length $\ge$ 66th percentile).

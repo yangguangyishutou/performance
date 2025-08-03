@@ -1,0 +1,17 @@
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+\begin{table}[h]
+\centering
+\vspace{-1mm}
+\caption{Jailbreak performance with different harmful guidance for LLAMA2-7B-CHAT. }
+\label{table:information}
+\vspace{-2mm}
+\scalebox{0.9}{
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+\begin{tabular}[c]{@{}c@{}}Harmful \\ Guidance\end{tabular} & \begin{tabular}[c]{@{}c@{}}my action \\ is unsafe\end{tabular} & \begin{tabular}[c]{@{}c@{}}my behavior \\ is risky\end{tabular} & \begin{tabular}[c]{@{}c@{}}my action \\ poses a danger\end{tabular} & \begin{tabular}[c]{@{}c@{}}my answer \\ is risky\end{tabular} & \begin{tabular}[c]{@{}c@{}}my information \\ is dangerous\end{tabular} \\ \midrule
+ASR                                                 & 100\%                                                          & 100\%                                                           & 100\%                                                               & 100\%                                                         & 100\%                                                                  \\ \bottomrule
+\end{tabular}
+}
+\vspace{-2mm}
+\end{table}

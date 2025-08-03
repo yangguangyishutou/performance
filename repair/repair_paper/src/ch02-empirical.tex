@@ -1,0 +1,112 @@
+% !TeX root = ../main.tex
+
+\section{Empirical Study}\label{motivation}
+ 
+
+\subsection{Data Collection}
+We collect our dataset through a two-step process. First, we identify CWE entries associated with overflow vulnerabilities. Then, we extract relevant vulnerability samples from widely-used vulnerability repair datasets based on these identified CWEs.
+
+To systematically identify overflow-related vulnerabilities, we adopt a two-pronged approach to collecting relevant CWE entries. First, we refer to the Common Weakness Enumeration (CWE) framework\cite{CWEHome}, specifically utilizing CWE View-1000\cite{CWE1000}, also known as the “Research Concepts View.” This view provides a semantically organized structure of software weaknesses tailored for academic analysis, emphasizing conceptual clarity and hierarchy. Based on this taxonomy, we identify CWE-119 — Improper Restriction of Operations within the Bounds of a Memory Buffer — and its descendant nodes as representative of overflow vulnerabilities. The complete list of selected CWE entries is provided in Table~\ref{tab:cwe-list}.Second, to complement the taxonomy-driven selection, we conduct a survey of recent research on vulnerability detection and repair. Using keywords such as “overflow,” “detect,” and “repair,” we search for papers published in top-tier software engineering and security venues (e.g., CCS\footnote{ACM Conference on Computer and Communications Security}, ASE\footnote{IEEE/ACM International Conference on Automated Software Engineering}). From these works\cite{le2024study,li2022pacmem,liu2025cctag,zhang2023vulnerability,kang2022tracer,gorter2024sticky,steenhoek2023empirical,ba2022efficient,guo2024precise}, we analyze the datasets used and extract the CWE identifiers associated with overflow vulnerabilities. We find that most of these CWEs are already included in the CWE View-1000 hierarchy; for those not covered, we incorporate them into our list to ensure comprehensive coverage and consistency with real-world research practices.
+
+Next, we extract overflow-related vulnerability samples from two widely used vulnerability repair datasets: BigVul\cite{bigvul} and CVEFixes\cite{bhandari2021:cvefixes}. BigVul is a large-scale dataset that collects real-world vulnerabilities and corresponding fixes from open-source projects hosted on GitHub. CVEFixes, on the other hand, focuses on Common Vulnerabilities and Exposures (CVEs) and provides fine-grained fix commits associated with specific CVE entries. To maintain consistency with BigVul, we only retain C/C++ vulnerability samples from CVEFixes.We merge the two datasets following the standard practice established in prior work\cite{zhou2024large}, including deduplication and partitioning at the function level. Before filtering, the merged dataset consists of 135 CWEs, 4,067 CVEs, and 14,216 vulnerable functions. By applying the set of CWE identifiers identified in the previous step, we construct a refined dataset focused on overflow vulnerabilities, which includes 2,054 distinct CVEs and 7,865 vulnerable functions.A detailed breakdown of the final dataset is presented in Table~\ref{tab:cwe-distribution}.
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{c|p{7.6cm}}
+\hline
+\textbf{ID} & \textbf{Name} \\
+\hline
+119 & Improper Restriction of Operations within the Bounds of a Memory Buffer \\
+120 & Buffer Copy without Checking Size of Input ('Classic Buffer Overflow') \\
+121 & Stack-based Buffer Overflow \\
+122 & Heap-based Buffer Overflow \\
+123 & Write-what-where Condition \\
+124 & Buffer Underwrite (Buffer Underflow) \\
+125 & Out-of-bounds Read \\
+126 & Buffer Over-read \\
+127 & Buffer Under-read \\
+190$^\ast$ & Integer Overflow or Wraparound \\
+415 & Double Free \\
+416 & Use After Free \\
+466 & Return of Pointer Value Outside of Expected Range \\
+476$^\ast$ & NULL Pointer Dereference \\
+761$^\ast$ & Free of Pointer not at Start of Buffer \\
+786 & Access of Memory Location Before Start of Buffer \\
+787 & Out-of-bounds Write \\
+788 & Access of Memory Location After End of Buffer \\
+805 & Buffer Access with Incorrect Length Value \\
+806 & Buffer Access Using Size of Source Buffer \\
+822 & Untrusted Pointer Dereference \\
+823 & Use of Out-of-range Pointer Offset \\
+824 & Access of Uninitialized Pointer \\
+825 & Expired Pointer Dereference \\
+\hline
+\end{tabular}
+\caption{List of CWE entries related to overflow vulnerabilities. Entries marked with $^\ast$ are added based on recent literature.}
+\label{tab:cwe-list}
+\end{table}
+
+\begin{table}[H]
+\centering
+
+\begin{tabular}{c|c|c}
+\hline
+\textbf{CWE ID} & \textbf{CVE Count} & \textbf{Vulnerability Count} \\
+\hline
+CWE-119 & 483 & 1532 \\
+CWE-120 & 71 & 249 \\
+CWE-121 & 9 & 14 \\
+CWE-122 & 47 & 69 \\
+CWE-125 & 425 & 1417 \\
+CWE-126 & 2 & 2 \\
+CWE-190 & 159 & 2539 \\
+CWE-415 & 42 & 162 \\
+CWE-416 & 215 & 463 \\
+CWE-476 & 267 & 456 \\
+CWE-787 & 319 & 943 \\
+CWE-823 & 4 & 5 \\
+CWE-824 & 11 & 14 \\
+\hline
+\textbf{Total} & \textbf{2054} & \textbf{7865} \\
+\hline
+\end{tabular}
+\caption{CWE Distribution}
+\label{tab:cwe-distribution}
+\end{table}
+
+\subsection{RQ design}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{RQ0. Vulnerability Characterization.} What are the key characteristics of overflow vulnerabilities?
+  \begin{itemize}
+    \item \textbf{RQ0.0 Trigger Logic.} What are the common triggering patterns or logic that lead to overflows?
+    \item \textbf{RQ0.1 Fixing Strategies.} What kinds of repair strategies are commonly applied to overflow vulnerabilities?
+  \end{itemize}
+  
+  \item \textbf{RQ1. Effectiveness of Simple Prompting.} How effective is a simple prompt-based approach in enabling LLMs to repair overflow vulnerabilities?
+\begin{itemize}
+  \item \textbf{RQ1.1 Impact of Trigger Logic.} How does the effectiveness of prompt-based LLM repair vary across different overflow trigger logics?
+  \item \textbf{RQ1.2 Impact of Fixing Strategies.} How does the effectiveness of prompt-based LLM repair vary across different fixing strategies?
+\end{itemize}
+
+\item \textbf{RQ2. Effectiveness of Agent-based Repair.} How effective is an agent-assisted approach in enabling LLMs to repair overflow vulnerabilities?
+\begin{itemize}
+  \item \textbf{RQ2.1 Impact of Trigger Logic.} How does the effectiveness of agent-based LLM repair vary across different overflow trigger logics?
+  \item \textbf{RQ2.2 Impact of Fixing Strategies.} How does the effectiveness of agent-based LLM repair vary across different fixing strategies?
+\end{itemize}
+
+\end{itemize}
+
+\subsection{RQ0: Vulnerability Characterization}
+
+\subsubsection{ploit labeling}
+
+xxxx
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75, title=Answer to RQ0]
+
+Overflow vulnerabilities can be characterized along two axes: the \textit{trigger logic} and the \textit{repair strategy}. 
+
+\end{tcolorbox}
+
+

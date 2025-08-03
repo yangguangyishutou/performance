@@ -1,0 +1,152 @@
+@online{CWEHome,
+  title        = {Common Weakness Enumeration (CWE)},
+  author       = {{The MITRE Corporation}},
+  year         = {2024},
+  url          = {https://cwe.mitre.org/},
+  note         = {Accessed: 2025-07-21},
+  organization = {MITRE}
+}
+
+@online{CWE1000,
+  title        = {Research Concepts (View-1000) – Common Weakness Enumeration (CWE) Detail for CWE-1000},
+  author       = {{The MITRE Corporation}},
+  year         = {2024},
+  month        = mar,
+  day          = {22},
+  url          = {https://cwe.mitre.org/data/definitions/1000.html},
+  note         = {Accessed: 2025-07-21},
+  organization = {MITRE}
+}
+
+
+@inproceedings{le2024study,
+author = {Le, Tan Khang and Alimadadi, Saba and Ko, Steven Y.},
+title = {A Study of Vulnerability Repair in JavaScript Programs with Large Language Models},
+year = {2024},
+isbn = {9798400701726},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3589335.3651463},
+doi = {10.1145/3589335.3651463},
+abstract = {In recent years, JavaScript has become the most widely used programming language, especially in web development. However, writing secure JavaScript code is not trivial, and programmers often make mistakes that lead to security vulnerabilities in web applications. Large Language Models (LLMs) have demonstrated substantial advancements across multiple domains, and their evolving capabilities indicate their potential for automatic code generation based on a required specification, including automatic bug fixing. In this study, we explore the accuracy of LLMs, namely ChatGPT and Bard, in finding and fixing security vulnerabilities in JavaScript programs. We also investigate the impact of context in a prompt on directing LLMs to produce a correct patch of vulnerable JavaScript code. Our experiments on real-world software vulnerabilities show that while LLMs are promising in automatic program repair of JavaScript code, achieving a correct bug fix often requires an appropriate amount of context in the prompt.},
+booktitle = {Companion Proceedings of the ACM Web Conference 2024},
+pages = {666–669},
+numpages = {4},
+keywords = {automatic program repair, cwe, javascript, large language models, prompt engineering},
+location = {Singapore, Singapore},
+series = {WWW '24}
+}
+
+@inproceedings{li2022pacmem,
+  title={Pacmem: Enforcing spatial and temporal memory safety via arm pointer authentication},
+  author={Li, Yuan and Tan, Wende and Lv, Zhizheng and Yang, Songtao and Payer, Mathias and Liu, Ying and Zhang, Chao},
+  booktitle={Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security},
+  pages={1901--1915},
+  year={2022}
+}
+
+@inproceedings{liu2025cctag,
+  title={CCTAG: Configurable and Combinable Tagged Architecture.},
+  author={Liu, Zhanpeng and Rong, Yi and Li, Chenyang and Tan, Wende and Li, Yuan and Han, Xinhui and Yang, Songtao and Zhang, Chao},
+  booktitle={NDSS},
+  year={2025}
+}
+
+@article{zhang2023vulnerability,
+  title={Vulnerability detection by learning from syntax-based execution paths of code},
+  author={Zhang, Junwei and Liu, Zhongxin and Hu, Xing and Xia, Xin and Li, Shanping},
+  journal={IEEE Transactions on Software Engineering},
+  volume={49},
+  number={8},
+  pages={4196--4212},
+  year={2023},
+  publisher={IEEE}
+}
+
+@inproceedings{kang2022tracer,
+  title={Tracer: Signature-based static analysis for detecting recurring vulnerabilities},
+  author={Kang, Wooseok and Son, Byoungho and Heo, Kihong},
+  booktitle={Proceedings of the 2022 ACM SIGSAC Conference on Computer and Communications Security},
+  pages={1695--1708},
+  year={2022}
+}
+
+@inproceedings{gorter2024sticky,
+  title={Sticky tags: Efficient and deterministic spatial memory error mitigation using persistent memory tags},
+  author={Gorter, Floris and Kroes, Taddeus and Bos, Herbert and Giuffrida, Cristiano},
+  booktitle={2024 IEEE Symposium on Security and Privacy (SP)},
+  pages={4239--4257},
+  year={2024},
+  organization={IEEE}
+}
+
+@inproceedings{steenhoek2023empirical,
+  title={An empirical study of deep learning models for vulnerability detection},
+  author={Steenhoek, Benjamin and Rahman, Md Mahbubur and Jiles, Richard and Le, Wei},
+  booktitle={2023 IEEE/ACM 45th International Conference on Software Engineering (ICSE)},
+  pages={2237--2248},
+  year={2023},
+  organization={IEEE}
+}
+
+@inproceedings{ba2022efficient,
+  title={Efficient greybox fuzzing to detect memory errors},
+  author={Ba, Jinsheng and Duck, Gregory J and Roychoudhury, Abhik},
+  booktitle={Proceedings of the 37th IEEE/ACM International Conference on Automated Software Engineering},
+  pages={1--12},
+  year={2022}
+}
+
+@inproceedings{guo2024precise,
+  title={Precise Compositional Buffer Overflow Detection via Heap Disjointness},
+  author={Guo, Yiyuan and Yao, Peisen and Zhang, Charles},
+  booktitle={Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis},
+  pages={63--75},
+  year={2024}
+}
+
+@inproceedings{bigvul,
+author = {Fan, Jiahao and Li, Yi and Wang, Shaohua and Nguyen, Tien N.},
+title = {A C/C++ Code Vulnerability Dataset with Code Changes and CVE Summaries},
+year = {2020},
+isbn = {9781450375177},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3379597.3387501},
+doi = {10.1145/3379597.3387501},
+abstract = {We collected a large C/C++ code vulnerability dataset from open-source Github projects, namely Big-Vul. We crawled the public Common Vulnerabilities and Exposures (CVE) database and CVE-related source code repositories. Specifically, we collected the descriptive information of the vulnerabilities from the CVE database, e.g., CVE IDs, CVE severity scores, and CVE summaries. With the CVE information and its related published Github code repository links, we downloaded all of the code repositories and extracted vulnerability related code changes. In total, Big-Vul contains 3,754 code vulnerabilities spanning 91 different vulnerability types. All these code vulnerabilities are extracted from 348 Github projects. All information is stored in the CSV format. We linked the code changes with the CVE descriptive information. Thus, our Big-Vul can be used for various research topics, e.g., detecting and fixing vulnerabilities, analyzing the vulnerability related code changes. Big-Vul is publicly available on Github.},
+booktitle = {Proceedings of the 17th International Conference on Mining Software Repositories},
+pages = {508–512},
+numpages = {5},
+keywords = {Common Vulnerabilities and Exposures, Code Changes, C/C++ Code},
+location = {Seoul, Republic of Korea},
+series = {MSR '20}
+}
+
+@inproceedings{bhandari2021:cvefixes,
+    title = {{CVEfixes: Automated Collection of Vulnerabilities  and Their Fixes from Open-Source Software}},
+    booktitle = {{Proceedings of the 17th International Conference on Predictive Models and Data Analytics in Software Engineering (PROMISE '21)}},
+    author = {Bhandari, Guru and Naseer, Amara and Moonen, Leon},
+    year = {2021},
+    pages = {10},
+    publisher = {{ACM}},
+    doi = {10.1145/3475960.3475985},
+    copyright = {Open Access},
+    isbn = {978-1-4503-8680-7},
+    language = {en}
+}
+
+@article{zhou2024large,
+  title={Large Language Model as Synthesizer: Fusing Diverse Inputs for Better Automatic Vulnerability Repair},
+  author={Zhou, Xin and Kim, Kisub and Xu, Bowen and Han, DongGyun and Lo, David},
+  journal={CoRR},
+  year={2024}
+}
+
+@misc{cwe2024top25,
+  title        = {CWE Top 25 Most Dangerous Software Weaknesses for 2024},
+  author       = {{MITRE}},
+  howpublished = {\url{https://cwe.mitre.org/top25/}},
+  year         = {2024},
+  note         = {Accessed: 2025-07-21}
+}

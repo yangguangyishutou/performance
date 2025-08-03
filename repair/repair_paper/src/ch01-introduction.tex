@@ -1,0 +1,10 @@
+% !TeX root = ../main.tex
+
+\section{Introduction}
+
+\textbf{Overflow vulnerabilities} are a class of software weaknesses that occur when a program writes more data to a buffer than it can hold, potentially leading to serious consequences such as arbitrary code execution or memory corruption. These vulnerabilities are particularly common in low-level programming languages like C and C++, where manual memory management is widely used. Based on our analysis of two widely used vulnerability repair datasets—BigVul\cite{bigvul} and CVEFixes\cite{bhandari2021:cvefixes}—we observe that overflow-related issues account for a significant proportion of real-world vulnerabilities: 2,054 out of 4,067 CVEs (50.5\%) and 7,865 out of 14,216 vulnerable functions (55.3\%) are linked to overflow-related CWE entries. Furthermore, according to the 2024 CWE Top 25 Most Dangerous Software Weaknesses\cite{cwe2024top25}, six out of the top 25 entries fall into the category of overflow vulnerabilities, highlighting their continued prevalence and severity in modern software systems.
+
+
+
+
+\textbf{llm-based vulnerability repair} refers to the use of large language models (LLMs) to automatically detect and fix software vulnerabilities. LLMs, trained on vast amounts of code, can understand programming languages and generate code snippets that address specific vulnerabilities. This approach leverages the capabilities of LLMs to analyze code patterns and suggest fixes, potentially improving the efficiency and effectiveness of vulnerability repair processes.

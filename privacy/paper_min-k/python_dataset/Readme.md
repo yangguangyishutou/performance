@@ -1,0 +1,12 @@
+本数据集包含positive和negative，用于实验的文件为positive.jsonl和negative.jsonl，各有1000条
+
+positive：
+positive_original.jsonl是从the pile的代码数据集中筛选python语言获得的
+positive.jsonl是从positive_original.jsonl中获得的：每100行取前10行，共处理10000行，共取得1000行
+abstract_script.py是处理脚本
+
+negative：
+negative_raw.jsonl是从github获得的：筛选创建于2024年1月1日之后的python语言仓库，按star数降序排序，每个仓库找到10个python函数就切换到到新的仓库，共找100个仓库，取得1000条
+neagtive.jsonl是从negative_raw.jsonl中只选取function和label字段获得的
+collect_script.py是收集脚本
+abstract_script.py是处理脚本

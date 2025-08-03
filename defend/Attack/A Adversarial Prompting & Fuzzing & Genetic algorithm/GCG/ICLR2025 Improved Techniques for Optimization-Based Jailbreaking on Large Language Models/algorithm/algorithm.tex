@@ -1,0 +1,50 @@
+\begin{algorithm}[H]
+% \scriptsize
+	{
+		\caption{$\mathcal{I}$-GCG}\label{alg:ours}
+		\KwIn{Initial suffix $\boldsymbol{x}^I$, malicious question $\boldsymbol{x}^{O}$, Batch size $B$, Iterations $T$, Loss $\mathcal{L}$, single-token suffix candidates $p$}
+		\KwOut{Optimized suffix $\boldsymbol{x}_{1:m}^{S}$}
+
+        $\boldsymbol{x}_{1:m}^{S}=\boldsymbol{x}^I$ \\
+        \For{$t = 1\ \mathrm{to}\ {T}$}
+        {
+            \For{$i \in \mathcal{I}$ \label{line:gradient_calculation_start}}
+            {
+                \textcolor{blue}{$\rhd$ Compute top-k promising token substitutions}\\
+                $\mathcal{X}_i^{S}:=\operatorname{Top}-k\left(-\nabla_{e_{\boldsymbol{x}_{i}^{S}}} \mathcal{L}\left(\boldsymbol{x}^{O} \oplus \boldsymbol{x}_{1:m}^{S}\right)\right)$
+            }
+            \For{$b = 1\ \mathrm{to}\ {B}$ \label{line:compute_candidate}} 
+                {
+                \textcolor{blue}{$\rhd$ initialize element of batch}\\
+                $\tilde{\boldsymbol{x}}_{1:m}^{{S}^{(b)}} \gets \boldsymbol{x}_{1:m}^{S} $\\
+                \textcolor{blue}{$\rhd$ select random replacement token}\\
+                $\mathcal{X}_i^{S}:= \tilde{\boldsymbol{x}}_{i}^{{S}^{(b)}} \gets$ Uniform$(\mathcal{X}_i^{S}),~$where$~i =$ Uniform$(\mathcal{I})$
+                }
+            \textcolor{blue}{$\rhd$ Compute top-p single-token substitutions}\\
+            $\boldsymbol{x}_{1:m}^{\hat{S_1}}, \boldsymbol{x}_{1:m}^{\hat{S_2}}, \ldots, \boldsymbol{x}_{1:m}^{\hat{S_p}}=\operatorname{Top}-p(\tilde{\boldsymbol{x}}_{1:m}^{{S}^{(b)}})$ \\
+            $\boldsymbol{x}_{1:m}^{\hat{S_0}} = \boldsymbol{x}_{1:m}^{S}  $\\
+             \For{$i = 1\ \mathrm{to}\ {p}$}
+                { 
+                \textcolor{blue}{$\rhd$ initialize multiple token candidates }\\
+                $\boldsymbol{x}^{\tilde{S_i}} = \boldsymbol{x}^{\hat{S_i}} $
+                
+            
+            \For{$j = 1\ \mathrm{to}\ {M}$} 
+                {
+                \textcolor{blue}{$\rhd$ token combination}\\
+                \If{$\boldsymbol{x}_{j}^{\hat{S}_{i}} \ne \boldsymbol{x}_{j}^{\hat{S}_{0}}$}
+                {
+            $\boldsymbol{x}_{j}^{\tilde{S}_{i}}= \boldsymbol{x}_{j}^{\tilde{S}_{i}}$ 
+                }
+            \Else 
+                {
+            $\boldsymbol{x}_{j}^{\tilde{S}_{i}}= \boldsymbol{x}_{j}^{\tilde{S}_{i-1}}$ 
+                }
+                }
+            }
+        $\boldsymbol{x}_{1:m}^{\tilde{S}_{(c)}}=\boldsymbol{x}_{1:m}^{\tilde{S_1}}, \boldsymbol{x}_{1:m}^{\tilde{S_2}}, \ldots, \boldsymbol{x}_{1:m}^{\tilde{S_p}}$ \\
+    \textcolor{blue}{$\rhd$ Compute best candidate}\\
+        $\boldsymbol{x}_{1:m}^{S}:=\boldsymbol{x}_{1:m}^{\tilde{S}_{_{(c^{\star})}}}$, where $c^{\star}=\operatorname{argmin}_c \mathcal{L}\left(\boldsymbol{x}^{O} \oplus \boldsymbol{x}_{1:m}^{\tilde{S}_{(c)}}\right)$
+	}
+ }
+\end{algorithm}

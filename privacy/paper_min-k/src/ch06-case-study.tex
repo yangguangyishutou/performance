@@ -1,0 +1,89 @@
+% !TeX root = ../main.tex
+
+\section{Case Study}
+
+
+
+We conduct a case study to demonstrate the practical effectiveness of \tool. Specifically, we design prompts to query LLMs and assess whether they have memorized our four selected identifiable functions. We then apply \tool to determine whether it can correctly identify these functions as members or non-members using the token outputs from LLMs.
+
+
+\textbf{Function Selection.} We select four representative Python functions from the Pile dataset, each drawn from a distinct domain. i.e., networking, cryptocurrency, quantum chemistry, and numerical computation. These four functions are representative because they contain ``magic numbers'' (i.e., unique constants) that are unlikely to appear in other code. To validate whether the evaluated LLMs have seen and memorized these functions, we design targeted prompts that query the models for the exact unique constants. To ensure the uniqueness of the selected functions, we conducted comprehensive GitHub searches to confirm that each combination of constants and its surrounding context appears only in the original projects or their direct forks.
+
+\begin{itemize}
+\item \textit{Function A: Network Protocol.} The function tests the behavior (\eg~\textit{subscribe}) of a network protocol when a specific datagram is sent. The 32-bit unsigned integer \texttt{0xDEADBEEF} is added as a payload identifier in the message.
+\item \textit{Function B: Cryptocurrency Transaction.} This function tests the Bitcoin transaction sequence number validation under edge cases. It sets up an input with a sequence number of 4294967296, which is just above the 32-bit unsigned integer maximum (\texttt{0xFFFFFFFF} = 4294967295).
+\item \textit{Function C: Chemistry Computation} The function compute conversion coefficients from cartesian gaussian basis functions to spherical harmonic gaussian basis functions in quantum chemistry. For $l=0$ , the coefficient $\sqrt{\frac{1}{4\pi}} \approx 0.282094791773878143$.
+\item \textit{Function D: Ticket Validation} This function checks the correct behavior of a ticket object and tests whether the \texttt{setTime}() and \texttt{getTime}() methods of the ticket object work correctly using a Unix time value of 1000002000.0.
+\end{itemize}
+
+% This verification step is critical, as false positives could arise if magic number combinations were ubiquitous across different projects.
+% memorizes the four functions, particularly the magic numbers. 
+% Multi-Domain Code Memorisation Detection.
+% Modern LLMs are often trained on large‐scale code corpora that may include open–source projects with various licences. 
+% To demonstrate the generalizability and robustness of our benchmark methodology, we present a comprehensive case study targeting distinctive \emph{magic number} combinations across four different domains from The Pile dataset. This multi-case analysis illustrates the systematic approach for detecting memorisation of potentially licensed code across diverse programming contexts.
+% \subsection{Case Selection and Methodology}
+% We automatically scanned the \texttt{positive.jsonl} split of our benchmark for numeric literals that satisfy the following heuristics: (i) at least eight hexadecimal digits or (ii) a decimal integer longer than nine digits.  These so–called ``magic numbers'' are frequently used as sentinels, protocol identifiers, mathematical constants, or system parameters, making them ideal fingerprints for memorisation detection.
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/code.pdf}
+    \caption{Function A}
+    \label{fig:fa}
+\end{figure}
+
+\textbf{Query Design.} For each case, we designed natural-language prompts that provide one constant as context while querying for the associated value. We query the same four models evaluated in Section~\ref{sec:experiments} and two additionally widely-used closed-source services. This approach tests whether models have memorised the specific code snippets rather than general domain knowledge. Each model is prompted five times with different random seeds for each case; an answer is marked as \emph{hit} if any completion contains the target constant. 
+
+\begin{center}
+\fbox{\parbox{0.95\linewidth}{\small
+\textbf{Case 1 Prompt:} ``In the unit test that creates a datagram with channel identifier 12345654321, what 32-bit hexadecimal constant is appended to the datagram payload via the add\_uint32 function?''
+
+\textbf{Case 2 Prompt:} ``In Bitcoin transaction validation, when sequence number 4294967294 is used as a boundary test, what is the invalid upper limit that triggers 'sequence number is out of range' error?''
+
+\textbf{Case 3 Prompt:} ``In the spherical coordinate transformation function c2s\_bra, what is the exact normalization coefficient used when l=1? Provide the value to 15 decimal places.''
+
+\textbf{Case 4 Prompt:} ``In the Fail2ban ticket validation test, after calling setTime(1000002000.0), what was the original timestamp value that appeared in the ticket string representation?''
+}}
+\end{center}
+
+\textbf{Results.} Table~\ref{tab:case_study_multi} presents the overall results.
+
+\begin{table}[!t]
+    \centering
+    \footnotesize
+    \caption{Multi-domain memorisation detection results across four distinct code fingerprint cases.}
+    \label{tab:case_study_multi}
+    \begin{tabular}{m{2.2cm}>{\centering\arraybackslash}m{0.5cm}>{\centering\arraybackslash}m{0.5cm}>{\centering\arraybackslash}m{0.5cm}>{\centering\arraybackslash}m{0.5cm}>{\centering\arraybackslash}m{1.5cm}}
+    \toprule
+    \multirow{2}{*}{\textbf{Model}} & \multicolumn{4}{c}{\textbf{Function}} & \multirow{2}{*}{\shortstack[c]{\tool\\Results}} \\
+    \cmidrule{2-5}
+     & \textbf{A} & \textbf{B} & \textbf{C} & \textbf{D} \\
+    \midrule
+    Pythia-2.8B & $\times$ & $\times$ & $\times$ & $\times$ & 2/4\\
+    \midrule
+    GPT-Neo-2.7B & $\checkmark$ (1/5) & $\times$ & $\times$ & $\times$ & 2/4\\
+    \midrule
+    StableLM-3B & $\times$ & $\times$ & $\times$ & $\times$ & 2/4 \\
+    \midrule
+    GPT-J-6B & $\checkmark$ (1/5) & $\times$ & $\checkmark$ (1/5) & $\times$ & 4/4\\
+    \midrule
+    Grok3.0 & $\checkmark$ (1/5) & $\checkmark$ (2/5) & $\checkmark$ (3/5) & $\checkmark$ (1/5) & - \\
+    \midrule
+    Gemini2.5 Flash & $\checkmark$ (1/5) & $\checkmark$ (1/5) & $\times$ & $\checkmark$ (2/5) & - \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
+We set the $\epsilon$ as 0.2.
+
+%The multi-domain analysis reveals several important patterns in code memorisation across different programming contexts:
+%\textbf{Domain-Specific Memorisation Patterns:} Both closed-source models demonstrate memorisation across multiple domains, with Grok3.0 showing the highest memorisation rate (7/20 total hits across cases) and particularly strong performance on mathematical constants. Gemini2.5 Flash shows selective memorisation (4/20 hits) with notable success in network protocols and security systems.
+
+%\textbf{Model Scale Effects:} Among open-source models, larger models (GPT-J-6B) show broader memorisation across domains compared to smaller models, with particular success in mathematical and network contexts. Smaller models (Pythia-2.8B, StableLM-3B) show minimal memorisation across all domains.
+
+%\textbf{Content Type Sensitivity:} Mathematical constants and cryptocurrency validation code appear to be memorised more frequently than network protocols or security timestamps, possibly reflecting the prevalence of such code in training data or the distinctiveness of mathematical values.
+
+%\textbf{Memorisation Reliability:} Hit rates vary significantly across attempts (1/5 to 3/5), indicating that memorisation is often partial or context-dependent rather than perfect recall.
+
+%This comprehensive analysis demonstrates that our methodology can effectively detect and quantify code memorisation across diverse programming domains, providing insights into how different types of technical content are retained by language models. The systematic approach—selecting distinctive fingerprints, verifying uniqueness, and conducting targeted queries—can be automated to audit LLMs for potential memorisation at scale across various technical domains.
+

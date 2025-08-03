@@ -1,0 +1,224 @@
+% !TeX root = ../main.tex
+
+\section{Experiments}\label{sec:experiments}
+
+% We evaluate \tool based on the following research questions.
+We evaluate \tool through comprehensive experiments. We have provided the replicating artifact at \textit{\url{https://anonymous.4open.science/r/SYNPRUNE-FED7/}}.
+% Carlin et al.\cite{carlini2021extracting}. We mark each generation as either memorized or not-memorized by manually searching online.
+
+%  \hyperlink vs. \hyperref
+
+% Main document content
+\subsection{Setup}
+
+\begin{table*}[!t]
+\centering
+\footnotesize
+\caption{AUROC (\%) of different methods under varying member-to-non-member ratios.}
+\label{tab:main_results}
+\begin{tabular}{m{1cm}m{2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}}
+\toprule
+% \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
+\textbf{Ratio} & \textbf{Method} & \textbf{Pythia 2.8B} & \textbf{GPT-Neo 2.7B}  & \textbf{StableLM-Alpha 3B} & \textbf{GPT-J 6B}\\
+\midrule
+\multirow{6}{*}{1:1} & \textsc{Loss} & 38.4 & 43.7 & 33.3 & 43.3 \\
+& \textsc{ZLib} & 33.2 & 35.5 & 32.0 & 35.7 \\
+& \textsc{Min-K} & 38.8 & 41.8 & 34.2 & 41.1 \\
+% & \textsc{Gotcha} & -- & -- & -- & -- \\
+& \textsc{DC-PDD} & 50.1 & 41.2 & 43.7 & 41.3 \\
+\cmidrule(lr){2-6}
+& \tool & 61.3 & 59.7 & 61.3 & 59.7 \\
+\midrule
+\multirow{6}{*}{1:5} & \textsc{Loss} & 40.3 & 45.3 & 33.9 & 44.8 \\
+& \textsc{ZLib} & 34.0 & 36.2 & 32.5 & 36.3 \\
+& \textsc{Min-K} & 40.2 & 43.3 & 34.9 & 42.4 \\
+% & \textsc{Gotcha} & -- & -- & -- & -- \\
+& \textsc{DC-PDD} & 51.8 & 44.0 & 44.6 & 43.2 \\
+\cmidrule(lr){2-6}
+& \tool & 61.2 & 59.4 & 61.1 & 61.5 \\
+\midrule
+\multirow{6}{*}{5:1} & \textsc{Loss} & 40.0 & 43.8 & 34.9 & 43.6 \\
+& \textsc{ZLib} & 33.1 & 35.0 & 31.9 & 35.2 \\
+& \textsc{Min-K} & 39.9 & 42.2 & 35.1 & 41.6 \\
+% & \textsc{Gotcha} & -- & -- & -- & -- \\
+& \textsc{DC-PDD} & 49.4 & 40.9 & 44.1 & 39.6 \\
+\cmidrule(lr){2-6}
+& \tool & 62.0 & 60.7 & 62.0 & 63.1 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+% LOSS
+% ZLib
+% Min-K
+% Gotcha\cite{yang2024gotcha}
+% DC-PDD\cite{}
+
+
+\textbf{Baselines.} We replicate four recent and representative baselines that represent the current state-of-the-art.
+
+\begin{itemize}
+    \item \textsc{Loss}~\cite{yeom2018privacy}. \textsc{Loss} uses the overall perplexity (i.e., cross-entropy loss) of a language model as the detection score, based on the standard assumption in membership inference attacks that training data yields lower perplexity than unseen data.
+    \item \textsc{ZLib}~\cite{carlini2021extracting}. \textsc{ZLib} applies the ZLib compression algorithm to each sample's tokenized representation, using the compressed length as a detection score.,
+    \item \textsc{Min-K\%}~\cite{shi2023detecting}. \textsc{Min-K\%} ranks tokens by likelihood and computes a score using the bottom K (ranging from 10 to 100) based on their aggregated likelihoods. This approach captures the model's uncertainty over less likely tokens, as explored in prior token-level membership inference studies.
+    \item \textsc{DC-PDD}~\cite{zhang2024pretraining}. The \textsc{DC-PDD} improves detection performance on pre-training data by calibrating distributional differences, making it suitable for multilingual scenarios.
+\end{itemize}
+
+
+% ZLib leverages data compression by applying the ZLib algorithm to the tokenized representation of each sample and using the resulting compressed length as the detection score
+%  as explored in prior privacy auditing research.
+% We compare it against several established approaches, including \textsc{Loss}~\cite{yeom2018privacy}, \textsc{ZLib}~\cite{carlini2021extracting}, , \textsc{Min-K\%}~\cite{shi2023detecting}, which represent a range of strategies such as perplexity-based, compression-based, and token-ranking techniques.
+% The \textsc{Loss} uses the overall perplexity (cross-entropy loss) of a language model as a detection score, assuming lower perplexity on training data compared to unseen data, following standard practices in membership inference attacks. 
+% ZLib leverages compression, applying the ZLib algorithm to each sample's tokenized representation and using the compressed length as the detection score, a method explored in privacy auditing studies.
+
+% % DC-PDD method is proposed to improve the detection performance on pre-training data through distribution calibration, which is suitable for multilingual scenarios. 
+
+% Min-K\% ranks tokens by likelihood and uses the bottom K\% (ranging from 0.1 to 1.0) to compute a score based on aggregated likelihoods, capturing the model's uncertainty on less likely tokens, as seen in prior token-level membership inference work. GOTCHA is a MIA approach to code completion models.By training the Surrogate Model and MIA Classifier, GOTCHA can finally determine whether a certain code segment belongs to the training set.
+
+\textbf{Targeted LLMs.} We found evidence that the following four models were trained on the Pile dataset: \textit{EleutherAI/pythia-2.8b}~\cite{pilepythis}, \textit{EleutherAI/gpt-neo-2.7B}~\cite{pilegpt_neo}, \textit{StabilityAI/stablelm-base-alpha-3b}~\cite{pilestable}, and \textit{EleutherAI/gpt-j-6b}~\cite{pilegpt}. Therefore, these four models can be evaluated on member and non-member samples from our constructed benchmark. Specifically, \textit{EleutherAI/gpt-neo-2.7B} is a 2.7B parameter Transformer model designed for text generation and creative tasks. \textit{StabilityAI/stablelm-base-alpha-3b} is a 3B parameter model optimized for code generation and low-resource deployment. \textit{EleutherAI/gpt-j-6b} is a 6B parameter model with enhanced reasoning capabilities. 
+
+% The experiment evaluates four mainstream open-source language models, selected to represent diverse scales and architectures: 
+% \textit{EleutherAI/pythia-2.8b} is a 2.8B parameter Transformer model with strong code generation capabilities.
+% \textit{EleutherAI/pythia-2.8b}, a 2.8B parameter Transformer model with strong code generation capabilities; \textit{EleutherAI/gpt-neo-2.7B}, a 2.7B parameter Transformer model designed for text generation and creative tasks; \textit{StabilityAI/stablelm-base-alpha-3b}, a 3B parameter model optimized for code generation and low-resource deployment; and \textit{EleutherAI/gpt-j-6b},
+
+
+\textbf{Metrics.} We use the Area Under the Receiver Operating Characteristic curve (AUROC) as our evaluation metric. AUROC is widely adopted for binary classification tasks and is particularly suitable for membership inference. It captures the trade-off between true positive rate and false positive rate, providing an aggregate judge of the effect of all possible thresholds (i.e., $\epsilon$). It offers a robust measure of a method's ability to distinguish between training and non-training data in language models. We also use the false negative rate (FNR) to measure the percentage of members missed by the detection techniques, and the f1-score to select the most effective threshold in different models.
+
+
+
+
+
+\textbf{Environment.} Our experiments were conducted on a single NVIDIA RTX 4090D GPU (24GB), supported by a 16-core Intel Xeon Platinum 8474C CPU and 80GB of RAM. The software environment consisted of Ubuntu 20.04, Python 3.8, PyTorch 2.0.0, and CUDA 11.8.
+
+
+\begin{table}[!t] 
+    \centering
+    \footnotesize
+    \caption{False Negative Rate (\%) of \tool on Members under Short and Long Function Lengths}
+    \begin{tabular}{m{1.3cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}}
+    \toprule
+    \textbf{Length} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
+    \midrule
+    Short & 2.10 & 19.39 & 0.00 & 0.00 \\
+    Long & 75.12 & 75.13 & 66.04 & 87.09 \\
+    \bottomrule
+    \end{tabular}
+    \label{tab:length_results}
+\end{table}
+
+\subsection{Results}
+
+
+Table~\ref{tab:main_results} presents the effectiveness of \tool compared to baseline methods across four models, demonstrating consistent superiority in 1:1, 1:5, and 5:1 ratios. Specifically, \tool achieves average AUROCs of 61.5\%, 59.9\%, 61.4\%, and 61.4\% in Pythia 2.8B, GPT-Neo 2.7B, StableLM-Alpha 3B, and GPT-J 6B, respectively. 
+\tool maintains consistent and similar effectiveness across difference model architectures and scales.
+Compared to state-of-the-art methods, \tool achieves AUROC improvements ranging from 11.2\% to 17.6\% (1:1 ratio), 9.4\% to 16.7\% (1:5 ratio), and 12.6\% to 19.5\% (5:1 ratio), underscoring its robust performance advantages. Overall, \tool achieves an average AUROC improvement of 15.4\% across four models and three data ratios compared to the state-of-the-art.
+% Overall, \tool improves an average AUROC score of 15.4\% across four models and three ratios against state-of-the-art.
+
+
+% Table~\ref{tab:main_results} presents the effectiveness results of \tool compared with baseline methods in four models. Overall, \tool consistently outperforms existing methods across all evaluated models in the 1:1, 1:5 and 5:1 ratios, demonstrating consistent and superior performance advantages.
+% Specifically, from the perspective of the models, \tool achieves an average AUROC of 61.5\%, 59.9\%, 61.4\% and 61.4\% in the Pythia 2.8B, GPT-Neo 2.B, StableLM-Alpha 3B and GPT-J 6B, respectively. Compared with the other state-of-the-arts, \tool achieves a minimum AUROC increase of 11.2\% and maximum of 17.6\% over the state-of-the-art when the ratio is 1:1, a minimum AUROC increase of 9.4\% and maximum of 16.7\% over the state-of-the-art when the ratio is 1:5, a minimum AUROC increase of 12.6\% and maximum of 19.5\% over the state-of-the-art when the ratio is 5:1. 
+% We systematically compare the AUROC performance of various detection methods on the membership inference task across four mainstream open-source language models, with results presented in Table~\ref{tab:main_results}. 
+% 
+% 11.2  16      17.6    16.4
+
+% 9.4   14.1    16.5    16.7
+
+% 12.6  16.9    17.9    19.5
+% ----
+% 11.1  15.7    17.3    17.5
+
+% 15.4\%
+
+% \textbf{Performance across methods.} \tool consistently outperforms existing baseline methods on Python datasets. \tool-0.1 achieves up to 64.4\% AUROC (GPT-Neo-2.7B), representing substantial improvements of 11-21\% over baseline methods, showing competitive or superior results compared to existing approaches across most model configurations.
+
+% \textbf{Model scale effects.} The results demonstrate that \tool's effectiveness scales well across different model sizes, from the 2.7B parameter GPT-Neo to the 6B parameter GPT-J. Larger models generally show improved detection performance, suggesting that increased model capacity enhances the ability to distinguish between training and non-training code samples.
+
+% \textbf{Performance across function lengths.} \tool shows strong performance across all function lengths, with particularly impressive results on short functions. For Python, short functions achieve 59.1\%-68.4\% AUROC, demonstrating \tool's effectiveness across different complexity levels of code samples.
+
+
+
+
+\subsection{Robustness under Different Function Lengths}
+
+We categorize the member functions by token lengths into two groups based on statistical distribution. Specifically, we sort all member functions in the benchmark by their token counts in ascending order, then divide them into two groups (500:500) using the median number as the split point: \textit{short} (token count $\leq$ 55) and \textit{long} (token count $>$ 55). This balanced distribution ensures fair comparison under varying function complexities. 
+
+Table~\ref{tab:length_results} shows \tool's effectiveness in terms of false negative rate. The results demonstrate that \tool generates fewer false positives with shorter functions. Notably, \tool achieved perfect member recall when evaluated on both StableLM-Alpha 3B and GPT-J 6B, correctly identifying all members without any misses. Meanwhile, longer functions correlate with increased false negative rates, indicating future improvements of MIA techniques in handling longer functions. 
+
+\subsection{Ablation Study}
+
+We created four ablated versions of \tool by individually removing syntax conventions from each of the following categories: data model (w/o DM), expressions (w/o Expr.), single statements (w/o S.Stmt), and compound statements (w/o C.Stmt). 
+
+We evaluated the four ablated versions on the three ratios, with the results presented in Fig. \ref{tab:ablation}. Each cell shows the difference in AUROC compared to the original \tool. We observe that all ablated versions exhibit an AUROC drop across all three ratios, demonstrating the contribution of the syntax conventions in each category. Our ablation study reveals the impact of syntax convention removal on model performance. Eliminating data model syntax conventions resulted in average AUROC decreases of 3.9\% (1:1), 2.5\% (1:5), and 1.9\% (5:1). Similarly, removing expression syntax conventions led to reductions of 4.0\%, 3.3\%, and 3.5\%, while ablating single statement conventions caused drops of 3.8\%, 3.6\%, and 2.4\% across the respective ratios. The most significant impact came from compound statement syntax removal, with AUROC losses of 5.9\%, 5.6\%, and 4.1\%.
+
+% ε
+
+\begin{table}[!t] 
+    \centering
+    \footnotesize
+    \caption{Ablation Study (Each cell indicates the difference in AUROC compared to the original \tool.)}\label{tab:ablation}
+    \begin{tabular}{m{0.35cm}m{1.5cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{0.95cm}}
+    \toprule
+    \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
+    \midrule
+    \multirow{4}{*}{1:1} & w/o DM & $\downarrow$\,5.1 & $\downarrow$\,2.9 & $\downarrow$\,5.8 & $\downarrow$\,1.8 \\
+                        &  w/o Expr. & $\downarrow$\,4.5 & $\downarrow$\,3.6 & $\downarrow$\,5.6 & $\downarrow$\,2.4 \\
+                        &  w/o S.Stmt & $\downarrow$\,5.0 & $\downarrow$\,2.5 & $\downarrow$\,6.0 & $\downarrow$\,1.6 \\
+                        & w/o C.Stmt & $\downarrow$\,6.1 & $\downarrow$\,6.7 & $\downarrow$\,7.1 & $\downarrow$\,3.8 \\
+    \midrule
+    \multirow{4}{*}{1:5} & w/o DM & $\downarrow$\,4.1 & $\downarrow$\,0.1 & $\downarrow$\,4.7 & $\downarrow$\,1.0 \\
+                        &  w/o Expr. & $\downarrow$\,3.1 & $\downarrow$\,2.6 & $\downarrow$\,4.5 & $\downarrow$\,3.1 \\
+                        &  w/o S.Stmt & $\downarrow$\,4.4 & $\downarrow$\,2.2 & $\downarrow$\,5.1 & $\downarrow$\,2.6 \\
+                        & w/o C.Stmt & $\downarrow$\,4.8 & $\downarrow$\,6.5 & $\downarrow$\,6.2 & $\downarrow$\,4.9 \\
+    \midrule
+    \multirow{4}{*}{5:1} & w/o DM & $\downarrow$\,2.7 & $\downarrow$\,0.1 & $\downarrow$\,3.6 & $\downarrow$\,1.2 \\
+                        &  w/o Expr. & $\downarrow$\,2.6 & $\downarrow$\,4.4 & $\downarrow$\,4.1 & $\downarrow$\,3.0 \\
+                        &  w/o S.Stmt & $\downarrow$\,3.2 & $\downarrow$\,0.7 & $\downarrow$\,3.9 & $\downarrow$\,1.8 \\
+                        & w/o C.Stmt & $\downarrow$\,4.1 & $\downarrow$\,3.2 & $\downarrow$\,5.2 & $\downarrow$\,3.9 \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+
+
+\subsection{Threshold Analysis}
+
+Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four models across varying thresholds. Note that we applied multiple axis scales to better illustrate the results, as the SPP scores are typically very small. Observing from the graph, we can see that all four models undergo an minor increase of F1-score when $\epsilon$ increases and confront a plunge after $\epsilon$ exceeds around 0.01. We selected the most effective $\epsilon$ for the four models. Specifically, Pythia achieves an F1-score of 0.7390 at $\epsilon = 0.0175$; GPT-Neo reaches 0.6963 at $\epsilon = 0.0250$; StableLM-Alpha records 0.6966 at $\epsilon = 0.0143$; and GPT-J achieves 0.8432 at $\epsilon = 0.0037$.
+
+
+
+
+
+\begin{figure}[!t]
+\centering
+\begin{subfigure}[b]{0.23\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./fig/pythia.pdf}
+\caption{Pythia 2.8B}
+\label{fig:pythia}
+\end{subfigure}
+\begin{subfigure}[b]{0.23\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./fig/gpt2_7.pdf}
+\caption{GPT-Neo 2.7B}
+\label{fig:gpt27}
+\end{subfigure}
+\begin{subfigure}[b]{0.23\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./fig/stable.pdf}
+\caption{StableLM-Alpha 3B}
+\label{fig:stable}
+\end{subfigure}
+\begin{subfigure}[b]{0.23\textwidth}
+\centering
+\includegraphics[width=0.99\textwidth]{./fig/gpt6b.pdf}
+\caption{GPT-J 6B}
+\label{fig:gpt6b}
+\end{subfigure}
+\caption{F1-Score of \tool Across Varying Thresholds}\label{fig:sensitivity}
+\end{figure}
+
+
+\subsection{Limitations}
+
+While \tool is currently implemented and evaluated using Python's grammar, its design readily extends to other languages (e.g., Java, C/C++, JavaScript). This generalizability stems from shared language conventions and the universal requirement of strict grammatical correctness across programming languages. We therefore anticipate \tool would achieve similar effectiveness when applied to these other languages. Besides, our evaluation is currently limited to four LLMs due to resource constraints. Nevertheless, the consistent results across all models suggest strong generalizability of our approach to other large language models.
+

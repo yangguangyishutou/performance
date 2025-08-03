@@ -1,0 +1,11 @@
+1. 大模型的更新问题 Regression
+2. 用大模型解决 更新的任务
+	子问题
+	1. Find API Replacement
+		1.1 API名称 + API方法体 用 Syntactic + LLM-based Semantic
+		1.1 API上下文 用 Syntactic + LLM-based Semantic + Call Graph? @wanning, @jiayi, @chenrui
+	2. Adaptation + 项目实时的状态 @jincheng
+	3. Post-Replacing Patch
+	4. Library migration
+5. Semantic version control. 版本控制 @quanrui
+
