@@ -3,9 +3,11 @@ import random
 from huggingface_hub import HfApi, hf_hub_download, get_repo_discussions
 import os
 from transformers import AutoModelForCausalLM
+from peft import PeftModel
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import skew, kurtosis
 
 class Model:
     def __init__(self, model_name, derive_type = None, father_model = None):
@@ -155,11 +157,20 @@ class RelationshipDetector:
     def compare_models_cos(self, ignore_layers = None):
         if ignore_layers is None:
             ignore_layers = {"transformer.wte.weight", "lm_head.weight"}
+            
         model_A = AutoModelForCausalLM.from_pretrained(self.model_A)
         model_B = AutoModelForCausalLM.from_pretrained(self.model_B)
+        # base_model = AutoModelForCausalLM.from_pretrained("gpt2")
+        # model_A = PeftModel.from_pretrained(base_model, "monsterapi/gpt2_alpaca-lora")
+
         sd1 = model_A.state_dict()
         sd2 = model_B.state_dict()
         cos_ne = []
+
+        # sd1_new = {}
+        # for name in sd1.keys():
+        #     sd1_new[name[17:]] = sd1[name]
+        # sd1 = sd1_new
 
         for name in sd1.keys() & sd2.keys():
             if name in ignore_layers:
@@ -176,11 +187,19 @@ class RelationshipDetector:
             ne = p1.numel()
 
             cos_ne.append((cos_sim, ne))
-
+        # with open("./experiments/tmp.json", 'w', encoding='utf-8') as f:
+        #     json.dump({
+        #         "sd1": [name for name in sd1.keys()],
+        #         "sd2": [name for name in sd2.keys()],
+        #         "cos_ne": cos_ne
+        #     }, f, ensure_ascii=False, indent=2)
+        print(f"模型 {self.model_A} 和 {self.model_B} 的余弦相似度计算完成，共计 {len(cos_ne)} 个张量。")
         return cos_ne
 
-    def plot_cosine_similarity(self, save_path = None):
+    def plot_cosine_similarity_cumulative(self, save_path = None):
         cos_ne = self.compare_models_cos()
+        if not cos_ne:
+            return
         sims = np.array([c for c, w in cos_ne])
         weights = np.array([w for c, w in cos_ne])
         total = weights.sum()
@@ -214,9 +233,76 @@ class RelationshipDetector:
         
         plt.show()
 
-    def detect_cos_similarity(self):
-        self.compare_models_cos()
-        self.plot_cosine_similarity()
+    def plot_cosine_similarity_stats(self, save_path = None, type = None, bins = 50):
+        # 1. 获取余弦相似度 & 权重
+        cos_ne = self.compare_models_cos()
+        sims = np.array([c for c, w in cos_ne], dtype=np.float64)
+        weights = np.array([w for c, w in cos_ne], dtype=np.float64)
+        w_sum = weights.sum()
+
+        # 2. 计算加权统计量
+        weighted_mean = np.dot(weights, sims) / w_sum
+
+        # 二阶中心矩（加权方差）
+        m2 = np.dot(weights, (sims - weighted_mean)**2) / w_sum
+        weighted_std = np.sqrt(m2)
+
+        # 三阶中心矩 & 偏度
+        m3 = np.dot(weights, (sims - weighted_mean)**3) / w_sum
+        weighted_skewness = m3 / (weighted_std**3 + 1e-12)
+
+        # 四阶中心矩 & 峰度（减去 3 得到 Fisher 峰度）
+        m4 = np.dot(weights, (sims - weighted_mean)**4) / w_sum
+        weighted_kurtosis = m4 / (m2**2 + 1e-12) - 3
+
+        # 分位数
+        q25, q50, q75 = np.quantile(sims, [0.25, 0.5, 0.75])
+
+        # 3. 绘图
+        plt.rcParams['font.family'] = 'SimHei'  # 中文字体
+        plt.figure(figsize=(8, 5))
+        plt.hist(sims, bins=bins, weights=weights, alpha=0.7)
+        plt.axvline(weighted_mean, linestyle='-', lw=2, label=f'加权平均: {weighted_mean:.4f}')
+        plt.axvline(weighted_mean + weighted_std, linestyle='--', lw=1.5,
+                    label=f'±1 加权标准差: {weighted_std:.4f}')
+        plt.axvline(weighted_mean - weighted_std, linestyle='--', lw=1.5)
+        plt.axvline(q25, linestyle=':', lw=1.5, label=f'第25百分位: {q25:.4f}')
+        plt.axvline(q50, linestyle=':', lw=1.5, label=f'中位数: {q50:.4f}')
+        plt.axvline(q75, linestyle=':', lw=1.5, label=f'第75百分位: {q75:.4f}')
+
+        plt.title(f'{self.model_A} vs {self.model_B} 的余弦相似度分布')
+        plt.xlabel('余弦相似度')
+        plt.ylabel('参数数量')
+        if type:
+            plt.plot([], [], ' ', label=type) 
+        plt.legend()
+        plt.tight_layout()
+
+        if save_path:
+            plt.savefig(save_path)
+            print(f"图形已保存至: {save_path}")
+
+        # plt.show()
+
+        # 4. 输出统计结果
+        stats = {
+            'weighted_mean': weighted_mean,
+            'weighted_std': weighted_std,
+            'skewness': weighted_skewness,
+            'kurtosis': weighted_kurtosis,
+            '25%_quantile': q25,
+            '50%_quantile': q50,
+            '75%_quantile': q75
+        }
+        print("余弦相似度统计：")
+        for k, v in stats.items():
+            print(f"  {k:15s}: {v:.4f}")
+        return stats
+
+    def detect_cos_similarity(self, save_path = None, type = None):
+        # self.compare_models_cos()
+        # self.plot_cosine_similarity_cumulative()
+        self.plot_cosine_similarity_stats(save_path, type)
         pass
 
 if __name__ == "__main__":
@@ -227,5 +313,25 @@ if __name__ == "__main__":
     print(tools.find_relationship("unsloth/MAI-DS-R1", "wanlige/QWQ-stock"))
     print(tools.get_random_pair(False))
 
-    detector = RelationshipDetector("amitom/gpt2-Distilgpt-SLERP", "openai-community/gpt2")
-    detector.detect_cos_similarity()
+    # detector = RelationshipDetector("amitom/gpt2-Distilgpt-SLERP", "openai-community/gpt2")
+    # detector.detect_cos_similarity()
+
+    ft_models = [
+    # finetune
+    ["smgriffin/pop-lyrics-generator-v1", "finetune"],
+    ["Arjun-G-Ravi/chat-GPT2", "finetune"],
+    ["alibidaran/medical_transcription_generator", "finetune"],
+    
+    #adapter
+    ["monsterapi/gpt2_alpaca-lora", "adapter"],
+    ["monsterapi/gpt2_124m_norobots", "adapter"],
+    ["clemsadand/quote_generator", "adapter"],
+
+    #merge
+    ["amitom/gpt2-DiabloGPT-SLERP", "merge"],
+    ["amitom/gpt2-DiabloGPT-TA", "merge"],
+    ["amitom/gpt2-Distilgpt-SLERP", "merge"],
+    ]
+    for model in ft_models:
+        detector = RelationshipDetector(model[0], "openai-community/gpt2")
+        detector.detect_cos_similarity(f'./experiments/figures/{model[1]}_{model[0].replace('/', '_')}_stats.png',  model[1])
