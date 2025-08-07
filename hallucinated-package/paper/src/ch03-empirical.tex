@@ -108,7 +108,9 @@ in the \textbf{Result} section.
     \item \textbf{RQ1:} How frequently do different large language models hallucinate non-existent Python packages when recommending third-party libraries?
     \item \textbf{RQ2:} Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
     \item \textbf{RQ3:} Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
+    \item \textbf{RQ4:} What are the characteristics of the hallucinated packages?
 \end{itemize}
+
   To study RQ1, we used our constructed dataset of functional questions to uniformly query several mainstream LLMs, including ChatGPT-4, 
 DeepSeek-R1, Qwen3, Claude-Opus-4, asking them to recommend third-party Python libraries that could help solve each question. We then 
 verified the recommended packages using the PyPI API to determine whether they actually exist, and calculated the hallucination frequency 
