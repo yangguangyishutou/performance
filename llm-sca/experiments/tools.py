@@ -149,28 +149,25 @@ class ExperimentTools:
     
 
 class RelationshipDetector:
-    def __init__(self, model_A, model_B):
+    #若是量化模型要填写gguf_file指定量化类型
+    def __init__(self, model_A, model_B, model_A_gguf_file = None, model_B_gguf_file = None):
         self.model_A = model_A
         self.model_B = model_B
+        self.model_A_gguf_file = model_A_gguf_file
+        self.model_B_gguf_file = model_B_gguf_file
     
     # 返回模型A和模型B的余弦相似度列表
     def compare_models_cos(self, ignore_layers = None):
         if ignore_layers is None:
             ignore_layers = {"transformer.wte.weight", "lm_head.weight"}
             
-        model_A = AutoModelForCausalLM.from_pretrained(self.model_A)
-        model_B = AutoModelForCausalLM.from_pretrained(self.model_B)
-        # base_model = AutoModelForCausalLM.from_pretrained("gpt2")
-        # model_A = PeftModel.from_pretrained(base_model, "monsterapi/gpt2_alpaca-lora")
+        model_A = AutoModelForCausalLM.from_pretrained(self.model_A, gguf_file=self.model_A_gguf_file)
+        model_B = AutoModelForCausalLM.from_pretrained(self.model_B, gguf_file=self.model_B_gguf_file)
 
         sd1 = model_A.state_dict()
         sd2 = model_B.state_dict()
         cos_ne = []
 
-        # sd1_new = {}
-        # for name in sd1.keys():
-        #     sd1_new[name[17:]] = sd1[name]
-        # sd1 = sd1_new
 
         for name in sd1.keys() & sd2.keys():
             if name in ignore_layers:
@@ -187,19 +184,139 @@ class RelationshipDetector:
             ne = p1.numel()
 
             cos_ne.append((cos_sim, ne))
-        # with open("./experiments/tmp.json", 'w', encoding='utf-8') as f:
-        #     json.dump({
-        #         "sd1": [name for name in sd1.keys()],
-        #         "sd2": [name for name in sd2.keys()],
-        #         "cos_ne": cos_ne
-        #     }, f, ensure_ascii=False, indent=2)
-        print(f"模型 {self.model_A} 和 {self.model_B} 的余弦相似度计算完成，共计 {len(cos_ne)} 个张量。")
+        print(f"模型 {self.model_A} 和 {self.model_B} 的余弦相似度计算完成，共计 {len(cos_ne)} 个张量。" +
+              f"{self.model_A}原来有 {len(sd1)} 个张量，{self.model_B}原来有 {len(sd2)} 个张量。")
         return cos_ne
 
-    def plot_cosine_similarity_cumulative(self, save_path = None):
-        cos_ne = self.compare_models_cos()
-        if not cos_ne:
-            return
+    def export_unmatched_tensors(self, output_json="./experiments/test/unmatched_tensors.json", ignore_layers=None):
+        if ignore_layers is None:
+            ignore_layers = {"transformer.wte.weight", "lm_head.weight"}
+            
+        # 加载模型
+        model_A = AutoModelForCausalLM.from_pretrained(self.model_A, gguf_file=self.model_A_gguf_file)
+        model_B = AutoModelForCausalLM.from_pretrained(self.model_B, gguf_file=self.model_B_gguf_file)
+
+        sd1 = model_A.state_dict()
+        sd2 = model_B.state_dict()
+
+        unmatched_info = []
+
+        # 遍历所有键的并集
+        all_keys = sd1.keys() | sd2.keys()
+        for name in all_keys:
+            if name in ignore_layers:
+                continue
+            
+            tensor_A = sd1.get(name, None)
+            tensor_B = sd2.get(name, None)
+
+            # 情况 1：一个模型没有该张量
+            if tensor_A is None or tensor_B is None:
+                unmatched_info.append({
+                    "tensor_name": name,
+                    "exists_in_model_A": tensor_A is not None,
+                    "exists_in_model_B": tensor_B is not None,
+                    "shape_model_A": list(tensor_A.shape) if tensor_A is not None else None,
+                    "shape_model_B": list(tensor_B.shape) if tensor_B is not None else None,
+                    "first_20_values_model_A": tensor_A.view(-1)[:20].tolist() if tensor_A is not None else None,
+                    "first_20_values_model_B": tensor_B.view(-1)[:20].tolist() if tensor_B is not None else None
+                })
+                continue
+            
+            # 情况 2：shape 不同
+            if tensor_A.shape != tensor_B.shape:
+                unmatched_info.append({
+                    "tensor_name": name,
+                    "exists_in_model_A": True,
+                    "exists_in_model_B": True,
+                    "shape_model_A": list(tensor_A.shape),
+                    "shape_model_B": list(tensor_B.shape),
+                    "first_20_values_model_A": tensor_A.view(-1)[:20].tolist(),
+                    "first_20_values_model_B": tensor_B.view(-1)[:20].tolist()
+                })
+
+        # 写入 JSON 文件
+        with open(output_json, "w", encoding="utf-8") as f:
+            json.dump(unmatched_info, f, indent=4, ensure_ascii=False)
+
+        print(f"导出完成，共记录 {len(unmatched_info)} 个不匹配的张量到 {output_json}")
+        return unmatched_info
+
+    def compare_adapters_cos(self,
+                         base_model = "openai-community/gpt2",
+                         ignore_layers = None,
+                         require_both_changed = True,
+                         atol = 1e-6):
+        if ignore_layers is None:
+            ignore_layers = {"transformer.wte.weight", "lm_head.weight"}
+
+        print("加载模型", self.model_A, self.model_B, base_model)
+        model_base = AutoModelForCausalLM.from_pretrained(base_model, gguf_file=None)
+        model_A = AutoModelForCausalLM.from_pretrained(self.model_A, gguf_file=self.model_A_gguf_file)
+        model_B = AutoModelForCausalLM.from_pretrained(self.model_B, gguf_file=self.model_B_gguf_file)
+
+        sd_base = model_base.state_dict()
+        sdA = model_A.state_dict()
+        sdB = model_B.state_dict()
+
+        cos_list = []
+
+        # 只比较同时在 A 和 B 中存在的张量
+        common_keys = sdA.keys() & sdB.keys()
+
+        for name in common_keys:
+            if name in ignore_layers:
+                continue
+
+            tA = sdA[name]
+            tB = sdB[name]
+
+            # 形状检查
+            if tA.numel() == 0 or tA.shape != tB.shape:
+                continue
+
+            # 判断是否与基模型相同（如果基模型中有该键且形状一致）
+            changedA = True
+            changedB = True
+            if name in sd_base and sd_base[name].shape == tA.shape:
+                # 使用 allclose 判定“相同”，避免浮点抖动误判
+                sameA = torch.allclose(tA, sd_base[name], atol=atol, rtol=1e-5)
+                sameB = torch.allclose(tB, sd_base[name], atol=atol, rtol=1e-5)
+                changedA = not sameA
+                changedB = not sameB
+            else:
+                # 基模型没有这个键（比如 adapter 新增的键），视为 changed/new
+                changedA = True
+                changedB = True
+
+            # 如果要求两者都改变才比较，但其中一个没变则跳过
+            if require_both_changed and not (changedA and changedB):
+                continue
+
+            # 舍弃同时与基模型相同的张量（既没被 A 改动也没被 B 改动）
+            if not (changedA or changedB):
+                continue
+
+            # 计算 A vs B 的余弦相似度
+            p1 = tA.view(-1).float()
+            p2 = tB.view(-1).float()
+            if p1.shape != p2.shape or p1.numel() == 0:
+                continue
+
+            dot = torch.dot(p1, p2)
+            norm = torch.norm(p1) * torch.norm(p2)
+            cos_sim = (dot / (norm + 1e-12)).item()
+            ne = p1.numel()
+
+            cos_list.append((min(cos_sim, 1.0), ne))
+
+        print(f"比较完成：共找到 {len(cos_list)} 个（在 A&B 中且至少有一方与基模型不同的）张量用于比较。")
+        # 可选择按相似度或按权重排序后返回
+        return cos_list
+    # 绘制累积曲线
+    def plot_cosine_similarity_cumulative(self,cos_ne = None, save_path = None):
+        if cos_ne is None:
+            cos_ne = self.compare_models_cos()
         sims = np.array([c for c, w in cos_ne])
         weights = np.array([w for c, w in cos_ne])
         total = weights.sum()
@@ -233,9 +350,11 @@ class RelationshipDetector:
         
         plt.show()
 
-    def plot_cosine_similarity_stats(self, save_path = None, type = None, bins = 50):
+    # 绘制统计图并计算统计量
+    def plot_cosine_similarity_stats(self, cos_ne = None, save_path = None, type = None, bins = 50):
         # 1. 获取余弦相似度 & 权重
-        cos_ne = self.compare_models_cos()
+        if cos_ne is None:
+            cos_ne = self.compare_models_cos()
         sims = np.array([c for c, w in cos_ne], dtype=np.float64)
         weights = np.array([w for c, w in cos_ne], dtype=np.float64)
         w_sum = weights.sum()
@@ -273,6 +392,8 @@ class RelationshipDetector:
         plt.title(f'{self.model_A} vs {self.model_B} 的余弦相似度分布')
         plt.xlabel('余弦相似度')
         plt.ylabel('参数数量')
+        plt.plot([], [], ' ', label=f'偏度: {weighted_skewness:.4f}')
+        plt.plot([], [], ' ', label=f'峰度: {weighted_kurtosis:.4f}')
         if type:
             plt.plot([], [], ' ', label=type) 
         plt.legend()
@@ -313,8 +434,6 @@ if __name__ == "__main__":
     print(tools.find_relationship("unsloth/MAI-DS-R1", "wanlige/QWQ-stock"))
     print(tools.get_random_pair(False))
 
-    # detector = RelationshipDetector("amitom/gpt2-Distilgpt-SLERP", "openai-community/gpt2")
-    # detector.detect_cos_similarity()
 
     ft_models = [
     # finetune
@@ -331,7 +450,10 @@ if __name__ == "__main__":
     ["amitom/gpt2-DiabloGPT-SLERP", "merge"],
     ["amitom/gpt2-DiabloGPT-TA", "merge"],
     ["amitom/gpt2-Distilgpt-SLERP", "merge"],
+
+    #unrelated
     ]
-    for model in ft_models:
-        detector = RelationshipDetector(model[0], "openai-community/gpt2")
-        detector.detect_cos_similarity(f'./experiments/figures/{model[1]}_{model[0].replace('/', '_')}_stats.png',  model[1])
+
+    detector = RelationshipDetector("monsterapi/gpt2_alpaca-lora", "clemsadand/quote_generator")
+    detector.plot_cosine_similarity_stats(save_path="./experiments/figures/adapter_1.png", type="adapter")
+    detector.export_unmatched_tensors(output_json="./experiments/test/unmatched_tensors_adapter.json")
