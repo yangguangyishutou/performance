@@ -76,26 +76,61 @@ CWE-824 & 11 & 14 \\
 \end{table}
 
 \subsection{RQ design}
-\begin{itemize}[leftmargin=*]
-  \item \textbf{RQ0. Vulnerability Characterization.} What are the key characteristics of overflow vulnerabilities?
+
+
+
+
+\begin{itemize}
+  \item \textbf{RQ1: Vulnerability Repairableness} 
+  % Dataset: 614         7865 at confidence 99% and error 5%.
+  %             无关的修复函数    单函数视角下无法修复   单函数视角下可修复 
+                % Irrelevant Intra-Function Unrepairable   Intra-Function Repairable
+  %单函数漏洞        N                  N                 Y
+  %多函数漏洞        Y                  Y                 Y
+  % 1. 分类的情况 2. Unrepairable的漏洞函数会如何影响"漏洞修复工具"的效果？  
+
+  % Assume 首先修复Intra-Function Repairable之后，Intra-Function Unrepairable 的函数，增加上下文之后，是否可以变成可修复的？--------Y
+
+  % 结论：有些漏洞函数的修复，是unrepairable的，不能作为评估repair的验证集
+
+  \item \textbf{RQ2. Repairable Vulnerability Characterization.} What are the key characteristics of overflow vulnerabilities?
+  % 可以repair的漏洞函数，他们的特征；不同类型和特征，
   \begin{itemize}
-    \item \textbf{RQ0.0 Trigger Logic.} What are the common triggering patterns or logic that lead to overflows?
-    \item \textbf{RQ0.1 Fixing Strategies.} What kinds of repair strategies are commonly applied to overflow vulnerabilities?
+    \item \textbf{Trigger Logic.} What are the common triggering patterns or logic that lead to overflows?
+    \item \textbf{Fixing Strategies.} What kinds of repair strategies are commonly applied to overflow vulnerabilities?
   \end{itemize}
+
+  % Dataset: 600
+  % 使用漏洞修复工具评估的效果和区别？
+  \item \textbf{RQ3 LLM-based Repairable Vulnerability Repair Evaluation} Effectiveness with regard to baselines, vulnerability type and fixing strategies.
   
-  \item \textbf{RQ1. Effectiveness of Simple Prompting.} How effective is a simple prompt-based approach in enabling LLMs to repair overflow vulnerabilities?
-\begin{itemize}
-  \item \textbf{RQ1.1 Impact of Trigger Logic.} How does the effectiveness of prompt-based LLM repair vary across different overflow trigger logics?
-  \item \textbf{RQ1.2 Impact of Fixing Strategies.} How does the effectiveness of prompt-based LLM repair vary across different fixing strategies?
-\end{itemize}
+  % A. 统计层面的分析
+  % baseline: 1. simple prompting 2. agent-based ... 找一下相关的工作
+  % trigger logic. fixing strategies 
+  % B. 人工采样的分析(定量分析)
 
-\item \textbf{RQ2. Effectiveness of Agent-based Repair.} How effective is an agent-assisted approach in enabling LLMs to repair overflow vulnerabilities?
-\begin{itemize}
-  \item \textbf{RQ2.1 Impact of Trigger Logic.} How does the effectiveness of agent-based LLM repair vary across different overflow trigger logics?
-  \item \textbf{RQ2.2 Impact of Fixing Strategies.} How does the effectiveness of agent-based LLM repair vary across different fixing strategies?
-\end{itemize}
+  % 结论： 发现多agent比单agent效果好，过度修复的问题
 
 \end{itemize}
+
+
+
+% \begin{itemize}[leftmargin=*]
+ 
+  
+%   \item \textbf{RQ1. Effectiveness of Simple Prompting.} How effective is a simple prompt-based approach in enabling LLMs to repair overflow vulnerabilities?
+% \begin{itemize}
+%   \item \textbf{RQ1.1 Impact of Trigger Logic.} How does the effectiveness of prompt-based LLM repair vary across different overflow trigger logics?
+%   \item \textbf{RQ1.2 Impact of Fixing Strategies.} How does the effectiveness of prompt-based LLM repair vary across different fixing strategies?
+% \end{itemize}
+
+% \item \textbf{RQ2. Effectiveness of Agent-based Repair.} How effective is an agent-assisted approach in enabling LLMs to repair overflow vulnerabilities?
+% \begin{itemize}
+%   \item \textbf{RQ2.1 Impact of Trigger Logic.} How does the effectiveness of agent-based LLM repair vary across different overflow trigger logics?
+%   \item \textbf{RQ2.2 Impact of Fixing Strategies.} How does the effectiveness of agent-based LLM repair vary across different fixing strategies?
+% \end{itemize}
+
+% \end{itemize}
 
 \subsection{RQ0: Vulnerability Characterization}
 
