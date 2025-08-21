@@ -6,6 +6,8 @@
 
 #### Privacy 
 
+2025年7月投稿中
+
 #### Malware
 
 #### Hallucinated Package
@@ -14,11 +16,27 @@
 
 #### Update
 
+##### 1. Deprecated API
+
+##### 2. Semantic Versioning
+
+##### 3. API Compatibility
+
 #### Performance
 
 #### LLM Risk
 
+#### Vulnerability Benchmark
+
+#### IDE LLM Agent
 
 
-#### 
+
+
+
+
+
+
+
+
 
