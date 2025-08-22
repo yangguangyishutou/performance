@@ -71,11 +71,11 @@ This error type specifically targets C++'s manual memory management mechanism. I
   \includegraphics[width=0.5\textwidth]{pdf/Codes/Code9.pdf}
 \end{figure}
 
-\begin{table}[H]
+\begin{table*}[htbp]
   \centering
   \caption{Error Types}
   \label{tab:error-types}
-  \begin{tabular}{lll}
+  \begin{tabularx}{\textwidth}{XXX}
     \hline
     \textbf{Error Type} & \textbf{Entity} & \textbf{Description} \\
     \hline
@@ -89,8 +89,8 @@ This error type specifically targets C++'s manual memory management mechanism. I
     Method partially unimplemented (partially missing) & Method Implementation & The method has an implementation body, but its internal logic is incomplete, contains placeholders, or is simplified, failing to match the original functionality. \\
     Improper memory management & Memory Allocation/Deallocation & Errors related to manual memory management, including memory leaks, double-freeing memory, or using dangling pointers. \\
     \hline
-  \end{tabular}
-\end{table}
+  \end{tabularx}
+\end{table*}
 
 \subsection{Overall Performance}
 \subsubsection{Overall Correctness Rate/Error Rate}
@@ -129,9 +129,9 @@ DeepSeek’s overall correctness rate (66.70\%) was significantly higher than GP
 \subsubsection{Performance w.r.t Projects.}
 To investigate how project characteristics affect translation performance, we conducted a comparative analysis of the translation results across five different projects. The table below summarizes the correctness rate and error distribution for each project under the class strategy.
 
-\begin{table}[H]
+\begin{table*}[]
   \centering
-  \begin{tabular}{lccccc}
+  \begin{tabularx}{\textwidth}{XXXXXX}
     \hline
     Project Name & File Count & Correct Methods & Erroneous Methods & Correctness Rate &  Dominant Error Types (Count) \\
     \hline
@@ -141,8 +141,8 @@ To investigate how project characteristics affect translation performance, we co
     IntMath & 7 & 89 & 97 & 47.8\% & Method not implemented (entirely missing)(91) \\
     NoopIndexDAO & 21 & 609 & 264 & 69.8\% & Method not implemented (entirely missing)(253) \\
     \hline
-  \end{tabular}
-\end{table}
+  \end{tabularx}
+\end{table*}
 
 Based on the data, the EnableJUnit4MigrationSupport project, which has the highest file count (32), also exhibits nearly the lowest correctness rate (46.7\%). This preliminarily suggests that as project scale increases, contextual dependencies may become more complex, leading LLMs to make more errors during holistic class-level translation, particularly generating a large number of "Method not implemented (entirely missing)" and "Referencing non-existent classes" errors. Similarly, the second-largest project, NoopIndexDAO, while having a decent correctness rate (69.8\%), also suffers from a high volume of "Method not implemented (entirely missing)" errors.
 

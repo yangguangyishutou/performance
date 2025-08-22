@@ -1,5 +1,5 @@
-
 \section{Empirical Setup}
+In order to evaluate the effect of LLM code translation, we have to systematically translate a sufficient amount of code and use a unified standard to Statistically measure its success rate.
 We chose translating Java files into C++ files, both widely used programming languages which are extensively employed in many domains, such as system development and cross-platform application creation. We targeted two current mainstream LLMs (DeepSeek and ChatGPT) in code translation. The setup of our study includes three steps. The dataset collection step gathers datasets from open-source projects on GitHub. The translation methods step uses two LLMs to translate code for these prompts. Finally, the evaluation metric step uses menu assessment to evaluate the translation results.
 
 
@@ -66,31 +66,6 @@ Thus, a high-quality and highly representative Java project datasets is obtained
 
 We selected two state-of-the-art large language models (LLMs) for evaluation: GPT-4 and DeepSeek-Coder-V3. GPT-4 is a proprietary, general-purpose model developed by OpenAI, known for its strong reasoning and few-shot capabilities across a wide range of natural language and code-related tasks. While OpenAI has not disclosed GPT-4’s parameter size, it is considered significantly larger than prior models like GPT-3.5 and trained on a mixture of natural language and programming language data. DeepSeek-Coder-V3, on the other hand, is an open-source, code-specialized LLM developed by DeepSeek, optimized for programming understanding and generation. DeepSeek-Coder-V3 is available in multiple sizes; for this study, we selected the 7B Instruct variant, which is fine-tuned for instruction-following tasks in code translation and completion scenarios. The selected models are summarized in Table 2, including their parameter sizes, training data characteristics, and open-source availability.
 
-\begin{table}[!t]
-    \caption{\todo{Evaluated Large Language Models (LLMs)}}
-    \label{tab:llms}
-    \centering
-    \renewcommand{\arraystretch}{1.2}
-    \setlength{\tabcolsep}{4pt}
-    \begin{tabular}{l|r|c|c} 
-    % \Xhline{2\arrayrulewidth}
-     \toprule    
-    \textbf{Model} &  \textbf{\# Params} & {\textbf{Python Fine-Tuned}}  & \textbf{Open-Source}  \\
-    % \Xhline{1.5\arrayrulewidth}      
-    \midrule    
-    CodeGen-350m    &  350 M  &  \ding{51}  & \ding{51}  \\
-    CodeGen-2b      &  2 B    &  \ding{51}  & \ding{51}  \\
-    CodeGen-6b      &  6 B    &  \ding{51}  & \ding{51}  \\
-    DeepSeek-1.3b   &  1.3 B  &  \ding{55}  & \ding{51} \\
-    StarCoder2-3b   &  3 B    &  \ding{55}  & \ding{51}    \\
-    CodeLlama-7b    &  7 B    &  \ding{51}  & \ding{51}   \\
-    GPT-3.5         &  175 B  &  \textbf{UNKNOWN}  & \ding{55}      \\ 
-    % \Xhline{2\arrayrulewidth}
-    \bottomrule
-    \end{tabular}
-    
-
-\end{table}
 
 \subsection{RQ1 Setup}
 To evaluate the translation quality of Large Language Models (LLMs) in realistic settings, we design a task that mirrors end-to-end class-level code translation. Specifically, each Java class file is treated as an atomic translation unit, containing both interface declarations and full method bodies. For each selected Java file, we prompt the LLMs with the complete content, instructing them to generate corresponding C++ header and source files. The format explicitly requires:
