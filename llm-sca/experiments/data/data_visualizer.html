@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大型模型关系森林可视化</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient-start: #1a2a6c;
+            --bg-gradient-end: #2c3e50;
+            --text-primary: #ecf0f1;
+            --text-secondary: #bdc3c7;
+            --panel-bg: rgba(25, 35, 70, 0.7);
+            --panel-highlight-bg: rgba(44, 62, 80, 0.7);
+            --accent-blue: #3498db;
+            --accent-green: #2ecc71;
+            --accent-red: #e74c3c;
+            --accent-orange: #f39c12;
+            --accent-purple: #9b59b6;
+            --accent-gray: #95a5a6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+        }
+
+        header {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            min-height: 0;
+        }
+
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .controls {
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .tree-selector-control {
+            background-color: var(--panel-highlight-bg);
+            border-top: 2px solid var(--accent-blue);
+        }
+
+        .tree-selector-control label {
+            color: var(--text-secondary);
+        }
+
+        .tree-selector-control select {
+            background-color: var(--bg-gradient-end);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-blue);
+            border-radius: 5px;
+            padding: 8px 12px;
+            font-size: 1rem;
+        }
+
+        .tree-selector-control select:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+
+        .sidebar label {
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        select,
+        input[type="text"] {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent-blue);
+            border-radius: 5px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 1rem;
+        }
+
+        select:focus,
+        input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+            background: var(--panel-highlight-bg);
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: var(--accent-green);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-item>span:first-of-type {
+            flex-grow: 1;
+        }
+
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+        
+        .legend-count {
+            font-weight: bold;
+            color: var(--accent-green);
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .instructions {
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .instructions p {
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .visualization {
+            flex: 1;
+            background: rgba(15, 25, 45, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(0, 15, 30, 0.95);
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            max-width: 350px;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        
+        .tooltip.visible {
+            pointer-events: auto;
+        }
+
+        .tooltip h3 {
+            color: var(--accent-green);
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--accent-blue);
+            padding-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .tooltip p {
+            margin: 5px 0;
+            line-height: 1.4;
+        }
+        
+        .tooltip a {
+            color: var(--accent-blue);
+            text-decoration: none;
+        }
+        
+        .tooltip a:hover {
+            text-decoration: underline;
+        }
+
+        .node,
+        .link {
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .link {
+            fill: none;
+            stroke-opacity: 0.5;
+            stroke-width: 1.5px;
+        }
+
+        .node circle {
+            cursor: pointer;
+            transition: r 0.3s, stroke-width 0.3s;
+        }
+
+        .node-text {
+            font-size: 11px;
+            fill: var(--text-primary);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+            pointer-events: none;
+            paint-order: stroke;
+            stroke: #1c2a48;
+            stroke-width: 3px;
+            stroke-linecap: butt;
+            stroke-linejoin: miter;
+        }
+
+        .reset-zoom-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background: var(--panel-highlight-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-blue);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            z-index: 5;
+        }
+
+        .reset-zoom-btn:hover {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        @media (max-width: 1024px) {
+            body {
+                height: auto;
+                padding: 10px;
+                overflow: auto;
+            }
+
+            .container {
+                height: auto;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+            }
+
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>大型模型关系森林可视化</h1>
+            <p class="subtitle">选择一个根模型来探索其衍生关系。支持缩放、拖拽、搜索和聚焦。</p>
+        </header>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="controls tree-selector-control">
+                    <label for="tree-selector">选择根模型:</label>
+                    <select id="tree-selector"></select>
+                </div>
+                <div class="controls">
+                    <label for="search-box">在当前树中搜索:</label>
+                    <input type="text" id="search-box" placeholder="例如: zephyr, GGUF...">
+                </div>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div id="total-nodes" class="stat-value">-</div>
+                        <div class="stat-label">总节点数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="leaf-nodes" class="stat-value">-</div>
+                        <div class="stat-label">叶节点数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="max-depth" class="stat-value">-</div>
+                        <div class="stat-label">最大深度</div>
+                    </div>
+                    <div class="stat-item">
+                        <div id="max-branch" class="stat-value">-</div>
+                        <div class="stat-label">最大分支</div>
+                    </div>
+                </div>
+                <div class="controls">
+                    <div class="legend">
+                        <div class="legend-item" data-type="finetune">
+                            <div class="legend-color" style="background-color: var(--accent-green);"></div>
+                            <span>微调模型 (finetune)</span>
+                            <span class="legend-count"></span>
+                        </div>
+                        <div class="legend-item" data-type="quantized">
+                            <div class="legend-color" style="background-color: var(--accent-red);"></div>
+                            <span>量化模型 (quantized)</span>
+                            <span class="legend-count"></span>
+                        </div>
+                        <div class="legend-item" data-type="adapter">
+                            <div class="legend-color" style="background-color: var(--accent-orange);"></div>
+                            <span>适配器 (adapter)</span>
+                            <span class="legend-count"></span>
+                        </div>
+                        <div class="legend-item" data-type="merge">
+                            <div class="legend-color" style="background-color: var(--accent-purple);"></div>
+                            <span>合并模型 (merge)</span>
+                            <span class="legend-count"></span>
+                        </div>
+                        <div class="legend-item" data-type="other">
+                            <div class="legend-color" style="background-color: var(--accent-gray);"></div>
+                            <span>基模型/其他</span>
+                            <span class="legend-count"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <p><b>操作指南:</b><br>
+                        • <b>滚轮:</b> 缩放视图<br>
+                        • <b>拖拽:</b> 移动视图<br>
+                        • <b>悬停节点:</b> 高亮路径并显示详情<br>
+                        • <b>点击节点:</b> 聚焦并居中该节点</p>
+                </div>
+            </aside>
+            <main class="visualization">
+                <svg id="tree-svg" width="100%" height="100%"></svg>
+                <button class="reset-zoom-btn">重置视图</button>
+            </main>
+        </div>
+    </div>
+    <div id="tooltip" class="tooltip"></div>
+
+    <script>
+        function truncateText(text, maxLength = 20) {
+            if (typeof text !== 'string' || text.length <= maxLength) {
+                return text;
+            }
+            return text.substring(0, maxLength - 3) + '...';
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const forestData = await d3.json('model_forest.json');
+                if (!forestData || !Array.isArray(forestData) || forestData.length === 0) {
+                    throw new Error("数据为空或非数组格式。");
+                }
+                setupVisualization(forestData);
+            } catch (error) {
+                console.error('无法加载或初始化可视化:', error);
+                const visContainer = document.querySelector('.visualization');
+                if (visContainer) {
+                    visContainer.innerHTML = `<p style="color: var(--accent-red); text-align: center; padding: 20px;">数据加载失败，请检查 model_forest.json 文件是否存在且格式正确。</p>`;
+                }
+            }
+        });
+
+        function setupVisualization(forestData) {
+            const visContainer = document.querySelector('.visualization');
+            const svg = d3.select("#tree-svg");
+            const tooltip = d3.select("#tooltip");
+            const g = svg.append("g");
+            const treeSelector = d3.select("#tree-selector");
+            const searchBox = d3.select("#search-box");
+
+            let currentRoot;
+            let width = visContainer.clientWidth;
+            let height = visContainer.clientHeight;
+            
+            let hideTooltipTimer;
+            let lastHoveredNode = null;
+
+            const colorScale = d => {
+                const type = d.data.metadata?.derived_type;
+                switch (type) {
+                    case 'finetune': return 'var(--accent-green)';
+                    case 'quantized': return 'var(--accent-red)';
+                    case 'adapter': return 'var(--accent-orange)';
+                    case 'merge': return 'var(--accent-purple)';
+                    default: return 'var(--accent-gray)';
+                }
+            };
+
+            const zoom = d3.zoom().scaleExtent([0.1, 8]).on("zoom", (event) => g.attr("transform", event.transform));
+            svg.call(zoom);
+
+            function focusOnNode(d) {
+                const [x, y] = [d.x, d.y];
+                const cartesianX = y * Math.cos(d.x - Math.PI / 2);
+                const cartesianY = y * Math.sin(d.x - Math.PI / 2);
+
+                const t = d3.zoomIdentity
+                    .translate(width / 2, height / 2)
+                    .scale(2)
+                    .translate(-cartesianX, -cartesianY);
+
+                svg.transition().duration(750).call(zoom.transform, t);
+            }
+
+            const resetZoom = () => {
+                if (!currentRoot) return;
+                 // Focus on the root node instead of just resetting to center
+                focusOnNode({ x: Math.PI / 2, y: 0 });
+            };
+            d3.select(".reset-zoom-btn").on("click", resetZoom);
+
+
+            function renderTree(treeData) {
+                g.selectAll('*').remove();
+
+                const root = d3.hierarchy(treeData);
+                currentRoot = root;
+                const descendants = root.descendants();
+
+                // Update Stats
+                d3.select('#total-nodes').text(descendants.length);
+                d3.select('#leaf-nodes').text(root.leaves().length);
+                d3.select('#max-depth').text(root.height);
+                d3.select('#max-branch').text(d3.max(descendants, d => d.children?.length || 0));
+
+                // Update Legend Counts
+                const typeCounts = { finetune: 0, quantized: 0, adapter: 0, merge: 0, other: 0 };
+                descendants.forEach(d => {
+                    const type = d.data.metadata?.derived_type;
+                    if (type && typeCounts.hasOwnProperty(type)) {
+                        typeCounts[type]++;
+                    } else {
+                        typeCounts.other++;
+                    }
+                });
+                Object.keys(typeCounts).forEach(type => {
+                    d3.select(`.legend-item[data-type="${type}"] .legend-count`).text(typeCounts[type]);
+                });
+
+                width = visContainer.clientWidth;
+                height = visContainer.clientHeight;
+                const radius = Math.min(width, height) / 2 * 0.8;
+
+                const treeLayout = d3.tree().size([2 * Math.PI, radius]);
+                treeLayout(root);
+
+                const allLinks = g.selectAll(".link")
+                    .data(root.links())
+                    .join("path")
+                    .attr("class", "link")
+                    .attr("d", d3.linkRadial().angle(d => d.x).radius(d => d.y))
+                    .style("stroke", d => colorScale(d.target))
+                    .style("stroke-opacity", 0.5);
+
+                const allNodes = g.selectAll(".node")
+                    .data(root.descendants())
+                    .join("g")
+                    .attr("class", "node")
+                    .attr("transform", d => `rotate(${d.x * 180 / Math.PI - 90}) translate(${d.y},0)`);
+
+                allNodes.append("circle")
+                    .attr("r", d => d.depth === 0 ? 10 : (d.children ? 7 : 5))
+                    .style("fill", colorScale);
+
+                allNodes.append("text")
+                    .attr("class", "node-text")
+                    .attr("dy", "0.31em")
+                    .attr("x", d => d.x < Math.PI === !d.children ? 12 : -12)
+                    .attr("text-anchor", d => d.x < Math.PI === !d.children ? "start" : "end")
+                    .attr("transform", d => d.x >= Math.PI ? "rotate(180)" : null)
+                    .text(d => {
+                        const modelName = d.data.model.split('/').pop();
+                        return truncateText(modelName, 15);
+                    });
+                
+                function resetHighlights() {
+                    clearTimeout(hideTooltipTimer);
+                    
+                    tooltip.style("opacity", 0).classed("visible", false);
+                    
+                    allNodes.transition().duration(400).style('opacity', 1);
+                    allLinks.transition().duration(400).style('opacity', 0.5);
+                    
+                    if (lastHoveredNode) {
+                        d3.select(lastHoveredNode.element).select('circle').transition().duration(400)
+                          .attr('r', lastHoveredNode.d.depth === 0 ? 10 : (lastHoveredNode.d.children ? 7 : 5));
+                        lastHoveredNode = null;
+                    }
+                }
+
+                allNodes
+                    .on("mouseover", function(event, d) {
+                        clearTimeout(hideTooltipTimer);
+                        lastHoveredNode = { d, element: this };
+
+                        const ancestors = d.ancestors();
+                        const ancestorModels = new Set(ancestors.map(n => n.data.model));
+
+                        allNodes.transition().duration(200)
+                            .style('opacity', n => ancestorModels.has(n.data.model) ? 1 : 0.2);
+                        allLinks.transition().duration(200)
+                            .style('opacity', l => ancestorModels.has(l.source.data.model) && ancestorModels.has(l.target.data.model) ? 1 : 0.1);
+
+                        d3.select(this).select('circle').transition().duration(200).attr('r', 12);
+                        
+                        tooltip.html(`<h3>${d.data.model}</h3>
+                                    <p><strong>类型:</strong> ${d.data.metadata?.derived_type || 'N/A'}</p>
+                                    <p><strong>深度:</strong> ${d.depth}</p>
+                                    ${d.parent ? `<p><strong>父模型:</strong> ${d.parent.data.model}</p>` : ''}
+                                    <p><strong>子节点数:</strong> ${d.children?.length || 0}</p>
+                                    <p><a href="https://huggingface.co/${d.data.model}" target="_blank" rel="noopener noreferrer">在 Hugging Face 上查看 →</a></p>`)
+                                .classed("visible", true);
+                        
+                        // Position tooltip after content is set
+                        const tooltipNode = tooltip.node();
+                        const tooltipWidth = tooltipNode.offsetWidth;
+                        const tooltipHeight = tooltipNode.offsetHeight;
+                        let left = event.pageX + 15;
+                        let top = event.pageY - 20;
+
+                        if (left + tooltipWidth > window.innerWidth) {
+                            left = event.pageX - tooltipWidth - 15;
+                        }
+                        if (top + tooltipHeight > window.innerHeight) {
+                            top = event.pageY - tooltipHeight + 20;
+                        }
+
+                        tooltip.style("left", `${left}px`)
+                               .style("top", `${top}px`)
+                               .transition().duration(200)
+                               .style("opacity", 0.95);
+                    })
+                    .on("mouseout", () => {
+                        hideTooltipTimer = setTimeout(resetHighlights, 300);
+                    })
+                    .on('click', (event, d) => {
+                        event.stopPropagation();
+                        focusOnNode(d);
+                    });
+
+                tooltip.on("mouseover", () => clearTimeout(hideTooltipTimer))
+                       .on("mouseout", () => hideTooltipTimer = setTimeout(resetHighlights, 300));
+                
+                resetZoom();
+            }
+
+            treeSelector
+                .selectAll('option')
+                .data(forestData)
+                .join('option')
+                .attr('value', (d, i) => i)
+                .text(d => d.model);
+
+            treeSelector.on('change', function () {
+                const selectedIndex = d3.select(this).property('value');
+                renderTree(forestData[selectedIndex]);
+                searchBox.property('value', '');
+                searchBox.dispatch('input'); // Trigger search reset
+            });
+
+            searchBox.on("input", function () {
+                if (!currentRoot) return;
+                const searchTerm = this.value.toLowerCase().trim();
+                const allNodes = g.selectAll('.node');
+                const allLinks = g.selectAll('.link');
+
+                if (!searchTerm) {
+                    allNodes.style("opacity", 1);
+                    allLinks.style("opacity", 0.5);
+                    return;
+                }
+
+                const matchedNodes = new Set();
+                currentRoot.descendants().forEach(d => {
+                    if (d.data.model.toLowerCase().includes(searchTerm)) {
+                        d.ancestors().forEach(ancestor => matchedNodes.add(ancestor));
+                    }
+                });
+
+                allNodes.style("opacity", d => matchedNodes.has(d) ? 1 : 0.1);
+                allLinks.style("opacity", l => matchedNodes.has(l.source) && matchedNodes.has(l.target) ? 1 : 0.05);
+            });
+
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    const selectedIndex = treeSelector.property('value');
+                    if (forestData[selectedIndex]) {
+                        renderTree(forestData[selectedIndex]);
+                    }
+                }, 250);
+            });
+
+            renderTree(forestData[0]);
+        }
+    </script>
+</body>
+
+</html>
