@@ -4,7 +4,38 @@
 
 Empirical study has revealed that although splitting the file into methods can solve some of the issues caused bu contextual limitations, the shortcomings of LLMs in understanding the methods of coupling and cross-file calls remain the serious challenges of translating. Another awkward issue is that such an approach also sacrifices a macropic understanding of the whole project, thus cause the more problems of method calling and the fit between method. To alleviate this issue, we attempt to use a series of enhancement methods.
 
-We first improved the prompt of method translating
+A natural idea is to add relevant context to the prompt on the basis of the method-based translation. Specifically, when we translating a single method, we attach other translated methods that this methods will call in the prompt, thus LLMs can obtain more precise parameter tables and behavioral details of these methods. This approach places the following demands on us:
+
+\begin{itemize}
+    \item Before translating, we must perform static analysis on the code to determine which methods it has called.
+    \item When translating a method, all methods it calls must have been translated
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{pdf/diagram/retreval.pdf}
+  \caption{Bottom-up translation}
+\end{figure}
+
+the bottom-up method-based method involves the following steps:
+\begin{itemize}
+    \item Parse all call relationships in the project
+    \item Topologically sort all methods according to their calling relationships
+    \item Translate in order from bottom to top
+\end{itemize}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.5\textwidth]{pdf/diagram/steps.pdf}
+  \caption{steps of bottom-up translate}
+\end{figure}
+
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\textwidth]{pdf/diagram/prompt.pdf}
+  \caption{translate prompt}
+\end{figure}
 
 
 % We conduct an empirical study on three research questions.
