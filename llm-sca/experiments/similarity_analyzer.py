@@ -12,12 +12,14 @@ class SimilarityAnalyzer:
         if method == "cos":
             analyzer = CosSimilarty(self.model_A_name, self.model_B_name, **self.kwargs)
             cos_ne = analyzer.compare_models_cos()
-            analyzer.plot_cosine_similarity_stats(cos_ne)
+            stats = analyzer.plot_cosine_similarity_stats(cos_ne)
+            analyzer.save_stats_to_json(stats, update_existing=True)
             return cos_ne
         elif method == "diff":
             analyzer = Difference(self.model_A_name, self.model_B_name, **self.kwargs)
             stats_list, global_sample_array = analyzer.compute_elementwise_differences()
-            analyzer.plot_diff_stats(global_sample_array)
+            stats = analyzer.plot_diff_stats(global_sample_array)
+            analyzer.save_stats_to_json(stats, update_existing=True)
             return stats_list
         
 

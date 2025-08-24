@@ -6,6 +6,26 @@ import matplotlib.pyplot as plt
 from scipy.stats import skew, kurtosis
 from transformers import AutoModelForCausalLM
 from peft import PeftModel
+import tempfile
+
+def _sanitize_value(v):
+    """把 numpy 类型与 NaN 转为可 JSON 序列化的 Python 基本类型。"""
+    if isinstance(v, (np.floating, float)):
+        if np.isnan(v):
+            return None
+        return float(v)
+    if isinstance(v, (np.integer, int)):
+        return int(v)
+    # 布尔类型等直接返回
+    if v is None:
+        return None
+    try:
+        # 有时用户会传入 numpy arrays 等，尽量降维
+        if isinstance(v, (np.ndarray, list, tuple)):
+            return [_sanitize_value(x) for x in list(v)]
+    except Exception:
+        pass
+    return v
 
 class CosSimilarty:
     """
@@ -295,6 +315,7 @@ class CosSimilarty:
             q25 = q50 = q75 = np.nan
 
         # 3. 绘图
+        plt.rcParams['axes.unicode_minus'] = False  # 使用普通 ASCII '-'，不会乱码
         plt.rcParams['font.family'] = 'SimHei'  # 中文字体
         plt.figure(figsize=(8, 5))
 
@@ -335,9 +356,9 @@ class CosSimilarty:
 
         # 4. 输出统计结果（包含 equal 计数）
         stats = {
-            'weighted_mean': weighted_mean,
-            'weighted_std': weighted_std,
-            'skewness': weighted_skewness,
+            'mean': weighted_mean,
+            'std': weighted_std,
+            'skew': weighted_skewness,
             'kurtosis': weighted_kurtosis,
             '25%_quantile': q25,
             '50%_quantile': q50,
@@ -353,6 +374,94 @@ class CosSimilarty:
                 print(f"  {k:15s}: {v}")
         return stats
 
+    def save_stats_to_json(self, stats, json_path="./experiments/cos_stats.json", pair_type=None,
+                        update_existing=False, verbose=True):
+        """
+        将 stats（来自 plot_cosine_similarity_stats 返回值）追加到 json_path 文件中。
+        - json_path: 目标文件路径（若不存在会创建）
+        - pair_type: 可选，和 plot_cosine_similarity_stats 中的 type 一致，作为区分字段
+        - update_existing: 如果已存在同一模型对且 pair_type 相同，是否替换/更新已有条目（默认 False）
+        - 返回: dict {'action': 'added'|'skipped'|'updated'|'error', 'entry': <entry dict>}
+        """
+
+        # 构造 entry
+        entry = {
+            "model_A": getattr(self, "model_A_name", None),
+            "model_B": getattr(self, "model_B_name", None),
+            "pair_type": pair_type,
+            "stats": {}
+        }
+
+        # sanitize stats 内容
+        for k, v in stats.items():
+            entry["stats"][k] = _sanitize_value(v)
+
+        # 如果 model 名称没有提供，拒绝写入
+        if not entry["model_A"] or not entry["model_B"]:
+            msg = "model_A_name 或 model_B_name 未设置，无法保存。"
+            if verbose:
+                print(msg)
+            return {"action": "error", "reason": msg}
+
+        # 读取已有数据（如果有）
+        data = []
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                if not isinstance(data, list):
+                    # 兼容性：如果不是 list，强制转换为 list
+                    data = [data]
+            except Exception as e:
+                msg = f"读取 JSON 文件失败: {e}"
+                if verbose:
+                    print(msg)
+                return {"action": "error", "reason": msg}
+
+        # 查找是否已存在：考虑 (A,B) 与 (B,A) 对称，并且 pair_type 一致（None 也必须一致）
+        def same_pair(e1, e2):
+            a1, b1, t1 = e1["model_A"], e1["model_B"], e1.get("pair_type", None)
+            a2, b2, t2 = e2["model_A"], e2["model_B"], e2.get("pair_type", None)
+            same_names = (a1 == a2 and b1 == b2) or (a1 == b2 and b1 == a2)
+            return same_names and (t1 == t2)
+
+        existing_index = None
+        for idx, rec in enumerate(data):
+            # 保证 rec 含必要字段，否则跳过
+            if not isinstance(rec, dict):
+                continue
+            if same_pair(rec, entry):
+                existing_index = idx
+                break
+
+        if existing_index is not None:
+            if update_existing:
+                # 替换已有条目（保留旧 timestamp 可选）
+                data[existing_index] = entry
+                action = "updated"
+            else:
+                if verbose:
+                    print(f"已存在相同模型对（index={existing_index}），已跳过添加。若想覆盖请设 update_existing=True")
+                return {"action": "skipped", "entry": data[existing_index]}
+        else:
+            data.append(entry)
+            action = "added"
+
+        # 原子写入：先写到临时文件再替换
+        try:
+            dirpath = os.path.dirname(os.path.abspath(json_path)) or "."
+            with tempfile.NamedTemporaryFile("w", delete=False, dir=dirpath, encoding="utf-8") as tf:
+                json.dump(data, tf, ensure_ascii=False, indent=2)
+                tmpname = tf.name
+            os.replace(tmpname, json_path)  # 原子替换（POSIX & Windows 支持）
+            if verbose:
+                print(f"保存成功（{action}）: {json_path}")
+            return {"action": action, "entry": entry}
+        except Exception as e:
+            msg = f"写入 JSON 文件失败: {e}"
+            if verbose:
+                print(msg)
+            return {"action": "error", "reason": msg}
 
     def detect_cos_similarity(self, save_path = None, type = None):
         # self.compare_models_cos()
@@ -371,5 +480,6 @@ if __name__ == '__main__':
                                 model_B_gguf_file = None)
     cos_ne = analyzer.compare_models_cos()
     # analyzer.plot_cosine_similarity_cumulative(cos_ne)
-    analyzer.plot_cosine_similarity_stats(cos_ne)
+    stats = analyzer.plot_cosine_similarity_stats(cos_ne)
+    analyzer.save_stats_to_json(stats, update_existing=True)
     # analyzer.export_unmatched_tensors(output_json="./experiments/test/example_unmatched_tensors.json")
