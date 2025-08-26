@@ -105,10 +105,18 @@ in the \textbf{Result} section.
 \subsection{Research Questions}
 
 \begin{itemize}
-    \item \textbf{RQ1:} How frequently do different large language models hallucinate non-existent Python packages when recommending third-party libraries?
-    \item \textbf{RQ2:} Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
-    \item \textbf{RQ3:} Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
-    \item \textbf{RQ4:} What are the characteristics of the hallucinated packages?
+    \item \textbf{Hallucination Degree (RQ1):} How frequently do different large language models hallucinate non-existent Python packages when recommending third-party libraries?
+    % 3%
+    \item \textbf{Characteristics (RQ2):} What are the characteristics of the hallucination?
+    % 1. 包名 2. 问题
+    \item \textbf{Severity (RQ3):} Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
+    % 1. 下载量趋势
+
+    \item \textbf{ (RQ4):} Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
+    % 3% -> 10%
+    % rewrite有哪几种形式？
+    % SO数据---Rewrite--->新的疑问句，LLM没见过
+   
 \end{itemize}
 
   To study RQ1, we used our constructed dataset of functional questions to uniformly query several mainstream LLMs, including ChatGPT-4, 
