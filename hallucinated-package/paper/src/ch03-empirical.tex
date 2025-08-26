@@ -1,22 +1,134 @@
 \section{Empirical}
 
 
-\section{Setup}
+\subsection{Setup}
 
-\textbf{1. XX} XXX
+\subsubsection{Constructing the Functional Question Dataset}
 
+  To investigate the hallucination phenomenon of LLMs in recommending Python packages, we first needed to construct a 
+representative dataset of functional questions. Our goal was to identify questions from Stack Overflow that are related 
+to popular Python development scenarios and are likely to trigger package recommendation behavior.
 
-\textbf{2. XX} XXX
+  First, we followed the co-occurrence-based tag selection method proposed by Huang et al.\cite{huang2023tags} and used 
+the public Stack Overflow dataset provided by Google BigQuery\cite{bigqueryDataset} to extract all tags that co-occurred 
+with the python tag more than 1{,}000 times. This yielded a total of 212 tags. Building upon this, we were inspired by the 
+task topic classification strategy used by Du et al.\cite{du2024classlevel} in designing code generation benchmarks, and we 
+referred to the categorization of popular Python development topics proposed by Tahmooresi et al.\cite{tahmooresi2020pythonfields}. 
+We manually analyzed the 212 high-frequency co-occurring tags to determine whether each tag belonged to one of the 12 
+mainstream development domains, whether it was likely to involve the use or recommendation of Python packages, and whether 
+it might give rise to “how to implement” type functional questions. Based on this screening, we retained 114 tags. The 
+detailed categorization is shown in Table~\ref{table:tag-classification}.
 
+  Based on this, we extracted all questions from the public dataset that contained both the python tag and at least one of the 
+114 selected tags, resulting in a total of 287,944 questions. We randomly sampled 200 of these questions for manual analysis 
+and found that typical questions related to package recommendation often included functional expressions such as "how to" or 
+"how can I". Therefore, we used these keywords to filter all potentially functional questions from the dataset, yielding 49,967 
+candidate questions.
 
-\section{Research Questions}
+  To further filter out functional questions from the 49,967 candidates, we conducted a detailed analysis on a random sample of 200 
+questions to summarize the typical characteristics of functional questions. Based on these characteristics, we designed a targeted 
+prompt and used the large language model DeepSeek R1 to determine whether each question qualified as a functional question. As a 
+result, we obtained a refined set of 17,696 functional questions. Details of the prompt design can be found in Appendix A.
+
+  To further filter the selected functional questions, we removed those that did not have an accepted answer, ensuring that each retained 
+question had a verified solution. We then extracted the accepted answer for each question from the public dataset and combined it with 
+the corresponding question to form question-answer pairs.
+
+  To identify whether each accepted answer involved specific third-party Python libraries, we designed a prompt (see Appendix B for details). 
+We then used the large language model DeepSeek R1 to analyze each accepted answer and extract any mentioned third-party library names 
+(i.e., packages installable via pip from PyPI). If the model returned null (indicating that no third-party libraries were involved), 
+then the corresponding question-answer pair was filtered out in the subsequent processing. As a result, we obtained 4,382 questions 
+to form our final functional question dataset.
+
+  Since the above question-answer pairs were collected from the public Stack Overflow community, they might have already been seen by large language 
+models during training. As a result, the hallucination problem of virtual packages might be more severe than what our initial experiments suggest. 
+To obtain more realistic experimental results, we employed a diffusion-based text generation approach to rewrite the question titles. Diffusion 
+models have achieved remarkable success in handling continuous signals such as vision and audio, and due to their --- characteristics, they also 
+show great potential in sequence-to-sequence tasks. Some studies have demonstrated that diffusion models can achieve outstanding results in terms 
+of both generation quality and output diversity.
+
+  In summary, we constructed a functional question-answer dataset based on the public Stack Overflow data, covering a wide range of typical Python 
+development scenarios.
+
+\subsubsection{Querying LLMs for Package Suggestions}
+
+  To evaluate the frequency at which LLMs hallucinate packages when recommending Python libraries, we designed a unified and comprehensive experimental 
+pipeline. We conducted experiments on several mainstream models, including ChatGPT-4, DeepSeek-R1, Qwen3, and Claude-Opus-4. For each model, we used 
+the titles of questions from our previously constructed functional question dataset as input prompts, asking the models to recommend one or more 
+third-party Python libraries that could be used to solve the given problem.
+
+  We first designed a unified prompt for all models, with the full content detailed in Appendix C. During the querying process, we observed that some 
+models returned package names containing characters that are not allowed on PyPI (e.g., parentheses, brackets, equal signs, or spaces). To handle this, 
+we implemented an automated script to detect such invalid outputs and re-issued the queries until the returned package names no longer contained illegal 
+characters.
+
+  In addition, for some package names generated by the models that contained dot characters (e.g., scipy.sparse), we found that such submodules could 
+not be directly installed as top level packages. To address this, To address this, we designed a more restrictive prompt (see Appendix D), which 
+explicitly instructed the model to return only top level package names, for example, replacing scipy.sparse with scipy. Whenever a returned result 
+contained a dot, we re-issued the query using this stricter prompt. However, we observed that even after multiple rounds of clarification, a few 
+models still occasionally returned package names with dots (such as RPi.GPIO). In such cases, we chose to retain these results and handle them consistently 
+in later stages of our process.
+
+  After completing all queries, we uniformly processed the returned package names. First, we removed all records with the return value \texttt{no\_package}, 
+retaining only those questions for which the model explicitly recommended package name. Then, we queried each recommended package individually using 
+PyPI's official JSON API \url{https://pypi.org/pypi/\{pkg\_name\}/json} to check whether the package truly exists. If the request returned a 200 status code, 
+the package was considered real. During this process, we noticed that package names containing a dot, which had previously been retained, also received 
+200 responses from the API. This indicated that these dotted package names were indeed present on PyPI, and we thus treated them as real packages as well.
+
+  Finally, we conducted further screening on the package names that failed the PyPI check and were initially identified as hallucinated packages. 
+Although our prompt explicitly instructed the models to recommend third-party libraries, a small number of Python standard libraries (e.g., os, sys) 
+were still suggested by some models. Since these standard libraries cannot be found on PyPI, they were mistakenly classified as hallucinated packages. 
+To eliminate such cases, we used the importlib.util.find\_spec() interface to determine whether a given package was part of the standard library. 
+After filtering out standard libraries through this additional step, we ultimately obtained a result set that contained only hallucinated packages.
+
+\subsubsection{Registering Hallucinated Packages to PyPI}
+
+  To further investigate whether hallucinated packages generated by LLMs pose a risk of being downloaded by real developers, we selected 
+91 hallucinated package names recommended by ChatGPT-4 and attempted to actually register and upload them to the PyPI platform. For each 
+package, we prepared standardized versions of the setup.py, \_\_init\_\_.py, and README.md files, explicitly stating that the package was 
+created solely for academic research purposes, contained no functional code, and performed no malicious operations. The README clearly 
+described the research context, researchers involved, contact information, and research objectives, ensuring full compliance with academic 
+ethics. All packages were uploaded manually by us.
+
+  We began uploading the packages on May 18, 2025, and completed the process by May 22, 2025. A total of nine PyPI accounts were used to 
+upload the packages in batches. Among the 91 packages, 55 were successfully registered, while the remaining 36 failed due to various reasons. 
+These failures included package names being protected by PyPI, names being too similar to existing projects, or accounts being restricted 
+by the platform due to suspicious upload activities.
+  
+  On June 10, 2025, we received an email from PyPI administrator requesting the immediate removal of all experiment-related packages. In 
+response, we took down all packages during the period from June 12 to June 13.
+
+  After uploading the packages to PyPI, we tracked their download activity to observe the actual impact of these hallucinated packages. 
+We used two third-party analytics platforms, pepy.tech and pypistats.org, to collect the download statistics for each package. These platforms 
+provide both daily download counts and cumulative downloads over different time periods. The corresponding results and analysis are presented 
+in the \textbf{Result} section.
+\subsection{Research Questions}
 
 \begin{itemize}
-    \item \textbf{RQ1:} XXXX
-    \item \textbf{RQ2:} XXXXX
-    \item \textbf{RQ3:} XXXXX
+    \item \textbf{Hallucination Degree (RQ1):} How frequently do different large language models hallucinate non-existent Python packages when recommending third-party libraries?
+    % 3%
+    \item \textbf{Characteristics (RQ2):} What are the characteristics of the hallucination?
+    % 1. 包名 2. 问题
+    \item \textbf{Severity (RQ3):} Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
+    % 1. 下载量趋势
+
+    \item \textbf{ (RQ4):} Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
+    % 3% -> 10%
+    % rewrite有哪几种形式？
+    % SO数据---Rewrite--->新的疑问句，LLM没见过
+   
 \end{itemize}
 
+  To study RQ1, we used our constructed dataset of functional questions to uniformly query several mainstream LLMs, including ChatGPT-4, 
+DeepSeek-R1, Qwen3, Claude-Opus-4, asking them to recommend third-party Python libraries that could help solve each question. We then 
+verified the recommended packages using the PyPI API to determine whether they actually exist, and calculated the hallucination frequency 
+for each model accordingly.
 
-To study RQ1, we ...
+  To study RQ2, we applied a diffusion-model-based rewriting method to modify the titles of the functional questions and then used the 
+same querying procedure to prompt each LLM with these rewritten questions. This allows us to assess whether the models are more likely 
+to generate hallucinated packages when facing "unseen" questions.
+
+  To study RQ3, we registered the hallucinated packages recommended by ChatGPT-4 on the PyPI platform and monitored their download activity 
+over a specific period. Using data from third-party analytics platforms, we tracked how many times these packages were downloaded by real 
+users or automated tools, in order to assess the potential risk of them being exploited by attackers to deceive real users into downloading and using them.
 

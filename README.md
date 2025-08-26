@@ -1,161 +1,55 @@
-# SITP (Software Supply Chain Security, LLM Security & Defense)
+#### 流程状态
 
-## 项目概述
 
-SITP是一个综合性的安全研究项目，专注于软件供应链安全、大语言模型(LLM)安全威胁检测与防御。项目涵盖了从恶意软件分析到LLM越狱攻击与防御的多个安全领域。
 
-## Construction (构建)
+|                          | 人数 | 讨论时间  | 调研           | 问题与创新     | RQ与方法       | 实验           | 论文 | 投稿           |
+| ------------------------ | ---- | --------- | -------------- | -------------- | -------------- | -------------- | ---- | -------------- |
+| Dynamic-Software         | 2    | 周二晚7点 | :radio_button: |                |                |                |      |                |
+| Repair                   | 8    | 周二晚8点 |                |                | :radio_button: |                |      |                |
+| Hallucination            | 8    | 不定期    |                |                | :radio_button: |                |      |                |
+| IDE LLM Agent            | 4    | 不定期    |                | :radio_button: |                |                |      |                |
+| Hallucinated Package     | 1    | 不定期    |                |                |                | :radio_button: |      |                |
+| LLM-SCA                  | 5    | 周二晚9点 |                | :radio_button: |                |                |      |                |
+| Update-Deprecated API    | 2    |           |                |                | :radio_button: |                |      |                |
+| Update-Semantic Version  | 2    |           |                | :radio_button: |                |                |      |                |
+| Update-API Compatibility | 2    | 周四晚7点 |                |                | :radio_button: |                |      |                |
+| Performance              | 3    |           | :radio_button: |                |                |                |      |                |
+| LLM Risk                 | 6    | 周四晚9点 | :radio_button: |                |                |                |      |                |
+| Vulnerability Benchmark  | 2    | 不定期    |                | :radio_button: |                |                |      |                |
+| Malware                  | 1    | -         |                |                |                |                |      | :radio_button: |
+| Privacy                  | 4    | -         |                |                |                |                |      | :radio_button: |
 
-### 1. 项目架构
 
-```
-SITP/
-├── malware/                 # 恶意软件分析
-│   ├── data-stealing/       # 数据窃取恶意软件
-│   ├── Poisoning/          # 投毒攻击
-│   └── SP2022 Taxonomy.pdf # 软件供应链攻击分类
-├── llm_risk/               # LLM风险评估
-│   ├── MCP Safety Audit/   # 模型上下文协议安全审计
-│   ├── Agent Misalignment/ # 智能体错位研究
-│   └── Security Threats/   # 安全威胁分析
-├── llm-sca/                # LLM软件供应链安全
-│   ├── paper/              # 学术论文
-│   ├── models/             # 模型实现
-│   ├── experiments/        # 实验代码
-│   └── data/               # 数据集
-├── hallucination/          # LLM幻觉检测
-│   ├── hallucination_paper/ # 幻觉研究论文
-│   ├── dataset/            # 幻觉数据集
-│   └── 相关论文/           # 幻觉检测相关研究
-├── hallucinated-package/   # 幻觉包检测
-├── defend/                 # 防御机制
-│   ├── Attack/             # 攻击方法
-│   ├── Defend/             # 防御方法
-│   ├── benchmark/          # 基准测试
-│   └── Survey/             # 调研报告
-└── README.md              # 项目文档
-```
 
-### 2. 核心模块构建
+#### Dynamic-Software
 
-#### 2.1 恶意软件分析模块
-- **数据窃取检测**: 识别和分析针对用户数据的恶意软件
-- **投毒攻击分析**: 研究软件供应链中的投毒攻击模式
-- **分类体系**: 基于SP2022标准的软件供应链攻击分类
+#### Repair
 
-#### 2.2 LLM安全评估模块
-- **MCP安全审计**: 模型上下文协议的安全漏洞检测
-- **智能体错位**: 测量LLM智能体的错位行为倾向
-- **威胁建模**: 构建LLM安全威胁的全面分析框架
+#### Hallucination
 
-#### 2.3 幻觉检测模块
-- **代码翻译幻觉**: 检测代码翻译过程中的幻觉现象
-- **多语言幻觉**: 跨语言翻译中的幻觉检测
-- **金融决策幻觉**: 金融领域的LLM幻觉最小化
+#### Privacy 
 
-#### 2.4 防御机制模块
-- **攻击方法库**: 收集和实现各种LLM越狱攻击
-- **防御策略**: 多层次的LLM安全防御机制
-- **基准测试**: 标准化的安全评估基准
+#### Malware
 
-## Characteristic (特征)
+#### Hallucinated Package
 
-### 1. 技术特征
+#### LLM-SCA
 
-#### 1.1 多维度安全分析
-- **软件供应链安全**: 从开发到部署的全链路安全分析
-- **LLM安全威胁**: 针对大语言模型的专门安全研究
-- **幻觉检测**: 独特的LLM输出质量评估机制
+#### Update
 
-#### 1.2 攻击方法分类
-- **对抗提示生成**: 
-  - 白盒梯度方法 (GCG, PAIR, TAP)
-  - 遗传算法方法 (AutoDAN, GPTFUZZER, SMJ)
-  - 人类说服技巧 (PAP, COLD-Attack, Likelihood)
-- **编码攻击**: 
-  - 字符编码 (Base64, 摩斯密码, 凯撒密码)
-  - 代码注入 (字符串拼接, Codechameleon)
-  - 语义分割 (Dr Attack, Artprompt)
-- **场景嵌套**: 
-  - 多层场景 (DeepInception, ReNeLLM)
-  - 上下文攻击 (ICA, Jailbroken)
-  - 多轮攻击 (Many-shot, Masterkey)
+##### 1. Deprecated API
 
-#### 1.3 防御策略体系
-- **多智能体防御**: 
-  - AutoDefense: 多智能体协作防御
-  - G4D: 基于外部知识的防御指导
-  - 理论框架: 系统化护栏构建方法
-- **输入过滤**: 
-  - RigorLLM: 弹性护栏和约束优化
-  - 困惑度过滤: 基于语言模型的异常检测
-- **推理指导**: 
-  - 目标优先级: 训练和推理阶段的目标管理
-  - 重复机制: 无需微调的内在安全性提升
-  - 扰动防御: SmoothLLM的字符级扰动
-- **对抗训练**: 
-  - RA-LLM: 随机对齐机制
-  - DRO: 定向表示优化
-  - 安全微调: 基于安全数据的模型优化
+##### 2. Semantic Versioning
 
-### 2. 创新特征
+##### 3. API Compatibility
 
-#### 2.1 系统性安全框架
-- **全链路覆盖**: 从软件供应链到LLM应用的完整安全分析
-- **多角度评估**: 攻击、防御、检测的多维度评估体系
-- **标准化基准**: 统一的安全评估标准和基准测试
+#### Performance
 
-#### 2.2 智能化防御机制
-- **自适应防御**: 基于攻击模式的自适应防御策略
-- **多智能体协作**: 多个防御智能体的协同工作
-- **外部知识集成**: 利用外部知识库增强防御能力
+#### LLM Risk
 
-#### 2.3 实用性导向
-- **工程化实现**: 可部署的安全防御系统
-- **性能优化**: 平衡安全性和系统性能
-- **可扩展性**: 支持不同规模和类型的LLM系统
+#### Vulnerability Benchmark
 
-### 3. 应用特征
+#### IDE LLM Agent
 
-#### 3.1 企业级安全
-- **软件供应链保护**: 保护企业软件供应链免受恶意攻击
-- **LLM安全部署**: 确保企业LLM应用的安全运行
-- **合规性支持**: 满足各种安全合规要求
 
-#### 3.2 研究支持
-- **学术研究**: 为安全研究提供丰富的实验数据和工具
-- **基准测试**: 标准化的安全评估基准
-- **开源贡献**: 推动安全技术的开源发展
-
-#### 3.3 教育价值
-- **安全知识传播**: 通过开源项目传播安全知识
-- **实践指导**: 提供实际的安全防御指导
-- **技术培训**: 支持安全技术的培训和教学
-
-## 使用指南
-
-### 环境要求
-- Python 3.8+
-- PyTorch 1.8+
-- Transformers 4.0+
-- 其他依赖见各模块的requirements.txt
-
-### 快速开始
-1. 克隆项目: `git clone https://github.com/kaifeng-h/SITP.git`
-2. 安装依赖: `pip install -r requirements.txt`
-3. 运行测试: 参考各模块的README文档
-
-### 贡献指南
-欢迎提交Issue和Pull Request来改进项目。请确保：
-- 代码符合项目规范
-- 添加适当的测试
-- 更新相关文档
-
-## 许可证
-本项目采用MIT许可证，详见LICENSE文件。
-
-## 联系方式
-- 项目维护者: kaifeng-h
-- 邮箱: [联系邮箱]
-- 项目地址: https://github.com/kaifeng-h/SITP
 
