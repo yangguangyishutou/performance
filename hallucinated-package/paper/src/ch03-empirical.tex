@@ -1,5 +1,4 @@
-\section{Empirical}
-
+\section{Empirical Setup}
 
 \subsection{Setup}
 
@@ -104,15 +103,22 @@ provide both daily download counts and cumulative downloads over different time 
 in the \textbf{Result} section.
 \subsection{Research Questions}
 
-\begin{itemize}
-    \item \textbf{Hallucination Degree (RQ1):} How frequently do different large language models hallucinate non-existent Python packages when recommending third-party libraries?
+\begin{itemize}[leftmargin=*]
+    \item \textbf{\done{Hallucination Degree (RQ1)}:} To what extent do LLMs generate hallucinated package names when recommending third-party packages?
     % 3%
-    \item \textbf{Characteristics (RQ2):} What are the characteristics of the hallucination?
+    \item \textbf{Hallucinated Package Characteristics (RQ2):} What are the characteristics of the hallucinated package?
     % 1. 包名 2. 问题
-    \item \textbf{Severity (RQ3):} Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
+    \item \textbf{\done{Distribution Severity (RQ3)}:} How do hallucinated packages survive and distribute on the package registry?
+    % Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
     % 1. 下载量趋势
+    % 2. User Study
+    % User study: Present hallucinated vs. real package suggestions to programmers to see how often they can distinguish them. 
+    % Can developers distinguish between legitimate and hallucinated/squatted names, and what contextual cues (documentation, versioning, popularity) influence their trust?
+	  % How does uncertainty about package legitimacy affect adoption of LLM-generated code suggestions in practice?
+    % 3. Interview with Hallucinated Squatting package authors.
+    \item \textbf{Unseen Query Evaluation (RQ4):} How do LLMs perform regarding queries that are unseen in the dataset?
+    % Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
 
-    \item \textbf{ (RQ4):} Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
     % 3% -> 10%
     % rewrite有哪几种形式？
     % SO数据---Rewrite--->新的疑问句，LLM没见过
