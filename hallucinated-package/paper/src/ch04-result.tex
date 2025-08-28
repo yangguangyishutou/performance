@@ -30,16 +30,14 @@
 \end{figure}
 
 
-3. Venn Diagram
-
-
 \begin{figure}[!t]
     \centering
-    \includegraphics[width=0.45\textwidth]{fig/RQ1-venn.png}
+    \includegraphics[width=0.48\textwidth]{fig/RQ1-hallucination-vnn.png}
     \vspace{-10pt}
-    \caption{Venn Diagram}
-    \label{fig:venn}
+    \caption{Venn diagram of hallucinated package overlaps among LLMs.}
+    \label{fig:hallucination-vnn}
 \end{figure}
+
 
 \subsection{RQ2}
 
@@ -87,3 +85,27 @@ Put Table, illustrate characteristics.
 % 1. 如何提问可以使得幻觉率更低？
 % 2. 幻觉的包，在不同domain/包名上表现的分布差异？
 % 3. rewrite之后，不同rewrite形式，幻觉率不同
+\begin{table*}[!t]
+    \centering
+    \footnotesize
+    \caption{Feature Categories of Hallucinated PyPI Package Names}
+    \label{tab:hallucination_features}
+    \begin{tabular}{p{4cm}p{10cm}c}
+    \toprule
+    \textbf{Feature Category} & \textbf{Example Package Names} & \textbf{Count} \\
+    \midrule
+    PyPI Submodules & \texttt{mpl\_toolkits}, \texttt{mplot3d}, \texttt{gridfs}, \texttt{pkg\_resources}, \texttt{sklearn-base}, \texttt{django-forms} & 6 \\
+    Function/Usage Names & \texttt{odeint}, \texttt{django-contenttypes} & 2 \\
+    Misspelled Packages & \texttt{urlib3}, \texttt{shutilwich}, \texttt{maze-solvers} & 3 \\
+    Fabricated Based on Real PyPI Packages & \texttt{django-classy-views}, \texttt{flask-autocomplete} & 20+ \\
+    Import Name Mismatch & \texttt{MySQLdb}, \texttt{yaml}, \texttt{dateutil} & 3 \\
+    Old Package Names & \texttt{pytest-capturelog} & 1 \\
+    Standard Library Names & \texttt{email-parser}, \texttt{osrandom}, \texttt{redirect-stdout}, \texttt{BytesIO} & 4 \\
+    Legacy Stdlib Names & \texttt{Tkinter} & 1 \\
+    Colloquial or Informal Names & \texttt{redis-py}, \texttt{pyqt}, \texttt{opencv} & 3 \\
+    Derived from Technical Terms & \texttt{translate-api}, \texttt{pycapsule-api}, \texttt{manifestin} & 3 \\
+    Platform / C Library / Tools & \texttt{zeromq}, \texttt{OpenSSL}, \texttt{package\_control}, \texttt{h2oai}, \texttt{tastypie}, \texttt{sslsplit} & 6 \\
+    \bottomrule
+    \end{tabular}
+    \end{table*}
+    
