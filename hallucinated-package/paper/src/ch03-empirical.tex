@@ -1,5 +1,4 @@
-\section{Empirical}
-
+\section{Empirical Setup}
 
 \subsection{Setup}
 
@@ -104,11 +103,62 @@ provide both daily download counts and cumulative downloads over different time 
 in the \textbf{Result} section.
 \subsection{Research Questions}
 
-\begin{itemize}
-    \item \textbf{RQ1:} How frequently do different large language models hallucinate non-existent Python packages when recommending third-party libraries?
-    \item \textbf{RQ2:} Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
-    \item \textbf{RQ3:} Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
-    \item \textbf{RQ4:} What are the characteristics of the hallucinated packages?
+\begin{itemize}[leftmargin=*]
+    \item \textbf{\done{Hallucination Degree (RQ1)}:} To what extent do LLMs generate hallucinated package names when recommending third-party packages?
+    % 3%
+    \item \textbf{Hallucinated Package Characteristics (RQ2):} What are the characteristics of the hallucinated package?
+    % 1. 包名 todo 类别的表格
+    % 2. 问题 2.1 Question that generates hallucinated name 300 
+    %         2.2 Question that generates non-hallucinated name 3700 
+    % sklearn
+    % 1. Textual / Lexical Level
+    % 	•	Bag-of-Words or TF–IDF: Represent each question as a vector of word frequencies.
+    % 	•	Distance metrics: Cosine similarity, Jaccard similarity, or KL divergence between the two groups.
+    % 	•	Statistical tests:
+    % 	•	Chi-square test on word distributions.
+    % 	•	Mann–Whitney U test (if you compare similarity scores).
+    % ⸻
+    % 2. Semantic Representation Level
+    % 	•	Embedding-based methods: Encode each question using pretrained embeddings (e.g., Sentence-BERT, OpenAI embeddings).
+    % 	•	Measure distributional differences:
+    % 	•	Compute intra-group similarities and compare distributions with KS-test or Mann–Whitney U.
+    % 	•	Use distance measures like Maximum Mean Discrepancy (MMD) to test distributional divergence.
+    % 	•	Cluster embeddings and see if group membership aligns with clusters.
+    % ⸻
+    % 3. Topic / Content Level
+    % 	•	Topic modeling (e.g., LDA, BERTopic): Compare topic distributions of the two groups.
+    % 	•	Entropy / diversity measures: Are the questions in one group more diverse than the other?
+    % 	•	Keyword analysis: Identify distinguishing terms via log-odds ratio or PMI.
+    % ⸻
+    % 4. Hypothesis Testing Framework
+    % If you want a formal statistical test:
+    % 	•	Permutation test / bootstrap: Randomly shuffle group labels and test if group separation (based on embeddings, similarity scores, or cluster purity) is significant.
+    % 	•	Classifier-based two-sample test: Train a classifier to predict whether a question is from group A or B.
+    % 	•	If accuracy is significantly above chance, the groups differ.
+    % 	•	This is sometimes called a “classifier two-sample test (C2ST).”
+    % ⸻
+
+    % ✅ Practical recommendation:
+    % 	•	Start with Sentence-BERT embeddings.
+    % 	•	Compute the average embedding distribution per group.
+    % 	•	Use MMD or KS-test on pairwise similarities.
+    % 	•	Optionally, confirm with a classifier test.
+
+    \item \textbf{\done{Distribution Severity (RQ3)}:} How do hallucinated packages survive and distribute on the package registry?
+    % Do these hallucinated packages pose potential risks of being exploited by attackers to mislead real users into downloading and using them?
+    % 1. 注册成功率，下载量趋势
+    % 2. User Study
+    % User study: Present hallucinated vs. real package suggestions to programmers to see how often they can distinguish them. 
+    % Can developers distinguish between legitimate and hallucinated/squatted names, and what contextual cues (documentation, versioning, popularity) influence their trust?
+	  % How does uncertainty about package legitimacy affect adoption of LLM-generated code suggestions in practice?
+    % 3. Interview with Hallucinated Squatting package authors.
+    \item \textbf{Unseen Query Evaluation (RQ4):} How do LLMs perform regarding queries that are unseen in the dataset?
+    % Do large language models hallucinate more frequently when faced with rewritten questions they have never seen before, compared to the original questions?
+
+    % 3% --> 10%
+    % rewrite有哪几种形式？
+    % SO数据---Rewrite--->新的疑问句，LLM没见过
+   
 \end{itemize}
 
   To study RQ1, we used our constructed dataset of functional questions to uniformly query several mainstream LLMs, including ChatGPT-4, 
