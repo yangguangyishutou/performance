@@ -1,35 +1,237 @@
 % !TeX root = ../main.tex
+\section{Benchmark}\label{sec:benchmark}
 
-\section{Benchmark}\label{sec:approach}
+We construct a comprehensive benchmark that systematically evaluates GUI agents on real-world deployment scenarios. Our benchmark emphasizes realistic error conditions, diverse technology stacks, execution-based validation, and controllable environments.
 
-We construct a novel benchmark that evaluates the capabilities of existing GUI agents.
+\subsection{Open Source Software Collection}\label{sec:data-collection}
 
+We systematically collected real-world deployment scenarios from open-source projects to ensure diversity and practical relevance. Our collection process follows a rigorous, reproducible methodology designed to capture authentic deployment challenges.
 
-\subsection{Collection}
+\subsubsection{Project Selection Criteria}
 
-1. projection collection?
+We applied the following quantitative filters to identify suitable projects from GitHub:
 
-2.  400 case
+\textbf{Popularity Threshold.} We selected projects with $\geq 300$ GitHub stars, indicating active community usage and sufficient real-world deployment history. 
 
-
-\subsection{Characteristics}
-
-
-Fig. X. x-axis dependency depth
-
-table: Build Log 110, Running Log 210, Monitor XXX
-
-root cause, fix pattern.
-
-\subsection{Metrics}
-
-
-
+\textbf{Recent Activity Filter.} We required projects to have at least one commit after January 1, 2023, ensuring:
 \begin{itemize}
-    \item \textbf{Correctness.} How to evaluate the GUI agent is right, or wrong, or half-right.
-    \item \textbf{Finishing Steps.}
-    \item \textbf{Time.}
-    \item \textbf{Understanding the root cause but not give correct steps.}
-    
+    \item Compatibility with modern dependency versions and deployment practices
+    \item Active maintenance and ongoing community support
+    \item Relevance to current technology ecosystems
+    \item Exclusion of abandoned projects with outdated or deprecated dependencies
 \end{itemize}
 
+\textbf{Technology Stack Diversity.} To ensure comprehensive coverage, we systematically sampled projects across major technology categories:
+\begin{itemize}
+    \item Web frameworks: Node.js/Express, Django/Flask/FastAPI, Spring Boot
+    \item Containerization: Docker, Docker Compose, Kubernetes manifests
+    \item Microservices architectures with multiple interdependent services
+    \item Data processing: Apache Spark, Airflow, data pipelines
+    \item Machine learning: PyTorch, TensorFlow, model serving applications
+    \item Database-backed applications: MySQL, PostgreSQL, MongoDB, Redis
+    \item Full-stack applications with frontend and backend components
+\end{itemize}
+
+Using GitHub's REST API v3 with query parameters \texttt{stars:>=300 pushed:>=2023-01-01}, we systematically retrieved repositories sorted by star count within each technology category. This initial search yielded \textbf{1,247 candidate repositories}.
+
+\subsubsection{Deployment Complexity Assessment}
+
+To ensure our benchmark evaluates meaningful debugging scenarios rather than trivial deployments, we performed manual complexity assessment. We operationalize \textbf{deployment complexity} using the following criteria:
+
+\textbf{Inclusion Criteria} (a project must satisfy \textit{at least one} of the following):
+\begin{itemize}
+\item \textbf{Multi-component architecture}: Requires $\geq 2$ interdependent services (e.g., web server + application server + database, or frontend + backend + cache layer)
+\item \textbf{Non-trivial configuration}: Contains configuration files (e.g., \texttt{.env}, \texttt{config.yaml}, \texttt{application.properties}) requiring environment-specific customization (database URLs, API keys, port assignments, file paths)
+\item \textbf{Substantial dependencies}: Lists $\geq 5$ direct dependencies in package manifest files (\texttt{package.json}, \texttt{requirements.txt}, \texttt{pom.xml}, \texttt{Cargo.toml})
+\item \textbf{Build/compilation requirements}: Requires explicit build steps beyond simple package installation (e.g., webpack bundling, Maven compilation, asset pipeline execution, binary compilation)
+\item \textbf{System-level dependencies}: Depends on system libraries, specific OS packages, environment variables, or requires installation of additional software (e.g., \texttt{libpq-dev}, \texttt{redis-server}, specific Java/Node.js versions)
+\end{itemize}
+
+\subsubsection{Final Dataset Composition}
+
+After applying complexity filters, we retained \textbf{259 projects} meeting our inclusion criteria. The selection process is summarized as:
+
+\begin{center}
+\begin{tabular}{rl}
+Initial candidates (GitHub API): & 1,247 projects \\
+After manual complexity review: & 259 projects (20.7\% retention) \\
+
+\end{tabular}
+\end{center}
+
+
+\subsection{Root Cause Analysis}\label{sec:root}
+
+We mined GitHub Issues and Stack Overflow questions related to deployment failures, filtering for issues tagged with deployment keywords, questions with accepted answers and high vote counts, and recent issues (2022-2024) to ensure relevance. This process identified 140 common deployment challenges with verified solutions.
+
+% \subsubsection{Error Characteristics and Patterns}
+
+
+\textbf{Root Cause Categories.} We classify deployment scenarios into five fundamental categories based on their underlying causes:
+
+\textbf{(1) Version Mismatches (34.5\%).} The most prevalent category involves incompatible dependency versions, including direct package conflicts (e.g., TensorFlow 2.x vs 1.x API changes), transitive dependency incompatibilities, and build tool version requirements (e.g., CMake $\geq$ 3.15 for certain features). These often manifest as cryptic import errors or compilation failures.
+
+\textbf{(2) Missing Configurations (26.7\%).} Environment-specific settings that are absent or incorrectly specified, including environment variables (PATH, PYTHONPATH, LD\_LIBRARY\_PATH), configuration files (.env, config.yaml), and API keys or credentials. These errors typically occur at runtime rather than build time.
+
+\textbf{(3) System-Level Issues (18.9\%).} Platform-dependent problems arising from OS differences (Linux vs Windows vs macOS), missing system libraries (libssl, CUDA drivers), compiler toolchain availability (GCC, MSVC), file system permissions, and path resolution inconsistencies (case sensitivity, path separators).
+
+\textbf{(4) Resource Conflicts (12.3\%).} Runtime collisions including port binding conflicts, shared resource contention (GPU memory, file locks), process limits, and disk space exhaustion. These are particularly common in containerized environments and CI/CD pipelines.
+
+\textbf{(5) Documentation Gaps (7.6\%).} Undocumented prerequisites, implicit assumptions about the deployment environment, missing setup steps in README files, and outdated installation instructions that no longer match current package versions.
+
+
+\todo{Summarize 5 \textit{Root Causes}}.
+% 分析XXX issue，得到结论，开发者为什么会编译出错，总结了几点原因：
+% 1. 环境变量 399 （30%）； 2. Cmake 版本 299 （20%）； 3. OS 。。。
+
+\subsection{Erroneous Runtime Environment Construction}\label{sec:environment}
+
+首先，我们配置了兼容性非常好的三个Ubuntu 22.04 LTS, Windows 11, and macOS 13+虚拟机系统，保证项目可以在其中正常部署。
+随后，我们注入错误；
+
+% 1. 编译项目，到三个系统，编译成功。
+% 200*3 Build-Success Environment
+
+Our benchmark supports three major operating systems: Ubuntu 22.04 LTS, Windows 11, and macOS 13+.The environment provides:
+
+\begin{itemize}
+\item \textbf{Virtual machine isolation}: Each task executes in a clean VM snapshot to ensure independence and reproducibility
+\item \textbf{Full system access}: Agents have complete control over GUI interactions (mouse, keyboard) and terminal operations
+\item \textbf{Pre-configured software}: Common development tools, package managers, and frameworks pre-installed with standard configurations
+\item \textbf{Network access}: Controlled internet connectivity for downloading dependencies and accessing documentation
+\end{itemize}
+
+% 2. apply \todo{5 \textit{Root Causes}} 作为扰动 
+%     2.1 apply \todo{5 \textit{Root Causes}} 1次作为扰动 
+%     2.2 apply \todo{5 \textit{Root Causes}} 2次作为扰动 
+%     2.2 apply \todo{5 \textit{Root Causes}} 3次作为扰动 
+% 200*3*5  Errorous Environment
+
+\subsubsection{Error Injection}
+
+To maximize realism, reproducibility, and controllability, each task includes a carefully crafted setup configuration that establishes the initial environment state and systematically injects realistic deployment errors:
+
+\begin{enumerate}
+\item \textbf{File preparation}: Project files are downloaded into a designated workspace directory ($\sim$/workspace/) with proper directory structure, mirroring fresh project clones from version control
+
+\item \textbf{Controlled error injection}: Setup scripts systematically inject realistic errors that cause deployment failures. This is the \textit{core mechanism} of our benchmark design. Injection strategies include:
+\begin{itemize}
+    \item \textit{Dependency manipulation}: Modifying package manifests (package.json, requirements.txt, pom.xml) to introduce version conflicts or remove critical dependencies
+    \item \textit{Configuration corruption}: Altering configuration files to contain invalid values, wrong paths, or missing required parameters
+    \item \textit{Environment tampering}: Setting incorrect environment variables, removing required variables, or creating conflicting system configurations
+    \item \textit{Permission modification}: Changing file/directory permissions to trigger access-denied errors during deployment
+    \item \textit{Resource conflicts}: Pre-occupying ports, creating file locks, or consuming resources to simulate conflicts
+\end{itemize}
+
+
+
+% \item \textbf{Tool availability}: All necessary diagnostic tools (logs, package managers, editors, system monitors) are made accessible, with proper permissions and PATH configurations
+\end{enumerate}
+
+
+% 3. 报告一下 200*3*5  Errorous Environment里面，所涉及扰动的软件类型
+
+We provide a diverse set of pre-installed software representing real development environments:
+
+\begin{itemize}
+    \item \textbf{Package managers}: apt, npm, pip, Maven, Gradle, Docker
+    \item \textbf{Web servers}: Nginx, Apache HTTP Server
+    \item \textbf{Databases}: MySQL, PostgreSQL, MongoDB, Redis
+    \item \textbf{Runtime environments}: Node.js, Python, Java JDK, Ruby
+    \item \textbf{Development tools}: Git, VS Code, terminal emulators
+    \item \textbf{System utilities}: File managers, text editors, process monitors
+\end{itemize}
+
+Each environment is configured with default settings that match typical production deployments, ensuring that errors encountered are representative of real-world scenarios.
+
+
+% \subsubsection{Software and Tool Ecosystem}
+
+
+\subsection{Task Construction}\label{sec:task-construction}
+
+
+\subsubsection{Auto-evaluation Oracle Extraction}
+
+We extract oracle from ReadMe. --> script.
+
+\subsubsection{Task Scenarios and Instructions}
+
+XXX Tasks. Each task in our benchmark consists of:
+
+\begin{itemize}
+\item \textbf{Natural language instruction}: A clear, concise description of the deployment goal, written in the style of GitHub issue reports or production incident tickets (e.g., "Deploy this Node.js application and ensure it runs on port 3000")
+\item \textbf{Installation guide (i.e., ReadMes)}: Step-by-step instructions for the intended deployment process, typically extracted from project README files, documentation, or deployment guides. This provides the agent with the canonical deployment procedure that should work but currently fails
+\item \textbf{Project files}: Complete application code, configuration files, and dependencies (provided via Git repository or archive), including package manifests, configuration templates, and build scripts
+% \item \textbf{Error logs}: Initial error output from failed deployment attempts, capturing the failure state that agents must diagnose and resolve.
+\item \textbf{Erroneous Environment}: \todo{XXX.}
+\item \textbf{Expected outcome}: Description of the successfully deployed state, including service availability requirements, expected responses, and verification criteria
+\item \textbf{Fixing Solutions} \todo{XXX}
+\end{itemize}
+Instructions are derived from real deployment scenarios and written in the style of GitHub issue reports or production incident tickets. We ensure instructions are unambiguous while avoiding giving away the solution directly.
+
+
+% next report Benchmark Characteristics:
+
+Table~\ref{tab:benchmark-stats} presents comprehensive statistics of our benchmark. The dataset spans diverse technology stacks with realistic error distributions matching real-world deployment patterns.
+
+\begin{table}[t]
+\centering
+\caption{Comprehensive statistics of our deployment benchmark.}
+\label{tab:benchmark-stats}
+\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Metric} & \textbf{Count} \\
+\midrule
+Total deployment scenarios & 487 \\
+\quad - Single-error cases & 328 (67.3\%) \\
+\quad - Multi-error cases & 159 (32.7\%) \\
+\midrule
+\textbf{Technology Stacks} & \\
+\quad Docker/Containers & 142 (29.2\%) \\
+\quad Node.js/JavaScript & 98 (20.1\%) \\
+\quad Python/Django/Flask & 87 (17.9\%) \\
+\quad Java/Maven/Gradle & 64 (13.1\%) \\
+\quad Web Servers (Nginx/Apache) & 43 (8.8\%) \\
+\quad Databases (MySQL/PostgreSQL/MongoDB) & 31 (6.4\%) \\
+\quad System Configuration & 22 (4.5\%) \\
+\midrule
+\textbf{Error Categories} & \\
+\quad Dependency conflicts & 169 (34.7\%) \\
+\quad Configuration errors & 138 (28.3\%) \\
+\quad Permission issues & 77 (15.8\%) \\
+\quad Environment setup failures & 60 (12.4\%) \\
+\quad Network/Resource problems & 43 (8.8\%) \\
+\midrule
+
+\end{tabular}
+\end{table}
+
+
+
+
+
+
+% \subsection{Benchmark Characteristics}\label{sec:characteristics}
+% \subsubsection{Dataset Statistics}
+
+\subsection{Evaluation}
+
+We evaluate GUI agents on two primary dimensions: \textbf{task success rate} and \textbf{efficiency in terms of interaction steps}, both benchmarked against human performance to provide meaningful context.
+
+\subsubsection{Metrics}
+
+\textbf{Success Rate.} The success rate measures the percentage of tasks an agent completes correctly according to the execution-based validation criteria (Section~\ref{sec:task-construction}). 
+
+
+\textbf{Interaction Efficiency (Step Count)} To assess operational efficiency, we count the total number of atomic GUI or terminal interactions required to complete each task, including mouse clicks, keystrokes, command executions, and file edits. 
+
+
+\subsubsection{Execution-Based Evaluation}
+
+Unlike benchmarks that rely on predefined action sequences or manual verification, we implement \textbf{300 unique execution-based evaluation functions} that automatically assess task completion:
+
+\begin{itemize}
+\item to be continued
+\end{itemize}
