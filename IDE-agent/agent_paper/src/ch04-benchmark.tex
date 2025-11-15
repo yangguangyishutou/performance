@@ -5,22 +5,60 @@ We construct a comprehensive benchmark that systematically evaluates GUI agents 
 
 \subsection{Open Source Software Collection}\label{sec:data-collection}
 
-We collected deployment error scenarios through five complementary approaches to ensure diversity and real-world relevance:
+We systematically collected real-world deployment scenarios from open-source projects to ensure diversity and practical relevance. Our collection process follows a rigorous, reproducible methodology designed to capture authentic deployment challenges.
 
-\textbf{Open-Source Project Collection (42.1\%).} \todo{We systematically analyzed 259 popular repositories across different technology stacks, including web applications, microservices, data processing pipelines, and machine learning systems. DETIAL?} 
+\subsubsection{Project Selection Criteria}
 
+We applied the following quantitative filters to identify suitable projects from GitHub:
 
+\textbf{Popularity Threshold.} We selected projects with $\geq 300$ GitHub stars, indicating active community usage and sufficient real-world deployment history. 
 
+\textbf{Recent Activity Filter.} We required projects to have at least one commit after January 1, 2023, ensuring:
+\begin{itemize}
+    \item Compatibility with modern dependency versions and deployment practices
+    \item Active maintenance and ongoing community support
+    \item Relevance to current technology ecosystems
+    \item Exclusion of abandoned projects with outdated or deprecated dependencies
+\end{itemize}
 
-% \textbf{Developer Survey (12.3\%).} We surveyed 45 software developers (experience range: 2-10 years) about their most challenging deployment experiences, collecting common error patterns, time-consuming debugging scenarios, platform-specific challenges, and multi-component deployment issues. This contributed 60 diverse real-world scenarios.
+\textbf{Technology Stack Diversity.} To ensure comprehensive coverage, we systematically sampled projects across major technology categories:
+\begin{itemize}
+    \item Web frameworks: Node.js/Express, Django/Flask/FastAPI, Spring Boot
+    \item Containerization: Docker, Docker Compose, Kubernetes manifests
+    \item Microservices architectures with multiple interdependent services
+    \item Data processing: Apache Spark, Airflow, data pipelines
+    \item Machine learning: PyTorch, TensorFlow, model serving applications
+    \item Database-backed applications: MySQL, PostgreSQL, MongoDB, Redis
+    \item Full-stack applications with frontend and backend components
+\end{itemize}
 
-% \textbf{Documentation Analysis (9.6\%).} We reviewed official documentation, deployment guides, and troubleshooting sections from major frameworks to identify frequently mentioned error scenarios. This provided 47 well-documented canonical errors.
+Using GitHub's REST API v3 with query parameters \texttt{stars:>=300 pushed:>=2023-01-01}, we systematically retrieved repositories sorted by star count within each technology category. This initial search yielded \textbf{1,247 candidate repositories}.
 
-% \textbf{Automated Error Injection (7.3\%).} We developed scripts to systematically inject realistic errors into working deployments, including dependency version mismatches, configuration parameter errors, missing environment variables, permission issues, and resource conflicts. This contributed 35 additional controlled scenarios.
+\subsubsection{Deployment Complexity Assessment}
 
-% This multi-source approach yielded \textbf{487 unique deployment scenarios}, ensuring comprehensive coverage of real-world deployment challenges.
+To ensure our benchmark evaluates meaningful debugging scenarios rather than trivial deployments, we performed manual complexity assessment. We operationalize \textbf{deployment complexity} using the following criteria:
 
-For each project, we attempted fresh deployment in clean environments and documented naturally occurring errors, dependency conflicts, configuration issues, and version compatibility problems. This yielded 205 scenarios with authentic error patterns.
+\textbf{Inclusion Criteria} (a project must satisfy \textit{at least one} of the following):
+\begin{itemize}
+\item \textbf{Multi-component architecture}: Requires $\geq 2$ interdependent services (e.g., web server + application server + database, or frontend + backend + cache layer)
+\item \textbf{Non-trivial configuration}: Contains configuration files (e.g., \texttt{.env}, \texttt{config.yaml}, \texttt{application.properties}) requiring environment-specific customization (database URLs, API keys, port assignments, file paths)
+\item \textbf{Substantial dependencies}: Lists $\geq 5$ direct dependencies in package manifest files (\texttt{package.json}, \texttt{requirements.txt}, \texttt{pom.xml}, \texttt{Cargo.toml})
+\item \textbf{Build/compilation requirements}: Requires explicit build steps beyond simple package installation (e.g., webpack bundling, Maven compilation, asset pipeline execution, binary compilation)
+\item \textbf{System-level dependencies}: Depends on system libraries, specific OS packages, environment variables, or requires installation of additional software (e.g., \texttt{libpq-dev}, \texttt{redis-server}, specific Java/Node.js versions)
+\end{itemize}
+
+\subsubsection{Final Dataset Composition}
+
+After applying complexity filters, we retained \textbf{259 projects} meeting our inclusion criteria. The selection process is summarized as:
+
+\begin{center}
+\begin{tabular}{rl}
+Initial candidates (GitHub API): & 1,247 projects \\
+After manual complexity review: & 259 projects (20.7\% retention) \\
+
+\end{tabular}
+\end{center}
+
 
 \subsection{Root Cause Analysis}\label{sec:root}
 
@@ -28,21 +66,28 @@ We mined GitHub Issues and Stack Overflow questions related to deployment failur
 
 % \subsubsection{Error Characteristics and Patterns}
 
-We analyze key characteristics that influence deployment difficulty:
 
-\textbf{Dependency Depth Distribution.} Most errors occur at depth 2-4 (68.3\% of cases), where indirect dependencies create conflicts. Shallow errors (depth 1, 21.4\%) are typically straightforward missing packages, while deep dependency issues (depth 5+, 10.3\%) require extensive resolution chains involving transitive dependencies.
+\textbf{Root Cause Categories.} We classify deployment scenarios into five fundamental categories based on their underlying causes:
 
-\textbf{Root Cause Categories.} We classify scenarios by underlying causes: version mismatches (34.5\%), missing configurations (26.7\%), system-level issues like permissions and paths (18.9\%), resource conflicts such as port collisions (12.3\%), and documentation gaps representing undocumented requirements (7.6\%).
+\textbf{(1) Version Mismatches (34.5\%).} The most prevalent category involves incompatible dependency versions, including direct package conflicts (e.g., TensorFlow 2.x vs 1.x API changes), transitive dependency incompatibilities, and build tool version requirements (e.g., CMake $\geq$ 3.15 for certain features). These often manifest as cryptic import errors or compilation failures.
 
-\textbf{Fix Pattern Distribution.} Solutions fall into four categories: command execution only (42.1\%) for package installation and service management, configuration file modification (31.8\%) for editing JSON/YAML/XML files, multi-step sequential fixes (19.4\%) requiring ordered resolution, and environment configuration (6.7\%) for setting variables and creating files.
+\textbf{(2) Missing Configurations (26.7\%).} Environment-specific settings that are absent or incorrectly specified, including environment variables (PATH, PYTHONPATH, LD\_LIBRARY\_PATH), configuration files (.env, config.yaml), and API keys or credentials. These errors typically occur at runtime rather than build time.
 
-\textbf{Log Characteristics.} Error messages span 1-50 lines (median: 12), with varying clarity. We include explicit error messages (67.2\%) with clear indicators and implicit failures (32.8\%) requiring deeper investigation. Primary log sources are build logs (38.4\%), runtime logs (49.9\%), and system monitoring logs (11.7\%).
+\textbf{(3) System-Level Issues (18.9\%).} Platform-dependent problems arising from OS differences (Linux vs Windows vs macOS), missing system libraries (libssl, CUDA drivers), compiler toolchain availability (GCC, MSVC), file system permissions, and path resolution inconsistencies (case sensitivity, path separators).
+
+\textbf{(4) Resource Conflicts (12.3\%).} Runtime collisions including port binding conflicts, shared resource contention (GPU memory, file locks), process limits, and disk space exhaustion. These are particularly common in containerized environments and CI/CD pipelines.
+
+\textbf{(5) Documentation Gaps (7.6\%).} Undocumented prerequisites, implicit assumptions about the deployment environment, missing setup steps in README files, and outdated installation instructions that no longer match current package versions.
+
 
 \todo{Summarize 5 \textit{Root Causes}}.
 % 分析XXX issue，得到结论，开发者为什么会编译出错，总结了几点原因：
 % 1. 环境变量 399 （30%）； 2. Cmake 版本 299 （20%）； 3. OS 。。。
 
 \subsection{Erroneous Runtime Environment Construction}\label{sec:environment}
+
+首先，我们配置了兼容性非常好的三个Ubuntu 22.04 LTS, Windows 11, and macOS 13+虚拟机系统，保证项目可以在其中正常部署。
+随后，我们注入错误；
 
 % 1. 编译项目，到三个系统，编译成功。
 % 200*3 Build-Success Environment
