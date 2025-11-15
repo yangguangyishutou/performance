@@ -1,9 +1,117 @@
 \section{Approach}
 
 % \subsection{XXX}
+This section details our methodology for detecting Python API incompatibilities using Large Language Models (LLMs) with structured Chain-of-Thought (COT) prompting. We first outline the overall workflow and core challenges, then elaborate on the design principles compared to existing methods, and technical implementation
 
 \subsection{CoT}
 
+\subsection{Overview and Challenges}
+
+Our approach targets code-level changed API pairs (excluding module-level, class-level, and API addition/deletion changes) between two versions of a Python project. Figure x illustrates the end-to-end workflow. First, we extract all APIs from two versions of the project and filter API pairs to retain only those with code-level modifications. Then we instruct LLM with COT guidance to performs line-by-line code analysis. Finally, The LLM generates a structured JSON output, including detected incompatibility types, detailed reasons for each type, and auxiliary information.
+
+figure x
+
+During this three-step process, we need to address the following three challenges:
+
+\begin{itemize}
+    \item \textbf{High-Level Description Misalignment (C1)}: Existing LLM-based methods[x] often rely on high-level incompatibility descriptions rather than code-level semantics. This disconnect causes LLMs to struggle with mapping abstract descriptions to concrete code changes.
+    \item \textbf{Scalability with Incompatibility Categories (C2)}: As the number of incompatibility categories increases, naive prompting leads to exponential growth in prompt token size and LLM runtime. For N categories, this approach requires N independent LLM calls per API pair, making it infeasible for large-scale analysis.
+    \item \textbf{Unreliable and Inconsistent Outputs (C3)}: LLMs exhibit inherent output randomness—they may produce contradictory judgments for the same prompt (e.g., labeling a parameter rename as “compatible” in one run and “incompatible” in another) or include internally inconsistent reasoning (e.g., citing non-existent code lines to support a claim).
+    \item \textbf{Unstructured COT Reasoning (C4)}: Without guided thinking frameworks, LLMs' intermediate reasoning (e.g., how they identify a parameter default value change) remains unstructured. This makes it impossible to verify the validity of the LLM's conclusions.
+\end{itemize}
+
+\subsection{Methodology Design}
+
+To address the above challenges, we design a one-pass COT analysis framework with structured prompting, built on insights from prior empirical studies and innovations in LLM guidance.
+
+
+We first establish a comprehensive taxonomy of Python API incompatibilities, extending the 7-category framework proposed by Shen et al. [x] (a foundational empirical study on Python API evolution). Shen et al. identified incompatibilities rooted in parameters (CI1-CI5), exceptions (CI6), and return values (CI7). Through our own data collection, we validated these 7 categories and discovered two new, previously unreported types:
+
+\textbf{CI8}: global variable change
+\textbf{CI9}: reference variable change
+
+Table x
+
+
+\subsubsection{Limitation of Current Methods}
+
+Traditional static analysis methods (e.g., Shen et al. [2024]) rely on handcrafted rules. However, Rule design requires expert knowledge making it hard to generalize to new libraries or unknown incompatibilities. For example, shen define data structure P to record parameter information for the detection of CI1-CI5. However, without detailed study into incompatible examples. it is hard to design rules for detections. Besides, These methods fail to interpret semantic context while many crucial infomation should be analyzed through variable names, comments, usage in function bodies, etc. For example, Shen et al.'s method cannot recognize that renaming a parameter from arguments to args is a compatibility issue—since the AST pattern for parameter names differs, but the static rule does not link the semantic similarity between arguments and args.
+
+In our method, by leveraging LLMs' semantic understanding capabilities, our approach directly addresses this limitation. The LLM integrates contextual cues to identify semantic changes, even when syntactic patterns are non-trivial.
+
+\subsubsection{One-Pass COT Analysis Framework}
+
+To tackle scalability and output unreliability, we design a one-pass COT framework guided by two core principles: two-stage analysis and unified scanning. First, the LLMs is instructed to process the parameter list, which is syntactically structured, then analyze the function body, which is semantically rich—aligning with how developers naturally review code changes.  We embed rules for all 9 incompatibility categories into a single prompt to enable the LLM to detect multiple incompatibilities in one analysis pass, avoiding repeated LLM calls. The framework is divided into four sequential phases, each with predefined data structures and rules to guide the LLM's reasoning. This design offers three key advantages: efficiency, as runtime is independent of the number of incompatibility categories (all rules are processed in one pass); reduced misjudgment, as it enforces dependencies between interdependent categories (e.g., analyzing CI1 (parameter addition) before CI4 (default value change) to avoid misclassifying added parameters as default value changes); and structured reasoning, as each phase outputs intermediate data structures like parameter mappings and exception type lists, which make the LLM's logic traceable and verifiable.
+
+\subsubsection{Structured Prompt Design}
+
+The prompt is the backbone of our framework, structured to enforce consistency and guide the LLM's COT reasoning. It includes four components: Instructions, Analysis Phases, Source Code, and Examples. A simplified template is shown below (full rules are provided in Appendix A):
+
+\lstset{
+  breaklines=true, % 核心：开启自动换行
+}
+
+\begin{lstlisting}[]
+Analyze two versions of a Python API function (`code_v1` and `code_v2`) to detect incompatibilities. The output must be in JSON format.
+
+    ### Instructions
+    Please strictly follow the `Analysis Phases` to identify all incompatibility types (CI1 - CI9) and provide concise reasons. The final output must include:
+    - `additional_info`: Key variables/structures used in analysis (e.g., parameter mappings).
+    - `reasons`: One-sentence explanations linking code changes to incompatibility types.
+    - `incompatibility`: List of detected types 
+
+    ### Analysis Phases
+    #### Phase 0: Initialization
+    Initialize the result dictionary:
+    {
+    "incompatibility": [], "reasons": [], "additional_info": {"param_mapping": {}, "exception_list_v1": [], ...}
+    }
+    #### Phase 1: Parameter List Processing
+    Extract parameter lists from `code_v1` and `code_v2`, then build:
+    #### Phase 2: Initial Incompatibility Analysis 
+    Use `P1`/`P2` to update results:
+    #### Phase 3: Function Body Processing (Line-by-Line)
+    Initialize data structures for `code_v1`/`code_v2`:
+    #### Phase 4: Comprehensive Incompatibility Analysis
+    Use Phase 1-3 data structures to detect remaining types:
+
+    ### Source Code
+    "code_v1": ...
+    "code_v2": ...
+
+    ### Examples
+    }
+\end{lstlisting}
+
+\subsubsection{Data Structure and Detection Design}
+
+The analysis leverages several core data structures to capture critical information from function signatures and bodies, facilitating subsequent incompatibility checks. Based on the detecing process for different incompatibility types, we design following data structure which is initialized at begining and update throughout the scanning of the source code. 
+
+\textbf{Parameter Lists (P1, P2):} These lists encode the parameters of source code. Each parameter is represented as a tuple (name, position index, type, default value), where type includes positional, optional (with a default value), or kwargs, enabling direct comparison of parameter presence, order, and defaults.
+
+\textbf{KWARGS}: A string storing the name of the kwargs parameter if present in both code v1 and code v2; empty otherwise. This structure anchors the analysis of keyword argument keys accessed within the function body.
+
+\textbf{ReName: A list of tuples (name1, name2)}: name1 (from code v1) and name2 (from code v2) are semantically similar or share the same position index, indicating potential parameter renaming.
+
+\textbf{Keyword Argument Keys (K1, K2)}: Lists of keys explicitly accessed via kwargs (e.g., kwargs.get('key') or kwargs['key']) in code v1 and code v2, respectively. These capture dependencies on dynamic keyword arguments.
+
+\textbf{Renamed Parameter Usage (ReNUsage1, ReNUsage2)}: Dictionaries mapping parameters in ReName pairs to lists of code lines where they are used. This tracks contextual usage to validate renaming.
+
+\textbf{Condition Statements (C1, C2)}: Lists of condition strings (e.g., if x > 0) extracted from code v1 and code v2, indexed sequentially to link with dependent logic (e.g., assignments, exceptions).
+
+\textbf{Data Flow (D1, D2)}: Lists of tuples (variable name, variable type, dependent variables, condition indices) capturing variable assignments. variable type distinguishes local variable, global variable, and reference variable (e.g., self), while dependent variables and condition indices track dependencies and associated conditions.
+
+\textbf{Exceptions (E1, E2)}: Lists of tuples pairing explicit exception types (e.g., ValueError) with indices of conditions under which they are raised (from C1/C2), excluding implicit behaviors or unthrown exceptions.
+
+\textbf{Return Values (R1, R2)}: Lists of tuples pairing return expressions with condition indices, capturing how return values vary under different conditions.
+
+The 9 types of incompatibility can be detected based on the data structure above. The detection rules are showed in Table x.
+
+Table x
+
+\subsection{implementation}
+
+We implement the approach using Python, leveraging open-source tools and APIs to balance reproducibility and efficiency. For API extraction, we combine the GitHub API and Python's standard ast library: the GitHub API fetches source code for specific project versions to enable automated data collection, while the ast library builds ASTs for function-level slicing—extracting only the function body (excluding imports or global statements outside the API). For LLM interaction, we use DeepSeek-chat API with temperature 0 to minimize randomness and max-tokens 2048 to accommodate structured outputs. 
 
 
 \subsection{Multi-Agent}
