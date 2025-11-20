@@ -6,9 +6,52 @@
 
 \subsection{Dataset Construction}
 
+The Python third-party library Application Programming Interface (API) compatibility issue dataset constructed in this study comprises two core components: a benchmark dataset derived from existing research, which includes 108 incompatible API pairs built by Shen et al. on the Flask and pandas libraries; and an extended dataset supplementary constructed in this work. Through systematic repository screening, Issue/Pull Request (PR) analysis, and multi-round validation, the extended dataset adds over 70 valid samples, resulting in a total of more than 130 compatibility issue annotations. The dataset comprehensively covers third-party libraries across multiple application domains, such as web development, data analysis, and cloud services, and includes API compatibility issues across major, minor, and patch version transitions. This design provides multi-scenario and fine-grained experimental data support for research on Python third-party library API compatibility detection.
+
 Dataset A.
 
+To construct the dataset of 108 incompatible API pairs, Shen et al. selected six version pairs from two representative Python third-party libraries (Flask for web development and pandas for data analysis), covering cross-major, cross-minor, and cross-patch version transitions. A combined approach of regression testing and version update log analysis was adopted to ensure the comprehensiveness and reliability of the dataset. For regression testing, test cases from the previous version (v1) of each library were executed on the updated version (v2); failed test cases indicated potential incompatible APIs, leading to the identification of 70 incompatible API pairs from 58 failed test files among 2,290 regression test files across the six version pairs. Complementarily, version update logs (including intermediate logs for cross-patch version pairs to capture persistent changes) were analyzed to identify additional incompatible APIs by targeting keywords such as "parameter reduction", "added processing", and "no longer supported", resulting in 38 supplementary incompatible API pairs from 11 analyzed logs. To enhance data credibility, the collection process was independently conducted by the first two authors, with discrepancies resolved through group discussions organized by the third author, involving joint reviews of source code, regression test results, and update logs to confirm the existence of compatibility issues for controversial API pairs. This dual-method strategy effectively mitigated limitations associated with incomplete test coverage in unit testing and inconsistent log quality, ultimately forming a dataset of 108 incompatible API pairs that served as the foundation for subsequent empirical analysis.
+
 Dataset B.
+
+We adopted a different strategy to construct our own dataset to cover codes from more areas. We first selected the top 10 Python libraries by download volume over the past 30 days (as of May 1, 2025) from "https://hugovk.github.io/top-pypi-packages/top-pypi-packages-30-days.json". Those libraries are the most popular ones and can represent most python code usage. However, to cover most compatibility issues, for each candidate repository, we also selected additional relevant Python repositories because some issues are not directly reported in the source repository but in relevant Python repositories.
+
+In the preliminary screening of Issues and PRs, for each selected repository, we cycled through a list of keywords (including 'compatibility', 'compatible', 'version', 'evolution', 'exception', 'TypeError', 'AttributeError', 'ImportError', 'breaking changes') and used the GitHub Issues Search API (/search/issues) to retrieve issues and PRs matching these keywords.
+
+Thereafter, approximately 400 entries were filtered through two rounds of LLM-based checks, followed by manual review. In the LLM analysis phase, the LLM was employed to extract structured information from the issues, including username, repository, version tag1, version tag2, file path, object name, and llm analyse compatibility. Multiple GitHub checks were conducted on the extracted results to ensure the validity of the fields. Specifically, the first LLM was used to convert raw issues into structured compatibility problem entries, which constituted the core information extraction  of the dataset, extracting key information such as error type, root cause, library, version, affected files, breaking change, and recommended version. Additionally, the second LLMs was used to supplement and explain the technical details of compatibility issues, especially the causal chain between API changes and errors, serving as an in-depth evidence supplement  of the dataset.
+
+After filtering of LLMs, from the original 2000 samples, xxx was ...
+
+Finally, manual verification was performed to confirm the existence of incompatibilities and the correctness of Python API paths, followed by annotation. Ultimately, over 70 samples were obtained, with a total of more than 130 annotations added.
+
+% 表格1: 收集的库的领域，数量，...
+\begin{table}[htbp]
+  \centering
+  \caption{Top Python Libraries by Download Volume} % 表格标题（可自定义）
+  \begin{tabular}{lcc} % 列格式：左对齐(l)、居中对齐(c)×2
+    	oprule % 顶部粗线
+    Library & Category & relevant project counts \\
+    \midrule % 中间细线
+    boto3 & Web development & 9  \\
+    urllib3 & Web development & 7  \\
+    requests & Web development & 10   \\
+    botocore & Web development & 6  \\
+    certifi & Security & 3 \\
+    charset & xxx & 0 \\
+    normalizer & xxx & 0 \\
+    idna & xxx & 3 \\
+    setuptools & xxx & 10 \\
+    aiobotocore & xxx & 3 \\
+    python-dateutil & xxx & 2 \\
+    \bottomrule % 底部粗线
+  \end{tabular}
+  \label{tab:framework_releases} % 表格引用标签（方便正文引用）
+\end{table}
+
+% 图片: 整合数据库类别分布
+
+
+% 举例：CI8, CI9
 
 
 
@@ -23,7 +66,7 @@ Dataset B.
     \item \textbf{Ablation Study (RQ4)}: 
 \end{itemize}
 
-\textbf{Baselines. } We selected XXX~\cite{zhang2022fldetector}, XXX~\cite{zhang2022fldetector}, and XXX~\cite{zhang2022fldetector} as the comparison.
+\textbf{Baselines. } We selected XXX~, XXX, and XXX as the comparison.
 
 \textbf{Metrics.} We use precision and recall as metrics, which are defined as follows:
 
