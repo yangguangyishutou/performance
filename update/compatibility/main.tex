@@ -1,4 +1,4 @@
-\documentclass[manuscript,screen]{acmart}
+\documentclass[screen]{IEEEtran}
 
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
@@ -6,8 +6,8 @@
   \providecommand\BibTeX{{%
     Bib\TeX}}}
     
-\settopmatter{printfolios=true,printccs=false,printacmref=false}
-\renewcommand\footnotetextcopyrightpermission[1]{}    
+% \settopmatter{printfolios=true,printccs=false,printacmref=false}
+% \renewcommand\footnotetextcopyrightpermission[1]{}    
 
 % \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
 
@@ -102,12 +102,13 @@
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
 %\keywords{datasets, neural networks, gaze detection, text tagging}
+\maketitle
+
 
 \begin{abstract}
 \input{src/ch00-abstract}
 \end{abstract}
 
-\maketitle
 
 
 
@@ -119,8 +120,10 @@
 \input{src/ch07-discussion}
 \input{src/ch08-conclusion}
 
-\bibliographystyle{ACM-Reference-Format}
-\bibliography{src/reference}
+{\footnotesize
+\bibliographystyle{IEEEtranS}
+\bibliography{IEEEabrv,src/reference}
+}
 
 
 \end{document}
