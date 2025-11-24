@@ -3,13 +3,31 @@
 % 传统compatibility检测方法
 \subsection{Traditional Compatibility Detection Methods}
 
-API compatibility of Python third-party libraries is a critical concern given their widespread use in diverse domains, and relevant detection methods have been a focus of research. Lamothe et al. (2021)\cite{lamothe2021systematic} conducted a systematic review of 369 API evolution publications (1994–2020), noting early work’s focus on Java (63.9\%) and gaps in dynamic language support, uniform benchmarks, and fine-grained incompatibility analysis—findings that guided Python-specific method development.
+API compatibility of Python third-party libraries is a critical concern given their widespread use in diverse domains, and relevant detection methods have been a focus of research. 
 
-Early work in this space focused on static analysis to model API lifecycles, but with limited granularity. Quan et al. (2022)\cite{quan2022characterizing} pioneered this direction for Python with PyMevol, a static tool that constructs a history-sensitive, alias-aware API explorer tree. PyMevol effectively tracked API introductions, modifications, and removals, and addressed Python's unique transitive import-induced alias problem—an issue overlooked by earlier static tools for statically typed languages. However, PyMevol's focus on high-level API lifecycle tracking left a gap in identifying fine-grained causes of incompatibilities (e.g., parameter range changes, exception type shifts). This limitation was addressed by Shen et al.\cite{shen2024static}, who proposed a more precise static analysis method: by leveraging statement-level dataflow and control-flow slicing, their work extracted detailed incompatibility causes (e.g., parameter additions/deletions, default value modifications, return type changes) that PyMevol could not capture, thereby enhancing the actionable insights for developers.
 
-While static analysis methods (Quan et al., Shen et al.) excelled at single-project syntactic detection, they struggled to uncover semantic-level incompatibilities across multiple client projects—a critical scenario for real-world library usage. Chen et al. (2020)\cite{chen2020taming} addressed this gap with DeBBI, which transformed behavioral backward incompatibility (BBI) detection into an information retrieval problem. Unlike PyMevol and Shen et al.'s single-project focus, DeBBI prioritized client projects with high relevance to API changes (via TF-IDF and LDA models) and optimized test execution via regression test selection. This approach not only resolved the inefficiency of large-scale cross-project testing but also detected semantic BBIs (e.g., undocumented behavioral shifts) that static syntactic analysis missed.
+Lamothe et al.~\cite{lamothe2021systematic} conducted a systematic literature review of API evolution, highlighting main challenges including API change motivation identification, uniform benchmarks creation, and API evolution impact analysis. 
 
-There are also some studies focusing on conflicts between repositories (e.g., Python's PyPI and Ubuntu's apt). Xie et al.\cite{xie2024pet} tackled this with Hera, a tool that built an offline cross-repository compatibility database. Hera addressed the cross-repository gap by modeling dependencies across PyPI and apt, and could predict, detect, and fix conflicts arising from mixed package managers—an issue that single-repository methods were unable to handle.
+
+
+Early work in this space focused on static analysis to model API lifecycles, but with limited granularity. 
+
+Quan et al.~\cite{quan2022characterizing} pioneered this direction for Python with PyMevol, a static tool that constructs a history-sensitive, alias-aware API explorer tree. PyMevol effectively tracked API introductions, modifications, and removals, and addressed Python's unique transitive import-induced alias problem.
+
+% —an issue overlooked by earlier static tools for statically typed languages. 
+
+
+However, PyMevol's focus on high-level API lifecycle tracking left a gap in identifying fine-grained causes of incompatibilities (e.g., parameter range changes, exception type shifts). This limitation was addressed by Shen et al.\cite{shen2024static}, who proposed a more precise static analysis method: by leveraging statement-level dataflow and control-flow slicing, their work extracted detailed incompatibility causes (e.g., parameter additions/deletions, default value modifications, return type changes) that PyMevol could not capture, thereby enhancing the actionable insights for developers.
+
+While static analysis methods excelled at single-project syntactic detection, they struggled to uncover semantic-level incompatibilities across multiple client projects—a critical scenario for real-world library usage. 
+
+Chen et al. (2020)\cite{chen2020taming} addressed this gap with DeBBI, which transformed behavioral backward incompatibility (BBI) detection into an information retrieval problem. 
+
+Unlike PyMevol and Shen et al.'s single-project focus, DeBBI prioritized client projects with high relevance to API changes (via TF-IDF and LDA models) and optimized test execution via regression test selection. This approach not only resolved the inefficiency of large-scale cross-project testing but also detected semantic BBIs (e.g., undocumented behavioral shifts) that static syntactic analysis missed.
+
+There are also some studies focusing on conflicts between repositories (e.g., Python's PyPI and Ubuntu's apt). 
+
+Xie et al.\cite{xie2024pet} tackled this with Hera, a tool that built an offline cross-repository compatibility database. Hera addressed the cross-repository gap by modeling dependencies across PyPI and apt, and could predict, detect, and fix conflicts arising from mixed package managers—an issue that single-repository methods were unable to handle.
 
 In domain-specific contexts, Zhao et al.\cite{zhao2023knowledge} extended compatibility detection to deep learning (DL) projects, a space where general-purpose methods (e.g., DeBBI, Hera) struggled due to DL's complex stack (libraries, runtime, drivers, OS, hardware). Zhao et al. constructed a weighted knowledge graph from Stack Overflow discussions to capture DL-specific incompatibilities, but this method relied on pre-extracted, manually validated knowledge, lacking dynamic semantic reasoning. Similarly, Liu et al.\cite{liu2022automatically} conducted a comparative study of nine Android API compatibility tools, revealing fragmentation in tool capabilities across device-specific and evolution-induced issues, but like Zhao et al.'s work, it did not leverage advanced semantic models to enhance detection. Even Zhang et al.\cite{zhang2024coding}'s targeted work on Python variadic parameter pitfalls— which supplemented general static analysis with language-specific insights—remained confined to syntactic pattern matching.
 
