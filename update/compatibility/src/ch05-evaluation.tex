@@ -80,9 +80,62 @@ Finally, manual verification was performed to confirm the existence of incompati
 
 % 通过实验证明“ 4. 现有对于API兼容性问题的检测的工作，主要的方法，\cite{A,  B, C-shenkang} 以及存在的局限性”
 
+\begin{table}
+\centering
+\caption{Evaluation Result Compared with SOTA}
+\begin{tblr}{
+  cells = {c},
+  hline{1-2,7} = {-}{0.08em},
+}
+Method           & Publication & F1         & Precision  & Accuracy   & Recall     \\
+Baseline Model A & Shen et al. &            &            &            &            \\
+X                &             &            &            &            &            \\
+X                &             &            &            &            &            \\
+X                &             &            &            &            &            \\
+Ours             &             & \textbf{} & \textbf{} & \textbf{} & \textbf{} 
+\end{tblr}
+\end{table}
+
 \subsubsection{RQ2}
 
+\begin{table}
+\centering
+\caption{Evaluation Result Compared in Different Compatibility Type}
+\begin{tblr}{
+  cells = {c},
+  hline{1-2,11-12} = {-}{0.08em},
+}
+No. & API Compatibility Type                & Number of Incompatible APIs & F1 & Precision & Accuracy & Recall \\
+CI1 & Param Add or Delete                   & 46                          &    &           &          &        \\
+CI2 & Key of Keyword Argument Add or Delete & 1                           &    &           &          &        \\
+CI3 & Param Rename                          & 7                           &    &           &          &        \\
+CI4 & Param Default Value Change            & 18                          &    &           &          &        \\
+CI5 & Param Range Change                    & 59                          &    &           &          &        \\
+CI6 & Throw Different Exception             & 41                          &    &           &          &        \\
+CI7 & Return Value Change                   & 94                          &    &           &          &        \\
+CI8 & Global Variable Change                & 3                           &    &           &          &        \\
+CI9 & Reference Parameter Change            & 35                          &    &           &          &        \\
+    & \textbf{Macro-Average}                &                             &    &           &          &        
+\end{tblr}
+\end{table}
+
 \subsubsection{RQ3}
+
+\begin{table}
+\centering
+\caption{Evaluation Result for Different LLMs}
+\begin{tblr}{
+  cells = {c},
+  hline{1-2,7} = {-}{0.08em},
+}
+LLMs        & F1 & Precision & Accuracy & Recall \\
+Deepseek-V3 &    &           &          &        \\
+X           &    &           &          &        \\
+X           &    &           &          &        \\
+X           &    &           &          &        \\
+X           &    &           &          &        
+\end{tblr}
+\end{table}
 
 \subsubsection{RQ4}
 
