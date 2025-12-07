@@ -1,6 +1,6 @@
 % !TeX root = ../main.tex
 
-\section{Related work}
+\section{Related Work}
 
 
 % Tirumala et al. analyze the memorization dynamics of different parts of speech and find that models memorize nouns and numbers first, that larger models can memorize a larger portion of the data before over-fitting and tend to forget less throughout the training process\cite{tirumala2022memorization}.
@@ -106,7 +106,7 @@ To address this, Mattern et al.~\cite{mattern2023membership} proposed generating
 \begin{table*}[!t]
     \centering
     \footnotesize
-    \caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
+    
     \begin{tabular}{m{2cm}m{5cm}m{1.5cm}m{4cm}m{3cm}}
         \toprule
         \textbf{Category} &\textbf{Syntax Nodes}  & \textbf{Example Syntax Node} & \textbf{Conditional Token} & \textbf{Consequent Token} \\
@@ -146,7 +146,7 @@ To address this, Mattern et al.~\cite{mattern2023membership} proposed generating
          &   & \multirow{1}{*}{\texttt{while}} & \texttt{while} \textit{condition} & `:'\\
          & & \multirow{1}{*}{\texttt{match}} & \texttt{match} \textit{subject} & `:' \\
         \bottomrule
-    \end{tabular}
+    \end{tabular}\caption{List of the Collected Syntax Conventions (\texttt{[SP]}, \texttt{BR}, and \texttt{[IND]} denote the space, line break, and indentation, resp.)}\label{table:syntax}
 \end{table*}
 
 % ,  non-members with lower n-gram overlap are more distinguishable by existing MIAs.

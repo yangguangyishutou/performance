@@ -14,8 +14,8 @@ We evaluate \tool through comprehensive experiments.
 \begin{table*}[!t]
 \centering
 \footnotesize
-\caption{AUROC (\%) of different methods under varying member-to-non-member ratios.}
-\label{tab:main_results}
+
+
 \begin{tabular}{m{1cm}m{2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}>{\centering\arraybackslash}m{2.2cm}}
 \toprule
 % \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
@@ -45,7 +45,7 @@ We evaluate \tool through comprehensive experiments.
 \cmidrule(lr){2-6}
 & \tool & 62.0 & 60.7 & 62.0 & 63.1 \\
 \bottomrule
-\end{tabular}
+\end{tabular}\caption{AUROC (\%) of Different Methods under Varying Member-to-non-member Ratios}\label{tab:main_results}
 \end{table*}
 
 % LOSS
@@ -94,7 +94,7 @@ We evaluate \tool through comprehensive experiments.
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{False Negative Rate (\%) of \tool on Members under Short and Long Function Lengths}
+    
     \begin{tabular}{m{1.3cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{1.1cm}}
     \toprule
     \textbf{Length} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
@@ -102,7 +102,7 @@ We evaluate \tool through comprehensive experiments.
     Short & 2.10 & 19.39 & 0.00 & 0.00 \\
     Long & 75.12 & 75.13 & 66.04 & 87.09 \\
     \bottomrule
-    \end{tabular}
+    \end{tabular}\caption{False Negative Rate (\%) of \tool on Members under Short and Long Function Lengths}
     \label{tab:length_results}
 \end{table}
 
@@ -155,7 +155,7 @@ We evaluated the four ablated versions on the three ratios, with the results pre
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{Ablation Study (Each cell indicates the difference in AUROC compared to the original \tool.)}\label{tab:ablation}
+    
     \begin{tabular}{m{0.35cm}m{1.5cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1cm}>{\centering\arraybackslash}m{1.1cm}>{\centering\arraybackslash}m{0.95cm}}
     \toprule
     \textbf{Ratio} & \textbf{Method} & \textbf{\shortstack{Pythia\\2.8B}} & \textbf{\shortstack{GPT-Neo\\2.7B}}  & \textbf{\shortstack{StableLM-\\Alpha\\3B}} & \textbf{\shortstack{GPT-J\\6B}}\\
@@ -175,7 +175,7 @@ We evaluated the four ablated versions on the three ratios, with the results pre
                         &  w/o S.Stmt & $\downarrow$\,3.2 & $\downarrow$\,0.7 & $\downarrow$\,3.9 & $\downarrow$\,1.8 \\
                         & w/o C.Stmt & $\downarrow$\,4.1 & $\downarrow$\,3.2 & $\downarrow$\,5.2 & $\downarrow$\,3.9 \\
     \bottomrule
-    \end{tabular}
+    \end{tabular}\caption{Ablation Study (Each cell indicates the difference in AUROC compared to the original \tool.)}\label{tab:ablation}
 \end{table}
 
 
@@ -198,7 +198,7 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 \end{subfigure}
 \begin{subfigure}[b]{0.23\textwidth}
 \centering
-\includegraphics[width=0.99\textwidth]{./fig/gpt2_7.pdf}
+\includegraphics[width=0.99\textwidth]{./fig/gpt2_7b.pdf}
 \caption{GPT-Neo 2.7B}
 \label{fig:gpt27}
 \end{subfigure}
@@ -220,5 +220,5 @@ Fig. \ref{fig:sensitivity} presents the curve of f1-score of \tool in the four m
 
 \subsection{Limitations}
 
-While \tool is currently implemented and evaluated using Python's grammar, its design readily extends to other languages (e.g., Java, C/C++, JavaScript). This generalizability stems from shared language conventions and the universal requirement of strict grammatical correctness across programming languages. We therefore anticipate \tool would achieve similar effectiveness when applied to these other languages. Besides, our evaluation is currently limited to four LLMs due to resource constraints. Nevertheless, the consistent results across all models suggest strong generalizability of our approach to other large language models.
+While \tool is currently implemented and evaluated using Python's grammar, its design readily extends to other languages (e.g., Java, C/C++, JavaScript). This generalizability stems from shared language conventions and the universal requirement of strict grammatical correctness across programming languages. We therefore anticipate \tool would achieve similar effectiveness when applied to these other languages. Besides, our evaluation is currently limited to four LLMs due to resource constraints and limited transparency regarding other LLMs' training data. Nevertheless, the consistent results across all models suggest strong generalizability of our approach to other large language models.
 
