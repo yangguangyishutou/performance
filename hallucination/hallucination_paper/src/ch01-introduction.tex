@@ -8,10 +8,11 @@ This paper addresses the problem of error accumulation in project-level translat
 
 Our main contributions are:
 
-A hierarchical translation framework that separates class-level design from method-level implementation.
+\begin{itemize}
+\item \textbf{A hierarchical translation framework (\tool{})} that separates class-level design from method-level implementation, enabling macro-to-micro translation with reduced error propagation.
 
-A call-graph-guided, bottom-up translation order to stabilize dependencies.
+\item \textbf{A call-graph-guided, bottom-up translation order} that stabilizes dependencies by translating leaf methods first, ensuring callees are available when translating callers.
 
-An iterative compilation and repair agent that validates and corrects the translated code.
+\item \textbf{An autonomous compilation and repair agent} that validates and corrects the translated code using intelligent error analysis, supporting iterative compilation with automated fix strategies.
 
-An empirical evaluation translating Java modules to C++, showing improved success rates over baseline methods.
+\end{itemize}
