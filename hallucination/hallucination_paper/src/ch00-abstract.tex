@@ -1,1 +1,10 @@
 % !TeX root = ../main.tex
+
+
+Code translation—converting code from one programming language to another while preserving functionality—is critical for legacy system migration, cross-platform development, and ecosystem modernization. Traditional rule-based or manual approaches are limited in scope and efficiency. While large language models (LLMs) have shown promise in code generation, most existing research focuses on translating isolated methods or small files, leaving project-level translation—where accumulated language paradigm differences become significant—largely unexplored.
+
+This paper proposes a hierarchical, macro-to-micro translation framework designed to mitigate error propagation in large-scale code translation. The framework first performs static analysis to extract call graphs and decompose code into functional modules. Translation then proceeds in two layers: (1) at the class level, where overall architecture and header files are designed, and (2) at the method level, where implementations are translated bottom-up along call chains. To bridge library and runtime differences, the framework dynamically generates necessary dependencies. Finally, an autonomous agent iteratively compiles, tests, and repairs the translated code.
+
+We evaluate the framework by translating cohesive Java modules to C++, two languages with significant differences in underlying execution models. Experimental results demonstrate that our approach effectively reduces error accumulation and improves translation success rates compared to direct file-by-file LLM translation.
+
+Keywords: Code translation, Large language models, Project-level translation, Java, C++, Static analysis, Hierarchical translation

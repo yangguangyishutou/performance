@@ -1,3 +1,17 @@
 % !TeX root = ../main.tex
 
 \section{Introduction}
+
+The increasing need for software migration, cross-language interoperability, and multi-platform deployment has made automated code translation a valuable research area. Early techniques relied on handcrafted rules or template-based transformations, which are difficult to scale. Recent advances in LLMs have enabled more flexible and context-aware code generation, yet their application in translation remains largely confined to small, self-contained code snippets. Translating entire projects or interconnected modules introduces challenges such as architectural mismatch, dependency management, and compounding semantic gaps between languages—especially those with different runtime paradigms like Java (managed, JVM-based) and C++ (unmanaged, native).
+
+This paper addresses the problem of error accumulation in project-level translation. We argue that translating files or methods independently without a high-level understanding of the module’s purpose leads to irreconcilable inconsistencies. Instead, we propose a top-down understanding followed by bottom-up translation, where the LLM first comprehends the macro-structure of a functional module, plans the overall translation strategy, and then executes translation in a layered manner.
+
+Our main contributions are:
+
+A hierarchical translation framework that separates class-level design from method-level implementation.
+
+A call-graph-guided, bottom-up translation order to stabilize dependencies.
+
+An iterative compilation and repair agent that validates and corrects the translated code.
+
+An empirical evaluation translating Java modules to C++, showing improved success rates over baseline methods.
