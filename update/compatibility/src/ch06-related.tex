@@ -30,17 +30,26 @@ With the rapid advancement of Large Language Models (LLMs), researchers have act
 
 
 For deprecated APIs, Mahmud et al.~\cite{mahmud2024automated} proposed GUPPY, the first LLM-based approach to automatically update Android deprecated API usages without requiring manual templates. Similarly, to prevent the introduction of outdated APIs during generation, Bai et al.~\cite{bai2024apilot} developed APILOT, which leverages real-time differential analysis to verify LLM outputs against a database of outdated APIs. 
-
 % To enhance the performance of LLMs in various tasks, advanced prompting and architectural techniques have been employed. Chain-of-Thought (CoT), originally proposed by Wei et al.\cite{wei2022chain} to elicit reasoning, has evolved significantly. 
-
 Zhang et al.\cite{zhang2025enhancing} enhanced Chain-of-Thought (CoT) by constructing task-specific reasoning patterns. In code synthesis, Li et al.~\cite{li2025structured} further advanced this by proposing Structured CoT (SCoT), which explicitly embeds programming logic (e.g., branches and loops) into the reasoning chain to constrain the model's output. Liu et al.\cite{liu2024era} proposed ERA-CoT to capture entity relationships for better context understanding. 
-
 % Li et al.~\cite{li2025structured} introduced Structured Chain-of-Thought (SCoT) for API usage adaptation and robust code generation. By incorporating programming structures (sequence, branch, loop) into intermediate reasoning steps, SCoT aims to solve the low accuracy of LLMs in generating complex, structurally correct code that adapts to specific requirements.
 Meanwhile, agent-based systems provide another promising approach for library evolution issues. 
-
-\todo{THOSE ARE not LLM FOR LIBRARY EVOLUTION: Ma et al.\cite{ma2024combining} proposed iAudit, a multi-agent framework combining a Ranker and Critic to debate vulnerabilities in smart contracts. Similarly, Sun et al.\cite{sun2024gptscan} developed GPTScan, which combines GPT's capability in recognizing key variables with static program analysis to detect logic vulnerabilities.}
-
+% \todo{THOSE ARE not LLM FOR LIBRARY EVOLUTION: Ma et al.\cite{ma2024combining} proposed iAudit, a multi-agent framework combining a Ranker and Critic to debate vulnerabilities in smart contracts. Similarly, Sun et al.\cite{sun2024gptscan} developed GPTScan, which combines GPT's capability in recognizing key variables with static program analysis to detect logic vulnerabilities.}
 Despite these advancements, fundamental challenges persist in applying LLMs to library evolution. Wang et al.\cite{wang2024llms} quantitatively revealed that LLMs frequently utilize deprecated APIs due to outdated training data. Liang et al.\cite{liang2025rustevo} confirmed that in the Retrieval-Augmented Generation (RAG), the knowledge cutoff significantly hampers performance. 
 
 
 \todo{Critically, existing solutions has a drawback that: current CoT approaches and multi-agent frameworks lack design for API compatibility issues. To address these limitations, our work introduces a specialized multi-agent framework. We design a CoT prompt mechanism to explicitly reason about incompatibility categories and orchestrate Input-Generator and Simulater agents to construct a closed-loop verification system.}
+
+
+
+\subsection{LLM-powered Static Analysis}
+
+
+\todo{XXX}
+
+LLMDFA: Analyzing Dataflow in Code with Large Language Models
+
+Large Language Model (LLM) for Software Security: Code Analysis, Malware Analysis, Reverse Engineering
+
+Llm-powered static binary taint analysis
+

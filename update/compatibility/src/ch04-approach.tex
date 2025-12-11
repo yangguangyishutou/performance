@@ -1,16 +1,38 @@
 \section{Approach}
 
-% \subsection{XXX}
-This section details our methodology for detecting Python API incompatibilities using Large Language Models (LLMs) with structured Chain-of-Thought (COT) prompting. We first outline the overall workflow and core challenges, then elaborate on the design principles compared to existing methods, and technical implementation
-This section details our methodology for detecting Python API incompatibilities using Large Language Models (LLMs) with structured Chain-of-Thought (COT) prompting. We first outline the overall workflow and core challenges, then elaborate on the design principles compared to existing methods, and technical implementation
+This section details our approach for detecting Python API incompatibilities. We first outline the approach overview, and then elaborate the core components.
 
-\subsection{CoT}
 
-\subsection{Overview and Challenges}
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/overview.pdf}
+    \caption{Overview of \tool}
+    \label{fig:overview}
+\end{figure*}
 
-Our approach targets code-level changed API pairs (excluding module-level, class-level, and API addition/deletion changes) between two versions of a Python project. Figure x illustrates the end-to-end workflow. First, we extract all APIs from two versions of the project and filter API pairs to retain only those with code-level modifications. Then we instruct LLM with COT guidance to performs line-by-line code analysis. Finally, The LLM generates a structured JSON output, including detected incompatibility types, detailed reasons for each type, and auxiliary information.
 
-figure x
+% 找一个有代表性的例子：人在看兼容性问题的时候，是 先看方法签名，再看方法体，然后看返回值。用一张图，来比较清楚地表达开发者判断兼容性问题时的逻辑，即人的chain-of-thought
+\subsection{Design Motivation}
+
+
+\subsubsection{Limitation of Existing Methods}
+
+Traditional static analysis methods (e.g., Shen et al. [2024]) rely on handcrafted rules. However, Rule design requires expert knowledge making it hard to generalize to new libraries or unknown incompatibilities. For example, shen define data structure P to record parameter information for the detection of CI1-CI5. However, without detailed study into incompatible examples. it is hard to design rules for detections. Besides, These methods fail to interpret semantic context while many crucial infomation should be analyzed through variable names, comments, usage in function bodies, etc. For example, Shen et al.'s method cannot recognize that renaming a parameter from arguments to args is a compatibility issue—since the AST pattern for parameter names differs, but the static rule does not link the semantic similarity between arguments and args.
+
+In our method, by leveraging LLMs' semantic understanding capabilities, our approach directly addresses this limitation. The LLM integrates contextual cues to identify semantic changes, even when syntactic patterns are non-trivial.
+
+\subsubsection{Incompatibility Types and Challenges}
+
+We first establish a comprehensive taxonomy of Python API incompatibilities, extending the 7-category framework proposed by Shen et al. [x] (a foundational empirical study on Python API evolution). Shen et al. identified incompatibilities rooted in parameters (CI1-CI5), exceptions (CI6), and return values (CI7). Through our own data collection, we validated these 7 categories and discovered two new, previously unreported types:
+
+\textbf{CI8}: global variable change
+\textbf{CI9}: reference variable change
+
+Table x
+
+\input{src/sub/table_CI}
+
+CoT Prompting 
 
 During this three-step process, we need to address the following three challenges:
 
@@ -21,72 +43,32 @@ During this three-step process, we need to address the following three challenge
     \item \textbf{Unstructured COT Reasoning (C4)}: Without guided thinking frameworks, LLMs' intermediate reasoning (e.g., how they identify a parameter default value change) remains unstructured. This makes it impossible to verify the validity of the LLM's conclusions.
 \end{itemize}
 
-\subsection{Methodology Design}
+\subsubsection{Approach Intuition}
+
+XXX
+
+
+% Self-consistency, to replace the naive greedy decoding used in chain-of-thought prompting. It first samples a diverse set of reasoning paths instead of only taking the greedy one,
+
+\subsection{Approach Overview}
+
+Our approach targets code-level changed API pairs (excluding module-level, class-level, and API addition/deletion changes) between two versions of a Python project. Figure x illustrates the end-to-end workflow. First, we extract all APIs from two versions of the project and filter API pairs to retain only those with code-level modifications. Then we instruct LLM with COT guidance to performs line-by-line code analysis. Finally, The LLM generates a structured JSON output, including detected incompatibility types, detailed reasons for each type, and auxiliary information.
+
+\subsection{Static Oriented Reasoning}
+
 
 To address the above challenges, we design a one-pass COT analysis framework with structured prompting, built on insights from prior empirical studies and innovations in LLM guidance.
 
-
-We first establish a comprehensive taxonomy of Python API incompatibilities, extending the 7-category framework proposed by Shen et al. [x] (a foundational empirical study on Python API evolution). Shen et al. identified incompatibilities rooted in parameters (CI1-CI5), exceptions (CI6), and return values (CI7). Through our own data collection, we validated these 7 categories and discovered two new, previously unreported types:
-
-\textbf{CI8}: global variable change
-\textbf{CI9}: reference variable change
-
-Table x
-
-
-\subsubsection{Limitation of Current Methods}
-
-Traditional static analysis methods (e.g., Shen et al. [2024]) rely on handcrafted rules. However, Rule design requires expert knowledge making it hard to generalize to new libraries or unknown incompatibilities. For example, shen define data structure P to record parameter information for the detection of CI1-CI5. However, without detailed study into incompatible examples. it is hard to design rules for detections. Besides, These methods fail to interpret semantic context while many crucial infomation should be analyzed through variable names, comments, usage in function bodies, etc. For example, Shen et al.'s method cannot recognize that renaming a parameter from arguments to args is a compatibility issue—since the AST pattern for parameter names differs, but the static rule does not link the semantic similarity between arguments and args.
-
-In our method, by leveraging LLMs' semantic understanding capabilities, our approach directly addresses this limitation. The LLM integrates contextual cues to identify semantic changes, even when syntactic patterns are non-trivial.
-
-\subsubsection{One-Pass COT Analysis Framework}
-
 To tackle scalability and output unreliability, we design a one-pass COT framework guided by two core principles: two-stage analysis and unified scanning. First, the LLMs is instructed to process the parameter list, which is syntactically structured, then analyze the function body, which is semantically rich—aligning with how developers naturally review code changes.  We embed rules for all 9 incompatibility categories into a single prompt to enable the LLM to detect multiple incompatibilities in one analysis pass, avoiding repeated LLM calls. The framework is divided into four sequential phases, each with predefined data structures and rules to guide the LLM's reasoning. This design offers three key advantages: efficiency, as runtime is independent of the number of incompatibility categories (all rules are processed in one pass); reduced misjudgment, as it enforces dependencies between interdependent categories (e.g., analyzing CI1 (parameter addition) before CI4 (default value change) to avoid misclassifying added parameters as default value changes); and structured reasoning, as each phase outputs intermediate data structures like parameter mappings and exception type lists, which make the LLM's logic traceable and verifiable.
 
-\subsubsection{Structured Prompt Design}
 
-The prompt is the backbone of our framework, structured to enforce consistency and guide the LLM's COT reasoning. It includes four components: Instructions, Analysis Phases, Source Code, and Examples. A simplified template is shown below (full rules are provided in Appendix A):
 
-\lstset{
-  breaklines=true, % 核心：开启自动换行
-}
+\subsubsection{Control Flow Graph Construction}
 
-\begin{lstlisting}[]
-Analyze two versions of a Python API function (`code_v1` and `code_v2`) to detect incompatibilities. The output must be in JSON format.
+\subsubsection{Source-link Labeling}
 
-    ### Instructions
-    Please strictly follow the `Analysis Phases` to identify all incompatibility types (CI1 - CI9) and provide concise reasons. The final output must include:
-    - `additional_info`: Key variables/structures used in analysis (e.g., parameter mappings).
-    - `reasons`: One-sentence explanations linking code changes to incompatibility types.
-    - `incompatibility`: List of detected types 
+\subsubsection{Graph Traversing}
 
-    ### Analysis Phases
-    #### Phase 0: Initialization
-    Initialize the result dictionary:
-    {
-    "incompatibility": [], "reasons": [], "additional_info": {"param_mapping": {}, "exception_list_v1": [], ...}
-    }
-    #### Phase 1: Parameter List Processing
-    Extract parameter lists from `code_v1` and `code_v2`, then build:
-    #### Phase 2: Initial Incompatibility Analysis 
-    Use `P1`/`P2` to update results:
-    #### Phase 3: Function Body Processing (Line-by-Line)
-    Initialize data structures for `code_v1`/`code_v2`:
-    #### Phase 4: Comprehensive Incompatibility Analysis
-    Use Phase 1-3 data structures to detect remaining types:
-
-    ### Source Code
-    "code_v1": ...
-    "code_v2": ...
-
-    ### Examples
-    }
-\end{lstlisting}
-
-\subsubsection{Data Structure and Detection Design}
-
-The analysis leverages several core data structures to capture critical information from function signatures and bodies, facilitating subsequent incompatibility checks. Based on the detecing process for different incompatibility types, we design following data structure which is initialized at begining and update throughout the scanning of the source code. 
 
 \textbf{Parameter Lists (P1, P2):} These lists encode the parameters of source code. Each parameter is represented as a tuple (name, position index, type, default value), where type includes positional, optional (with a default value), or kwargs, enabling direct comparison of parameter presence, order, and defaults.
 
@@ -110,79 +92,37 @@ The 9 types of incompatibility can be detected based on the data structure above
 
 Table x
 
-\subsection{Multi-Agent-Based Incompatibility Category Validation}
+\subsubsection{Incompatibility Analysis}
+
+
+
+
+
+
+
+\subsection{Dynamic Simulated Reflection}
+
 
 To address judgment biases in the incompatibility category candidates generated by the CoT-LLM, we design a multi-agent collaborative validation framework. It implements accurate verification of candidate categories through a process of "test case generation, simulation execution, and comprehensive evaluation," ultimately filtering out truly valid API incompatibility types. The framework comprises three functionally independent yet collaboratively working agent modules: the Test Case Generation Agent, Simulation Agent, and Comprehensive Analysis Agent. These modules form a validation chain through explicit information interaction, ensuring the objectivity and reliability of validation results.
 
+\subsubsection{Test Case Generation}
+
 The Test Case Generation Agent serves as the initiator of the validation process, tasked with constructing targeted test inputs to probe potential incompatibilities. Its core functionality is to generate pairs of calling statements—one for the old API version and one for the new—along with supplementary context, based on the provided old and new API code snippets, the candidate incompatibility category, and the underlying reasoning. The design of these test cases adheres to a critical principle: they must be highly likely to trigger the alleged incompatibility if it indeed exists. For instance, when evaluating a candidate issue related to changed default parameter values, the agent will craft calling statements that omit the affected parameters, thereby exposing discrepancies in behavior caused by the default value shift. The output of this agent follows a structured format, explicitly separating the calling statements and supplementary information for the old and new APIs to ensure clarity in subsequent processing.
-
-Upon receiving the test cases from the Test Case Generation Agent, the Simulation Agent takes on the role of executing these tests in a controlled environment. Its primary responsibility is to simulate the runtime behavior of both the old and new API versions when invoked with the generated test inputs. This involves parsing the API code, instantiating necessary objects (if applicable), and executing the calling statements step-by-step. The agent meticulously records the execution results: if the program exits normally with a return value, it captures the specific output; if an exception is raised (e.g., missing arguments, type errors), it documents the error type and description. By faithfully replicating runtime scenarios, this agent transforms abstract code differences into concrete behavioral outcomes, providing empirical data for validating the alleged incompatibility.
-
-The Comprehensive Analysis Agent acts as the final evaluator, synthesizing information from the preceding stages to assess the validity of the candidate incompatibility category. It takes as input the definition of the incompatibility type, the reasoning behind the initial diagnosis, and the behavioral results generated by the Simulation Agent. Using a scoring mechanism ranging from 0 to 10, the agent evaluates the alignment between the diagnosed incompatibility, the test case design, and the observed runtime behaviors. The score is determined based on three key criteria: logical consistency (whether the reasoning logically leads to the alleged incompatibility), rigor of evidence (whether the simulation results clearly demonstrate the expected behavioral discrepancy), and coherence (whether all components of the validation process reinforce the same conclusion). A higher score indicates greater confidence in the existence of the specific incompatibility, while a lower score suggests either flaws in the initial diagnosis or inadequacies in the test scenario.
 
 The collaborative workflow of the three agents forms a closed-loop validation pipeline. Starting with a candidate incompatibility category, the Test Case Generation Agent tailors probes to expose potential issues, the Simulation Agent generates empirical behavioral data, and the Comprehensive Analysis Agent renders a data-driven judgment. This division of labor ensures that each stage of validation is handled by a specialized component, reducing the risk of subjective biases that might arise from a single model’s judgment. By structuring the validation as an explicit information flow—from test design to execution to analysis—the framework enhances the transparency and reproducibility of the verification process. Ultimately, this multi-agent approach strengthens the reliability of incompatibility category identification, providing a robust mechanism to filter out spurious candidates and retain only those that are empirically validated.
 
-\subsection{implementation}
+\subsubsection{Step-by-step Simulation}
 
-We implement the approach using Python, leveraging open-source tools and APIs to balance reproducibility and efficiency. For API extraction, we combine the GitHub API and Python's standard ast library: the GitHub API fetches source code for specific project versions to enable automated data collection, while the ast library builds ASTs for function-level slicing—extracting only the function body (excluding imports or global statements outside the API). For LLM interaction, we use DeepSeek-chat API with temperature 0 to minimize randomness and max-tokens 2048 to accommodate structured outputs. 
+Upon receiving the test cases from the Test Case Generation Agent, the Simulation Agent takes on the role of executing these tests in a controlled environment. Its primary responsibility is to simulate the runtime behavior of both the old and new API versions when invoked with the generated test inputs. This involves parsing the API code, instantiating necessary objects (if applicable), and executing the calling statements step-by-step. The agent meticulously records the execution results: if the program exits normally with a return value, it captures the specific output; if an exception is raised (e.g., missing arguments, type errors), it documents the error type and description. By faithfully replicating runtime scenarios, this agent transforms abstract code differences into concrete behavioral outcomes, providing empirical data for validating the alleged incompatibility.
 
 
-% 每个不兼容性类别对于COT表格
-\begin{table}[htbp]
-\centering
-\small
-\caption{Compatibility Incompatibility Categories (CI) — detection \& rules}
-\label{tab:ci-catalog}
-% Scale the table to the text width so it no longer overflows the page
-  \begin{tabular}{p{0.5cm} p{1.0cm} p{5.0cm} p{4.0cm}}
-    \hline
-    CI & Name & Data-structure construction rules & Incompatibility identification rules \\
-    \hline
+\subsubsection{Simulated Result Analysis}
 
-    CI1 & Parameter Addition / Deletion
-    & Signature-level: parameter appears or disappears between versions. Build P1 and P2: list parameters as tuples (name, position index, type, default).
-    & Trigger when: a parameter exists in P1 but not in P2; or a positional parameter exists in P2 but not in P1; or an inserted optional param in P2 is not last and causes positional shifts. \\
+The Comprehensive Analysis Agent acts as the final evaluator, synthesizing information from the preceding stages to assess the validity of the candidate incompatibility category. It takes as input the definition of the incompatibility type, the reasoning behind the initial diagnosis, and the behavioral results generated by the Simulation Agent. Using a scoring mechanism ranging from 0 to 10, the agent evaluates the alignment between the diagnosed incompatibility, the test case design, and the observed runtime behaviors. The score is determined based on three key criteria: logical consistency (whether the reasoning logically leads to the alleged incompatibility), rigor of evidence (whether the simulation results clearly demonstrate the expected behavioral discrepancy), and coherence (whether all components of the validation process reinforce the same conclusion). A higher score indicates greater confidence in the existence of the specific incompatibility, while a lower score suggests either flaws in the initial diagnosis or inadequacies in the test scenario.
 
-    \hline
-    CI2 & Kwargs Key Addition / Deletion
-    & If both versions have `**kwargs`, set `KWARGS` = param name; extract K1 and K2: explicit keys accessed via `kwargs.get` or `kwargs['key']`. Statements to detect include body expressions like `kwargs.get('key')` or `kwargs['key']`.
-    & Trigger when `KWARGS` is non-empty and K1 $\neq$ K2 (keys added or removed). \\
 
-    \hline
-    CI3 & Parameter Rename
-    & Produce ReName pairs (name1, name2) by semantic or positional match; collect ReNUsage1/2: lines where each renamed parameter is used; collect D1/D2 for data-flow context. Detect from signature name pairs and body lines that use the parameter (assignments/usages).
-    & Trigger when a ReName pair exists and ReNUsage patterns are highly similar (identical lines or structurally identical data-flow where only variable names differ). \\
+% \subsection{Implementation}
 
-    \hline
-    CI4 & Default Value Change
-    & Compare P1 and P2 default value fields for same-named parameters (or matched by position if appropriate). Statements to detect: function signature default values.
-    & Trigger when a parameter exists in both P1 and P2 but its stored default values differ. \\
+% We implement the approach using Python, leveraging open-source tools and APIs to balance reproducibility and efficiency. For API extraction, we combine the GitHub API and Python's standard ast library: the GitHub API fetches source code for specific project versions to enable automated data collection, while the ast library builds ASTs for function-level slicing—extracting only the function body (excluding imports or global statements outside the API). For LLM interaction, we use DeepSeek-chat API with temperature 0 to minimize randomness and max-tokens 2048 to accommodate structured outputs. 
 
-    \hline
-    CI5 & Parameter Range / Condition Change (affects exceptions)
-    & Build C1/C2 (condition strings), E1/E2 (explicit raises with condition index), and D1/D2 to map conditions to parameters. Statements to detect include condition statements (`if`, `while`, `try` scopes) and `raise` / `assert` lines referencing parameters.
-    & Trigger when exception-related conditions tied to a parameter present in both versions change so that raising behavior or range checks differ. \\
 
-    \hline
-    CI6 & Exception Add/Delete or Type Change
-    & Record E1/E2: explicit exception types with associated condition indices. Statements to detect: `raise ExceptionType(...)` and `assert` lines in function body.
-    & Trigger when exception type(s) differ between E1 and E2 (type added, removed, or changed). If len(E1)$\neq$len(E2), mark CI6 (and often CI5 as well).\\
-
-    \hline
-    CI7 & Return Value Change
-    & Collect R1/R2: return expressions with condition indices; use D1/D2 to trace data-flow dependencies of returned variables. Statements to detect: `return` (or `yield`) statements and their returned expressions.
-    & Trigger when a return expression in one version is absent in the other or when the data-flow producing the return value differs in a way that changes content/type/structure. \\
-
-    \hline
-    CI8 & Global Variable Change
-    & In D1/D2, mark entries with variable type = `global variable` and record dependent variables and conditions. Statements to detect: assignment statements referencing names classified as global; `global` / `nonlocal` markers.
-    & Trigger when global-variable data-flow differs between versions and those differences may change the global value assignment or visible state. \\
-
-    \hline
-    CI9 & Reference Parameter Change (e.g., `self`)
-    & In D1/D2, mark entries with variable type = `reference variable` (including `self`); collect attribute assignment sites and dependency lists. Statements to detect: assignment statements to reference variables or their attributes, direct reassignments of reference param.
-    & Trigger when: the reference parameter itself is reassigned; a new attribute is assigned in one version but not the other; or an existing attribute assignment has materially different assignment logic/dependencies. \\
-
-    \hline
-  \end{tabular}%
-\end{table}
