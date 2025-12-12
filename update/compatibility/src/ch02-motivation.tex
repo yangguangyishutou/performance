@@ -13,14 +13,18 @@
 % 动机：为什么，我们要去做API兼容性的检测，这个问题很重要，很值得研究
 \subsection{Incompatibilities in the Wild}
 
-% Developer complain?
-The research necessity of API compatibility detection is driven by the combination of practical pain points of developers, technical evolution challenges, industry value demands, and gaps in existing solutions. 
+The incompatible APIs can cause developing pains or even in-production loss. To understand the prevalence and severity, we perform a lightweight empirical study to understand the incompatible Python APIs in the wild.
+
+\todo{Tell the data collection procedures.}
 
 
-In open-source communities such as GitHub, a large number of developer complaints indicate that version changes of third-party dependency package APIs often cause project errors—for example, runtime errors resulting from interface parameter adjustments or method deprecation. These issues not only increase debugging costs but also may disrupt project iteration. The high-frequency occurrence of such problems in open-source projects directly reflects the urgent need for efficient detection tools. With the popularization of microservices and multi-cloud architectures, systems have become increasingly dependent on third-party APIs; a single project may involve dozens or even hundreds of API versions. Mixed scenarios involving cross-protocols (e.g., REST, gRPC) and multi-data formats (e.g., JSON, PROTOBUF) further exacerbate the difficulty of version management and compatibility verification. Traditional manual detection or mainstream tools (such as Postman and Swagger) focus on functional testing, making it difficult to cover implicit compatibility issues (e.g., semantic-level differences, residual implicit dependencies) and unable to meet detection needs in complex architectures. From the perspective of industry value, API compatibility has become a core element in ensuring system stability—in critical fields such as finance and healthcare, compatibility issues may lead to severe consequences such as transaction interruptions and data errors, resulting in direct economic losses. In cross-enterprise collaboration, version incompatibility prolongs the system integration cycle and reduces the efficiency of ecological collaboration. However, existing technologies lack sufficient capability to analyze API semantic differences and struggle to address detection needs in scenarios involving dynamically generated APIs and multi-role usage. This highlights the research value of detection solutions based on LLMs (Large Language Models) combined with CoT (Chain of Thought) and MultiAgent technologies: through logical reasoning to analyze the semantic impact of changes and multi-perspective simulation for collaborative verification, these solutions are expected to break through the limitations of traditional schemes, solve the practical pain points of developers and technical bottlenecks in complex architectures, and hold significant theoretical and practical significance for ensuring system reliability and improving industry collaboration efficiency.
+XX\% of developer complaints indicate that version changes of third-party dependency package APIs often cause project errors. The projects errors include XXX. 
+
+
+
 
 % 介绍一下Python API的语法，以及可能存在的兼容性问题分类
-\subsection{API Compatibility Type}
+\subsection{Categories of Compatibility Types}
 
 
 
