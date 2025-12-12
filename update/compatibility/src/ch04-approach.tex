@@ -2,26 +2,17 @@
 
 This section details our approach for detecting Python API incompatibilities. We first outline the approach overview, and then elaborate the core components.
 
+\input{src/sub/table_CI}
 
-\begin{figure*}[!t]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig/overview.pdf}
-    \caption{Overview of \tool}
-    \label{fig:overview}
-\end{figure*}
+
 
 
 % 找一个有代表性的例子：人在看兼容性问题的时候，是 先看方法签名，再看方法体，然后看返回值。用一张图，来比较清楚地表达开发者判断兼容性问题时的逻辑，即人的chain-of-thought
 \subsection{Design Motivation}
 
 
-\subsubsection{Limitation of Existing Methods}
 
-Traditional static analysis methods (e.g., Shen et al. [2024]) rely on handcrafted rules. However, Rule design requires expert knowledge making it hard to generalize to new libraries or unknown incompatibilities. For example, shen define data structure P to record parameter information for the detection of CI1-CI5. However, without detailed study into incompatible examples. it is hard to design rules for detections. Besides, These methods fail to interpret semantic context while many crucial infomation should be analyzed through variable names, comments, usage in function bodies, etc. For example, Shen et al.'s method cannot recognize that renaming a parameter from arguments to args is a compatibility issue—since the AST pattern for parameter names differs, but the static rule does not link the semantic similarity between arguments and args.
-
-In our method, by leveraging LLMs' semantic understanding capabilities, our approach directly addresses this limitation. The LLM integrates contextual cues to identify semantic changes, even when syntactic patterns are non-trivial.
-
-\subsubsection{Incompatibility Types and Challenges}
+\subsubsection{\todo{Incompatibility Types and Challenges}}
 
 We first establish a comprehensive taxonomy of Python API incompatibilities, extending the 7-category framework proposed by Shen et al. [x] (a foundational empirical study on Python API evolution). Shen et al. identified incompatibilities rooted in parameters (CI1-CI5), exceptions (CI6), and return values (CI7). Through our own data collection, we validated these 7 categories and discovered two new, previously unreported types:
 
@@ -29,8 +20,6 @@ We first establish a comprehensive taxonomy of Python API incompatibilities, ext
 \textbf{CI9}: reference variable change
 
 Table x
-
-\input{src/sub/table_CI}
 
 CoT Prompting 
 
@@ -45,10 +34,20 @@ During this three-step process, we need to address the following three challenge
 
 \subsubsection{Approach Intuition}
 
-XXX
+\todo{Traditional static analysis methods (e.g., Shen et al. [2024]) rely on handcrafted rules. However, Rule design requires expert knowledge making it hard to generalize to new libraries or unknown incompatibilities. For example, shen define data structure P to record parameter information for the detection of CI1-CI5. However, without detailed study into incompatible examples. it is hard to design rules for detections. Besides, These methods fail to interpret semantic context while many crucial infomation should be analyzed through variable names, comments, usage in function bodies, etc. For example, Shen et al.'s method cannot recognize that renaming a parameter from arguments to args is a compatibility issue—since the AST pattern for parameter names differs, but the static rule does not link the semantic similarity between arguments and args.}
 
+\todo{In our method, by leveraging LLMs' semantic understanding capabilities, our approach directly addresses this limitation. The LLM integrates contextual cues to identify semantic changes, even when syntactic patterns are non-trivial.}
+
+\todo{XXX}
 
 % Self-consistency, to replace the naive greedy decoding used in chain-of-thought prompting. It first samples a diverse set of reasoning paths instead of only taking the greedy one,
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/overview.pdf}
+    \caption{Overview of \tool}
+    \label{fig:overview}
+\end{figure*}
 
 \subsection{Approach Overview}
 

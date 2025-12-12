@@ -3,7 +3,7 @@
 
 % 1. 软件版本更新很常见。
 
-Software version updates are a routine and inevitable part of modern software development. As software systems evolve to incorporate new features, improve performance, or fix defects, updates are released frequently across ecosystems. This continuous evolution is essential for maintaining software quality and relevance; however, it also introduces challenges for developers who rely on stable interfaces and predictable behavior. Understanding how version updates propagate through software systems is therefore key to ensuring long-term maintainability.
+Software version updates are a routine and inevitable part of modern software development. As software systems evolve to incorporate new features, improve performance, or fix defects, updates are released frequently across ecosystems. This continuous evolution is essential for maintaining software quality and relevance; however, it also introduces challenges for developers who rely on stable interfaces and predictable behavior. Understanding how version updates propagate through software systems is therefore key to ensuring long-term maintainability. In July 2024, a faulty update to CrowdStrike’s Falcon endpoint detection software caused millions of Windows systems worldwide to crash and reboot into blue-screen or recovery mode. This defective update — effectively a broken API/behavior in a widely-deployed component — triggered a global IT outage impacting airlines, hospitals, government services, cloud infrastructure, and more.
 
 % 2. 版本更新的主要对外表现为API的更新
 
@@ -29,9 +29,21 @@ Motivated by these observations, our work introduces a novel method for XXXX. Th
 
 To evaluate the effectiveness of our approach, we conducted extensive experiments using real-world software projects and diverse API evolution scenarios. The results demonstrate that our method effectively identifies a broader range of compatibility issues compared to baseline tools, particularly in cases that involve complex or subtle semantic changes. Quantitative metrics and qualitative analyses both show that LLM-based reasoning significantly enhances detection accuracy and robustness.
 
+
+
+
 % 8. Contribution
 
 In summary, this work makes several key contributions. First, we provide a systematic analysis of the limitations in existing API compatibility detection methods. Second, we introduce a new LLM-driven technique that unifies syntactic differencing with semantic reasoning. Third, we develop an evaluation framework grounded in real-world software evolution data. Finally, our experimental findings offer evidence that LLMs can meaningfully advance the state of the art in API compatibility analysis.
+
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/example.png}
+    \caption{Illustration of Incompatibility Types}
+    \label{fig:example}
+\end{figure*}
+
 
 \begin{itemize}
     \item We 

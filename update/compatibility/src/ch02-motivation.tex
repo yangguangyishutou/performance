@@ -2,25 +2,18 @@
 \section{Background}
 
 
-\begin{figure*}[!t]
-    \centering
-    \includegraphics[width=0.7\textwidth]{fig/example.png}
-    \caption{Illustration of Incompatibility Types}
-    \label{fig:example}
-\end{figure*}
 
 
 % 动机：为什么，我们要去做API兼容性的检测，这个问题很重要，很值得研究
-\subsection{Incompatibilities in the Wild}
 
-The incompatible APIs can cause developing pains or even in-production loss. To understand the prevalence and severity, we perform a lightweight empirical study to understand the incompatible Python APIs in the wild.
+\subsection{Python Incompatibilities in the Wild}
 
-\todo{Tell the data collection procedures.}
-
-
-XX\% of developer complaints indicate that version changes of third-party dependency package APIs often cause project errors. The projects errors include XXX. 
+We focus on incompatible APIs in Python, a widely used language whose issues are representative of modern software ecosystems. The incompatible APIs involve the interaction between the upstream dependencies and the downstream client usages. Given an API evolves from an older version to a newer version, the \textit{forward incompatibility} occurs when the newer version introduces changes that prevent existing client code from running correctly, and the \textit{backward incompatibility} occurs when code written for the newer version cannot run correctly on the older version. The incompatible APIs can introduce substantial development overhead and may result in production failures or service disruptions.
 
 
+To understand the prevalence and severity, we perform a lightweight empirical study to understand the incompatible Python APIs in the wild. \todo{Specifically, we chose xx projects from GitHub, namely XX, XX and XXX. Then, we collected xxx issues from the xxx projects. We use keyword xxx. XX\% of developer complaints indicate that version changes of third-party dependency package APIs often cause project errors. The projects errors include XXX.. We list some of the root causes of some significant incompatibility cases. }
+
+\todo{As the above cases illustrate, some incompatibility issues require deeper analysis, which cannot be detected through traditional static analysis alone, as they require deeper semantic understanding of variables and execution paths. Fortunately, LLMs are capable of providing such semantic insight.}
 
 
 % 介绍一下Python API的语法，以及可能存在的兼容性问题分类
@@ -31,15 +24,15 @@ XX\% of developer complaints indicate that version changes of third-party depend
 
 
 \begin{itemize}
-    \item \textbf{CI1}: XX
-    \item \textbf{CI2}: XX
-    \item \textbf{CI3}: XX
-    \item \textbf{CI4}: XX
-    \item \textbf{CI5}: XX
-    \item \textbf{CI6}: XX
-    \item \textbf{CI7}: XX
-    \item \textbf{CI8}: XX
-    \item \textbf{CI9}: XX
+    \item \todo{\textbf{CI1}: XX}
+    \item \todo{\textbf{CI2}: XX}
+    \item \todo{\textbf{CI3}: XX}
+    \item \todo{\textbf{CI4}: XX}
+    \item \todo{\textbf{CI5}: XX}
+    \item \todo{\textbf{CI6}: XX}
+    \item \todo{\textbf{CI7}: XX}
+    \item \todo{\textbf{CI8}: XX}
+    \item \todo{\textbf{CI9}: XX}
 \end{itemize}
 
 
