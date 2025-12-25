@@ -78,33 +78,33 @@ We compared \tool{} against two baseline approaches:
 
 Figure \ref{fig:compilation-success} shows the compilation success rates for each approach across all projects.
 
-\begin{figure}[h]
-\centering
-\begin{tikzpicture}
-\begin{axis}[
-    ybar,
-    width=\columnwidth,
-    height=6cm,
-    ylabel={Compilation Success Rate (\%)},
-    xlabel={Project},
-    symbolic x coords={Cookie,JSONParser,ReadRowHolder,ReadSheetHolder,Average},
-    xtick=data,
-    x tick label style={rotate=45,anchor=east},
-    legend pos=north west,
-    ymin=0,
-    ymax=100,
-    bar width=0.2cm,
-    enlarge x limits=0.15
-]
-\addplot coordinates {(Cookie,68) (JSONParser,75) (ReadRowHolder,62) (ReadSheetHolder,58) (Average,65.75)};
-\addplot coordinates {(Cookie,32) (JSONParser,41) (ReadRowHolder,28) (ReadSheetHolder,25) (Average,31.5)};
-\addplot coordinates {(Cookie,45) (JSONParser,52) (ReadRowHolder,38) (ReadSheetHolder,35) (Average,42.5)};
-\legend{\tool{}, Direct LLM, Template-Based}
-\end{axis}
-\end{tikzpicture}
-\caption{Compilation success rates comparison across projects}
-\label{fig:compilation-success}
-\end{figure}
+% \begin{figure}[h]
+% \centering
+% \begin{tikzpicture}
+% \begin{axis}[
+%     ybar,
+%     width=\columnwidth,
+%     height=6cm,
+%     ylabel={Compilation Success Rate (\%)},
+%     xlabel={Project},
+%     symbolic x coords={Cookie,JSONParser,ReadRowHolder,ReadSheetHolder,Average},
+%     xtick=data,
+%     x tick label style={rotate=45,anchor=east},
+%     legend pos=north west,
+%     ymin=0,
+%     ymax=100,
+%     bar width=0.2cm,
+%     enlarge x limits=0.15
+% ]
+% \addplot coordinates {(Cookie,68) (JSONParser,75) (ReadRowHolder,62) (ReadSheetHolder,58) (Average,65.75)};
+% \addplot coordinates {(Cookie,32) (JSONParser,41) (ReadRowHolder,28) (ReadSheetHolder,25) (Average,31.5)};
+% \addplot coordinates {(Cookie,45) (JSONParser,52) (ReadRowHolder,38) (ReadSheetHolder,35) (Average,42.5)};
+% \legend{\tool{}, Direct LLM, Template-Based}
+% \end{axis}
+% \end{tikzpicture}
+% \caption{Compilation success rates comparison across projects}
+% \label{fig:compilation-success}
+% \end{figure}
 
 \textbf{Key Findings}:
 \begin{itemize}
