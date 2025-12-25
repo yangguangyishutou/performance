@@ -50,53 +50,99 @@ During this three-step process, we need to address the following three challenge
 \end{figure*}
 
 \subsection{Approach Overview}
+\label{subsec:approach_overview}
 
-Our approach targets code-level changed API pairs (excluding module-level, class-level, and API addition/deletion changes) between two versions of a Python project. Figure x illustrates the end-to-end workflow. First, we extract all APIs from two versions of the project and filter API pairs to retain only those with code-level modifications. Then we instruct LLM with COT guidance to performs line-by-line code analysis. Finally, The LLM generates a structured JSON output, including detected incompatibility types, detailed reasons for each type, and auxiliary information.
+Our framework adopts a progressive analysis strategy designed to balance scalability with precision. The methodology is structured into two complementary phases: \textit{Static Oriented Reasoning} and \textit{Dynamic Simulated Reflection}.
+
+The initial phase, \textbf{Static Oriented Reasoning}, functions as a high-recall semantic filter. Instead of relying on brittle syntactic matching or computationally expensive symbolic execution, this phase constructs a lightweight, \textit{Condition-Indexed Execution Context Graph}. By mapping API-relevant entities to semantic \textit{Sources} (inputs) and \textit{Sinks} (observable behaviors), the analysis traces data and control dependencies to deterministically identify potential incompatibility patterns (CIs). This approach efficiently isolates structural and logical discrepancies—such as parameter changes, altered exception conditions, or inconsistent return values—thereby significantly pruning the search space before invoking the subsequent dynamic verification phase.
+
+\todo{Dynamic...}
+
 
 \subsection{Static Oriented Reasoning}
+\label{subsec:static_reasoning}
 
-
-To address the above challenges, we design a one-pass COT analysis framework with structured prompting, built on insights from prior empirical studies and innovations in LLM guidance.
-
-To tackle scalability and output unreliability, we design a one-pass COT framework guided by two core principles: two-stage analysis and unified scanning. First, the LLMs is instructed to process the parameter list, which is syntactically structured, then analyze the function body, which is semantically rich—aligning with how developers naturally review code changes.  We embed rules for all 9 incompatibility categories into a single prompt to enable the LLM to detect multiple incompatibilities in one analysis pass, avoiding repeated LLM calls. The framework is divided into four sequential phases, each with predefined data structures and rules to guide the LLM's reasoning. This design offers three key advantages: efficiency, as runtime is independent of the number of incompatibility categories (all rules are processed in one pass); reduced misjudgment, as it enforces dependencies between interdependent categories (e.g., analyzing CI1 (parameter addition) before CI4 (default value change) to avoid misclassifying added parameters as default value changes); and structured reasoning, as each phase outputs intermediate data structures like parameter mappings and exception type lists, which make the LLM's logic traceable and verifiable.
-
-
+This section details our static analysis framework. Unlike traditional compiler-level approaches, we employ a lightweight, semantic abstraction designed to efficiently detect behavioral incompatibilities between API versions.
 
 \subsubsection{Control Flow Graph Construction}
+\label{subsubsec:cfg_construction}
 
-\subsubsection{Source-link Labeling}
+The emphasis of our approach is not on classical compiler-level Control Flow Graphs (CFGs), but on a deliberately lightweight, semantic abstraction sufficient for detecting behavioral incompatibilities. At a conceptual level, our CFG is a \textbf{condition-indexed execution context graph}, where nodes represent semantic events (assignments, exceptions, returns) and edges are implicit, encoded via condition scope indices rather than explicit jumps. This design implies that explicit control edges, such as jump targets and loops, are unnecessary for CI detection.
+
+The foundation of the CFG is the set of condition statements, denoted as $C$. Each element in $C$ corresponds to a syntactic condition encountered during the scan of the function body, including \texttt{if}, \texttt{elif}, \texttt{else}, \texttt{while}, and exception-handling constructs. Conditions are stored as normalized strings and assigned monotonically increasing indices. These indices serve as stable identifiers for control contexts and function as decision nodes in the implicit CFG. To track the currently active execution context, the construction process maintains a condition stack, $CS$, while scanning the source code. This stack is updated in a single top-down scan: when the analysis enters a new conditional scope, the corresponding condition index is pushed onto the stack; when the scope ends, it is popped.
+
+Data flow information is captured in the structure $D$, which represents the primary computational nodes of the CFG. Each entry in $D$ corresponds to an assignment statement and records four elements: $(var, var\_type, dependencies, condition\_indices)$. In CFG terms, each such entry is a statement node whose control dependencies are fully described by its associated condition indices (a snapshot of $CS$). Explicit control-flow edges are therefore unnecessary, as all relevant control information is encoded in this metadata.
+
+Terminal behaviors of the function are represented by the exception set $E$ and the return set $R$. Each explicit exception statement—limited strictly to \texttt{raise} and \texttt{assert} constructs—is recorded in $E$ along with the active condition indices. Similarly, each \texttt{return} or \texttt{yield} statement is recorded in $R$ with its guarding conditions. Implicit behaviors, such as falling off the end of a function or logging-based warnings, are intentionally excluded because they do not reliably affect API contracts.
+
+The entire CFG is constructed in a single pass over the function body (Algorithm \ref{alg:cfg_construction}). This one-pass design is a critical property. Because the analysis does not require successor resolution, loop unrolling, or interprocedural reasoning, all necessary control and data dependencies can be captured incrementally. Upon encountering a condition, it is registered and pushed onto the condition stack. Upon encountering an assignment, exception, or return, a node is created with a snapshot of the current stack.
+
+\begin{algorithm}[h]
+\caption{Single-Pass CFG Construction}
+\label{alg:cfg_construction}
+\begin{algorithmic}[1]
+\STATE Initialize $C, D, E, R \leftarrow \emptyset$, $CS \leftarrow \text{stack}()$
+\FOR{each line $L$ in function body (top-down)}
+    \STATE Update $CS$ if entering/exiting a condition scope
+    \IF{$L$ defines a new condition}
+        \STATE Normalize condition string, add to $C$, push index to $CS$
+    \ELSIF{$L$ is assignment ($v = expr$)}
+        \STATE Extract dependencies and type
+        \STATE $D.\text{append}((v, type, deps, \text{snapshot}(CS)))$
+    \ELSIF{$L$ raises exception}
+        \STATE $E.\text{append}((type, \text{snapshot}(CS)))$
+    \ELSIF{$L$ returns}
+        \STATE $R.\text{append}((expr, \text{snapshot}(CS)))$
+    \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+An important aspect of the construction process is its deliberate selectivity. Only entities that are relevant to API-level incompatibility are recorded. Conditions are retained only insofar as they guard observable behaviors. Data flows are recorded only for assignments that may affect return values, exceptions, global state, or reference parameters. Conversely, many elements commonly present in full CFGs are intentionally ignored, including call graphs, logging statements, exception messages, loop iteration counts, and internal refactoring that does not affect externally visible behavior. This pruning is essential for maintaining robustness when the analysis is performed by an LLM.
+
+\subsubsection{Source-Sink Labeling}
+
+At a high level, source-sink labeling assigns semantic roles to selected program entities so that data-flow paths relevant to API contracts can be isolated and compared across versions. The key idea is that not all variables are equally important for API compatibility. Only entities that represent externally observable inputs, externally observable outputs, or persistent side effects are labeled. All other intermediate computations are treated as unlabeled internal glue.
+
+\paragraph{Sources} 
+Sources correspond to entities that introduce data into the function from the caller or the external environment. The primary sources are function parameters extracted in Phase 1, including positional parameters, optional parameters with defaults, and \texttt{**kwargs}. They define the input surface of the API. Type annotations are explicitly ignored, reinforcing that labeling is driven by runtime semantics. Within parameters, \textbf{\texttt{**kwargs}} receives special treatment. The object itself is labeled as a source, but more importantly, individual keys accessed via \texttt{kwargs.get('key')} or \texttt{kwargs['key']} are labeled as distinct fine-grained sources. This reflects the fact that keys effectively behave as optional named parameters. Keys are only labeled when they are explicitly accessed in the function body; keys that are never read are ignored to prevent over-approximation. Additionally, renamed parameters identified in the \textit{ReName} structure are implicitly treated as corresponding sources across versions. The \textit{ReNUsage} mapping provides the evidence to align these labels, distinguishing true renames from unrelated changes.
+
+\paragraph{Sinks} 
+Sinks represent points where data influences externally observable behavior. The most prominent sinks are \textbf{return statements}. Each return expression is labeled as a sink because it directly determines the value observed by the caller. Importantly, return sinks are condition-sensitive: a return expression is associated with the set of active condition indices under which it executes. \textbf{Explicit exception statements} form another critical class of sinks. Each \texttt{raise} or \texttt{assert} statement is labeled as a sink because exceptions alter the control flow visible to callers. The label records the exception type and the guarding conditions, while exception messages are intentionally excluded. Beyond direct outputs, certain \textbf{side effects} are labeled as sinks. Assignments to global variables are labeled because they may affect program state beyond the function boundary. Similarly, assignments to reference parameters (e.g., \texttt{self} or mutable objects) are labeled when they modify the reference itself or its attributes.
+
+The labeling process is tightly integrated with the one-pass scan used for CFG construction. When a labeled source is introduced, it is recorded once and referenced symbolically. When a labeled sink is encountered, it is recorded together with the current condition stack. Data-flow entries in $D$ act as the connective tissue between sources and sinks. Local variables that neither originate from labeled sources nor contribute to labeled sinks are left unlabeled, reducing noise for LLM-based reasoning.
 
 \subsubsection{Graph Traversing}
 
+The graphs produced in earlier phases are implicit rather than explicitly materialized. Control flow is encoded via condition indices, and data flow is encoded through dependency lists in the $D$ structure. As a result, graph traversal does not involve explicit edge-following but is realized as structured queries over node sets, guided by labels, dependencies, and control conditions.
 
-\textbf{Parameter Lists (P1, P2):} These lists encode the parameters of source code. Each parameter is represented as a tuple (name, position index, type, default value), where type includes positional, optional (with a default value), or kwargs, enabling direct comparison of parameter presence, order, and defaults.
+Traversal always begins from semantically meaningful anchor points rather than arbitrary nodes. These anchors include labeled sources (parameters, kwargs keys) and labeled sinks (returns, exceptions, side effects). By restricting traversal origins to these anchors, the analysis avoids unnecessary exploration of internal implementation details. Control sensitivity during traversal is achieved through condition indices rather than explicit branching. When traversing from or to a node, its associated list of condition indices is treated as a path predicate. Two nodes are considered control-aligned if their condition index sets are equivalent or comparable. This allows traversal to reason about execution contexts without constructing explicit true or false edges.
 
-\textbf{KWARGS}: A string storing the name of the kwargs parameter if present in both code v1 and code v2; empty otherwise. This structure anchors the analysis of keyword argument keys accessed within the function body.
+Data-flow traversal is primarily backward and dependency-driven. Starting from a sink node, such as a return statement, traversal proceeds backward through the $D$ structure by following dependency relationships. If a return expression depends on variable $v$, traversal identifies assignments to $v$ and recursively inspects the variables on which those assignments depend. Traversal is deliberately bounded. It does not compute full transitive closures but stops as soon as one of three conditions is met: a labeled source is reached, a dependency chain diverges structurally between versions, or the remaining dependencies are deemed semantically irrelevant.
 
-\textbf{ReName: A list of tuples (name1, name2)}: name1 (from code v1) and name2 (from code v2) are semantically similar or share the same position index, indicating potential parameter renaming.
-
-\textbf{Keyword Argument Keys (K1, K2)}: Lists of keys explicitly accessed via kwargs (e.g., kwargs.get('key') or kwargs['key']) in code v1 and code v2, respectively. These capture dependencies on dynamic keyword arguments.
-
-\textbf{Renamed Parameter Usage (ReNUsage1, ReNUsage2)}: Dictionaries mapping parameters in ReName pairs to lists of code lines where they are used. This tracks contextual usage to validate renaming.
-
-\textbf{Condition Statements (C1, C2)}: Lists of condition strings (e.g., if x > 0) extracted from code v1 and code v2, indexed sequentially to link with dependent logic (e.g., assignments, exceptions).
-
-\textbf{Data Flow (D1, D2)}: Lists of tuples (variable name, variable type, dependent variables, condition indices) capturing variable assignments. variable type distinguishes local variable, global variable, and reference variable (e.g., self), while dependent variables and condition indices track dependencies and associated conditions.
-
-\textbf{Exceptions (E1, E2)}: Lists of tuples pairing explicit exception types (e.g., ValueError) with indices of conditions under which they are raised (from C1/C2), excluding implicit behaviors or unthrown exceptions.
-
-\textbf{Return Values (R1, R2)}: Lists of tuples pairing return expressions with condition indices, capturing how return values vary under different conditions.
-
-The 9 types of incompatibility can be detected based on the data structure above. The detection rules are showed in Table x.
-
-Table x
+Traversal operates in a comparative mode for version alignment. Traversal over the graph of \textit{code\_v1} is paired with traversal over \textit{code\_v2}. Nodes are aligned based on labels, variable roles, and control contexts. Differences in control flow that do not guard labeled sinks (e.g., refactoring of internal loops) are ignored to maintain a high signal-to-noise ratio.
 
 \subsubsection{Incompatibility Analysis}
 
+The analysis phase assumes that control-flow and data-flow information has already been selectively traversed and aligned across versions. It reasons over the extracted information to determine whether specific compatibility rules are violated.
 
+\paragraph{Signature-Level Incompatibilities}
+These are resolved entirely outside the graph to prevent spurious interactions. This includes \textbf{parameter addition/deletion (CI1)} and \textbf{default value changes (CI4)}, which are detected through direct comparison of parameter lists.
 
+\paragraph{Body-Level Incompatibilities}
+Using the traversed graph information, we apply deterministic rules to detect the following:
 
+\begin{itemize}
+    \item \textbf{Kwargs Incompatibility (CI2):} The analysis compares the sets of explicitly accessed kwargs keys ($K1$ and $K2$) identified during traversal. A mismatch indicates a change in the effective input surface. Since unused keys are filtered out, this directly reflects behavioral differences.
+    \item \textbf{Parameter Rename Incompatibility (CI3):} We evaluate whether pairs of renamed parameters (from \textit{ReName}) have structurally equivalent data-flow subgraphs. If the extracted subgraphs differ only in variable names but preserve the roles in computations and conditions, it is a valid rename; otherwise, it is an incompatibility.
+    \item \textbf{Range Incompatibility (CI5):} The analysis inspects whether parameter-controlled conditions lead to different exception behaviors across versions. This relies on comparing exception nodes together with the identified guarding conditions.
+    \item \textbf{Exception Incompatibility (CI6):} This covers differences in exception types, the addition/removal of exception statements, or exception behavior under non-input-related conditions. Separating CI5 and CI6 ensures that range changes and general type changes are not conflated.
+    \item \textbf{Return Value Incompatibility (CI7):} We compare aligned return nodes and their data-flow slices. If a return expression in one version has no counterpart in the other, or if upstream data flows produce different values, an incompatibility is reported.
+    \item \textbf{Global Variable Incompatibility (CI8):} Differences in the presence of global-variable assignments or their dependency structures indicate potential changes to externally visible shared state.
+    \item \textbf{Reference Parameter Incompatibility (CI9):} The analysis inspects assignments to reference parameters and their attributes, focusing strictly on state mutations rather than access patterns.
+\end{itemize}
 
+Across all types, the analysis applies these rules deterministically to the traversed graph information, ensuring that each reported incompatibility is accompanied by a concise, structurally grounded reason.
 
 
 \subsection{Dynamic Simulated Reflection}
