@@ -2,45 +2,16 @@
 
 This section details our approach for detecting Python API incompatibilities. We first outline the approach overview, and then elaborate the core components.
 
-\input{src/sub/table_CI}
-
 
 
 
 % 找一个有代表性的例子：人在看兼容性问题的时候，是 先看方法签名，再看方法体，然后看返回值。用一张图，来比较清楚地表达开发者判断兼容性问题时的逻辑，即人的chain-of-thought
-\subsection{Design Motivation}
+\subsection{Challenges and Design Motivation}
 
 
+Existing static analysis methods (e.g., Shen et al.~\cite{shen2024static}) rely on handcrafted rules. However, rule design requires substantial expert knowledge, making such approaches difficult to generalize to new libraries or previously unseen incompatibilities. Moreover, rule-based methods fail to capture semantic context. For example, when a parameter is renamed from \texttt{arguments} to \texttt{args}, the corresponding AST patterns differ syntactically. As a result, rule-based approaches cannot recognize the underlying rename operation.
 
-\subsubsection{\todo{Incompatibility Types and Challenges}}
-
-We first establish a comprehensive taxonomy of Python API incompatibilities, extending the 7-category framework proposed by Shen et al. [x] (a foundational empirical study on Python API evolution). Shen et al. identified incompatibilities rooted in parameters (CI1-CI5), exceptions (CI6), and return values (CI7). Through our own data collection, we validated these 7 categories and discovered two new, previously unreported types:
-
-\textbf{CI8}: global variable change
-\textbf{CI9}: reference variable change
-
-Table x
-
-CoT Prompting 
-
-During this three-step process, we need to address the following three challenges:
-
-\begin{itemize}
-    \item \textbf{High-Level Description Misalignment (C1)}: Existing LLM-based methods[x] often rely on high-level incompatibility descriptions rather than code-level semantics. This disconnect causes LLMs to struggle with mapping abstract descriptions to concrete code changes.
-    \item \textbf{Scalability with Incompatibility Categories (C2)}: As the number of incompatibility categories increases, naive prompting leads to exponential growth in prompt token size and LLM runtime. For N categories, this approach requires N independent LLM calls per API pair, making it infeasible for large-scale analysis.
-    \item \textbf{Unreliable and Inconsistent Outputs (C3)}: LLMs exhibit inherent output randomness—they may produce contradictory judgments for the same prompt (e.g., labeling a parameter rename as “compatible” in one run and “incompatible” in another) or include internally inconsistent reasoning (e.g., citing non-existent code lines to support a claim).
-    \item \textbf{Unstructured COT Reasoning (C4)}: Without guided thinking frameworks, LLMs' intermediate reasoning (e.g., how they identify a parameter default value change) remains unstructured. This makes it impossible to verify the validity of the LLM's conclusions.
-\end{itemize}
-
-\subsubsection{Approach Intuition}
-
-\todo{Traditional static analysis methods (e.g., Shen et al. [2024]) rely on handcrafted rules. However, Rule design requires expert knowledge making it hard to generalize to new libraries or unknown incompatibilities. For example, shen define data structure P to record parameter information for the detection of CI1-CI5. However, without detailed study into incompatible examples. it is hard to design rules for detections. Besides, These methods fail to interpret semantic context while many crucial infomation should be analyzed through variable names, comments, usage in function bodies, etc. For example, Shen et al.'s method cannot recognize that renaming a parameter from arguments to args is a compatibility issue—since the AST pattern for parameter names differs, but the static rule does not link the semantic similarity between arguments and args.}
-
-\todo{In our method, by leveraging LLMs' semantic understanding capabilities, our approach directly addresses this limitation. The LLM integrates contextual cues to identify semantic changes, even when syntactic patterns are non-trivial.}
-
-\todo{XXX}
-
-% Self-consistency, to replace the naive greedy decoding used in chain-of-thought prompting. It first samples a diverse set of reasoning paths instead of only taking the greedy one,
+Having witnessed the effectiveness of large language models (LLMs) in software engineering tasks\todo{CITE}, we naturally think of the opportunities of leveraging LLMs to detect incompatible Python APIs. However, recognizing their limitations and to fully harness their potential, we identify the following three challenges in its practical application.
 
 \begin{figure*}[!t]
     \centering
@@ -49,23 +20,40 @@ During this three-step process, we need to address the following three challenge
     \label{fig:overview}
 \end{figure*}
 
-\subsection{Approach Overview}
-\label{subsec:approach_overview}
-
-Our framework adopts a progressive analysis strategy designed to balance scalability with precision. The methodology is structured into two complementary phases: \textit{Static Oriented Reasoning} and \textit{Dynamic Simulated Reflection}.
-
-The initial phase, \textbf{Static Oriented Reasoning}, functions as a high-recall semantic filter. Instead of relying on brittle syntactic matching or computationally expensive symbolic execution, this phase constructs a lightweight, \textit{Condition-Indexed Execution Context Graph}. By mapping API-relevant entities to semantic \textit{Sources} (inputs) and \textit{Sinks} (observable behaviors), the analysis traces data and control dependencies to deterministically identify potential incompatibility patterns (CIs). This approach efficiently isolates structural and logical discrepancies—such as parameter changes, altered exception conditions, or inconsistent return values—thereby significantly pruning the search space before invoking the subsequent dynamic verification phase.
-
-\todo{Dynamic...}
+\begin{itemize}
+    \item \textbf{I. Linking incompatibility category description to specific code changes.} Each incompatibility category begins with a brief description of how it manifests. However, when such descriptions are provided directly to an LLM, it may fail to fully infer their correspondence to specific code changes. This misalignment between natural-language descriptions and syntactic code changes creates a gap that can hinder the model's effectiveness.
+    \item \textbf{II. Scalability with categories of incompatibilities.} Each incompatibility category exhibits distinct syntactic characteristics. A natural approach is to design a dedicated instruction for the LLM for each category. However, as the number of incompatibility categories grows, this approach would require repeated API scanning and reasoning, leading to excessive token consumption and longer execution times, ultimately rendering it impractical for large-scale analyses.
+    \item \textbf{III. LLM hallucination and unreliability.} The LLM may generate hallucinated content and exhibit low confidence in its responses. As a result, some outputs may contain false, contradictory, or inconsistent claims. e.g., citing non-existent code lines to support an assertion.
+\end{itemize}
 
 
-\subsection{Static Oriented Reasoning}
-\label{subsec:static_reasoning}
+
+To address Challenges \textbf{I} and \textbf{III}, the LLM should fully comprehend the causes of incompatibility from the perspective of code changes and their underlying logic across versions. This requires the LLM to analyze code in a manner similar to a static analyzer, while additionally capturing semantic intent. To tackle Challenge \textbf{II}, the LLM should examine the code statements of both versions sequentially from top to bottom and produce intermediate analysis results for each statement. These intermediate states can then be aggregated to determine the final incompatibility category upon completion of the analysis. Furthermore, to mitigate hallucination and unreliability, additional reflection mechanisms are required to validate the LLM's analysis.
+
+Guided by these requirements, we propose decomposing the reasoning process for incompatibility classification into fine-grained steps. The LLM incrementally computes intermediate states while analyzing each statement and integrates them into a unified, structured reasoning framework, thereby addressing Challenges I and II. In addition, we incorporate a self-reflection phase in which the LLM validates its static analysis results from the perspective of test-case behavior.
+
+\input{src/sub/table_CI}
+
+
+\subsection{Approach Overview}\label{subsec:approach_overview}
+
+Overall, our approach is divided into two phases: \textit{Static Oriented Reasoning} and \textit{Dynamic Simulated Reflection}.
+
+The initial phase, \textbf{Static Oriented Reasoning}, 
+
+% functions as a high-recall semantic filter.
+
+% Instead of relying on brittle syntactic matching or computationally expensive symbolic execution, this phase constructs a lightweight, \textit{Condition-Indexed Execution Context Graph}. By mapping API-relevant entities to semantic \textit{Sources} (inputs) and \textit{Sinks} (observable behaviors), the analysis traces data and control dependencies to deterministically identify potential incompatibility patterns (CIs). This approach efficiently isolates structural and logical discrepancies—such as parameter changes, altered exception conditions, or inconsistent return values—thereby significantly pruning the search space before invoking the subsequent dynamic verification phase.
+
+The second phase \textbf{dynamic simulated reflection},
+
+
+
+\subsection{Static Oriented Reasoning}\label{subsec:static_reasoning}
 
 This section details our static analysis framework. Unlike traditional compiler-level approaches, we employ a lightweight, semantic abstraction designed to efficiently detect behavioral incompatibilities between API versions.
 
-\subsubsection{Control Flow Graph Construction}
-\label{subsubsec:cfg_construction}
+\subsubsection{Control Flow Graph Construction}\label{subsubsec:cfg_construction}
 
 The emphasis of our approach is not on classical compiler-level Control Flow Graphs (CFGs), but on a deliberately lightweight, semantic abstraction sufficient for detecting behavioral incompatibilities. At a conceptual level, our CFG is a \textbf{condition-indexed execution context graph}, where nodes represent semantic events (assignments, exceptions, returns) and edges are implicit, encoded via condition scope indices rather than explicit jumps. This design implies that explicit control edges, such as jump targets and loops, are unnecessary for CI detection.
 
@@ -77,26 +65,26 @@ Terminal behaviors of the function are represented by the exception set $E$ and 
 
 The entire CFG is constructed in a single pass over the function body (Algorithm \ref{alg:cfg_construction}). This one-pass design is a critical property. Because the analysis does not require successor resolution, loop unrolling, or interprocedural reasoning, all necessary control and data dependencies can be captured incrementally. Upon encountering a condition, it is registered and pushed onto the condition stack. Upon encountering an assignment, exception, or return, a node is created with a snapshot of the current stack.
 
-\begin{algorithm}[h]
-\caption{Single-Pass CFG Construction}
-\label{alg:cfg_construction}
-\begin{algorithmic}[1]
-\STATE Initialize $C, D, E, R \leftarrow \emptyset$, $CS \leftarrow \text{stack}()$
-\FOR{each line $L$ in function body (top-down)}
-    \STATE Update $CS$ if entering/exiting a condition scope
-    \IF{$L$ defines a new condition}
-        \STATE Normalize condition string, add to $C$, push index to $CS$
-    \ELSIF{$L$ is assignment ($v = expr$)}
-        \STATE Extract dependencies and type
-        \STATE $D.\text{append}((v, type, deps, \text{snapshot}(CS)))$
-    \ELSIF{$L$ raises exception}
-        \STATE $E.\text{append}((type, \text{snapshot}(CS)))$
-    \ELSIF{$L$ returns}
-        \STATE $R.\text{append}((expr, \text{snapshot}(CS)))$
-    \ENDIF
-\ENDFOR
-\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}[!t]
+% \caption{Single-Pass CFG Construction}
+% \label{alg:cfg_construction}
+% \begin{algorithmic}[1]
+% \STATE Initialize $C, D, E, R \leftarrow \emptyset$, $CS \leftarrow \text{stack}()$
+% \FOR{each line $L$ in function body (top-down)}
+%     \STATE Update $CS$ if entering/exiting a condition scope
+%     \IF{$L$ defines a new condition}
+%         \STATE Normalize condition string, add to $C$, push index to $CS$
+%     \ELSIF{$L$ is assignment ($v = expr$)}
+%         \STATE Extract dependencies and type
+%         \STATE $D.\text{append}((v, type, deps, \text{snapshot}(CS)))$
+%     \ELSIF{$L$ raises exception}
+%         \STATE $E.\text{append}((type, \text{snapshot}(CS)))$
+%     \ELSIF{$L$ returns}
+%         \STATE $R.\text{append}((expr, \text{snapshot}(CS)))$
+%     \ENDIF
+% \ENDFOR
+% \end{algorithmic}
+% \end{algorithm}
 
 An important aspect of the construction process is its deliberate selectivity. Only entities that are relevant to API-level incompatibility are recorded. Conditions are retained only insofar as they guard observable behaviors. Data flows are recorded only for assignments that may affect return values, exceptions, global state, or reference parameters. Conversely, many elements commonly present in full CFGs are intentionally ignored, including call graphs, logging statements, exception messages, loop iteration counts, and internal refactoring that does not affect externally visible behavior. This pruning is essential for maintaining robustness when the analysis is performed by an LLM.
 

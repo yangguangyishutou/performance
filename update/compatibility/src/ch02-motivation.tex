@@ -63,7 +63,7 @@ We use Figure~\ref{fig:example} as an exemplary code snippet to aid understandin
     \item \textbf{Return Value Change (CI7)}: The returned value changes given the same client invocation. 
     
     As shown in Figure~\ref{fig:example},
-    As noted in CI4, changing a default can cause the API to return different values for the same call (e.g. \texttt{False} in \texttt{API}$_{before}$ vs. \texttt{new\_var(list)} in \texttt{API}$_{after}$.
+    As noted in CI4, changing a default can cause the API to return different values for the same call (e.g. \texttt{False} in \texttt{API}$_{before}$ vs. \texttt{new\_var(list)} in \texttt{API}$_{a}$.
     
     \item \textbf{Global Variable Value Change (CI8)}: The value of a global variable may change even when the same API input is used. As shown in Figure~\ref{fig:example}, both \texttt{API}$_b$ and \texttt{API}$_a$ reference the global variable \texttt{GLOBALX}. When \texttt{flag} is \texttt{True}, \texttt{API}$_b$ assigns \texttt{GLOBALX = n\_size}, whereas \texttt{API}$_a$ assigns \texttt{GLOBALX = n\_dim} or \texttt{None}.
     
