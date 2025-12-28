@@ -37,19 +37,15 @@ Guided by these requirements, we propose decomposing the reasoning process for i
 
 \subsection{Approach Overview}\label{subsec:approach_overview}
 
-Overall, our approach is divided into two phases: \textit{Static Oriented Reasoning} and \textit{Dynamic Simulated Reflection}.
+We propose \tool. As shown in Figure \ref{fig:overview}, \tool is divided into two phases: \textit{Static-oriented Incompatibility Reasoning} and \textit{Dynamic Simulated Reflection}.
 
-The initial phase, \textbf{Static Oriented Reasoning}, 
-
-% functions as a high-recall semantic filter.
-
-% Instead of relying on brittle syntactic matching or computationally expensive symbolic execution, this phase constructs a lightweight, \textit{Condition-Indexed Execution Context Graph}. By mapping API-relevant entities to semantic \textit{Sources} (inputs) and \textit{Sinks} (observable behaviors), the analysis traces data and control dependencies to deterministically identify potential incompatibility patterns (CIs). This approach efficiently isolates structural and logical discrepancies—such as parameter changes, altered exception conditions, or inconsistent return values—thereby significantly pruning the search space before invoking the subsequent dynamic verification phase.
-
-The second phase \textbf{dynamic simulated reflection},
+In the first phase, \tool performs control-flow graph (CFG) construction, source-sink labeling, graph traversal, and incompatibility analysis. Both API$_b$ and API$_a$ are analyzed once during CFG construction. Subsequently, source-sink labeling and graph traversal are conducted on the constructed CFGs. The notions of source and sink originate from security analysis\todo{CITE}. In our context, sources correspond to input variables (e.g., parameters), while sinks denote statement endpoints that may trigger incompatibilities. \tool then traverses the CFGs to collect statements along paths from sources to sinks. Finally, all incompatibility categories are determined in a single incompatibility analysis step by comparing the source-sink paths and their intermediate data objects. We structure incompatibility reasoning to align LLM understanding with code-level changes, thus addressing Challenge I, and design a workflow that supports multiple incompatibility types, thus addressing Challenge II.
 
 
+In the second phase, \tool comprises a test case generator, a step-by-step simulator, and a simulated result analyzer. Unlike the first phase, this phase reflects on the identified incompatibility categories and aims to generate valid test cases that validate the correctness of the determined categories. The process simulates a dynamic execution scenario in which the LLM generates test cases, infers intermediate results as statements are executed, and ultimately confirms the incompatibility category based on these intermediate outcomes. This phase addresses Challenge III.
 
-\subsection{Static Oriented Reasoning}\label{subsec:static_reasoning}
+
+\subsection{Static-oriented Incompatibility Reasoning}\label{subsec:static_reasoning}
 
 This section details our static analysis framework. Unlike traditional compiler-level approaches, we employ a lightweight, semantic abstraction designed to efficiently detect behavioral incompatibilities between API versions.
 
