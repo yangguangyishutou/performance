@@ -1,10 +1,18 @@
 
 \section{Evaluation}
 
+Our experiments are designed to answer the following research questions:
+
+\begin{itemize}
+    % baselines 要和哪些方法做对比
+    \item \textbf{Accuracy Evaluation (RQ1)}: How is the overall accuracy of \tool compared with the state-of-the-arts? 
+    \item \textbf{Effectiveness Evaluation (RQ2)}: How is the effectiveness of \tool in different API compatibility types? % 证明不同API 类型上，准确率都还行
+    \item \textbf{LLM Generalizability (RQ3)}: How is the accuracy of \tool using different LLMs?
+    \item \textbf{Ablation Study (RQ4)}: 
+\end{itemize}
 
 
-
-\subsection{Dataset Construction}
+\subsection{Dataset}
 
 The Python third-party library Application Programming Interface (API) compatibility issue dataset constructed in this study comprises two core components: a benchmark dataset derived from existing research, which includes 108 incompatible API pairs built by Shen et al. on the Flask and pandas libraries; and an extended dataset supplementary constructed in this work. Through systematic repository screening, Issue/Pull Request (PR) analysis, and multi-round validation, the extended dataset adds over 70 valid samples, resulting in a total of more than 130 compatibility issue annotations. The dataset comprehensively covers third-party libraries across multiple application domains, such as web development, data analysis, and cloud services, and includes API compatibility issues across major, minor, and patch version transitions. This design provides multi-scenario and fine-grained experimental data support for research on Python third-party library API compatibility detection.
 
@@ -55,16 +63,9 @@ Finally, manual verification was performed to confirm the existence of incompati
 
 
 
-\subsection{Experiment Setup}
+\subsection{RQ Setup}
 
-\begin{itemize}
-    % baselines 要和哪些方法做对比
-    \item \textbf{Accuracy Evaluation (RQ1)}: How is the overall accuracy of \tool compared with the state-of-the-arts? 
-    \item \textbf{Effectiveness Evaluation (RQ2)}: How is the effectiveness of \tool in different API compatibility types? % 证明不同API 类型上，准确率都还行
-    
-    \item \textbf{LLM Generalizability (RQ3)}: How is the accuracy of \tool using different LLMs?
-    \item \textbf{Ablation Study (RQ4)}: 
-\end{itemize}
+\todo{To study RQ1, we...}
 
 \textbf{Baselines. } We selected XXX~, XXX, and XXX as the comparison.
 
