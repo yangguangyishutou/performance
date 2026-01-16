@@ -3,72 +3,45 @@
 \centering
 \small
 \caption{Categories of API Incompatibilities and Reasoning Process}\label{tab:ci-catalog}
-% Scale the table to the text width so it no longer overflows the page
   \begin{tabular}{p{0.5cm} p{2.0cm} p{14.0cm}}
     \toprule
     Id. & Name & Reasoning Process \\
     \midrule
-    CI1 & Parameter Addition/Deletion & 
-    
-    The function parameter is either deleted in the \texttt{API}$_{before}$ or added in the \texttt{API}$_{after}$. To detect such condition, first, the parameters can be extracted into \texttt{P}$_{before}$ and \texttt{P}$_{after}$ from the signature of the function, respectively. Each parameter is in the tuple form of $\langle name, position index, type, default \rangle$. Then, CI1 is detected when a parameter (or a positional parameter) appears in \texttt{P}$_{before}$ but not in \texttt{P}$_{after}$ (or vice versa); \todo{or an inserted optional parameter in P2 is not last and causes positional shifts.} \\
-    
-    \hline
-
-    CI2 & Key Deletion of Parameter Kwargs 
-
-    &  Both versions have `**kwargs`, but different keys exist in the \texttt{API}$_{before}$ and \texttt{API}$_{after}$. To detect such condition, extracting the key name access from enumerating the statements of the function bodies into \texttt{K}$_{before}$ and \texttt{K}$_{after}$. \todo{Then, CI2 is detected when \texttt{K}$_{before}$ and \texttt{K}$_{after}$ are not equal.}
+    CI1/CI3 & Parameter Addition/Deletion and Rename  & 
+    Parameters are extracted from the pre- and post-change API signatures and first matched by name to identify unchanged parameters. Unmatched parameters are candidates for addition, deletion, or renaming. Since parameter renaming preserves data-flow traces while true additions or deletions do not, we distinguish these cases by comparing their data-flow traces across versions.
     \\
-    \hline
-    CI3 & Parameter Rename & 
-    The function parameter from \texttt{API}$_{before}$ is renamed in the \texttt{API}$_{after}$. To detect such condition, first, the parameters can be extracted into \texttt{P}$_{before}$ and \texttt{P}$_{after}$ from the signature of the function, respectively. Each parameter is in the tuple form of $\langle name, position index, type, default \rangle$. Constructing potential renaming pairs $\langle n_b, n_a \rangle$ by semantic similarity or positional equality. Then, collecting the usage lines of $n_b$ and $n_a$. i.e., the data flown statements of $n_b$ and $n_a$, denoted as \texttt{D}$_b$ and \texttt{D}$_a$, respectively. Finally, CI3 is detected when the \texttt{D}$_b$ and \texttt{D}$_a$ perform same or similar actions. 
-    
-    \\
-
     \hline
     CI4 & Parameter Default Value Change
     & 
-    The default value of a parameter from \texttt{API}$_{before}$ is changed into another value in \texttt{API}$_{after}$. To detect such condition, first, the parameters can be extracted into \texttt{P}$_{before}$ and \texttt{P}$_{after}$ from the signature of the function, respectively. Each parameter is in the tuple form of $\langle name, position index, type, default \rangle$. Then, comparing \texttt{P}$_{before}$ and \texttt{P}$_{after}$ default value fields for same-named parameters (or matched by position if appropriate). CI4 is detected where the values are different.
-    
-    \todo{Tracing the data flown statements. The data flown statements result in different returned or global values due to the default parameter and causes CI7 and CI8.}
-    
+    Building on the detection logic of CI1 and CI3, we identify CI4 by comparing the default values of mapped default-valued parameters. When both parameter names and default values change, we first resolve parameter renaming using CI3, and subsequently compare the mapped default values to determine CI4.
     \\
-
+    \hline
+    CI2 & Kwargs Key Deletion/Addition
+    &  
+    Keyword-argument keys are accessed through APIs such as \texttt{kwargs.get(`key')}. We identify key additions or deletions by statically analyzing \texttt{kwargs} usages in the function body and comparing the sets of accessed keys between API versions.
+    \\
     \hline
     CI5 & Parameter Boundary Range 
     & 
-    
-    The boundary values of parameters change. To detect such issues, first collect the conditions from the beginning to the end and collect the conditions that have data flow relationships to the parameters. For each mapping parameters that both exists in \texttt{API}$_{before}$ and \texttt{API}$_{after}$, compare the condition boundaries. The CI5 is determined if the parameter boundaries are different.
-
-    % Build C1/C2 (condition strings), E1/E2 (explicit raises with condition index), and D1/D2 to map conditions to parameters. Statements to detect include condition statements (`if`, `while`, `try` scopes) and `raise` / `assert` lines referencing parameters. Trigger when exception-related conditions tied to a parameter present in both versions change so that raising behavior or range checks differ.
-     \\
-
-    \hline
-    CI6 & Exception Addition/Deletion/Change
-    & 
-    
-    The \texttt{API}$_{before}$ or \texttt{API}$_{after}$ contain unique exceptions under the condition that the other one does not have. Or the \texttt{API}$_{before}$ exception type is changed in \texttt{API}$_{after}$. To detect such condition, extracting raise statements from \texttt{API}$_{before}$ or \texttt{API}$_{after}$ to \texttt{R}$_b$ and \texttt{R}$_a$. Record the paths \texttt{Pa}$_{b}$ and \texttt{Pa}$_{a}$ alongside statements from the beginning to the raise statement. Then, compare \texttt{Pa}$_{b}$ and \texttt{Pa}$_{a}$ to see if the raise exceptions are added, deleted or modified. CI6 is detected when at least one of the paths satisfies.
-
-    % Record E1/E2: explicit exception types with associated condition indices. Statements to detect: `raise ExceptionType(...)` and `assert` lines in function body. Trigger when exception type(s) differ between E1 and E2 (type added, removed, or changed). If len(E1)$\neq$len(E2), mark CI6 (and often CI5 as well).
-    
+    Branch conditions are extracted and mapped across pre- and post- change APIs. For each mapped condition, we trace data flow to input parameters and compare boundary constraints, and different boundaries indicate a CI5 incompatibility.
     \\
-
     \hline
+    CI6 & Exception Addition/Deletion/Change & 
+    First, we should locate raised exceptions in both the pre-change and post-change APIs and trace the data flow from input parameters to each exception. Exceptions are mapped across versions based on the similarity of their data-flow paths and control conditions. Unmapped exceptions are classified as exception additions or deletions. For mapped exceptions, differences in input-parameter condition constraints indicate an exception incompatibility.
+    \\\hline
     CI7 & Return Value Change
     & 
-    The returned value changes given the same API input. To detect such conditions, collect the paths alongside from the beginning to the `return`' statement or `yield' statement. The paths \texttt{Pa}$_{b}$ and \texttt{Pa}$_{a}$ are then compared. The CI7 is determined where a new return expression exists while the other does not contain, or the conditions alongside the path is different that can lead a same API input to come to result in different branches.\\
-
-    % Collect R1/R2: return expressions with condition indices; use D1/D2 to trace data-flow dependencies of returned variables. Statements to detect: `return` (or `yield`) statements and their returned expressions. Trigger when a return expression in one version is absent in the other or when the data-flow producing the return value differs in a way that changes content/type/structure. \\
-    \hline
+    We extract all return statements from the pre- and post-change APIs and compare their predecessor structures. Return predecessors are mapped across versions based on the semantic similarity of their control conditions and returned expressions. Unmapped predecessors indicate a return type change, while for mapped predecessors, differences in return conditions, value constraints, or controlling predicates are reported as a return value change.
+    \\\hline
     CI8 & Global Variable Change
-
-    & The global value changes given the same API input. To detect such conditions, collect the paths alongside from the beginning to the end of the API where the paths contain the global value. The paths \texttt{Pa}$_{b}$ and \texttt{Pa}$_{a}$ are then compared. The CI8 is determined where the conditions alongside the path is different that can lead a same API input to come to result in different branches.\\
-
-    % & In D1/D2, mark entries with variable type = `global variable` and record dependent variables and conditions. Statements to detect: assignment statements referencing names classified as global; `global` / `nonlocal` markers. Trigger when global-variable data-flow differs between versions and those differences may change the global value assignment or visible state. \\
-
+    & 
+    We identify assignments to global variables in both API versions and group them by variable name. For variables appearing in both versions, we compare the control-flow conditions under which the variables are assigned. Differences in guarding conditions or value constraints indicate a global variable change.
+    \\
     \hline
-    CI9 & Reference Parameter Change (e.g., `self`)
-
-    & In D1/D2, mark entries with variable type = `reference variable` (including `self`); collect attribute assignment sites and dependency lists. Statements to detect: assignment statements to reference variables or their attributes, direct reassignments of reference param. Trigger when: the reference parameter itself is reassigned; a new attribute is assigned in one version but not the other; or an existing attribute assignment has materially different assignment logic/dependencies. \\
+    CI9 & Instance Attribute Uninitialized
+    & 
+    We identify assignments to instance attributes in both API versions and compare their presence across versions. If an attribute is assigned in one version but has no corresponding assignment in the other, we report an instance attribute uninitialized incompatibility.
+    \\
     \bottomrule
   \end{tabular}%
 \end{table*}
