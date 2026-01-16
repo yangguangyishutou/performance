@@ -1,5 +1,4 @@
 \section{Related Work}
-This section organizes the related research along three interconnected themes: the shift from specialized models to LLM-based approaches, the integration of domain knowledge to enhance correctness and safety, and the expansion from function-level to repository-level translation.
 
 Early work recognized that programs possess rich syntactic structures and that direct application of sequence-to-sequence models often yields syntactically invalid outputs. To address this, \cite{chen2018tree} pioneered the use of tree-to-tree neural networks, which encode and decode abstract syntax trees (ASTs) to explicitly model program structure. This was further refined by \cite{drissi2018program}, who introduced a grammar-driven tree-to-tree model that hard-codes target language syntax rules into the decoder, guaranteeing grammatical correctness. These studies established the importance of structural awareness in code translation but were limited by their dependence on parsers, manually defined grammars, and parallel tree-aligned corpora, which hindered generalization and scalability.
 
