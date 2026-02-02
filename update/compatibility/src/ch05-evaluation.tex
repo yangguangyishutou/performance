@@ -86,14 +86,13 @@ Finally, manual verification was performed to confirm the existence of incompati
 \caption{Evaluation Result Compared with SOTA}
 \begin{tblr}{
   cells = {c},
-  hline{1-2,7} = {-}{0.08em},
+  hline{1-2,6} = {-}{0.08em},
 }
-Method           & Publication & F1         & Precision  & Accuracy   & Recall     \\
-Baseline Model A & Shen et al. &            &            &            &            \\
-X                &             &            &            &            &            \\
-X                &             &            &            &            &            \\
-X                &             &            &            &            &            \\
-Ours             &             & \textbf{} & \textbf{} & \textbf{} & \textbf{} 
+Method           & Publication & Accuracy   & Subset Acc. & Macro-Pre. & Micro-Pre. & Macro-Rec. & Micro-Rec. \\
+Statistic Baseline Model & Shen et al. & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx \\
+PYCOMPAT         & Zhang et al. & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx \\
+PCART            & Zhang et al. & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx \\
+COMPACT (Ours)   & -           & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} 
 \end{tblr}
 \end{table}
 
@@ -103,40 +102,41 @@ Ours             &             & \textbf{} & \textbf{} & \textbf{} & \textbf{}
 \centering
 \caption{Evaluation Result Compared in Different Compatibility Type}
 
-\begin{tabular}{m{0.4cm}m{3cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}}
+\begin{tabular}{m{0.4cm}m{3cm}m{1.1cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.6cm}m{0.6cm}}
   \toprule
-No. & Incompatibility Category                & Incom. API (\#) & F1 & Pre. & Acc. & Rec. \\
+No. & Incompatibility Category              & Incom. API (\#) & TP & FP & FN & Pre. & Rec. \\
 \midrule
-CI1 & Param Add or Delete                   & 46                          &    &           &          &        \\
-CI2 & Key of Keyword Argument Add or Delete & 1                           &    &           &          &        \\
-CI3 & Param Rename                          & 7                           &    &           &          &        \\
-CI4 & Param Default Value Change            & 18                          &    &           &          &        \\
-CI5 & Param Range Change                    & 59                          &    &           &          &        \\
-CI6 & Throw Different Exception             & 41                          &    &           &          &        \\
-CI7 & Return Value Change                   & 94                          &    &           &          &        \\
-CI8 & Global Variable Change                & 3                           &    &           &          &        \\
-CI9 & Reference Parameter Change            & 35                          &    &           &          &        \\
+CI1 & Param Add or Delete                   & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI2 & Key of Keyword Argument Add or Delete & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI3 & Param Rename                          & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI4 & Param Default Value Change            & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI5 & Param Range Change                    & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI6 & Throw Different Exception             & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI7 & Return Value Change                   & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI8 & Global Variable Change                & xx & xx & xx & xx & 0.xxx & 0.xxx \\
+CI9 & Reference Parameter Change            & xx & xx & xx & xx & 0.xxx & 0.xxx \\
 \midrule
-    & \textbf{Macro-Average}                &                             &    &           &          &      \\   
+    & \textbf{Macro-Average}                & xx & xx & xx & xx & 0.xxx & 0.xxx \\   
     \bottomrule
 \end{tabular}
 \end{table}
 
 \subsubsection{RQ3}
 
-\begin{table}
+\begin{table}[!t]
 \centering
 \caption{Evaluation Result for Different LLMs}
 \begin{tblr}{
   cells = {c},
-  hline{1-2,7} = {-}{0.08em},
+  hline{1-2,8} = {-}{0.08em},
 }
-LLMs        & F1 & Precision & Accuracy & Recall \\
-Deepseek-V3 &    &           &          &        \\
-X           &    &           &          &        \\
-X           &    &           &          &        \\
-X           &    &           &          &        \\
-X           &    &           &          &        
+LLMs                      & Accuracy   & Subset Acc. & Macro-Pre. & Micro-Pre. & Macro-Rec. & Micro-Rec. \\
+deepseek-chat             & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} & \textbf{0.xxx} \\
+deepseek-reasoner         & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx \\
+qwen-plus                 & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx \\
+gpt-3.5-turbo             & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx \\
+gemini-2.5-flash          & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx \\
+claude-3-5-haiku-20241022 & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx & 0.xxx
 \end{tblr}
 \end{table}
 
@@ -164,4 +164,31 @@ CI9-P           &    &           &          &      &  \\
 \end{table}
 
 
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/draft/CI-precision-llms.pdf}
+    \caption{Precision of Different LLMs in Each Compatibility Type}
+    \label{fig:CI-precision-llms}
+\end{figure*}
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/draft/eval-precision-ablation.pdf}
+    \caption{Evaluation of Different Methods}
+    \label{fig:eval-precision-ablation}
+\end{figure*}
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/draft/lib-issues.pdf}
+    \caption{Dataset Distribution of Libraries and Issues}
+    \label{fig:lib-issues}
+\end{figure*}
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/draft/llms-precision.pdf}
+    \caption{Precision of Different LLMs}
+    \label{fig:llms-precision}
+\end{figure*}
 
