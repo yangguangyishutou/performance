@@ -23,7 +23,7 @@ The translation process consists of three main phases:
 \item \textbf{Hierarchical Translation Phase}: The framework performs translation in two interdependent layers:
 \begin{itemize}
 \item \textit{Header-level translation}: For each Java class, interface, and enum, the LLM generates a translation scheme that maps Java language constructs to appropriate C++ patterns (e.g., interfaces to abstract base classes with virtual functions, checked exceptions to error code handling). This layer establishes the structural foundation and type mapping conventions for the entire project.
-\item \textit{Method-level translation}: Methods are translated following a bottom-up ordering derived from the call graph. Callee methods are translated before their callers, enabling \emph{context propagation}---already-translated code serves as reference for translating dependent methods. This dependency-aware approach significantly reduces translation inconsistencies and API mismatches.
+\item \textit{Method-level translation}: Methods are translated following a bottom-up ordering derived from the call graph. Callee methods are translated before their callers, enabling that already-translated code serves as reference for translating dependent methods. This dependency-aware approach significantly reduces translation inconsistencies and API mismatches.
 \end{itemize}
 
 \item \textbf{Validation and Repair Phase}: An autonomous compilation agent iteratively compiles the translated C++ code, analyzes compilation errors, and applies fixes using LLM-generated suggestions. The agent operates through a tool-use interface, invoking compilation and file modification primitives to iteratively resolve errors until compilation succeeds or maximum attempts are reached.
@@ -79,9 +79,9 @@ The translation pipeline operates on the project graph in two distinct phases: H
 
 Header-level translation addresses the structural differences between Java and C++, establishing consistent conventions for the entire project before translating individual method implementations.
 
-\paragraph{Scheme Generation.} For each Header node, the LLM generates a \textbf{translation scheme}---a structured document that specifies:
+\paragraph{Scheme Generation.} For each Header node, the LLM generates a \textbf{translation scheme}, a structured document that specifies:
 \begin{itemize}
-\item \textbf{Type mapping strategy}: How Java types map to C++ types (e.g., \texttt{ArrayList<T>} $\rightarrow$ \texttt{std::vector<T>}, \texttt{String} $\rightarrow$ \texttt{std::string}, \texttt{HashMap<K,V>} $\rightarrow$ \texttt{std::unordered\_map<K,V>})
+\item \textbf{Type mapping strategy}: How Java types map to C++ types (e.g., \texttt{ArrayList<T>} $\rightarrow$ \texttt{std::vector<T>})
 \item \textbf{External dependency handling}: Identification of external dependencies that cannot be directly translated (e.g., third-party libraries, Java framework types), with strategies for mocking, replacing, or omitting them
 \item \textbf{Memory management strategy}: How to replace Java's garbage collection with appropriate C++ memory management (e.g., using stack allocation where possible, smart pointers for heap-allocated objects, RAII patterns for resource management)
 \item \textbf{Inheritance mapping}: How to map Java interfaces and abstract classes to C++ (e.g., interfaces $\rightarrow$ abstract base classes with pure virtual methods, default methods $\rightarrow$ virtual methods with implementations)
