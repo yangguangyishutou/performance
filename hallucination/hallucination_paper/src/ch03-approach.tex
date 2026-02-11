@@ -99,6 +99,16 @@ The scheme serves as a contract between high-level design and detailed implement
 \item Handling namespace declarations and forward declarations where appropriate
 \end{itemize}
 
+Importantly, in our framework, the translated C++ project structure may differ from the original Java structure while preserving core functionality. The dual-pass approach grants the LLM considerable flexibility during Header translation, particularly in scheme generation where structural refactoring decisions are made. For example:
+\begin{itemize}
+\item Java utility classes containing only static methods may be translated to C++ namespaces with free functions, eliminating the need for class instantiation
+\item Methods may be added, removed, or reorganized to better align with C++ idioms (e.g., separating declaration and definition, adding helper functions)
+\item Multiple Java classes in one file may be split into separate C++ header files, or vice versa, depending on compilation dependencies
+\item Interfaces may be merged or eliminated in favor of template-based designs where appropriate
+\end{itemize}
+
+This structural flexibility is particularly valuable when translating between languages with significant paradigmatic differences (e.g., object-oriented Java to multi-paradigm C++ with template metaprogramming), as it enables the translated code to follow idiomatic C++ patterns rather than mechanically mimicking Java's structure.
+
 \begin{figure*}
   \centering
   \includegraphics[width=\textwidth]{figures/class_translation.pdf}
@@ -325,3 +335,23 @@ The bipartite graph model (Headers and Methods) provides a clean separation betw
 \end{itemize}
 
 This representation maps naturally to the C++ compilation model (header files and implementation files), while accommodating Java's compilation unit structure (where multiple classes may reside in one source file).
+
+\subsubsection{Heterogeneous Translation with Structural Adaptation}
+
+Unlike traditional code translation approaches that aim for syntactic one-to-one mapping, the translated codebase may exhibit structural differences from the source while preserving functional equivalence. This design philosophy is enabled by two key features:
+
+\begin{itemize}
+\item \textbf{Scheme-driven refactoring}: During scheme generation, the LLM can propose structural transformations that better align with target language idioms. These refactoring decisions are made before code generation, allowing systematic reorganization of the codebase structure.
+
+\item \textbf{Header-level flexibility}: The Header translation phase operates at the type-system level, where the LLM has broad freedom to redesign APIs, reorganize inheritance hierarchies, or adopt entirely different architectural patterns (e.g., replacing inheritance with templates, converting classes to namespaces).
+\end{itemize}
+
+This approach is particularly advantageous for cross-paradigm translation (e.g., Java to C++), where mechanical preservation of source structure often results in non-idiomatic code. For example:
+\begin{itemize}
+\item Java's single-inheritance class hierarchy may be restructured using C++ multiple inheritance or CRTP (Curiously Recurring Template Pattern)
+\item Runtime polymorphism based on interfaces may be partially replaced with compile-time polymorphism using templates
+\item Reflection-based designs may be restructured to use compile-time type traits and constexpr metaprogramming
+\item Exception-heavy error handling may be converted to RAII-based resource management with optional return values
+\end{itemize}
+
+By granting the LLM freedom to adapt project structure to target language conventions, heterogeneous translation produces more maintainable and idiomatic code than rigid structure-preserving approaches.
