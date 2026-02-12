@@ -10,7 +10,6 @@
 \settopmatter{printfolios=true,printccs=false,printacmref=false}
 \renewcommand\footnotetextcopyrightpermission[1]{}    
 
-% \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
 
 \usepackage{tcolorbox}
 \usepackage{xspace}
@@ -55,19 +54,18 @@
 
 
 %itemize
-\newcommand{\SubItem}[1]{
-    {\setlength\itemindent{15pt} \item[-] #1}
-}
+% \newcommand{\SubItem}[1]{
+%     {\setlength\itemindent{15pt} \item[-] #1}
+% }
 
 
 % command
 \newcommand{\todo}[1]{\textcolor{red}{#1}}
-\newcommand{\minor}[1]{\textcolor{black}{#1}}
 \newcommand{\tool}{\textsc{tool}\xspace}
 
 \begin{document}
 
-\title{Repository-wise C++ code to Java Translation leveraging the LLM}
+\title{Towards Repository-Level C++ to Java Translation with Large Language Models}
 
 
 %%
@@ -135,7 +133,3 @@
 \endinput
 %%
 %% End of file `sample-sigconf.tex'.
-
-% TODO 与最相关工作的比较 的文字
-% TODO Figure.6 去掉了非0 TP的文字。
-% program repharsing
