@@ -1,0 +1,185 @@
+% !TeX root = ../main.tex
+
+\section{Empirical Study}
+
+This section presents a comprehensive empirical evaluation of \tool{}. We first articulate our research questions, then describe the experimental setup, datasets, and evaluation metrics. We then present both quantitative results and qualitative analysis through case studies.
+
+\subsection{Research Questions}
+
+Our evaluation is guided by the following research questions:
+
+\begin{itemize}
+\item \textbf{RQ1}: To what extent can \tool{} successfully translate Java projects to compilable C++ code? 
+
+\item \textbf{RQ2}: What is the individual contribution of each key component in \tool{}? 
+
+\item \textbf{RQ3}: What types of translation errors persist after the automated repair process? 
+
+\item \textbf{RQ4}: How does \tool{} scale with project size and complexity? 
+\end{itemize}
+
+\subsection{Experimental Setup}
+
+\subsubsection{Implementation Configuration}
+
+\paragraph{Translation Framework.} We implemented \tool{} using Python 3.10, with the following key configurations:
+
+\begin{itemize}
+\item \textbf{LLM Backend}: We use \texttt{Qwen-2.5 72B, DeepSeek-V3, GPT-4o} as the LLM backend. All LLM calls use structured outputs with JSON Schema validation to ensure reliable parsing of translation schemes and generated code.
+
+\item \textbf{Static Analysis}: Java source code is parsed using a custom Java parser tool integrated with \texttt{java-callgraph2} for call graph extraction. The parser outputs project structure and method call relationships in JSON format.
+
+\item \textbf{Compilation Agent}: The agent uses \texttt{clang++} (version 20.1.8) as the C++ compiler with C++17 standard. Maximum repair attempts are set to 10 per source file.
+\end{itemize}
+
+\subsubsection{Baselines}
+
+To evaluate the effectiveness of \tool{}, we compare against the following baselines:
+
+\begin{itemize}
+\item \textbf{Direct Translation (DT)}: Files are translated sequentially without call graph analysis. Each \texttt{.java} file is translated independently to a \texttt{.cpp} file using the same LLM, with no cross-file context or scheme generation.
+
+\item \textbf{Top-Down Translation (TDT)}: Headers are translated first (similar to \tool{}), but methods are translated in top-down order (caller before callee) without the bottom-up dependency ordering.
+
+\item \textbf{No-Scheme Translation (NST)}: Uses the same call graph and bottom-up ordering as \tool{}, but skips the scheme generation pass, directly generating code from source.
+\end{itemize}
+
+All baselines use the same LLM model and compilation agent configuration for fair comparison.
+
+\subsection{Dataset}
+
+\subsubsection{Project Selection}
+
+We selected  open-source Java projects from GitHub repositories. Projects span multiple domains including concurrent programming, data parsing, testing frameworks and web frameworks. This diversity tests the framework's ability to handle different programming patterns and libraries.
+
+Since a complete real-world project is too large to translate directly, we first extract a functional file and then find all files related to it to obtain different translation modules. After the translation is completed, we use the number of files in each translation module that can be successfully compiled as a measure of the translation's effectiveness.
+
+\item \textbf{Language Feature Coverage}: Projects collectively exercise various Java features that present translation challenges:
+\begin{itemize}
+\item Generics and wildcard types
+\item Inheritance hierarchies (both single inheritance and interface implementation)
+\item Exception handling (checked exceptions, try-catch-finally blocks)
+\item Anonymous classes and lambda expressions
+\item Standard library usage (Collections Framework, I/O streams, concurrency utilities)
+\end{itemize}
+\end{itemize}
+
+\subsubsection{Dataset Statistics}
+
+Table~\ref{tab:dataset-statistics} summarizes key statistics of the dataset.
+
+\begin{table*}[h]
+\centering
+\caption{Dataset Statistics}
+\label{tab:dataset-statistics}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Translation Module} & \textbf{Main Class} & \textbf{Source Project} & \textbf{Category} & \textbf{Java Files} & \textbf{Methods} \\
+\midrule
+Module1 & BulkheadBuilder & failsafe & fault tolerance & 70 & 97 \\
+Module2 & CircuitBreakerExecutor & failsafe & fault tolerance & 64 & 84 \\
+Module3 & DelayablePolicy & failsafe & fault tolerance & 58 & 86 \\
+Module4 & ExecutionImpl & failsafe & fault tolerance & 54 & 105 \\
+Module5 & FailsafeExecutor & failsafe & fault tolerance & 68 & 131 \\
+Module6 & FailurePolicy & failsafe & fault tolerance & 60 & 94 \\
+Module7 & RateLimiterBuilder & failsafe & fault tolerance & 68 & 102 \\
+Module8 & RateLimiterExecutor & failsafe & fault tolerance & 61 & 93 \\
+Module9 & RetryPolicyConfig & failsafe & fault tolerance & 56 & 97 \\
+Module10 & SyncExecutionImpl & failsafe & fault tolerance & 59 & 97 \\
+Module11 & TimeoutExecutor & failsafe & fault tolerance & 55 & 82 \\
+Module12 & UndeclaredThrowableStrategy & failsafe & fault tolerance & 31 & 56 \\
+\midrule
+Module13 & AdviceListenerTestCase & jvm-sandbox & AOP framework & 65 & 152 \\
+Module14 & ClassStructureByChildClassTestCase & jvm-sandbox & AOP framework & 44 & 76 \\
+Module15 & DebugLogExceptionModule & jvm-sandbox & AOP framework & 31 & 85 \\
+Module16 & EventWatchBuilderTestCase & jvm-sandbox & AOP framework & 38 & 122 \\
+Module17 & OrGroupFilter & jvm-sandbox & AOP framework & 27 & 86 \\
+Module18 & ProgressPrinter & jvm-sandbox & AOP framework & 14 & 11 \\
+Module19 & TestIssues217 & jvm-sandbox & AOP framework & 55 & 129 \\
+Module20 & TestIssues256 & jvm-sandbox & AOP framework & 40 & 118 \\
+\midrule
+Module21 & ReadRowHolder & easyexcel & Excel processing & 10 & 13 \\
+Module22 & ReadSheetHolder & easyexcel & Excel processing & 28 & 49 \\
+\midrule
+Module23 & Cookie & httpclient & HTTP client & 20 & 79 \\
+\midrule
+Module24 & JSONParser & hutool & utility library & 17 & 17 \\
+\midrule
+Module25 & PerMessageDeflateExtensionTest & Java-WebSocket & WebSocket & 39 & 104 \\
+Module26 & Draft_6455Test & Java-WebSocket & WebSocket & 38 & 87 \\
+\midrule
+\textbf{Total} & & & & \textbf{1293} & \textbf{2440} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Evaluation Metrics}
+
+\subsubsection{Primary Metric: Compilation Success Rate}
+
+The primary metric for evaluating translation effectiveness is the \textbf{compilation success rate}, defined as:
+
+\begin{equation}
+\text{Success Rate} = \frac{\text{Number of successfully compiled C++ files}}{\text{Total number of generated C++ files}} \times 100\%
+\end{equation}
+
+\subsubsection{Secondary Metrics}
+
+\begin{itemize}
+\item \textbf{Method-level success rate}: Percentage of methods whose containing file compiles successfully. Since a single compilation error in a file causes the entire file to fail, this metric reflects per-method contribution to success.
+
+\item \textbf{Header success rate}: Percentage of header files (.h) that compile successfully, independent of implementation files.
+
+\item \textbf{Agent repair iterations}: Average number of compilation-fix iterations required per file. Lower iterations indicate higher initial translation quality.
+
+\item \textbf{Code size preservation}: Ratio of C++ LOC to Java LOC. This indicates whether the translation tends to expand or contract code size, reflecting structural adaptation versus mechanical translation.
+\end{itemize}
+
+\subsection{Quantitative Results (RQ1)}
+
+\subsubsection{Overall Translation Performance}
+
+Table~\ref{tab:overall-results-rq1} presents the overall translation performance of \tool{} across all projects.
+
+\todo{Insert Table~\ref{tab:overall-results} from tmp-result.tex or updated version}
+
+\begin{table*}[h]
+\centering
+\caption{Overall Translation Performance Summary}
+\label{tab:overall-results-rq1}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{TranslationModule} & \textbf{FileCount} & \textbf{CppFileCount} & \textbf{Methods} & \textbf{SuccessFiles} & \textbf{SuccessRate} & \textbf{Agent Iterations} \\
+\midrule
+BulkheadBuilder & 70 & 15 & 97 & 10 & 66.67\% & \todo{2.3} \\
+CircuitBreakerExecutor & 64 & 13 & 84 & 12 & 92.31\% & \todo{1.8} \\
+ClassStructureByChildClassTestCase & 44 & 10 & 76 & 9 & 90.00\% & \todo{2.1} \\
+Cookie & 20 & 7 & 79 & 4 & 57.14\% & \todo{3.2} \\
+DebugLogExceptionModule & 31 & 9 & 85 & 8 & 88.89\% & \todo{1.9} \\
+DelayablePolicy & 58 & 13 & 86 & 10 & 76.92\% & \todo{2.4} \\
+Draft\_6455Test & 38 & 13 & 87 & 10 & 76.92\% & \todo{2.2} \\
+EventWatchBuilderTestCase & 38 & 11 & 122 & 10 & 90.91\% & \todo{2.0} \\
+ExecutionImpl & 54 & 12 & 105 & 10 & 83.33\% & \todo{2.1} \\
+FailsafeExecutor & 68 & 14 & 131 & 9 & 64.29\% & \todo{3.1} \\
+FailurePolicy & 60 & 13 & 94 & 11 & 84.62\% & \todo{2.0} \\
+Issue231Test & 61 & 15 & 104 & 13 & 86.67\% & \todo{1.9} \\
+Issue260Test & 62 & 14 & 84 & 12 & 85.71\% & \todo{2.0} \\
+JSONParser & 17 & 4 & 17 & 4 & 100.00\% & \todo{1.0} \\
+OrGroupFilter & 27 & 8 & 86 & 7 & 87.50\% & \todo{2.2} \\
+PerMessageDeflateExtensionTest & 39 & 14 & 104 & 9 & 64.29\% & \todo{2.8} \\
+ProgressPrinter & 14 & 2 & 11 & 2 & 100.00\% & \todo{1.0} \\
+RateLimiterBuilder & 68 & 15 & 102 & 12 & 80.00\% & \todo{2.3} \\
+RateLimiterExecutor & 61 & 14 & 93 & 7 & 50.00\% & \todo{3.5} \\
+ReadRowHolder & 10 & 2 & 13 & 2 & 100.00\% & \todo{1.0} \\
+ReadSheetHolder & 28 & 5 & 49 & 4 & 80.00\% & \todo{2.0} \\
+RetryPolicyConfig & 56 & 12 & 97 & 9 & 75.00\% & \todo{2.5} \\
+SyncExecutionImpl & 59 & 12 & 97 & 9 & 75.00\% & \todo{2.4} \\
+TestIssues217 & 55 & 13 & 129 & 10 & 76.92\% & \todo{2.3} \\
+TestIssues256 & 40 & 12 & 118 & 10 & 83.33\% & \todo{2.2} \\
+TimeoutExecutor & 55 & 12 & 82 & 10 & 83.33\% & \todo{2.1} \\
+UndeclaredThrowableStrategy & 31 & 6 & 56 & 4 & 66.67\% & \todo{2.7} \\
+\midrule
+\textbf{TOTAL ALL PROJECTS} & \textbf{1293} & \textbf{308} & \textbf{2440} & \textbf{241} & \textbf{78.25\%} & \todo{2.1 avg} \\
+\bottomrule
+\end{tabular}
+\end{table*}
