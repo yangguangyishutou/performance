@@ -1,0 +1,45 @@
+% !TeX root = ../main.tex
+
+\section{Empirical Study}
+
+This section presents a comprehensive study of the performace of LLMs on real-world Java projects. Without employing complex dependency analysis and other enhancement methods, there are two naive translation schemes:
+
+\textbf{File-level Translation}: File-by-file translation using LLMs with minimal context.
+
+\textbf{Method-level Translation}: Method-by-method translation using LLMs with minimal context.
+
+\subsection{Research Questions}
+
+Our study addresses the following research questions:
+
+\begin{itemize}
+\item \textbf{RQ1}: What are the main problems that arise during the translation process using these two methods?
+\item \textbf{RQ2}: What is the problems distribution of these two methods?
+\item \textbf{RQ3}: How does the performance compare between File-level and Method-level Translation?
+\end{itemize}
+
+\subsection{Setup}
+\subsubsection{Dataset}
+We evaluated the performance of LLMs on file groups from real-world Java projects representing different domains and complexity levels:
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Translation Module}\textbf{Main Class} & \textbf{File Count} & \textbf{Method Count} & \textbf{LOC} & \textbf{Domain} \\
+\midrule
+Module1 & Cookie & 8 & 45 & 1,247 & HTTP Library \\
+Module2 & JSONParser & 6 & 32 & 856 & Data Parsing \\
+Module3 & ReadRowHolder & 9 & 67 & 2,134 & Excel Processing \\
+Module4 & ReadSheetHolder & 13 & 89 & 3,021 & Excel Processing \\
+\midrule
+\textbf{Total} & 36 & 233 & 7,258 & -- \\
+\bottomrule
+\end{tabular}
+\caption{Characteristics of evaluation dataset}
+\label{tab:dataset}
+\end{table}
+
+After translation, we manually analyzed the various problems in the results and summarized and statistically analyzed them.
+\subsection{Results}
+

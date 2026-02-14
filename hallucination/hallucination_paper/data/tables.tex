@@ -1,0 +1,40 @@
+% 错误统计表格（自动生成）
+
+\begin{table}[h]
+\centering
+\caption{Translation Performance Comparison}
+\label{tab:performance-comparison}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{File-level} & \textbf{Method-level} & \textbf{Difference} \\\\
+\midrule
+Total Items & 601 & 837 & +236 \\\\
+Error-Free Items & 547 & 720 & +173 \\\\
+Items with Errors & 54 & 117 & +63 \\\\
+Error Rate (\%) & 9.0\% & 14.0\% & +5.0pp \\\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Error Type Distribution}
+\label{tab:error-distribution}
+\small
+\begin{tabular}{llcc}
+\toprule
+\textbf{Error Type} & \textbf{Description} & \textbf{File-level} & \textbf{Method-level} \\\\
+\midrule
+Err_1 & 引用不存在的方法或成员变量 & 8 & 10 \\\\
+Err_2 & 参数表不匹配 & 5 & 13 \\\\
+Err_3 & 缺少头文件 & 5 & 7 \\\\
+Err_4 & 方法未实现(全部缺失) & 0 & 4 \\\\
+Err_6 & 变量初始化/使用错误 & 7 & 1 \\\\
+Err_8 & 错误使用指针 & 1 & 7 \\\\
+Err_9 & 引用不存在的类 & 25 & 56 \\\\
+Err_10 & 方法部分未实现 & 1 & 10 \\\\
+Err_11 & 内存管理不当 & 2 & 9 \\\\
+\bottomrule
+\end{tabular}
+\end{table}
+
