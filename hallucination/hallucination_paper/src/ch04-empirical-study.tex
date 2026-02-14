@@ -121,18 +121,6 @@ The primary metric for evaluating translation effectiveness is the \textbf{compi
 \text{Success Rate} = \frac{\text{Number of successfully compiled C++ files}}{\text{Total number of generated C++ files}} \times 100\%
 \end{equation}
 
-\subsubsection{Secondary Metrics}
-
-\begin{itemize}
-\item \textbf{Method-level success rate}: Percentage of methods whose containing file compiles successfully. Since a single compilation error in a file causes the entire file to fail, this metric reflects per-method contribution to success.
-
-\item \textbf{Header success rate}: Percentage of header files (.h) that compile successfully, independent of implementation files.
-
-\item \textbf{Agent repair iterations}: Average number of compilation-fix iterations required per file. Lower iterations indicate higher initial translation quality.
-
-\item \textbf{Code size preservation}: Ratio of C++ LOC to Java LOC. This indicates whether the translation tends to expand or contract code size, reflecting structural adaptation versus mechanical translation.
-\end{itemize}
-
 \subsection{Quantitative Results (RQ1)}
 
 \subsubsection{Overall Translation Performance}
