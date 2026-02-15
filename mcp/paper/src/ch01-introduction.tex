@@ -1,1 +1,30 @@
 \section{Introduction}
+
+
+The rapid proliferation of Model Context Protocol (MCP) servers reflects the growing demand for standardized, scalable, and interoperable infrastructure to support large language model (LLM) applications. As LLM-powered systems are increasingly deployed in real-world environments, developers require reliable mechanisms to connect models with external tools, data sources, and execution environments. MCP servers have emerged as a lightweight yet extensible solution to this need, enabling structured communication between models and downstream services while abstracting system-level complexity. Their open design and compatibility with diverse development ecosystems have accelerated adoption across open-source communities and industrial platforms alike.
+
+However, the increasing adoption of MCP servers has also expanded their attack surface, exposing them to a variety of security threats. As middleware components that bridge LLMs with external tools, file systems, and command execution environments, MCP servers often operate with elevated privileges and direct access to sensitive resources. This architectural position makes them attractive targets for adversaries seeking to inject malicious inputs, manipulate tool invocation flows, or exploit implementation flaws. Recent vulnerability disclosures highlight these risks. For example, CVE-2025-5276 in the Markdownify MCP Server exposed improper input handling that allowed crafted payloads to trigger unintended command execution. Similarly, vulnerabilities reported in the AutoMCP Server revealed weaknesses in parameter validation and tool invocation control, enabling attackers to escalate privileges or access restricted resources. These cases illustrate that, despite their functional benefits, MCP servers remain insufficiently hardened and are increasingly becoming a critical security bottleneck in the LLM application supply chain.
+
+
+
+To mitigate these emerging threats, recent research and industry practices have begun to develop targeted vulnerability detection methods for MCP servers. Traditional approaches such as static code analysis, dynamic testing, and fuzzing have been adapted to recognize MCP-specific patterns, including unsafe tool invocation, unvalidated context handling, and malformed message parsing. \todo{For example, xxx}
+
+
+
+Despite the emergence of various detection techniques, the effectiveness of MCP server vulnerability detectors remains largely unclear due to the absence of standardized evaluation criteria and representative datasets. To address this gap, we propose a first dedicated benchmark for MCP server vulnerability detection. Our benchmark systematically collects real-world MCP server vulnerabilities from public disclosures and open-source repositories, categorizes them according to vulnerability types and root causes, and constructs reproducible test cases that reflect realistic exploitation scenarios. In addition, we define comprehensive evaluation metrics covering precision, recall and pair-wise correct rate. By providing a unified evaluation framework and curated dataset, the proposed benchmark aims to facilitate fair comparison, promote methodological rigor, and accelerate the development of more reliable and MCP-specific vulnerability detection techniques.
+
+
+To demonstrate the effectiveness of our benchmark, we conducted an extensive evaluation of existing MCP server vulnerability detection methods using the curated dataset and test cases. We applied \todo{XXX} techniques to the benchmark, systematically measuring their performance across multiple dimensions. Our results reveal that \todo{XXX}. Overall, this evaluation highlights both the strengths and limitations of current detection techniques, demonstrating the necessity of a standardized benchmark to provide consistent, reproducible, and comprehensive assessments of MCP server security tools.
+% significant variation in effectiveness: while some methods perform well on well-known vulnerabilities, they often fail to generalize to newer or more complex exploitation scenarios. Model-assisted approaches show promise in identifying subtle or context-dependent flaws, yet they can be prone to false positives in certain operational contexts. 
+
+% MCP代码和普通软件的代码的漏洞区别？
+% Novelty: 1. 为什么要创建MCP tool的benchmark,为什么传统软件tool的benchmark不行？ 2. Metric Novelty: PCR
+
+% 3. comparison tool?
+
+
+% MCP/Agent, 涉及更多的工具调用和能力，
+
+
+
+
