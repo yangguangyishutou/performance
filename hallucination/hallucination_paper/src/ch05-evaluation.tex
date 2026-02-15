@@ -51,15 +51,14 @@ All baselines use the same LLM model and compilation agent configuration for fai
 We selected  open-source Java projects from GitHub repositories. Projects span multiple domains including concurrent programming, data parsing, testing frameworks and web frameworks. This diversity tests the framework's ability to handle different programming patterns and libraries.
 
 Since a complete real-world project is too large to translate directly, we first extract a functional file and then find all files related to it to obtain different translation modules. After the translation is completed, we use the number of files in each translation module that can be successfully compiled as a measure of the translation's effectiveness.
+\textbf{Language Feature Coverage}: Projects collectively exercise various Java features that present translation challenges:
 
-\item \textbf{Language Feature Coverage}: Projects collectively exercise various Java features that present translation challenges:
 \begin{itemize}
 \item Generics and wildcard types
 \item Inheritance hierarchies (both single inheritance and interface implementation)
 \item Exception handling (checked exceptions, try-catch-finally blocks)
 \item Anonymous classes and lambda expressions
 \item Standard library usage (Collections Framework, I/O streams, concurrency utilities)
-\end{itemize}
 \end{itemize}
 
 \subsubsection{Dataset Statistics}
@@ -104,7 +103,7 @@ Module23 & Cookie & httpclient & HTTP client & 20 & 79 \\
 Module24 & JSONParser & hutool & utility library & 17 & 17 \\
 \midrule
 Module25 & PerMessageDeflateExtensionTest & Java-WebSocket & WebSocket & 39 & 104 \\
-Module26 & Draft_6455Test & Java-WebSocket & WebSocket & 38 & 87 \\
+Module26 & Draft\_6455Test & Java-WebSocket & WebSocket & 38 & 87 \\
 \midrule
 \textbf{Total} & & & & \textbf{1293} & \textbf{2440} \\
 \bottomrule
