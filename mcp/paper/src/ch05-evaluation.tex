@@ -1,16 +1,23 @@
 \section{Experiments}
 
+\subsection{Our Approach}
 
+xxx
 
 \subsection{Experiment Setup}
 
 % 2.5.1 实验过程的随机化与抗欺骗设计
 % 在LLM的性能评测中，模型的输出往往受到上下文顺序或样本排列位置的影响。为了防止被测模型通过识别样本序列规律进行“作弊”，评估程序在加载 JSONL 数据集后，利用随机种子驱动的 random.shuffle() 算法对样本顺序进行完全打乱。这种测试顺序确保了模型在处理每一条数据时均处于独立的决策环境，排除了位置偏见对实验结果的干扰。此外，程序必须在接收到模型对当前样本的判定结果后才推送下一条数据，从而模拟了真实的单次调用安全审计场景
 
-\textbf{Evaluated Baselines.} We selected XXX and XX. 
+\textbf{Evaluated Baselines.} \todo{GPT-5-mini xx. Claude Haiku-4-5 xx. DeepSeek xx. AI-Infra-Guard xx. Bandit xxx.} \todo{Temprature.}
 
 
+\textbf{Random Input Samples.} A model's output is often influenced by the context order or the position of samples in the dataset. To prevent the tested model from ``cheating'' by recognizing patterns in the sample sequence, the evaluation program fully shuffles the sample order after loading the JSONL dataset using the \texttt{random.shuffle()} API driven by a random seed. This testing order ensures that the model processes each sample in an independent decision-making environment, eliminating position bias from affecting the experimental results. 
 
+
+\textbf{Prompt.} \todo{.} \todo{\textit{Prompt}.}
+
+% 5+1+1
 
 \subsection{Results}
 
@@ -20,43 +27,66 @@
 \small
     \begin{tabular}{m{2cm}m{1.5cm}m{1.5cm}m{1cm}m{1cm}}
 \toprule
-\textbf{Model} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{PCR} \\
+\textbf{Model} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{MPA} \\
 \midrule
-GPT-4o & XX.X\% & XX.X\% & XX.X\% & XX.X\% \\
+GPT-5-mini & XX.X\% & XX.X\% & XX.X\% & XX.X\% \\
+Claude Haiku-4-5 & XX.X\% & XX.X\% & XX.X\% & XX.X\% \\
 DeepSeek & XX.X\% & XX.X\% & XX.X\% & XX.X\%\\
+AI-Infra-Guard & XX.X\% & XX.X\% & XX.X\% & XX.X\%\\
+Bandit & XX.X\% & XX.X\% & XX.X\% & XX.X\%\\
 
-\midrule
 \bottomrule
 \end{tabular}
 \caption{Experiment Results}
 \label{tab:eva}
 \end{table}
 
-
+\todo{Table \ref{tab:eva} presents xx.}
 
 
 \begin{table}[!t]
 \centering
 \small
-    \begin{tabular}{m{2cm}m{1.5cm}m{1.5cm}m{1cm}m{1cm}}
+    \begin{tabular}{m{2.5cm}m{1.2cm}m{1.2cm}m{1cm}m{1cm}}
 \toprule
 \textbf{Vulnerability Types} & \textbf{Metrics} & \textbf{GPT-4o} & \textbf{DeepSeek} & \textbf{Claude}\\
 \midrule
 
-\multirow{4}{*}{SQL Injection} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
+\multirow{4}{*}{remote code execution} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
                             & Recall & XX.X\% & XX.X\% & XX.X\% \\ 
                             & F1-Score & XX.X\% & XX.X\% & XX.X\% \\ 
-                            & PCR & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & MPA & XX.X\% & XX.X\% & XX.X\% \\ 
 \midrule
 
-\multirow{4}{*}{SSRF} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
+\multirow{4}{*}{denial of service} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
                             & Recall & XX.X\% & XX.X\% & XX.X\% \\ 
                             & F1-Score & XX.X\% & XX.X\% & XX.X\% \\ 
-                            & PCR & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & MPA & XX.X\% & XX.X\% & XX.X\% \\ 
 \midrule
 
+\multirow{4}{*}{SQL injection} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & Recall & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & F1-Score & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & MPA & XX.X\% & XX.X\% & XX.X\% \\ 
+
+\midrule
+
+\multirow{4}{*}{insecure file operations} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & Recall & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & F1-Score & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & MPA & XX.X\% & XX.X\% & XX.X\% \\ 
+                            
+\midrule
+
+\multirow{4}{*}{sensitive information disclosure} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & Recall & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & F1-Score & XX.X\% & XX.X\% & XX.X\% \\ 
+                            & MPA & XX.X\% & XX.X\% & XX.X\% \\ 
 \bottomrule
 \end{tabular}
 \caption{Experiment Results w.r.t Vulnerability Types}
-\label{tab:eva}
+\label{tab:eva2}
 \end{table}
+
+
+\todo{Table \ref{tab:eva2} presents xx.}
