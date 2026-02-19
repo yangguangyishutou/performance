@@ -7,7 +7,9 @@
 % 2.5.1 实验过程的随机化与抗欺骗设计
 % 在LLM的性能评测中，模型的输出往往受到上下文顺序或样本排列位置的影响。为了防止被测模型通过识别样本序列规律进行“作弊”，评估程序在加载 JSONL 数据集后，利用随机种子驱动的 random.shuffle() 算法对样本顺序进行完全打乱。这种测试顺序确保了模型在处理每一条数据时均处于独立的决策环境，排除了位置偏见对实验结果的干扰。此外，程序必须在接收到模型对当前样本的判定结果后才推送下一条数据，从而模拟了真实的单次调用安全审计场景
 
-\textbf{Evaluated LLMs.} We selected XXX and XX. 
+\textbf{Evaluated Baselines.} We selected XXX and XX. 
+
+
 
 
 \subsection{Results}

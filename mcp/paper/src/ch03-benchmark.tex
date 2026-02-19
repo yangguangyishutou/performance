@@ -1,42 +1,64 @@
 \section{Benchmark}
 
-To evaluate the security auditing capabilities of existing MCP vulnerability detection tools, we construct the \bench benchmark. We present a detailed description of the dataset construction process and its statistics.
+
+We present the \bench benchmark with a detailed description of the construction process and its characteristics.
 
 
-\subsection{Data Collection}
+\subsection{Benchmark Construction}
+
+To construct our benchmark, we apply a four-step process. The containing samples are of the Python language, which is the dominant language in the current MCP ecosystem (95\% of the ecosystem share)\todo{CITE}.
+
+% MCP vulnerability 
+\textbf{(1) Vulnerability Type Collection.} To understand the popular vulnerability types of existing MCP-based systems, we refer to two sources. First, we obtain prompt injection from OWASP LLM Top 10~\cite{owasptop10}. We exclude the rest 9 as they do not apply to MCP servers. 
+
+Second, we refer to the National Vulnerability Database (NVD)~\cite{nist_nvd}, where we collected 34 vulnerable MCP servers. Specifically, we queried the latest vulnerability database as of December 2025 using the keyword ``MCP'', which returned 90 CVE entries and found 34 vulnerabilities related to MCP servers through manual inspection. \todo{In total, we collect six vulnerability types that are popular in MCP-based systems, including remote code injection (RCE), denial-of-service (DoS), SQL injection (SQLI), insecure file operation (IFO), prompt injection (PI), insecure deserialization (ID).}
 
 
-% 1. 本基准测试集共包含 270 条经过人工校验的测试样本。
 
-% 2. 在编程语言分布上，数据集涵盖了当前 MCP 生态中最主要的两门语言：Python 与TypeScript 。选择这两门语言作为基准，是因为 Python 与 TypeScript 是目前 MCP 开发的两大主流语言，占据了 95\% 以上的生态份额。 ----提供reference
+% Among these, RCE, FS, SQLI, and DOS belong to traditional vulnerability categories but exhibit distinct manifestations and triggering mechanisms within the MCP context; whereas PI and DECEPTION represent vulnerabilities specific to the Agent layer. 
 
-XXX. \cite{tensorrt}
+% Notably, PI corresponds to LLM 01 (Prompt Injection), while DECEPTION is a key innovative category in this dataset. It reveals the covert risk where the Agent tool description is inconsistent with its actual behavior (such as Semantic Mismatch or Trojan Horse), covering aspects unreachable by traditional vulnerability scanning, corresponding to LLM 02 (Insecure Output Handling).
 
-% 3. 具体来对于正样本，我们 XXX，最终得到 Python样本XX条，TypeScript样本XXX条。
-% 4. 对于负样本(对照数据)，我们 XXX，最终得到 Python样本XX条，TypeScript样本XXX条。
+% where we collected 34 vulnerable MCP servers from the National Vulnerability Database (NVD)~\cite{nist_nvd}. 
 
-% 170 + 100。
+Subsequently, Large Language Models (LLMs) were utilized to perform diverse expansions and code mutations on these templates to simulate complex context structures and obfuscation techniques in real development environments. Finally, static analysis tools were introduced to assist in manual review, ensuring that each sample contains complete vulnerability trigger logic and precise risk labeling, thereby guaranteeing the validity and challenge of the dataset.
 
-% 1. Python XX大漏洞，常用表现形式
+The benchmark suite contains a total of 210 manually verified test samples. 
 
-% 2. RCE 25 对 ， 其他 15， 
+Regarding vulnerability types, based on MITRE CWE and OWASP Top 10 for LLM, the 210 data entries are categorized into seven vulnerability classes: RCE, PI, DESER, FS, SQLI, DOS, and DECEPTION. 
 
-% 25对 5组，每组间关键触发点不同，每组内，关键触发点相同，但是XX不同。
+For each category, 15 vulnerability samples and 15 corresponding secure control samples were established.
 
-% Gemini Prompt. 提供prompt, 人工验证
+\textbf{(2) Triggering Statements Collection.} To construct a high-fidelity MCP risk dataset, we extracted seven types of core vulnerability trigger logic from Python language features, common third-party libraries, and MCP protocol interaction mechanisms, mapping them into 85 specific code implementation samples.
 
-% 85 + 50 
-% 85 + 50。
+\begin{itemize}[leftmargin=*]
 
-        % 2.4 对照数据
-        % 2.4.1 对照数据构建的必要性
-        % 构建对照数据的主要目的在于消除LLM在大规模预训练中形成的模式匹配偏见。大语言模型往往对部分关键词（如 os.system、eval、exec）表现出过度敏感，倾向于在不分析上下文过滤逻辑的情况下直接给出漏洞判定。这种行为导致了高虚警率。引入对照数据可以强制模型必须识别出有效的安全防御逻辑（如参数化、白名单校验）与无效防御逻辑（如非递归替换、黑名单）之间的本质区别。此外，对照数据是计算“同答比”指标的基础，只有当模型能够同时在同一功能逻辑下准确区分漏洞版与安全版时，才认为其具备了真正的安全语义理解能力。
-        % 2.4.2 对照数据的构建思路
-        % 本数据集遵循最小扰动原则进行对照数据的开发，在代码结构上，安全对照版与对应的漏洞版保持极高的相似性。除了核心的脆弱点执行路径或输入清洗逻辑外，其余框架初始化代码、工具定义及非关键代码完全一致。这种设计确保了模型无法通过代码长度、函数名或变量名等统计特征进行猜测，必须聚焦于代码层面的具体逻辑的差异。同时，在修复逻辑上，本文采用了工业界公认的最佳实践。对于命令注入风险，采用参数数组化调用或强制转义；对于 SQL 注入，采用数据库驱动层面的参数化查询；对于路径穿越，采用路径规范化比对及基础目录锚定。这种设计不仅提供了评估基准，还通过起到了代码的示范作用。
-        % 2.4.3 对照数据构建过程
-        % 构建过程分为漏洞点识别、防御逻辑重构以及人工校验阶段。首先，深入分析 135 条漏洞样本，确定其触发风险的关键节点。随后，针对 Python 与 TypeScript 的语言特性，编写对应的防御逻辑，并确保修复后的代码在 MCP 协议下依然保持工具的可调用性与功能完整性。最后，所有生成的安全样本经过交叉人工审核，确保不含逻辑残留漏洞，并将其 id 设置为 MCP-SAFE- 前缀，实现与漏洞样本的 1:1 逻辑关联。
+    \item \textbf{Remote Code Execution (RCE).} We construct RCE vulnerabilities based on the system shell invocation and dynamic code evaluation calls in the MCP code. Regarding the system shell invocation, we insert the \texttt{os.system()}, \texttt{subprocess.run(shell=True)}, \texttt{subprocess.call()}, \texttt{asyncio.create\_subprocess\_shell()} with unsanitized input, leading to direct shell command injection.Furthermore, we introduced the use of ctypes to call underlying \texttt{libc.system()}. Regarding dynamic code execution, we call \texttt{exec()}, \texttt{eval()}, \texttt{timeit.timeit()}, and \texttt{runpy.run\_path()} to build scenarios allowing arbitrary Python code execution. Besides, we include expression execution in Pandas \texttt{pandas.query()}. \todo{Code persistence achieved through race conditions (TOCTOU) between file writing and execution.}
+    
+    \item \textbf{Privacy Leakage (PI).} We constructed scenarios reading malicious instructions from external data sources, including email content (\todo{XXXX}) and log files (\todo{XXX}).
+
+    \item \textbf{Insecure File Operation (IFO).} IFO include path traversal, improper file permission. Basic path traversal involves utilizing the unfiltered \texttt{open()} function combined with ../ or URL encoding to bypass path restrictions, and exploiting the overwrite characteristic of \texttt{os.path.join()} when handling absolute paths, and traversal via \texttt{pathlib.Path()} resolution discrepancies, and file enumeration caused by \texttt{glob.glob()} wildcards. Improper file permission includes file deletion (\todo{\texttt{os.path.rm()}}\texttt{shutil.rmtree()}), file permission change (\todo{\texttt{os.chmod()}}). \todo{arbitrary reading via the linecache module (python-FS-015), temporary file prediction based on time seeds (python-FS-013), and unauthorized access triggered by symlink following and race conditions (Symlink Race).} \todo{\texttt{shutil.copy()}.}
+    
+    \item \textbf{SQL/NoSQL Injection.} Risks at the database interaction level cover scenarios ranging from string concatenation to ORM misuse. Traditional SQL injection is implemented through F-string interpolation, the .format() method, and manual escaping defects (e.g., using backslashes instead of single quotes for escaping) (python-SQLI-001, 002, 004), including scenarios using executescript to execute stacked queries (python-SQLI-003). For ORM frameworks, we extracted insecure concatenation patterns in SQLAlchemy's text() function and Django's raw() queries (python-SQLI-005, 006), as well as injection in filter or extra clauses (python-SQLI-007). Complex scenarios include data extraction using UNION SELECT (python-SQLI-009), boolean-based blind injection (python-SQLI-010), type conversion fallback injection for numeric fields (python-SQLI-008), and second-order injection (python-SQLI-015). Additionally, we extended coverage to the NoSQL domain, including MongoDB JSON operator injection (python-SQLI-012), Redis Lua script injection (python-SQLI-014), and exploitation of the Pandas read\_sql interface (python-SQLI-013).
+    
+    \item \textbf{Denial of Service (DoS).} Availability attacks primarily target the Agent's computational resources and logical state. Regarding computational resource exhaustion, samples utilize Regular Expression Denial of Service (ReDoS) to attack complex validation logic (python-DOS-001), trigger CPU and stack overflows via math.factorial and deep recursive functions (python-DOS-002, 006), and consume memory using ZIP bombs and exponential string expansion (python-DOS-004, 005, 008). System resource exhaustion is achieved through file descriptor leaks and cyclic log writing filling up disk space (python-DOS-009, 010). At the Business Logic DoS level, we designed scenarios blocking asynchronous services via main thread time.sleep (python-DOS-007), as well as inducing infinite loops in Agents through infinite pagination interfaces that always return new tokens, fake progress bar states, interdependent authentication deadlocks, and dynamically generated infinite directory trees (python-DOS-011 to 015).
+ 
+\end{itemize}
 
 
+
+\textbf{(3) Constructing Complex Contexts.} 
+
+
+% To construct a high-fidelity MCP risk dataset, we extracted seven types of core vulnerability trigger logic from Python language features, common third-party libraries, and MCP protocol interaction mechanisms, mapping them into 85 specific code implementation samples.
+
+
+
+% \textbf{Semantic Deception (Deception)}. Distinguished from traditional code vulnerabilities, semantic deception focuses on assessing the Agent's intent alignment capabilities. The first type of trigger point is "Semantic Mismatch," where the tool's documentation (Docstring) promises benign operations (e.g., clearing cache, network testing, installing patches) while the actual code contains malicious behaviors such as deleting user data, exfiltrating environment variables, planting backdoor accounts, or mining cryptocurrency (python-DECEPTION-001 to 010). These samples contain no syntax errors and rely entirely on the Agent's misjudgment of code semantics. The second type is "Homoglyph" attacks, where visually distinct but extremely similar Cyrillic letters are mixed into tool registration names (@mcp.tool(name=...)) (e.g., replacing 'c' with 'c', 'a' with 'a') to forge high-privilege tool names like admin\_login or root\_shell (python-DECEPTION-011 to 015), testing the Agent's fine-grained recognition and defense capabilities at the character encoding level.
+
+%%%%%%%%%%
+
+To test Agent robustness, we introduced Base64 and Unicode steganography obfuscation (python-PI-006, 012), as well as output misdirection using forged XML tags or fake manual approval statuses (python-PI-007, 008, 011). Specifically, targeting the Sampling mechanism of the MCP protocol, we designed advanced attack samples that induce the Server to initiate reverse sampling requests to steal the System Prompt or bypass security guardrails (python-PI-013 to 015).
 
 
 \begin{table}[!t]
@@ -62,17 +84,17 @@ MCP-XXX to MCP-XXX & - & - & 270 \\
 
 \subsection{Dataset Schema}
 
-% 2.2.1 标识与评估字段：id 与 score
-% id 字段不仅是数据的唯一索引，更承载了实验分类的功能。通过在 id 中加入前缀（如 MCP-SAFE-）或后缀（如 -cpl），实验程序可以在无需解析代码的情况下快速识别样本的属性，从而实现“同答比”和“复杂比”等指标的自动统计。例如，MCP-PT-009-cpl就代表第009号漏洞类型为PT的漏洞数据，且这条数据为复杂漏洞，而MCP-SAFE-PT-009即为其对照数据
-% score 字段用于设置样本分数。本文设定简单漏洞样本识别正确得 1分，复杂漏洞样本识别正确得2分，安全样本识别正确得 1 分。这种差异化赋分策略模拟了真实的审查逻辑：漏报一个关键漏洞导致的系统风险远高于误报一个安全片段。因此，该字段确保了评估分值能更真实地反映被测模型的实际审计能力
-% 2.2.2 上下文与标签字段：metadata 与 ground_truth
-% metadata 字段提供了样本的背景信息，包括编程语言、漏洞类型的文本描述等。
-% ground_truth 字段是评估的客观准则。除布尔类型的漏洞判定外，它还包含了细化的风险分类、对应的 CWE 编号以及漏洞在代码中的具体位置描述。这种结构化的标签系统使得基准测试不仅能判断被测程序 “答得对不对”，还能进一步通过更复杂的解析流程判断被测程序是否“找得准”。
-% 2.2.3 assets字段
-% assets 字段是本基准测试的核心。该字段通过嵌套数组形式存储了完整的源代码文件。本文构建的 assets 数据在结构上完美契合了真实的 MCP 交互场景。
-% 首先是协议框架完整性。 数据集样本并非零散的逻辑代码，而是完整的 MCP 服务端实现。 以 Python 样本（如 MCP-RCE-001-cpl）为例，代码中集成了 mcp.server.fastmcp 框架，并包含了基于 starlette 的异步传输层（SSE）配置逻辑。这种设计模拟了 MCP 服务端在真实环境中的标准部署模式，要求 LLM 在识别漏洞的同时，必须理解协议栈的运行机制。 在 TypeScript 样本（如 MCP-RCE-001-cpl）中，代码严格遵循官方 @modelcontextprotocol/sdk 开发规范，通过 McpServer 类实例化服务端对象，并配置了标准的 StdioServerTransport 传输层。这种对官方 SDK 的原生支持，确保了测试数据与真实生态环境的无缝衔接。
-% 其次是工具调用范式还原。 MCP 的核心在于“工具”的定义。assets 字段中的代码通过标准的协议范式封装逻辑。 在 Python 数据中，利用 @mcp.tool() 装饰器将普通函数注册为 MCP 工具，这使得输入参数（如 hostname）直接对应协议层接收到的外部指令。 在 TypeScript 数据中，使用 server.tool() 并配合 zod 库进行模式校验，复现了真实场景下对于参数类型的强约束检查。这种封装方式复现了 LLM 作为代理调用工具时所面临的真实数据流——从工具参数接收用户输入到执行高危操作的全过程。
-% 并且每段代码都有闭环运行能力， 每个 assets 字段提供的代码均包含完整的导入依赖说明和主函数入口。 例如，Python 样本中包含了 uvicorn.run() 的启动配置，TypeScript 样本中包含了 server.connect() 的连接逻辑。这意味着测试代码在语法层面是完整且可运行的。这种高度的现实契合性保证了 LLM 在评估过程中处理的是具有真实上下文背景的业务代码
+
+Each data entry in the dataset is organized in JSONL format and consists of five core fields: the id field serving as a unique identifier; the score field defining the weighting; the metadata field storing the name, language type, and textual description of the vulnerability; the assets field storing the core source code content through a nested structure; and the ground\_truth field providing the judgment baseline.
+
+
+\begin{itemize}
+    \item \textbf{Id}: The unique index for the data.
+    \item \textbf{Score}: Used to set the sample score. This paper assigns 2 points for correctly identifying a vulnerability sample and 1 point for correctly identifying a secure sample. This differentiated scoring strategy simulates real-world auditing logic: the systemic risk caused by missing a critical vulnerability (false negative) is far higher than that of misreporting a safe fragment (false positive). Therefore, this field ensures that the evaluation score authentically reflects the actual auditing capability of the model under test.
+    \item \textbf{Metadata}: Providing background information on the sample, including the programming language and a textual description of the vulnerability.
+    \item \textbf{Ground truth}: Serves as the objective criterion for evaluation. In addition to a boolean vulnerability judgment, it contains detailed risk classifications and corresponding CWE IDs. This structured labeling system allows the benchmark to determine not only whether the model answers "correctly" but also, through more complex parsing processes, whether it locates the vulnerability "accurately."
+    \item \textbf{Assets}: The core of this benchmark. This field stores the complete source code files in a nested array format. Structurally, the assets data constructed in this paper perfectly aligns with real-world MCP interaction scenarios.
+\end{itemize}
 
 
 \subsection{Dataset Characteristics}
@@ -95,10 +117,20 @@ MCP-XXX to MCP-XXX & - & - & 270 \\
 % 该指标的作用在于剔除那些依靠关键词匹配或猜测而获得的偶然正确得分，强制模型证明其能够区分微小的防御逻辑差异。
 
 
+\textbf{Precision and Recall.} Accuracy measures the proportional correctness of the model's overall judgments. Precision focuses on evaluating the quality of the model's alerts, i.e., the proportion of real vulnerabilities among the vulnerabilities identified by the model, used to measure false alarm risk. Recall reflects the model's ability to discover potential vulnerabilities, i.e., the proportion of successfully detected vulnerabilities among all real vulnerabilities. These three metrics constitute the cornerstone for evaluating the model's basic auditing capability.
 
+
+\textbf{Pairwise Correct Ratio.} The traditional Accuracy metric has limitations when evaluating the code security of large models because it cannot distinguish whether the model truly understands the code logic or merely relies on shallow feature matching of specific API keywords (e.g., os.system). Additionally, a single metric easily masks the model's tendency toward over-refusal.
+To this end, we introduced the Pairwise Correct Ratio (PCR) as a core consistency metric. Its calculation logic is as follows: the dataset is paired according to logical correlation (each pair contains a vulnerability sample and its corresponding secure sample). A pair is judged as "pairwise correct" only when the model can accurately identify both the vulnerability and the security within that group simultaneously. This metric effectively eliminates accidental correct scores obtained through keyword matching or guessing, forcing the model to prove its ability to distinguish subtle differences in defense logic.
+
+\begin{equation}
+    PCR = \frac{N_{both_correct}}{N_{total_pairs}} 
+\end{equation}
 
 
 
 
 % 3.	复杂比 (CR)： 复杂比用于评估模型在应对诱导性代码时的鲁棒性。其定义为：在模型判定为漏洞的样本集合中，带有 -cpl 后缀的高复杂度样本所占的比例。 
 % 高复杂比意味着模型能够有效识别无效过滤、异常回退等逻辑陷阱，是区分初级安全检查与深度安全审计能力的关键指标。
+
+
