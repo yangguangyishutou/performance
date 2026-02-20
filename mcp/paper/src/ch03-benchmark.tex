@@ -51,7 +51,10 @@ To construct our benchmark, we apply a four-step process. The containing samples
     
     \item \textbf{Dynamic Invocation.} We employ Python reflection to dynamically resolve and invoke system functions, such as constructing system call references through \texttt{getattr()}, thereby obscuring direct API usage.
  
-    \item \textbf{Incomplete defenses.} We construct samples with intentionally incomplete defenses to mimic common developer biases in filtering logic. For RCE and SQLi, MCP servers use fragile single-pass blacklist sanitization (e.g., \texttt{replace()} once without recursion), which fails against double-write nesting or mixed-case obfuscation. For insecure file operations, URL-decoded inputs undergo only single-pass traversal removal (e.g., \texttt{unquote()} plus \texttt{replace(``../'', ``'')}) and imprecise prefix checks using \texttt{startswith()} on non-normalized paths, ignoring canonicalization issues. Finally, we simulate covert fallback vulnerabilities: when strict checks (e.g., \texttt{int()} conversion) fail, the server reverts to unsafe operations such as f-string SQL queries, reintroducing injection risks.
+    \item \textbf{Incomplete defenses.} We construct samples with incomplete defenses to mimic common developer biases. For RCE and SQLi, MCP servers use fragile single-pass blacklist sanitization (e.g., \texttt{replace()} without recursion), failing against double-write nesting or mixed-case obfuscation. For insecure file operations, URL-decoded inputs undergo single-pass traversal removal (e.g., \texttt{unquote()} + \texttt{replace(../'', ’’)}) and imprecise \texttt{startswith()} checks on non-normalized paths, ignoring canonicalization issues. Finally, covert fallback vulnerabilities occur when strict checks (e.g., \texttt{int()} conversion) fail, and the server reverts to unsafe operations like f-string SQL queries.
+
+
+    % We construct samples with intentionally incomplete defenses to mimic common developer biases in filtering logic. For RCE and SQLi, MCP servers use fragile single-pass blacklist sanitization (e.g., \texttt{replace()} once without recursion), which fails against double-write nesting or mixed-case obfuscation. For insecure file operations, URL-decoded inputs undergo only single-pass traversal removal (e.g., \texttt{unquote()} plus \texttt{replace(``../'', ``'')}) and imprecise prefix checks using \texttt{startswith()} on non-normalized paths, ignoring canonicalization issues. Finally, we simulate covert fallback vulnerabilities: when strict checks (e.g., \texttt{int()} conversion) fail, the server reverts to unsafe operations such as f-string SQL queries, reintroducing injection risks.
 
     % We construct a series of samples with intentionally incomplete defenses to simulate common developer cognitive biases in implementing filtering logic. For RCE and SQLi, MCP servers adopt a fragile single-pass blacklist sanitization strategy (e.g., invoking \texttt{replace()} once without recursive processing), which fails to block keywords crafted through double-write nesting or mixed-case obfuscation. For insecure file operations, we model flawed path sanitization mechanisms in which URL-decoded inputs undergo only a single-pass removal of traversal patterns (e.g., applying \texttt{unquote()} followed by a single \texttt{replace("../", "")}), as well as imprecise prefix validation that relies on \texttt{startswith()} over joined but non-normalized paths. These implementations fail to account for canonicalization inconsistencies and path equivalence issues. Finally, we simulate covert fallback vulnerabilities, where the MCP server reverts to unsafe operations when secure mechanisms fail. For example, upon a \texttt{ValueError} triggered by strict type casting (e.g., \texttt{int()} conversion), the system falls back to string-based SQL query construction (e.g., f-strings), thereby reintroducing injection risks.
 
@@ -66,8 +69,8 @@ To construct our benchmark, we apply a four-step process. The containing samples
 \begin{figure}[!t]
     \centering
     \includegraphics[width=0.45\textwidth]{fig/prompt.pdf}
+    \vspace{-11pt}
     \caption{Prompt for Vulnerable MCP Server Generation}
-    \vspace{-9pt}
     \label{fig:prompt}
 \end{figure}
 
@@ -76,7 +79,7 @@ To construct our benchmark, we apply a four-step process. The containing samples
 
 % We fix MCP vulnerabilities regarding their types. To mitigate RCE vulnerabilities, we eliminate user-controlled execution flows by replacing shell-based APIs (e.g., \texttt{os.system()}) with parameterized subprocess calls (\texttt{shell=False}) and removing dynamic execution primitives (e.g., \texttt{exec()}, \texttt{eval()}) in favor of predefined dispatch logic. Unsafe deserialization (e.g., \texttt{pickle}) is downgraded to data-only formats (e.g., JSON), and strict input validation with canonicalization ensures external data remains within authorized boundaries. For sensitive information disclosure, we enforce logical separation between data and system instructions through structured JSON encapsulation, role-label sanitization, strict parameter whitelisting, and bounded output constraints, preventing instruction hijacking and context manipulation. To address Insecure File Operations, we adopt a ``normalize-then-validate'' sandboxing principle where all paths are canonicalized (e.g., \texttt{abspath()}, \texttt{resolve()}) and validated against a fixed base directory, with symlink checks, multi-pass decoding, and secure temporary file APIs to prevent traversal and race conditions. For DoS, we impose deterministic resource limits on recursion, iteration, memory allocation, and archive decompression, optimize regex patterns against ReDoS, enforce non-blocking execution in asynchronous contexts, and introduce explicit termination conditions in business logic to prevent infinite loops. To prevent SQLi, we mandate parameterized queries, prohibit dynamic SQL string construction, enforce identifier whitelisting, apply strict type validation, and eliminate unsafe fallback logic, thereby physically separating data from executable commands.
 
-\textbf{Manual Validation.} Two authors independently conducted a cross-validation of all 150 MCP server implementations, identifying and correcting 10 erroneous entries. Four vulnerable entries were found unexploitable in practice. We revised their logic to ensure exploitability while preserving the core vulnerability. The remaining six vulnerability-fixed entries contained flawed patches, either due to overly strict sanitization that broke functionality or incomplete mitigations still bypassable in edge cases. These patches were refined accordingly. All revised entries then underwent a second independent review until both authors unanimously confirmed their correctness.
+\textbf{Manual Validation.} Two authors independently conducted a cross-validation and identified 10 erroneous entries out of the 150 implementations. Four vulnerable entries were found unexploitable in practice. We revised their logic to ensure exploitability. The remaining six vulnerability-fixed entries contained flawed patches, either due to overly strict sanitization that broke functionality or incomplete mitigations still bypassable. These patches were refined accordingly. All revised entries then underwent a second independent review until both authors unanimously confirmed their correctness.
 
 
 % Two authors independently performed a rigorous manual cross-validation across all 150 MCP server implementations. During this review, we identified and fixed 10 erroneous entries. Four of them were vulnerable entries that proved unexploitable in practice. We adjusted the surrounding logic to guarantee exploitability while preserving the core nature of the vulnerability. The other 6 instances were vulnerability fixed entries with problematic patches. These issues stemmed from either overly strict sanitization that broke expected functionality, or incomplete mitigations that could still be bypassed via obscure edge cases. We optimized these patches to resolve the defects. Upon completing these modifications, the revised entries underwent a secondary independent review until both authors unanimously verified their absolute correctness.
@@ -92,11 +95,11 @@ To construct our benchmark, we apply a four-step process. The containing samples
  
                             &  \textbf{Vulnerability-Fixed MCP Tool Count}\\
 \hline
- remote code execution (RCE) & 15 & 15 \\ 
- denial of service (DoS) & 15 & 15 \\ 
- SQL injection (SQLi) & 15 & 15 \\ 
- insecure file operations (IFO) & 15 & 15 \\ 
- sensitive information disclosure (SID) & 15 & 15 \\ 
+ remote code execution & 15 & 15 \\ 
+ denial of service & 15 & 15 \\ 
+ SQL injection & 15 & 15 \\ 
+ insecure file operations & 15 & 15 \\ 
+ sensitive information disclosure& 15 & 15 \\ 
 \midrule
 Total & 75 & 75 \\ 
 \bottomrule
