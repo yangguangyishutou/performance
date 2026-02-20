@@ -31,7 +31,7 @@ To construct our benchmark, we apply a four-step process. The containing samples
     
     % Insecure file operations (IFO) encompass both path traversal and improper file permission management. For path traversal, we construct attack scenarios by invoking the unfiltered \texttt{open()} function with inputs containing \texttt{../} sequences or URL-encoded traversal patterns to bypass directory constraints. We further exploit the path-overwriting behavior of \texttt{os.path.join()} when handling absolute paths, inconsistencies in path resolution via \texttt{pathlib.Path()}, and unintended file enumeration caused by wildcard expansion in \texttt{glob.glob()}. Improper file permission and access control issues include unauthorized file deletion through \texttt{os.remove()} and \texttt{shutil.rmtree()}, insecure permission modification using \texttt{os.chmod()}, arbitrary file reading via \texttt{linecache.getline()}, unrestricted symbolic link traversal during directory walking (e.g., \texttt{os.walk()}), and time-of-check-to-time-of-use (TOCTOU) race conditions arising from the gap between link validation (e.g., \texttt{os.path.islink()}) and subsequent file access (e.g., \texttt{open()}).
     
-    \item \textbf{SQL Injection.} We include the standard \texttt{execute()} call, the primary query interface for major relational databases (e.g., MySQL, PostgreSQL, SQLite, and Microsoft SQL Server). We further extend our coverage to widely used ORM and data-access frameworks, including SQLAlchemy's raw SQL interface \texttt{sqlalchemy.text()}, Pandas' direct query execution via \texttt{pandas.read\_sql()}, MongoDB's \texttt{find()} operation, and Redis Lua script evaluation through \texttt{redis.eval()}.
+    \item \textbf{SQL Injection.} We include the standard \texttt{execute()} call, the primary query interface for major relational databases (e.g., MySQL, PostgreSQL, SQLite, and Microsoft SQL Server). We further extend our coverage to widely used ORM and data-access frameworks, including SQLAlchemy's raw SQL interface \texttt{sqlalchemy} \texttt{.text()}, Pandas' direct query execution via \texttt{pandas.read\_sql()}, MongoDB's \texttt{find()} operation, and Redis Lua script evaluation through \texttt{redis.eval()}.
 
     
     \item \textbf{Denial of Service (DoS).} DoS attacks target computational (CPU), memory, and storage resources. For CPU exhaustion, we model vulnerable regular expressions (e.g., \texttt{re.match()}, \texttt{re.comp} \texttt{ile()}) prone to ReDoS, and unbounded computations such as \texttt{math.fact} \texttt{orial()} or deep recursion without input limits, causing potential stack overflows. Memory exhaustion includes reading an expanded ZIP bomb (\texttt{zipfile.ZipFile.read()}) and unconstrained string multiplications. Disk exhaustion is simulated via file descriptor leaks (repeated \texttt{open()} without \texttt{close()}) and uncontrolled \texttt{f.write()} operations. At the business logic level, we model infinite loops, including non-terminating pagination (returning a new \texttt{uuid.uuid4()} as \texttt{next\_page\_token}), endlessly expanding directory trees, and circular authentication deadlocks.
@@ -67,6 +67,7 @@ To construct our benchmark, we apply a four-step process. The containing samples
     \centering
     \includegraphics[width=0.45\textwidth]{fig/prompt.pdf}
     \caption{Prompt for Vulnerable MCP Server Generation}
+    \vspace{-9pt}
     \label{fig:prompt}
 \end{figure}
 
@@ -83,7 +84,8 @@ To construct our benchmark, we apply a four-step process. The containing samples
 
 \begin{table}[!t]
 \centering
-\small
+\small\caption{Statistics of \bench}
+\vspace{-10pt}
     \begin{tabular}{m{3cm}m{2cm}m{2cm}}
 \toprule
  \textbf{Vulnerability Type} & \textbf{Vulnerable MCP Tool Count} 
@@ -99,7 +101,7 @@ To construct our benchmark, we apply a four-step process. The containing samples
 Total & 75 & 75 \\ 
 \bottomrule
 \end{tabular}
-\caption{\bench}
+
 \label{tab:dataset}
 \end{table}
 
@@ -107,18 +109,6 @@ Total & 75 & 75 \\
 \subsection{Statistics} 
 
 Across the five vulnerability categories, we collect \todo{42} vulnerability-triggering expressions corresponding to the identified risk types. We further embed these expressions into \todo{3} varying context settings to simulate realistic usage scenarios. In total, we generate \todo{75} vulnerable MCP tools, along with \todo{75} corresponding fixed versions as paired counterparts. The detailed distribution across vulnerability types is summarized in Table~\ref{tab:dataset}.
-
-
-% Each data entry in the dataset is organized in JSONL format and consists of five core fields: 
-
-% \begin{itemize}[leftmargin=*]
-%     \item \textbf{Id}: The unique index for the data.
-%     % \item \textbf{Score}: Used to set the sample score. This paper assigns 2 points for correctly identifying a vulnerability sample and 1 point for correctly identifying a secure sample. This differentiated scoring strategy simulates real-world auditing logic: the systemic risk caused by missing a critical vulnerability (false negative) is far higher than that of misreporting a safe fragment (false positive). Therefore, this field ensures that the evaluation score authentically reflects the actual auditing capability of the model under test.
-%     \item \textbf{Metadata}: Providing the programming language and a textual description of the vulnerability.
-%     \item \textbf{Ground truth}: Including a boolean vulnerability flag, and the corresponding vulnerability types and CWE IDs. 
-%     \item \textbf{Assets}: The entire source code files in a nested array format. 
-% \end{itemize}
-
 
 
 \subsection{Metrics}
