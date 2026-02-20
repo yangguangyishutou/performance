@@ -1,21 +1,36 @@
 \section{Experiments}
 
-\subsection{Our Approach}
-
-xxx
 
 \subsection{Experiment Setup}
 
 % 2.5.1 实验过程的随机化与抗欺骗设计
 % 在LLM的性能评测中，模型的输出往往受到上下文顺序或样本排列位置的影响。为了防止被测模型通过识别样本序列规律进行“作弊”，评估程序在加载 JSONL 数据集后，利用随机种子驱动的 random.shuffle() 算法对样本顺序进行完全打乱。这种测试顺序确保了模型在处理每一条数据时均处于独立的决策环境，排除了位置偏见对实验结果的干扰。此外，程序必须在接收到模型对当前样本的判定结果后才推送下一条数据，从而模拟了真实的单次调用安全审计场景
 
-\textbf{Evaluated Baselines.} \todo{GPT-5-mini xx. Claude Haiku-4-5 xx. DeepSeek xx. AI-Infra-Guard xx. Bandit xxx.} \todo{Temprature.}
+\textbf{Evaluated Baselines.} We evaluate a diverse set of baselines, ranging from state-of-the-art LLMs to industry-standard security analysis platforms, including \textbf{GPT-5-mini}~\cite{gpt5mini}, \textbf{Claude Haiku 4.5}~\cite{claude}, \textbf{DeepSeek-V3.2}~\cite{DeepSeekAI2025DeepSeekV32PT} , \textbf{AI-Infra-Guard}~\cite{aiinfraguard} (Released by Tencent Zhuque Lab in 2025) and \textbf{Bandit}~\cite{badit} (Originally developed by the OpenStack Security Team).
+
+\textbf{Configuration.} We set the generation temperature to 0.0, disable streaming, and use a 120-second timeout per API request. The evaluation employs dual prompts: a system prompt defining the five MCP vulnerability types, and a user prompt containing the raw Python code of the target server. Security tools (Bandit and AI-Infra-Guard) are run with default settings. To prevent models from exploiting sample order, we shuffle the JSONL dataset with \texttt{random.shuffle()} and a fixed seed, ensuring each sample is evaluated independently.
 
 
-\textbf{Random Input Samples.} A model's output is often influenced by the context order or the position of samples in the dataset. To prevent the tested model from ``cheating'' by recognizing patterns in the sample sequence, the evaluation program fully shuffles the sample order after loading the JSONL dataset using the \texttt{random.shuffle()} API driven by a random seed. This testing order ensures that the model processes each sample in an independent decision-making environment, eliminating position bias from affecting the experimental results. 
+% \textbf{Random Input Samples.} 
+
+% A model's output is often influenced by the context order or the position of samples in the dataset. To prevent the tested model from ``cheating'' by recognizing patterns in the sample sequence, the evaluation program fully shuffles the sample order after loading the JSONL dataset using the \texttt{random.shuffle()} API driven by a random seed. This testing order ensures that the model processes each sample in an independent decision-making environment, eliminating position bias from affecting the experimental results. 
 
 
-\textbf{Prompt.} \todo{.} \todo{\textit{Prompt}.}
+\textbf{Prompt Design.} We use a zero-shot, role-playing prompting strategy for LLM evaluation, separating the prompt into a system and a user prompt to ensure clarity and output stability. The system prompt assigns the role of an “expert security researcher” for Python MCP auditing and embeds the full vulnerability taxonomy, including code-level indicators across five categories. Responses are strictly constrained to a JSON schema with \texttt{is\_vulnerable}, \texttt{vulnerability\_type}, and \texttt{reasoning} fields. The user prompt provides only the raw Python source code.
+
+
+% \vspace{0.5em}
+% \noindent\fbox{%
+% \parbox{\linewidth}{%
+% \textit{\textbf{System Prompt Snippet:}\
+% You are an expert security researcher specializing in Python code auditing for MCP (Model Context Protocol) servers. \
+% \textbf{Your Goal:} Analyze the provided Python code and detect if it contains any of the following 5 specific vulnerabilities. \
+% \textbf{Vulnerability Definitions:} [1. RCE: ... 2. Direct Prompt Injection: ... 5. CPU Exhaustion: ...] \
+% \textbf{Analysis Steps:} 1. Read the code carefully... 2. Compare the code logic against the "Signs"... \
+% \textbf{Output Requirements:} Output MUST be in valid JSON format. If a vulnerability is found, set "is_vulnerable" to true. You MUST use the EXACT Name from the list above for "vulnerability_type" (e.g., output "File Read", DO NOT output "Path Traversal"). The JSON must also include a "reasoning" field.}
+% }%
+% }
+% \vspace{0.5em}
 
 % 5+1+1
 
@@ -78,7 +93,7 @@ Bandit & XX.X\% & XX.X\% & XX.X\% & XX.X\%\\
                             
 \midrule
 
-\multirow{4}{*}{sensitive information disclosure} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
+\multirow{4}{*}{\shortstack[l]{sensitive information\\disclosure}} & Precision & XX.X\% & XX.X\% & XX.X\% \\ 
                             & Recall & XX.X\% & XX.X\% & XX.X\% \\ 
                             & F1-Score & XX.X\% & XX.X\% & XX.X\% \\ 
                             & MPA & XX.X\% & XX.X\% & XX.X\% \\ 

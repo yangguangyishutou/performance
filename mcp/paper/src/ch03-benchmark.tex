@@ -14,7 +14,7 @@ To construct our benchmark, we apply a four-step process. The containing samples
 \textbf{(1) Vulnerability Type Collection.} To understand the prevalent vulnerability types in existing MCP-based systems, we analyzed publicly disclosed vulnerabilities in the National Vulnerability Database (NVD)~\cite{nist_nvd}. Using the keyword ``MCP'', we identified 34 vulnerable MCP servers. Our analysis reveals four dominant vulnerability categories: remote code execution (RCE), denial of service (DoS), SQL injection (SQLi), and insecure file operations (IFO). In addition, we reference the OWASP OWASP LLM Top 10~\cite{owasptop10} to complement our classification. Given that MCP servers typically have access to sensitive data and external resources, we additionally include sensitive information disclosure (SID) as a relevant risk category. The remaining nine risk types in the OWASP LLM Top 10 are excluded, as they are not directly applicable to MCP server architectures.
 
 
-\textbf{(2) Vulnerability-Triggering Expression Collection.} We collect \todo{XXX} vulnerability-triggering expressions (e.g., function calls) corresponding to the five identified vulnerability types.
+\textbf{(2) Vulnerability-Triggering Expression Collection.} We collect vulnerability-triggering expressions (e.g., function calls) corresponding to the five identified vulnerability types.
 
 
 \begin{itemize}[leftmargin=*]
@@ -22,43 +22,39 @@ To construct our benchmark, we apply a four-step process. The containing samples
     \item \textbf{Remote Code Execution (RCE).} We construct RCE vulnerabilities by introducing unsafe system shell invocations and dynamic code evaluation calls into the MCP codebase. For system shell invocation, we select calls including \texttt{os.system()}, \texttt{subprocess.run(shell=True)}, \texttt{subprocess.call()}, and \texttt{asyncio.} \texttt{create\_subprocess\_shell()} with unsanitized user input, thereby enabling direct shell command injection. In addition, we incorporate the use of ctypes to invoke the underlying \texttt{libc.system()} function, further expanding the attack surface at the native C++ library layer. For dynamic code execution, we introduce calls to \texttt{exec()}, \texttt{eval()}, \texttt{timeit.timeit()}, and \texttt{runpy.run\_path()} to construct scenarios that permit arbitrary Python code execution. Furthermore, we include expression evaluation through \texttt{pandas.query()}, which can also lead to code injection if improperly handled.
     
     % 填空： XXX, XXXX 语句。类似于\texttt{pandas.query()}
-    \item \textbf{Sensitive Information Disclosure (SID).} We construct scenarios in which MCP servers may access and expose sensitive information from external data sources. Specifically, we simulate cases involving the retrieval of email contents (\todo{XXX}) and log files (\todo{\texttt{XXX}}), as well as the copying of sensitive data from private locations to publicly accessible directories (\texttt{shutil.copy()}).
+    \item \textbf{Sensitive Information Disclosure (SID).} We construct scenarios in which MCP servers may access and expose sensitive information from external data sources. Specifically, we simulate cases involving the retrieval of email contents (\todo{The MCP server directly feeds unsanitized email content, which contains malicious instructions, into the LLM's context through a return statement}) and log files (\todo{\texttt{re.sub() and return f.read()}}), as well as the copying of sensitive data from private locations to publicly accessible directories (\texttt{shutil.copy()}).
 
-    \item \textbf{Insecure File Operation (IFO).} Insecure file operations (IFO) include path traversal and improper file permission management. For path traversal, we construct basic attack scenarios by invoking the unfiltered \texttt{open()} function with inputs containing ../ sequences or URL-encoded traversal patterns to bypass directory restrictions. We further exploit the overwrite behavior of \texttt{os.path.join()} when processing absolute paths, leverage resolution inconsistencies in \texttt{pathlib.Path()}, and demonstrate unintended file enumeration through wildcard expansion in \texttt{glob.glob()}. Improper file permission scenarios include unauthorized file deletion using \texttt{os.remove()} and \texttt{shutil.rmtree()}, as well as insecure permission modification via \texttt{os.chmod()}. 
-    \todo{arbitrary reading via the linecache module \todo{\texttt{XXX.XXX()}}, \todo{temporary file prediction based on time seeds} \todo{\texttt{XXX.XXX()}}, and unauthorized access triggered by symlink following and race conditions \todo{\texttt{XXX.XXX()}}.} 
-    
+    \item \textbf{Insecure File Operation (IFO).} Insecure file operations (IFO) encompass both path traversal and improper file permission management. For path traversal, we construct attack scenarios by invoking the unfiltered \texttt{open()} function with inputs containing \texttt{../} sequences or URL-encoded traversal patterns to bypass directory constraints. We further exploit the path-overwriting behavior of \texttt{os.path.join()} when handling absolute paths, inconsistencies in path resolution via \texttt{pathlib.Path()}, and unintended file enumeration caused by wildcard expansion in \texttt{glob.glob()}. Improper file permission and access control issues include unauthorized file deletion through \texttt{os.remove()} and \texttt{shutil.rmtree()}, insecure permission modification using \texttt{os.chmod()}, arbitrary file reading via \texttt{linecache.getline()}, unrestricted symbolic link traversal during directory walking (e.g., \texttt{os.walk()}), and time-of-check-to-time-of-use (TOCTOU) race conditions arising from the gap between link validation (e.g., \texttt{os.path.islink()}) and subsequent file access (e.g., \texttt{open()}).
     
     \item \textbf{SQL Injection.} \todo{\texttt{execute()} covering popular databases including \todo{MySQL, PostgreSQL, MongoDB, SQLite, SQLAlchemy, Redis}. }
     
-    % The vulnerability triggering expression for SQL injection ranges from 
-    % Risks at the database interaction level cover scenarios ranging from 
-    % string concatenation to ORM misuse. 
-    % Traditional SQL injection is implemented through F-string interpolation, the .format() method, and manual escaping defects (e.g., using backslashes instead of single quotes for escaping) (python-SQLI-001, 002, 004), including scenarios using executescript to execute stacked queries (python-SQLI-003). 
-    % For ORM frameworks, we extracted insecure concatenation patterns in SQLAlchemy's text() function and Django's raw() queries (python-SQLI-005, 006), as well as injection in filter or extra clauses (python-SQLI-007). Complex scenarios include data extraction using UNION SELECT (python-SQLI-009), boolean-based blind injection (python-SQLI-010), type conversion fallback injection for numeric fields (python-SQLI-008), and second-order injection (python-SQLI-015). Additionally, we extended coverage to the NoSQL domain, including MongoDB JSON operator \texttt{\todo{XXX}}, Redis Lua script execution \texttt{\todo{XXX}}, and exploitation of the Pandas \texttt{read\_sql} interface.
-    
-    \item \textbf{Denial of Service (DoS).} DoS attacks primarily target the system's computational resources (i.e., CPU) and system resources (e.g., storage). 
-    Regarding computational resource exhaustion, samples utilize Regular Expression Denial of Service (ReDoS) to attack complex validation logic (\todo{XXXX}), using \texttt{math.factorial()} or deep recursive functions (\todo{XXX}) to trigger stack overflows, and consume memory using ZIP bombs and exponential string expansion (\todo{XXXX}). System resource exhaustion is achieved through file descriptor leaks (\todo{XXX}) and recursive log writing (\todo{XXX}) filling up disk space. Besides, at the Business Logic level, we include infinite ``next'' loops through improper pagination interfaces (\todo{XXX}), infinite directory trees (\todo{e.g., the MCP tool always returns a newly generated directory when provided with a subpath.}) and interdependent authentication deadlocks (\todo{XXX}).
+    \item \textbf{Denial of Service (DoS).} DoS attacks primarily exhaust computational (e.g., CPU), memory, and storage resources. For computational exhaustion, we construct scenarios involving vulnerable regular expressions (e.g., \texttt{re.match()} or \texttt{re.compile()}) susceptible to Regular Expression Denial of Service (ReDoS), as well as unbounded computations such as \texttt{math.factorial()} or deeply recursive functions without input size constraints, which may lead to stack overflows. For memory exhaustion, we include cases such as reading the full contents of an expanded ZIP bomb via \texttt{zipfile.ZipFile.read()} and performing unconstrained string multiplications that trigger excessive memory allocation. Regarding disk resource exhaustion, we simulate file descriptor leaks (e.g., repeatedly invoking \texttt{open()} without corresponding \texttt{close()} calls) and unbounded log writing through uncontrolled \texttt{f.write()} operations, both of which can deplete disk space. At the business logic level, we model infinite execution flows, including non-terminating pagination loops (e.g., always returning a newly generated \texttt{uuid.uuid4()} as the \texttt{next\_page\_token}), dynamically fabricated directory trees that expand indefinitely for arbitrary input paths, and circular authentication deadlocks in which tools return instructions that recursively invoke one another.
  
 \end{itemize}
 
 
 \textbf{(3) Varying Context Insertion.} We apply multiple varying contexts surrounding the vulnerability-triggering expressions to ensure the robustness and generalization ability of the dataset in complex real-world scenarios. 
 
+
+
+
+
 \begin{itemize}[leftmargin=*]
-    \item \textbf{Encoding Variants.} We introduced various encoding techniques. Specifically, we used Hex encoding and Base64 encoding, which is commonly used for \todo{XXX in XXX}, thereby testing the detector's ability to identify encoding variants. 
+    \item \textbf{Encoding Variants.} We incorporate multiple encoding techniques to evaluate detector robustness. Specifically, we apply hexadecimal (Hex) and Base64 encodings, which are commonly used to represent binary data in text-based formats and to standardize cryptographic hash outputs. These transformations allow us to assess whether detectors can correctly identify semantically equivalent vulnerabilities expressed in encoded variants.
     
-    \item \textbf{Dynamic Invocation.} We employed Python reflection mechanisms to dynamically acquire system functions, such as splicing system calls \texttt{getattr()}.
+    \item \textbf{Dynamic Invocation.} We employ Python reflection to dynamically resolve and invoke system functions, such as constructing system call references through \texttt{getattr()}, thereby obscuring direct API usage.
  
-    \item \textbf{Incomplete defenses.} We constructed a series of samples containing incomplete defenses to simulate common cognitive biases of developers when writing filtering rules. For RCE and SQLi, we designed {blacklist logic that performs only a single replacement operation (i.e., the code performs only a single, non-recursive replacement of dangerous keywords and cannot prevent attacks using double-write nesting or case obfuscation), such defenses cannot withstand recursive construction or mixed-case attacks.} Regarding insecure file operation, we include incomplete cleaning of URL encoding or ../ sequences (\todo{\texttt{XXXX}}), imprecise path prefix matching logic (e.g., misuse of startswith \todo{XXX}). \todo{Additionally, we simulated scenarios where exception handling mechanisms are abused. When secure data loading or type conversion fails, the program automatically falls back to insecure deserialization or string concatenation logic, exposing a covert attack surface.}
+    \item \textbf{Incomplete defenses.} We construct a series of samples with intentionally incomplete defenses to simulate common developer cognitive biases in implementing filtering logic. For RCE and SQLi, MCP servers adopt a fragile single-pass blacklist sanitization strategy (e.g., invoking \texttt{replace()} once without recursive processing), which fails to block keywords crafted through double-write nesting or mixed-case obfuscation. For insecure file operations, we model flawed path sanitization mechanisms in which URL-decoded inputs undergo only a single-pass removal of traversal patterns (e.g., applying \texttt{unquote()} followed by a single \texttt{replace("../", "")}), as well as imprecise prefix validation that relies on \texttt{startswith()} over joined but non-normalized paths. These implementations fail to account for canonicalization inconsistencies and path equivalence issues. Finally, we simulate covert fallback vulnerabilities, where the MCP server reverts to unsafe operations when secure mechanisms fail. For example, upon a \texttt{ValueError} triggered by strict type casting (e.g., \texttt{int()} conversion), the system falls back to string-based SQL query construction (e.g., f-strings), thereby reintroducing injection risks.
     
-    \item \textbf{Parameter Processing.} \todo{Considering XXX. Regarding SQLi, we .. Regarding RCE, we .}
     
-    % Considering that Agents extensively rely on third-party libraries for data processing and model invocation in practical applications, we migrated basic vulnerability logic to specific popular frameworks and application contexts to enhance the ecological coverage of the data. In the data science domain, we constructed samples utilizing the Pandas query interface for injection (python-RCE-014) and executing malicious queries via read\_sql (python-SQLI-013), and included object execution risks during Numpy array loading (python-DESER-007). Targeting AI-native scenarios, the dataset specifically incorporates PyTorch model loading (python-DESER-003) and insecure configuration of the HuggingFace Transformer library (python-DESER-015), focusing on code execution risks potentially hidden in model weight files. At the Web and database interaction level, we integrated misuse of SQLAlchemy text queries (python-SQLI-005) and Redis Lua script injection (python-SQLI-014), and introduced main thread blocking vulnerabilities in asynchronous programming scenarios (python-DOS-007).
-    % \item \textbf{Logical Traps and Semantic Deception Variants.} Distinct from traditional syntax-level vulnerabilities, we specifically designed logical traps and semantic inconsistency samples targeting the Agent's cognitive and planning capabilities. In the Denial of Service (DoS) dimension, we did not rely solely on computational resource exhaustion but constructed infinite loops based on business logic. Examples include infinite pagination interfaces that always return new tokens (python-DOS-011), dynamically generated infinite-depth directory trees (python-DOS-014), and authentication deadlocks formed by interdependent login and refresh interfaces (python-DOS-015). These samples aim to test the Agent's ability to judge termination conditions during task planning. In terms of Semantic Deception, we constructed samples where tool descriptions severely deviate from actual behavior, such as python-DECEPTION-001 claiming to perform cache cleaning but actually executing file deletion, and python-DECEPTION-002 disguising itself as a network testing tool while secretly exfiltrating sensitive information via environment variables. These variants contain no obvious code errors but trigger security risks by misleading the Agent's intent alignment mechanism.
+    \item \textbf{Parameter Processing.} \todo{Considering that LLM Agents extensively rely on third-party libraries for data processing and model invocation, we migrate core vulnerability logic into prevalent frameworks and application contexts to enhance ecological coverage. Regarding SQLi, we incorporate SQLAlchemy's misuse of raw text wrapping (\texttt{sqlalchemy.text()}) without parameterization, Pandas' direct SQL interface (\texttt{pandas.read\_sql()}), and Redis Lua script injection via its evaluation interface (\texttt{redis.eval()}).}
+    % Regarding RCE, we demonstrate Pandas expression injection through its dynamic evaluation engine (\todo{\texttt{df.query()}}).}
+    
 \end{itemize}
 
 
-\textbf{(4) Vulnerable MCP Server Generation.} \todo{We utilized Gemini-1.5-Pro as the base model and designed a structured Prompt Template containing persona settings (Python Security Expert), core logic parameterization, and JSONL format constraints. This template guides the model to batch generate heterogeneous risk samples that comply with MCP protocol specifications by dynamically populating the previously defined vulnerability categories, trigger logic, and variant techniques. The core prompt template is as follows:}
+\textbf{(4) Vulnerable MCP Server Generation.} We employ Gemini-1.5-Pro~\cite{gemini} as the base model and design a structured prompt template incorporating persona configuration (Python Security Expert), core logic parameterization, and JSONL output constraints. The template guides the model to generate heterogeneous vulnerability samples in batch, ensuring compliance with MCP protocol specifications. Specifically, it dynamically instantiates predefined vulnerability categories, trigger logic, and variant techniques to produce diverse yet controlled risk scenarios. The complete prompt template is illustrated in Fig.~\ref{fig:prompt}.
+
 
 
 \begin{figure}[!t]
@@ -69,20 +65,21 @@ To construct our benchmark, we apply a four-step process. The containing samples
 \end{figure}
 
 
-\textbf{(5) Vulnerable MCP Server Fixing.} \todo{We manually fix xxx. Specifically, regarding rce, we if check; regarding SQLi, we add xxx. Regarding Dos, we xxx.}
+\textbf{(5) Vulnerable MCP Server Fixing.} We fix MCP vulnerabilities by type. For RCE, we remove user-controlled execution flows, replacing shell-based APIs (e.g., \texttt{os.system()}) with parameterized subprocess calls (\texttt{shell=False}) and substituting dynamic execution primitives (e.g., \texttt{exec()}, \texttt{eval()}) with predefined dispatch logic. Unsafe deserialization (e.g., \texttt{pickle}) is replaced with data-only formats (e.g., JSON), and strict input validation with canonicalization confines external data. For sensitive information disclosure, we enforce separation between data and instructions via structured JSON, role-label sanitization, parameter whitelists, and bounded outputs. Insecure File Operations are mitigated with a “normalize-then-validate” sandboxing: paths are canonicalized (\texttt{abspath()}, \texttt{resolve()}) and checked against a base directory, with symlink validation, multi-pass decoding, and secure temporary file APIs. For DoS, we enforce deterministic limits on recursion, iteration, memory, and decompression, optimize regex patterns against ReDoS, use non-blocking asynchronous execution, and set explicit termination conditions to prevent infinite loops. SQLi is prevented via parameterized queries, whitelisted identifiers, strict type validation, and elimination of unsafe fallback logic, ensuring data is isolated from executable commands.
 
-The primary purpose of constructing control data is to eliminate pattern-matching biases formed by LLMs during large-scale pre-training. Large language models often exhibit hypersensitivity to certain keywords (e.g., os.system, eval, exec), tending to issue vulnerability verdicts directly without analyzing context filtering logic. This behavior leads to a high false alarm rate. Introducing control data forces the model to distinguish the essential differences between valid security defense logic (e.g., parameterization, whitelist validation) and invalid defense logic (e.g., non-recursive replacement, blacklists). Furthermore, control data serves as the basis for calculating the "Pairwise Correct Ratio" (PCR) metric; only when a model can simultaneously and accurately distinguish between the vulnerable version and the secure version under the same functional logic is it considered to possess true secure semantic understanding capability.
-2.4.2 Construction of Control Data
-The construction process consists of vulnerability point identification, defense logic reconstruction, and manual verification stages. First, we deeply analyzed 105 vulnerability samples to identify critical nodes triggering risks. Subsequently, targeting Python language characteristics, we wrote corresponding defense logic and ensured that the repaired code maintained tool callability and functional integrity under the MCP protocol. Finally, all generated secure samples underwent cross-manual review to ensure no residual logical vulnerabilities existed, achieving a 1:1 logical correlation with the vulnerability samples.
-This dataset follows the principle of minimal perturbation for the development of control data. Structurally, the secure control version maintains extremely high similarity to the corresponding vulnerable version. Except for the core vulnerable execution path or input sanitization logic, the remaining framework initialization code, tool definitions, and non-critical code remain identical. This design ensures that the model cannot guess based on statistical features such as code length, function names, or variable names, but must focus on specific logic differences at the code level. Meanwhile, regarding repair logic, this paper adopted industry-recognized best practices. For command injection risks, parameterized array calls or forced escaping were adopted; for SQL injection, database driver-level parameterized queries were used; for path traversal, path normalization comparison and base directory anchoring were employed. This design not only provides an evaluation benchmark but also serves as a code demonstration.
+% We fix MCP vulnerabilities regarding their types. To mitigate RCE vulnerabilities, we eliminate user-controlled execution flows by replacing shell-based APIs (e.g., \texttt{os.system()}) with parameterized subprocess calls (\texttt{shell=False}) and removing dynamic execution primitives (e.g., \texttt{exec()}, \texttt{eval()}) in favor of predefined dispatch logic. Unsafe deserialization (e.g., \texttt{pickle}) is downgraded to data-only formats (e.g., JSON), and strict input validation with canonicalization ensures external data remains within authorized boundaries. For sensitive information disclosure, we enforce logical separation between data and system instructions through structured JSON encapsulation, role-label sanitization, strict parameter whitelisting, and bounded output constraints, preventing instruction hijacking and context manipulation. To address Insecure File Operations, we adopt a ``normalize-then-validate'' sandboxing principle where all paths are canonicalized (e.g., \texttt{abspath()}, \texttt{resolve()}) and validated against a fixed base directory, with symlink checks, multi-pass decoding, and secure temporary file APIs to prevent traversal and race conditions. For DoS, we impose deterministic resource limits on recursion, iteration, memory allocation, and archive decompression, optimize regex patterns against ReDoS, enforce non-blocking execution in asynchronous contexts, and introduce explicit termination conditions in business logic to prevent infinite loops. To prevent SQLi, we mandate parameterized queries, prohibit dynamic SQL string construction, enforce identifier whitelisting, apply strict type validation, and eliminate unsafe fallback logic, thereby physically separating data from executable commands.
+
+
 
 
 \begin{table}[!t]
 \centering
 \small
-    \begin{tabular}{m{2.5cm}m{2cm}m{1cm}}
+    \begin{tabular}{m{3cm}m{2cm}m{2cm}}
 \toprule
- \textbf{Vulnerability Type} & \textbf{Vulnerability Description} & \textbf{Count}\\
+ \textbf{Vulnerability Type} & \textbf{Vulnerable MCP Tool Count} 
+ 
+                            &  \textbf{Vulnerability-Fixed MCP Tool Count}\\
 \hline
  remote code execution (RCE) & XXX & XXX \\ 
  denial of service (DoS) & XXX & XXX \\ 
@@ -90,10 +87,7 @@ This dataset follows the principle of minimal perturbation for the development o
  insecure file operations (IFO) & XXX & XXX \\ 
  sensitive information disclosure (SID) & XXX & XXX \\ 
 \midrule
- - & - & 270 \\ 
-
-
-\midrule
+Total & 270 & 270 \\ 
 \bottomrule
 \end{tabular}
 \caption{\bench}
@@ -102,10 +96,7 @@ This dataset follows the principle of minimal perturbation for the development o
 
 
 
-
-
-% \subsection{Dataset Schema}
-
+\textbf{Statistics.} Across the five vulnerability categories, we collect \todo{XXX} vulnerability-triggering expressions corresponding to the identified risk types. We further embed these expressions into \todo{XXX} diverse contextual settings to simulate realistic usage scenarios. In total, we generate \todo{135} vulnerable MCP tools, along with \todo{135} corresponding fixed versions as paired counterparts. The detailed distribution across vulnerability types is summarized in Table~\ref{tab:dataset}.
 
 % Each data entry in the dataset is organized in JSONL format and consists of five core fields: 
 
@@ -126,20 +117,4 @@ This dataset follows the principle of minimal perturbation for the development o
 
 
 \textbf{Matched Pair Accuracy.} Traditional precision and recall metrics cannot fully capture whether the model genuinely distinguishes between positive and negative samples based on underlying code semantics, or merely relies on superficial matching of specific API calls. Leveraging our paired benchmark, where each vulnerable sample is matched with its fixed counterpart, we employ Matched Pair Accuracy (MPA)~\cite{matchedpair}. A pair is deemed correct only when both instances are classified correctly. MPA thus captures the proportion of pairs for which the model simultaneously identifies the vulnerable and non-vulnerable samples correctly.
-
-% \begin{equation}
-%     PCR = \frac{N_{both_correct}}{N_{total_pairs}} 
-% \end{equation}
-
-
-
-% whether the model truly understands the code logic or merely relies on shallow feature matching of specific API keywords (e.g., os.system). 
-
-
-% as a core consistency metric. Its calculation logic is as follows: the dataset is paired according to logical correlation (each pair contains a vulnerability sample and its corresponding secure sample). 
-
-
-% This metric effectively eliminates accidental correct scores obtained through keyword matching or guessing, forcing the model to prove its ability to distinguish subtle differences in defense logic.
-
-
 
