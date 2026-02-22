@@ -1,0 +1,11 @@
+1. SYNTAX_LANGUAGE_ERROR: Syntax and language feature errors
+2. TYPE_SYSTEM_ERROR: Errors of type system, e.g., variable/parameter type mismatch; incorrect return value type; type undefined or incomplete; illegal type conversion, ...
+3. DECLARE_DEFINITION_MISMATCH: Inconsistent declaration and definition signatures, or mismatched parameter tables.
+4. MISSING_UNDEFINED_SYMBOLS: Missing or undefined functions/variables/classes/...
+5. INHERITANCE_VIRTUAL_ERROR: Issues related to override, virtual, and abstract classes, etc.
+6. CONSTRUCTOR_DESTRUCTOR_ERROR: Issues related to constructor and destructor.
+7. TEMPLATE_ERROR: Template issues related to declaration, instantiation, derivation, etc.
+8. ACCESS_SCOPE_ERROR: Access control and scope errors
+9. REDEFINITION_ERROR: Redefinition of variables, functions, or classes.
+10. BUILD_INCLUDE_ERROR: Errors of wrong building system, missing header files, wrong dependencies, etc.
+11. OTHER_ERROR: Other unexpected errors.
