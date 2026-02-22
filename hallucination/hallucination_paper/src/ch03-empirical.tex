@@ -144,20 +144,19 @@ To understand the root causes of translation failures, we systematically categor
 
 \item \textbf{Missing or Undefined Symbols} This category encompasses:
 \begin{itemize}[leftmargin=*]
-\item \textit{Untranslated dependencies}: When translating a method, models may reference methods from other classes that were not translated or were translated with different signatures.
-\item \textit{Inconsistent naming}: The same Java entity may receive different C++ names across different translation passes (e.g., \texttt{ArrayList} translated as \texttt{vector}, \texttt{Vector}, or \texttt{list} inconsistently).
-\item \textit{Fragmented type definitions}: Forward declarations may be omitted, or definitions may be split across headers incorrectly, causing linker failures.
+\item \textit{Untranslated dependencies}: When translating a method, models may reference methods from other classes that were translated with different signatures.
+\item \textit{Fragmented type definitions}: Forward declarations may be omitted, or definitions may be split across headers incorrectly, causing redefinition errors.
 \end{itemize}
 
-\item \textbf{Type System Errors} (affecting 26.6\% of methods on average): Type mismatches, incorrect conversions, and template instantiation errors reflect fundamental differences between Java's and C++'s type systems:
+\item \textbf{Type System Errors} 
 \begin{itemize}[leftmargin=*]
-\item \textit{Generics vs templates}: Java generics use type erasure, enabling flexible wildcard types (\texttt{? extends T}), whereas C++ templates require concrete type parameters, complicating generic container translation.
-\item \textit{Primitive vs object types}: Java's autoboxing automatically converts between primitives (e.g., \texttt{int}) and wrapper types (e.g., \texttt{Integer}), while C++ requires explicit conversions or template specialization.
-\item \textit{Nullability semantics}: Java's reference types can be \texttt{null}, but C++ distinguishes between pointers, references, and value types, each with different null semantics.
+\item \textit{Unsupported overload}: Some unsupported overloaded methods were used. For example, cannot stream std::exception\_ptr directly with operator<<.
+\item \textit{Unsupported type conversion}: Some unsupported types were used. For example, cannot convert std::unique\_ptr to std::string.
+\item \textit{Wrong return type}: Incorrect return value types were returned.
 \end{itemize}
 \end{enumerate}
 
-Figure~\ref{fig:empirical_error_stacked} illustrates the relative composition of error types across configurations, demonstrating that Build/Include and Missing Symbols consistently comprise 70--80\% of all errors regardless of model or strategy.
+Figure~\ref{fig:empirical_error_stacked} illustrates the relative composition of error types across configurations.
 
 \begin{figure*}[htbp]
 \centering
@@ -168,39 +167,23 @@ Figure~\ref{fig:empirical_error_stacked} illustrates the relative composition of
 
 \textbf{Model-Specific Patterns.} While overall error distributions are similar, subtle differences emerge:
 \begin{itemize}[leftmargin=*]
-\item \textbf{Qwen-3.5Plus} exhibits higher Type System error rates (affecting 83.2\% of methods for Cookie, file-by-file), suggesting weaker reasoning about generic type mappings and template constraints.
-\item \textbf{DeepSeek-V3.2} shows elevated Missing Symbols errors in fault tolerance modules (affecting 120.5--131.5\% of methods, indicating multiple errors per method), indicating difficulty maintaining API consistency across complex inheritance hierarchies.
-\item \textbf{ChatGPT-5.1} demonstrates relatively balanced error distribution but with consistently high Build/Include errors (affecting 59.6--100\% of methods), reflecting challenges in header dependency resolution.
+\item \textbf{Qwen-3.5Plus} exhibits higher Type System error rates (affecting over 99\% methods in file-by-file strategy), suggesting weaker reasoning about generic type mappings and template constraints.
+\item \textbf{DeepSeek-V3.2} shows elevated Missing Symbols errors in file-by-file strategy (affecting over 70\% methods), indicating difficulty maintaining API consistency across complex inheritance hierarchies.
+\item \textbf{ChatGPT-5.1} demonstrates relatively balanced error distribution but with consistently high Build/Include errors (affecting over 60\% methods), reflecting challenges in header dependency resolution.
 \end{itemize}
 
 \textbf{Strategy-Dependent Variations.} Comparing segmentation strategies:
 \begin{itemize}[leftmargin=*]
-\item \textbf{File-by-file} results in fewer methods with Missing Symbols errors on average (34.5\% vs 49.0\%), confirming that broader context helps maintain API consistency.
+\item \textbf{File-by-file} results in fewer methods with Missing Symbols errors on average, confirming that broader context helps maintain API consistency.
 \item \textbf{Method-by-method} generates more Redeclaration and Definition Mismatch errors, likely due to translating methods without visibility of existing declarations in headers.
-\item Both strategies exhibit comparable Build/Include error rates (55.8\% vs 55.7\%), indicating that header dependency resolution remains challenging regardless of segmentation granularity.
+\item Both strategies exhibit comparable Build/Include error rates , indicating that header dependency resolution remains challenging regardless of segmentation granularity.
 \end{itemize}
 
-\textbf{Key Findings for RQ2.}
-\begin{enumerate}[leftmargin=*]
-\item Build/Include errors are the most common failure mode (affecting 55.8\% of methods on average), highlighting fundamental challenges in mapping Java's automatic import system to C++'s explicit include model.
-\item Missing or Undefined Symbols rank second (affecting 41.7\% of methods on average), indicating that models struggle to maintain translation completeness and API consistency across compilation units.
-\item Type System errors represent the third major category (affecting 26.6\% of methods on average), reflecting semantic gaps between Java's unified type system and C++'s more complex template-based generics.
-\item Error patterns are consistent across models and strategies, suggesting that these failures stem from inherent challenges in cross-language translation rather than model-specific deficiencies.
-\item Method-by-method translation produces more declaration/definition inconsistencies, while file-by-file better preserves API coherence at the cost of increased context window requirements.
-\end{enumerate}
-
-\subsection{Discussion}
-
-Our empirical study reveals several critical insights that motivate the design of our proposed approach:
-
-\textbf{Context is critical.} The 2--18$\times$ performance gap between file-by-file and method-by-method translation demonstrates that broader contextual awareness substantially improves translation quality. However, file-level context remains insufficient for complex projects, as evidenced by low overall success rates (max: 19.32\%). This motivates our \textbf{project-level context propagation} design, which maintains translation consistency across the entire codebase through hierarchical dependency tracking.
-
-\textbf{Dependency management is fundamental.} Build/Include and Missing Symbols errors collectively account for $\sim$60\% of all failures, indicating that models lack systematic mechanisms for tracking cross-file dependencies. Our approach addresses this through \textbf{static analysis and call graph extraction}, which explicitly model dependency relationships and guide translation ordering to ensure that dependencies are resolved before use.
-
-\textbf{Type system translation requires semantic understanding.} Type System errors persist across all models despite extensive training on code, suggesting that surface-level pattern matching is insufficient for bridging Java's and C++'s fundamentally different type semantics. Our \textbf{two-pass scheme generation} separates high-level type mapping strategy from implementation, enabling models to reason explicitly about generic-to-template conversion, nullability translation, and memory management before generating code.
-
-\textbf{Fragmented translation amplifies errors.} Method-by-method translation's poor performance reveals that processing code in isolation causes inconsistencies that compound across translation units. Our \textbf{bottom-up translation with context propagation} ensures that callees are translated before callers, allowing already-translated code to serve as reference examples and reinforcing consistent API usage patterns throughout the project.
-
-\textbf{Validation is essential.} Even under optimal configurations (Qwen-3.5Plus, file-by-file), 80\% of files fail to compile, underscoring that LLMs cannot reliably generate correct code in a single pass. Our \textbf{autonomous compilation agent} addresses this through iterative compilation and repair, automatically detecting and fixing errors that escape initial translation.
-
-These findings collectively demonstrate that repository-level translation requires a systematic approach combining static analysis, dependency-aware translation ordering, explicit scheme generation, and iterative validation—design principles that directly inform our proposed framework in Section~\ref{sec:approach}.
+% \textbf{Key Findings for RQ2.}
+% \begin{enumerate}[leftmargin=*]
+% \item Build/Include errors are the most common failure mode, highlighting fundamental challenges in mapping Java's automatic import system to C++'s explicit include model.
+% \item Missing or Undefined Symbols rank second, indicating that models struggle to maintain translation completeness and API consistency across compilation units.
+% \item Type System errors represent the third major category, reflecting semantic gaps between Java's unified type system and C++'s more complex template-based generics.
+% \item Error patterns are consistent across models and strategies, suggesting that these failures stem from inherent challenges in cross-language translation rather than model-specific deficiencies.
+% \item Method-by-method translation produces more declaration/definition inconsistencies, while file-by-file better preserves API coherence at the cost of increased context window requirements.
+% \end{enumerate}
