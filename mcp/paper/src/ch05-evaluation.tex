@@ -1,1 +1,90 @@
 \section{Experiments}
+
+\begin{figure*}[!t]
+    \centering
+    \begin{subfigure}{0.33\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/RCE.pdf}
+           \vspace{-9pt}
+        \caption{Remote Code Execution}
+        \label{fig:sub1}
+    \end{subfigure}%
+    \begin{subfigure}{0.33\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/SID.pdf}
+           \vspace{-9pt}
+        \caption{Sensitive Information Disclosure}
+        \label{fig:sub2}
+    \end{subfigure}%
+     \begin{subfigure}{0.33\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/IFO.pdf}
+            \vspace{-9pt}
+        \caption{Insecure File Operation}
+        \label{fig:sub3}
+    \end{subfigure}%
+    \hfill
+
+     \begin{subfigure}{0.33\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/SQLi.pdf}
+           \vspace{-9pt}
+        \caption{SQL Injection}
+        \label{fig:sub4}
+    \end{subfigure}%
+     \begin{subfigure}{0.33\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/DOS.pdf}
+            \vspace{-9pt}
+        \caption{Denial of Service}
+        \label{fig:sub5}
+    \end{subfigure}
+    \vspace{-10pt}
+    \caption{Experimental Results w.r.t MCP Tool Vulnerability Types}
+    \label{fig:eva2}
+\end{figure*}
+
+
+
+\begin{table}[!t]
+\centering
+\small\caption{Experiment Results}
+\vspace{-10pt}
+    \begin{tabular}{m{2cm}m{1.5cm}m{1.5cm}m{1cm}m{1cm}}
+\toprule
+\textbf{Model} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{MPA} \\
+\midrule
+Claude Haiku-4-5 & 0.932 & 0.920 & 0.926 & 0.853 \\
+DeepSeek-V3-2 & 0.866 & 0.947 & 0.905 & 0.800\\
+GPT-5-mini & 0.775 & 0.920 & 0.842 & 0.653 \\
+Bandit & 0.688 & 0.293 & 0.411 & 0.227\\
+Semgrep & 0.800 & 0.053 & 0.100 & 0.053\\
+AI-Infra-Guard & 0.333 & 0.2667 & 0.296 & 0.107\\
+\bottomrule
+\end{tabular}
+
+\label{tab:eva}
+\end{table}
+
+
+
+
+\subsection{Experiment Setup}
+
+\textbf{Evaluated Baselines.} We evaluate a diverse set of baselines, ranging from state-of-the-art LLMs to industry-standard security analysis platforms, including \textbf{Claude Haiku 4.5}~\cite{claude}, \textbf{DeepSeek-V3.2}~\cite{DeepSeekAI2025DeepSeekV32PT}, \textbf{GPT-5-mini}~\cite{gpt5mini}, \textbf{Bandit}~\cite{badit} (Developed by the OpenStack Security Team), Semgrep~\cite{semgrep} and \textbf{AI-Infra-Guard}~\cite{aiinfraguard} (Released by Tencent Zhuque Lab).
+
+\textbf{Configuration.} We set the generation temperature to 0.0, disable streaming, and use a 120-second timeout per API request. The evaluation employs dual prompts: a system prompt defining the five MCP vulnerability types, and a user prompt containing the raw Python code of the target server. Security tools (Bandit and AI-Infra-Guard) are run with default settings. To prevent models from exploiting sample order, we shuffle the JSONL dataset with \texttt{random.shuffle()} and a fixed seed, ensuring each sample is evaluated independently. To ensure experimental fairness, we disabled the dynamic penetration testing components of AI-Infra-Guard, and retained only its static analysis functionality in our experimental setting.
+
+
+
+\textbf{Prompt Design.} We use a zero-shot, role-playing prompting strategy for LLM evaluation, separating the prompt into a system and a user prompt to ensure clarity and output stability. The system prompt assigns the role of an “expert security researcher” for Python MCP auditing and embeds the full vulnerability taxonomy, including code-level indicators across five categories. Responses are strictly constrained to a JSON schema with \texttt{is\_vulnerable}, \texttt{vulnerability\_type}, and \texttt{reasoning} fields. The user prompt provides only the raw Python source code.
+
+
+\subsection{Results}
+
+
+Table~\ref{tab:eva} shows the overall evaluation results. Claude Haiku-4-5 achieves the highest MPA (0.853), reflecting strong ability to distinguish vulnerable MCP servers from their fixed counterparts, while GPT-5-mini's MPA (0.653) drops significantly below its F1-score (0.842), indicating difficulty in correctly pairing vulnerable and fixed instances. Static tools like Bandit and Semgrep show even larger gaps. Figure~\ref{fig:eva2} illustrates the performance of the evaluated methods across different vulnerability types. Overall, all three LLMs struggle to detect MCP tool vulnerabilities related to insecure file operations, while industrial analysis platforms perform poorly in identifying sensitive information disclosure and denial-of-service vulnerabilities. The MPA is consistently lower than precision, recall, and f1-score across all vulnerability types. On average, all evaluated detectors achieve the lowest MPA on insecure file operation (0.312). 
+
+Our experiments reveal the limitations of existing detectors. Furthermore, MPA effectively captures a detector's semantic understanding and exposes shortcomings in fine-grained vulnerability reasoning that traditional metrics often overlook.
+
+

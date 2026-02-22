@@ -2,31 +2,38 @@
 
 \section{Empirical Study}
 
-This section presents a comprehensive study of the performace of LLMs on real-world Java projects. Without employing complex dependency analysis and other enhancement methods, there are two naive translation schemes:
 
-\textbf{File-level Translation}: File-by-file translation using LLMs with minimal context.
 
-\textbf{Method-level Translation}: Method-by-method translation using LLMs with minimal context.
+We conduct an empirical study to systematically examine the effectiveness and limitations of large language models for repository-level C++-to-Java translation. 
 
-\subsection{Research Questions}
 
-Our study addresses the following research questions:
+Given that repositories may exceed model input limits, segmentation of the source code is required prior to translation. We consider two representative segmentation schemes that reflect common developer usage scenarios when applying large language models: \textit{(a) File-by-file translation}. Each source file is translated independently without explicit cross-file contextual information. \textit{(b) Method-by-method translation.} Each C++ method (function) is translated independently, allowing finer-grained control while sacrificing broader cross-method context awareness.
 
-\begin{itemize}
-\item \textbf{RQ1}: What are the main problems that arise during the translation process using these two methods?
-\item \textbf{RQ2}: What is the problems distribution of these two methods?
-\item \textbf{RQ3}: How does the performance compare between File-level and Method-level Translation?
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{RQ1}: How is the effectiveness of large language models in repository-level C++-to-Java translation using representative segmentation schemes?
+\item \textbf{RQ2}: What are the common failure patterns in repository-level C++-to-Java translation using large language models?
+% \item \textbf{RQ3}: How does the performance compare between File-level and Method-level Translation?
 \end{itemize}
 
+
+% What are the problems of failing cases in large language models in repository-level C++-to-Java translation?
+
 \subsection{Setup}
-\subsubsection{Dataset}
+
+\textbf{Dataset.}
+\todo{How is Java projects collected?}
+
 We evaluated the performance of LLMs on file groups from real-world Java projects representing different domains and complexity levels:
-\begin{table*}[h]
+
+After translation, we manually analyzed the translated code and identified various problems. It is important to note that our manual analysis may not have identified all issues—these findings represent the problems we discovered through systematic code review, rather than a complete enumeration of all defects. We focus our analysis on understanding the distribution and characteristics of these problems, which reveal fundamental challenges in LLM-based code translation.
+
+\begin{table}[!t]
 \centering
 \small
-\begin{tabular}{lcccc}
+    \begin{tabular}{m{1.5cm}m{2cm}m{1cm}m{1cm}m{2cm}}
 \toprule
-\textbf{Translation Module} & \textbf{Main Class} & \textbf{File Count} & \textbf{Method Count} & \textbf{Domain} \\
+\textbf{Translation Module} & \textbf{Main Class} & \textbf{File (\#)} & \textbf{Method (\#)} & \textbf{Domain} \\
 \midrule
 Module1 & Cookie & 8 & 45 & HTTP Library \\
 Module2 & IntMath & 7 & 236 & Math Library \\
@@ -37,84 +44,25 @@ Module5 & NoopIndexDAO & 21 & 502 & Database Library \\
 \textbf{Total} & -- & 77 & 1250 & -- \\
 \bottomrule
 \end{tabular}
-\caption{Characteristics of evaluation dataset}
+\caption{Characteristics of our Evaluation Dataset}
 \label{tab:dataset}
-\end{table*}
+\end{table}
 
-After translation, we manually analyzed the translated code and identified various problems. It is important to note that our manual analysis may not have identified all issues—these findings represent the problems we discovered through systematic code review, rather than a complete enumeration of all defects. We focus our analysis on understanding the distribution and characteristics of these problems, which reveal fundamental challenges in LLM-based code translation.
+\textbf{RQ Setup.} To study RQ1, we. To study RQ2, we . To study RQ3, we 
 
-\subsection{Results}
+\subsection{Effectiveness (RQ1)}
 
-\subsubsection{RQ1: Main Problems in Translation}
 
-Through manual code analysis, we identified and categorized 11 distinct types of translation problems. Table~\ref{tab:error-categories} summarizes these problem types with descriptions and examples.
-
-\begin{table*}[h]
-\centering
-\small
-\begin{tabular}{p{0.5cm}p{8cm}p{5cm}}
-\toprule
-\textbf{Type} & \textbf{Problem Description} & \textbf{Example} \\
-\midrule
-Err\_1 & Reference to non-existent methods or member variables & Calling \texttt{getCause()} on \texttt{std::exception} \\
-Err\_2 & Parameter signature mismatch & Wrong parameter types in function calls \\
-Err\_3 & Missing header files & Using \texttt{std::set} without \texttt{<set>} \\
-Err\_4 & Method completely unimplemented & Declaration provided but no implementation \\
-Err\_6 & Variable initialization/usage errors & Reference members not initialized \\
-Err\_8 & Incorrect pointer usage & Dereferencing \texttt{void*} to access members \\
-Err\_9 & Reference to non-existent classes & Using Java's \texttt{Date} class in C++ \\
-Err\_10 & Method partially unimplemented & Missing core logic in method body \\
-Err\_11 & Improper memory management & Memory leaks without corresponding deallocation \\
-\bottomrule
-\end{tabular}
-\caption{Categories of translation problems identified}
-\label{tab:error-categories}
-\end{table*}
-
-The most prevalent problem types are:
-\begin{itemize}
-\item \textbf{Err\_9 (Non-existent class references)}: This occurs most frequently because LLMs often hallucinate Java-standard-library classes (e.g., \texttt{Date}, \texttt{Comparator}) that have no direct C++ equivalents. The model assumes these classes exist in the target environment without verifying C++ standard library availability.
-
-\item \textbf{Err\_1 (Non-existent method/variable references)}: LLMs generate method calls or member accesses assuming Java API semantics, but the corresponding C++ APIs either do not exist or have different signatures. For example, calling \texttt{getCause()} on \texttt{std::exception}—a method that exists in Java but not in C++.
-
-\item \textbf{Err\_2 (Parameter mismatch)}: Method calls are generated with incorrect parameter types or counts, indicating that the LLM fails to maintain consistency between function signatures and their usage sites.
-\end{itemize}
-
-These problems stem from a fundamental limitation: \textbf{LLMs translate code in isolation without awareness of the broader codebase context}. When translating individual files or methods, the model lacks visibility into:
-\begin{itemize}
-\item Which classes and methods have already been translated elsewhere
-\item The correct C++ type mappings chosen for other parts of the project
-\item Consistent API signatures established in previously translated code
-\end{itemize}
-
-This contextual vacuum leads to hallucination and generating code that appears syntactically plausible but references non-existent APIs or uses inconsistent translations of the same concept.
-
-\subsubsection{RQ2: Problem Distribution}
-
-We analyzed the distribution of problems across both translation methods. Figure~\ref{fig:error-distribution} shows the frequency of each error type.
-
-\begin{figure*}[h]
-\centering
-\includegraphics[width=0.9\textwidth]{figures/comparison.png}
-\caption{Error type distribution in File-level vs Method-level translation}
-\label{fig:error-distribution}
-\end{figure*}
-
-\textbf{Key observations:}
-
-\begin{enumerate}
-\item \textbf{Dominance of class-reference errors (Err\_9)}: Both translation methods exhibit Err\_9 as the most frequent problem, accounting for 4.2\% of File-level translations and 6.7\% of Method-level translations. This suggests that LLMs struggle significantly with mapping Java's rich standard library to C++'s more minimal standard library.
-
-\item \textbf{Consistent error patterns}: The relative ranking of error types is similar across both methods, indicating that these problems are \textit{intrinsic} to the translation task rather than artifacts of a specific translation scheme.
-
-\item \textbf{Variation by module complexity}: Modules with deeper inheritance hierarchies exhibited higher problem rates compared to utility classes . This correlation suggests that complex object-oriented structures exacerbate LLM translation difficulties.
-\end{enumerate}
-
-\subsubsection{RQ3: File-level vs Method-level Performance}
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.45\textwidth]{figures/comparison.png}
+    \caption{\todo{Effectiveness of Repository-level C++-2-Java Translation using Large Language Models}}
+    \label{fig:error}
+\end{figure}
 
 Table~\ref{tab:performance-comparison} presents a quantitative comparison between the two translation approaches.
 
-\begin{table}[h]
+\begin{table}[!t]
 \centering
 \caption{Translation Performance Comparison}
 \label{tab:performance-comparison}
@@ -129,6 +77,88 @@ Error Rate (\%) & 9.0\% & 14.0\% & +5.0pp \\\\
 \bottomrule
 \end{tabular}
 \end{table}
+
+
+\subsection{Failure Patterns (RQ2)}
+
+
+Through manual code analysis, we identified and categorized 11 distinct types of translation problems. Table~\ref{tab:error-categories} summarizes these problem types with descriptions and examples.
+
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{p{0.5cm}p{7cm}}
+\toprule
+\textbf{Type} & \textbf{Problem Description} \\
+\midrule
+E1 & Reference to non-existent methods or member variables  \\\hline
+% & Calling \texttt{getCause()} on \texttt{std::exception} \\\hline
+E2 & Parameter signature mismatch \\\hline
+% & Wrong parameter types in function calls \\\hline
+E3 & Missing header files \\\hline
+% & Using \texttt{std::set} without \texttt{<set>} \\\hline
+E4 & Method completely unimplemented \\\hline
+\\\hline& Declaration provided but no implementation \\\hline
+E6 & Variable initialization/usage errors \\\hline
+% & Reference members not initialized \\\hline
+E8 & Incorrect pointer usage \\\hline
+% & Dereferencing \texttt{void*} to access members \\\hline
+E9 & Reference to non-existent classes \\\hline
+% & Using Java's \texttt{Date} class in C++ \\\hline
+E10 & Method partially unimplemented \\\hline
+%  & Missing core logic in method body \\\hline
+E11 & Improper memory management\\ 
+%  & Memory leaks without corresponding deallocation \\
+\bottomrule
+\end{tabular}
+\caption{Categories of Failure Patterns in C++-2-Java Translation}
+\label{tab:error-categories}
+\end{table}
+
+\begin{itemize}
+\item \textbf{E1: References to non-exist methods/members (XX, XX.X\%)}: LLMs generate method calls or member accesses assuming Java API semantics, but the corresponding C++ APIs either do not exist or have different signatures. For example, calling \texttt{getCause()} on \texttt{std::exception}—a method that exists in Java but not in C++.
+\item \textbf{E2: Parameter mismatch (XX, XX.X\%)}: Method calls are generated with incorrect parameter types or counts, indicating that the LLM fails to maintain consistency between function signatures and their usage sites.
+
+\item \textbf{E3: XXX (XX, XX.X\%)}: XXX
+\item \textbf{E4: XXX (XX, XX.X\%)}: XXX
+\item \textbf{E5: XXX (XX, XX.X\%)}: XXX
+\item \textbf{E6: XXX (XX, XX.X\%)}: XXX
+\item \textbf{E7: XXX (XX, XX.X\%)}: XXX
+\item \textbf{E8: XXX (XX, XX.X\%)}: XXX 
+\item \textbf{E9: Non-existent class references (XX, XX.X\%)}: This occurs most frequently because LLMs often hallucinate Java-standard-library classes (e.g., \texttt{Date}, \texttt{Comparator}) that have no direct C++ equivalents. The model assumes these classes exist in the target environment without verifying C++ standard library availability.
+
+\end{itemize}
+
+These problems stem from a fundamental limitation: \textbf{LLMs translate code in isolation without awareness of the broader codebase context}. When translating individual files or methods, the model lacks visibility into: Which classes and methods have already been translated elsewhere? The correct C++ type mappings chosen for other parts of the project? Consistent API signatures established in previously translated code? This contextual vacuum leads to hallucination and generating code that appears syntactically plausible but references non-existent APIs or uses inconsistent translations of the same concept.
+
+
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/rq2_failure.png}
+    \caption{Distribution of Failure Types}
+    \label{fig:error}
+\end{figure}
+
+% \subsection{RQ2 Results}
+
+
+We analyzed the distribution of problems across both translation methods. Figure~\ref{fig:error-distribution} shows the frequency of each error type.
+
+
+
+\textbf{Key observations:}
+
+\begin{enumerate}
+\item \textbf{Dominance of class-reference errors (Err\_9)}: Both translation methods exhibit Err\_9 as the most frequent problem, accounting for 4.2\% of File-level translations and 6.7\% of Method-level translations. This suggests that LLMs struggle significantly with mapping Java's rich standard library to C++'s more minimal standard library.
+
+\item \textbf{Consistent error patterns}: The relative ranking of error types is similar across both methods, indicating that these problems are \textit{intrinsic} to the translation task rather than artifacts of a specific translation scheme.
+
+\item \textbf{Variation by module complexity}: Modules with deeper inheritance hierarchies exhibited higher problem rates compared to utility classes . This correlation suggests that complex object-oriented structures exacerbate LLM translation difficulties.
+\end{enumerate}
+
+
+% \subsection{RQ3 Results}
 
 % \begin{table*}[h]
 % \centering
