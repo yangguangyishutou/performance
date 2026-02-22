@@ -1,342 +1,305 @@
 """
-Generate charts for the empirical study chapter.
+Generate empirical study charts for LLM-based code translation paper.
 """
-
-import sys
-from pathlib import Path
-
-project_dir = Path(__file__).parent.parent
-if str(project_dir) not in sys.path:
-    sys.path.append(str(project_dir))
-
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 import seaborn as sns
+import numpy as np
+from pathlib import Path
 
-# Set style for academic papers
-sns.set_style("whitegrid")
-plt.rcParams['font.size'] = 10
-plt.rcParams['axes.labelsize'] = 11
-plt.rcParams['axes.titlesize'] = 12
-plt.rcParams['xtick.labelsize'] = 9
-plt.rcParams['ytick.labelsize'] = 9
-plt.rcParams['legend.fontsize'] = 9
-plt.rcParams['figure.dpi'] = 300
-plt.rcParams['savefig.dpi'] = 300
-plt.rcParams['savefig.bbox'] = 'tight'
-plt.rcParams['axes.unicode_minus'] = False
+# Set style and parameters
+plt.style.use('seaborn-v0_8-whitegrid')
+sns.set_palette("husl")
+FIGURE_DIR = Path("figures")
+FIGURE_DIR.mkdir(exist_ok=True)
 
-# Data paths
-DATA_DIR = project_dir / "data"
-FIGURES_DIR = project_dir / "figures"
+# Load data
+df_data = pd.read_csv("data/empirical_data.csv")
+df_errors = pd.read_csv("data/empirical_error_distribution.csv")
+df_source = pd.read_csv("data/empirical_source.csv")
 
-def load_data():
-    """Load all empirical data."""
-    df_data = pd.read_csv(DATA_DIR / "empirical_data.csv")
-    df_error = pd.read_csv(DATA_DIR / "empirical_error_distribution.csv")
-    df_source = pd.read_csv(DATA_DIR / "empirical_source.csv")
+# Calculate success rate
+df_data['success_rate'] = (df_data['success_file_count'] / df_data['total_cpp_count']) * 100
 
-    return df_data, df_error, df_source
+# Create readable model names
+model_names = {
+    'deepseek-v3.2': 'DeepSeek-V3.2',
+    'qwen-3.5plus': 'Qwen-3.5Plus',
+    'ChatGPT-5.1': 'ChatGPT-5.1'
+}
+df_data['model'] = df_data['ai_name'].map(model_names)
+df_errors['model'] = df_errors['ai_name'].map(model_names)
 
-def calculate_success_rate(df):
-    """Calculate success rates."""
-    df['success_rate'] = df['success_file_count'] / df['total_cpp_count']
-    return df
+# ===================================================================
+# Chart 1: Overall Success Rate by Model and Strategy (RQ1)
+# ===================================================================
+fig, ax = plt.subplots(figsize=(10, 6))
 
-def create_success_rate_bar_chart(df, output_path):
-    """Create bar chart comparing success rates across models and strategies."""
-    df = calculate_success_rate(df)
+# Group by model and strategy
+grouped = df_data.groupby(['model', 'strategy'])['success_rate'].mean().reset_index()
+pivot_data = grouped.pivot(index='model', columns='strategy', values='success_rate')
 
-    # Group by model and strategy, calculate mean success rate
-    summary = df.groupby(['ai_name', 'strategy']).agg({
-        'success_file_count': 'sum',
-        'total_cpp_count': 'sum'
-    }).reset_index()
-    summary['success_rate'] = summary['success_file_count'] / summary['total_cpp_count']
+x = np.arange(len(pivot_data.index))
+width = 0.35
 
-    # Rename models for display
-    model_names = {
-        'deepseek-v3.2': 'DeepSeek-V3.2',
-        'qwen-3.5plus': 'Qwen-3.5Plus',
-        'ChatGPT-5.1': 'ChatGPT-5.1'
-    }
-    summary['ai_name_display'] = summary['ai_name'].map(model_names)
+bars1 = ax.bar(x - width/2, pivot_data['class'], width, label='File-by-file', color='#3498db', alpha=0.8)
+bars2 = ax.bar(x + width/2, pivot_data['method'], width, label='Method-by-method', color='#e74c3c', alpha=0.8)
 
-    strategy_names = {
-        'class': 'File-by-File',
-        'method': 'Method-by-Method'
-    }
-    summary['strategy_display'] = summary['strategy'].map(strategy_names)
+ax.set_xlabel('Model', fontsize=12, fontweight='bold')
+ax.set_ylabel('Compilation Success Rate (%)', fontsize=12, fontweight='bold')
+ax.set_title('RQ1: Translation Effectiveness by Model and Segmentation Strategy', fontsize=14, fontweight='bold')
+ax.set_xticks(x)
+ax.set_xticklabels(pivot_data.index)
+ax.legend(loc='upper right')
+ax.grid(axis='y', alpha=0.3)
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(7, 4.5))
+# Add value labels on bars
+for bars in [bars1, bars2]:
+    for bar in bars:
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width()/2., height,
+                f'{height:.1f}%', ha='center', va='bottom', fontsize=10)
 
-    models = summary['ai_name_display'].unique()
-    strategies = summary['strategy_display'].unique()
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'empirical_success_rate.pdf', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'empirical_success_rate.png', dpi=300, bbox_inches='tight')
+print("✓ Generated: empirical_success_rate.pdf/png")
 
-    x = np.arange(len(models))
-    width = 0.35
+# ===================================================================
+# Chart 2: Success Rate by Project (RQ1)
+# ===================================================================
+fig, ax = plt.subplots(figsize=(12, 6))
 
-    colors = ['#4472C4', '#ED7D31']
+projects = df_data['translation_unit'].unique()
+models = df_data['model'].unique()
+strategies = df_data['strategy'].unique()
 
-    for i, strategy in enumerate(strategies):
-        data = summary[summary['strategy_display'] == strategy]['success_rate'].values
-        offset = (i - 0.5) * width
-        ax.bar(x + offset, data, width, label=strategy, color=colors[i])
+x = np.arange(len(projects))
+width = 0.13
+bar_positions = np.arange(len(projects))
 
-    ax.set_xlabel('Model', fontweight='bold')
-    ax.set_ylabel('Success Rate', fontweight='bold')
-    ax.set_title('Translation Success Rates by Model and Strategy', fontweight='bold')
-    ax.set_xticks(x)
-    ax.set_xticklabels(models)
-    ax.legend(loc='upper right')
-    ax.set_ylim(0, 0.3)
+colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6']
+bars_list = []
 
-    # Add value labels on bars
-    for i, strategy in enumerate(strategies):
-        data = summary[summary['strategy_display'] == strategy]['success_rate'].values
-        offset = (i - 0.5) * width
-        for j, val in enumerate(data):
-            ax.text(j + offset, val + 0.005, f'{val:.2%}',
-                   ha='center', va='bottom', fontsize=8)
+for i, (model, strategy) in enumerate([(m, s) for m in models for s in strategies]):
+    data_subset = df_data[(df_data['model'] == model) & (df_data['strategy'] == strategy)]
+    rates = [data_subset[data_subset['translation_unit'] == p]['success_rate'].values[0]
+             if p in data_subset['translation_unit'].values else 0
+             for p in projects]
 
-    plt.tight_layout()
-    plt.savefig(output_path, format='pdf')
-    print(f"Saved: {output_path}")
-    plt.close()
+    offset = (i - len(models)*len(strategies)/2 + 0.5) * width
+    bars = ax.bar(bar_positions + offset, rates, width,
+                  label=f'{model}\n({strategy})',
+                  alpha=0.8, color=colors[i % len(colors)])
+    bars_list.append(bars)
 
-def create_success_rate_by_project(df, df_source, output_path):
-    """Create grouped bar chart showing success rates by project."""
-    df = calculate_success_rate(df)
-    df = df.merge(df_source, on='translation_unit')
+ax.set_xlabel('Translation Unit (Project)', fontsize=12, fontweight='bold')
+ax.set_ylabel('Compilation Success Rate (%)', fontsize=12, fontweight='bold')
+ax.set_title('RQ1: Success Rate Across Different Projects', fontsize=14, fontweight='bold')
+ax.set_xticks(bar_positions)
+ax.set_xticklabels([f'{p}\n({df_source[df_source["translation_unit"]==p]["domain"].values[0]})'
+                    for p in projects], fontsize=9)
+ax.legend(loc='upper right', fontsize=8, ncol=2)
+ax.grid(axis='y', alpha=0.3)
 
-    # Rename models and strategies for display
-    model_names = {
-        'deepseek-v3.2': 'DeepSeek-V3.2',
-        'qwen-3.5plus': 'Qwen-3.5Plus',
-        'ChatGPT-5.1': 'ChatGPT-5.1'
-    }
-    df['ai_name_display'] = df['ai_name'].map(model_names)
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'empirical_success_by_project.pdf', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'empirical_success_by_project.png', dpi=300, bbox_inches='tight')
+print("✓ Generated: empirical_success_by_project.pdf/png")
 
-    strategy_names = {
-        'class': 'File-by-File',
-        'method': 'Method-by-Method'
-    }
-    df['strategy_display'] = df['strategy'].map(strategy_names)
+# ===================================================================
+# Chart 3: Error Type Heatmap (RQ2)
+# ===================================================================
+# Aggregate error rates by model and strategy
+error_cols = [col for col in df_errors.columns if col not in
+              ['translate_unit', 'ai_name', 'strategy', 'model']]
 
-    # Create figure with subplots for each model
-    models = df['ai_name_display'].unique()
-    fig, axes = plt.subplots(1, 3, figsize=(14, 3.5), sharey=True)
+heatmap_data = df_errors.groupby(['model', 'strategy'])[error_cols].mean().reset_index()
 
-    projects = df['translation_unit'].unique()
-    strategies = df['strategy_display'].unique()
+# Create combined label
+heatmap_data['config'] = heatmap_data['model'] + '\n(' + heatmap_data['strategy'].replace({'class': 'file-by-file',
+    'method': 'method-by-method'}) + ')'
 
-    for idx, model in enumerate(models):
-        ax = axes[idx]
-        model_data = df[df['ai_name_display'] == model]
+# Reorder and prepare data
+heatmap_matrix = heatmap_data.set_index('config')[error_cols].T
 
-        x = np.arange(len(projects))
-        width = 0.35
+# Shorten error type names for display
+error_labels = {
+    'SYNTAX_LANGUAGE_ERROR': 'Syntax',
+    'TYPE_SYSTEM_ERROR': 'Type System',
+    'DECLARE_DEFINITION_MISMATCH': 'Decl/Def Mismatch',
+    'MISSING_UNDEFINED_SYMBOLS': 'Missing Symbols',
+    'INHERITANCE_VIRTUAL_ERROR': 'Inheritance/Virtual',
+    'CONSTRUCTOR_DESTRUCTOR_ERROR': 'Constructor/Destructor',
+    'TEMPLATE_ERROR': 'Template',
+    'ACCESS_SCOPE_ERROR': 'Access Scope',
+    'REDEFINITION_ERROR': 'Redefinition',
+    'BUILD_INCLUDE_ERROR': 'Build/Include',
+    'OTHER_ERROR': 'Other'
+}
 
-        for i, strategy in enumerate(strategies):
-            data = []
-            for proj in projects:
-                proj_data = model_data[(model_data['translation_unit'] == proj) &
-                                     (model_data['strategy_display'] == strategy)]
-                if not proj_data.empty:
-                    data.append(proj_data['success_rate'].values[0])
-                else:
-                    data.append(0)
+heatmap_matrix.index = [error_labels.get(col, col) for col in heatmap_matrix.index]
 
-            offset = (i - 0.5) * width
-            ax.bar(x + offset, data, width, label=strategy, color=['#4472C4', '#ED7D31'][i])
+fig, ax = plt.subplots(figsize=(12, 8))
 
-        ax.set_xlabel('Project', fontweight='bold')
-        ax.set_ylabel('Success Rate' if idx == 0 else '', fontweight='bold')
-        ax.set_title(model, fontweight='bold')
-        ax.set_xticks(x)
-        ax.set_xticklabels([p[:15] for p in projects], rotation=15, ha='right')
-        ax.set_ylim(0, 0.6)
+sns.heatmap(heatmap_matrix, annot=True, fmt='.3f', cmap='YlOrRd',
+            cbar_kws={'label': 'Percentage of Methods with Error'},
+            linewidths=0.5, ax=ax)
 
-        if idx == 2:
-            ax.legend(loc='upper right')
+ax.set_title('RQ2: Error Type Distribution Across Models and Strategies', fontsize=14, fontweight='bold')
+ax.set_xlabel('Model (Strategy)', fontsize=12, fontweight='bold')
+ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
 
-    plt.tight_layout()
-    plt.savefig(output_path, format='pdf')
-    print(f"Saved: {output_path}")
-    plt.close()
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'empirical_error_heatmap.pdf', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'empirical_error_heatmap.png', dpi=300, bbox_inches='tight')
+print("✓ Generated: empirical_error_heatmap.pdf/png")
 
-def create_error_distribution_heatmap(df_error, output_path):
-    """Create heatmap showing error distribution."""
-    # Load error type descriptions
-    error_types_path = DATA_DIR / "empirical_error_types.txt"
-    with open(error_types_path, 'r') as f:
-        error_type_lines = f.readlines()
+# ===================================================================
+# Chart 4: Stacked Error Distribution by Configuration (RQ2)
+# ===================================================================
+# Aggregate error data
+stacked_data = df_errors.groupby(['model', 'strategy'])[error_cols].mean().reset_index()
+stacked_data['config'] = stacked_data['model'] + ' (' + stacked_data['strategy'].replace({
+    'class': 'file-by-file',
+    'method': 'method-by-method'
+}) + ')'
 
-    error_type_labels = {}
-    for line in error_type_lines:
-        if ':' in line:
-            num, desc = line.strip().split(':', 1)
-            short_name = desc.split(':')[0].strip()
-            error_type_labels[short_name] = desc
+# Select top 8 error types for clarity and group others
+stacked_data_plot = stacked_data.set_index('config')[error_cols]
+stacked_data_plot.columns = [error_labels.get(col, col) for col in stacked_data_plot.columns]
 
-    # Aggregate error data across all projects for each model and strategy
-    error_cols = [col for col in df_error.columns if col not in
-                  ['translate_unit', 'ai_name', 'strategy']]
+fig, ax = plt.subplots(figsize=(12, 6))
 
-    summary = df_error.groupby(['ai_name', 'strategy'])[error_cols].mean().reset_index()
+stacked_data_plot.plot(kind='bar', stacked=True, ax=ax, colormap='tab20')
+ax.set_xlabel('Model (Strategy)', fontsize=12, fontweight='bold')
+ax.set_ylabel('Percentage of Methods with Error', fontsize=12, fontweight='bold')
+ax.set_title('RQ2: Error Type Distribution by Configuration', fontsize=14, fontweight='bold')
+ax.legend(title='Error Type', bbox_to_anchor=(1.05, 1), loc='upper left')
+ax.grid(axis='y', alpha=0.3)
 
-    # Rename for display
-    model_names = {
-        'deepseek-v3.2': 'DeepSeek',
-        'qwen-3.5plus': 'Qwen',
-        'ChatGPT-5.1': 'ChatGPT'
-    }
-    summary['model_display'] = summary['ai_name'].map(model_names)
-    summary['strategy_display'] = summary['strategy'].map({
-        'class': 'File', 'method': 'Method'
-    })
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'empirical_error_stacked.pdf', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'empirical_error_stacked.png', dpi=300, bbox_inches='tight')
+print("✓ Generated: empirical_error_stacked.pdf/png")
 
-    # Create labels
-    summary['label'] = summary['model_display'] + '\n(' + summary['strategy_display'] + ')'
+# ===================================================================
+# Chart 5: Error Type Occurrence Rate by Configuration (RQ2)
+# ===================================================================
+# Aggregate error data by model and strategy
+error_by_config = df_errors.groupby(['model', 'strategy'])[error_cols].mean().reset_index()
 
-    # Select top error types
-    error_means = summary[error_cols].mean()
-    top_errors = error_means.nlargest(6).index.tolist()
+# Create configuration labels
+error_by_config['config'] = error_by_config['model'] + ' (' + error_by_config['strategy'].replace({
+    'class': 'file-by-file',
+    'method': 'method-by-method'
+}) + ')'
 
-    plot_data = summary.set_index('label')[top_errors] * 100  # Convert to percentage
+# Melt the data for grouped bar plot
+error_melted = error_by_config.melt(
+    id_vars=['config'],
+    value_vars=error_cols,
+    var_name='error_type',
+    value_name='occurrence_rate'
+)
 
-    # Create figure
-    fig, ax = plt.subplots(figsize=(9, 4))
+# Convert to percentage
+error_melted['occurrence_rate'] = error_melted['occurrence_rate'] * 100
 
-    sns.heatmap(plot_data, annot=True, fmt='.1f', cmap='YlOrRd',
-                cbar_kws={'label': 'Error Rate (%)'},
-                linewidths=0.5, ax=ax)
+# Create short error labels
+error_melted['error_label'] = error_melted['error_type'].map(error_labels)
 
-    ax.set_xlabel('Error Type', fontweight='bold')
-    ax.set_ylabel('Model (Strategy)', fontweight='bold')
-    ax.set_title('Distribution of Common Error Types', fontweight='bold')
+# Sort by error type for better visualization
+error_order = error_melted.groupby('error_label')['occurrence_rate'].mean().sort_values(ascending=False).index
+error_melted['error_label'] = pd.Categorical(error_melted['error_label'], categories=error_order, ordered=True)
 
-    # Shorten error type labels
-    short_labels = {
-        'TYPE_SYSTEM_ERROR': 'Type System',
-        'MISSING_UNDEFINED_SYMBOLS': 'Missing/Undef. Symbols',
-        'BUILD_INCLUDE_ERROR': 'Build/Include',
-        'SYNTAX_LANGUAGE_ERROR': 'Syntax/Language',
-        'REDEFINITION_ERROR': 'Redefinition',
-        'DECLARE_DEFINITION_MISMATCH': 'Decl/Def Mismatch'
-    }
-    ax.set_xticklabels([short_labels.get(col, col) for col in top_errors])
+fig, ax = plt.subplots(figsize=(14, 7))
 
-    plt.tight_layout()
-    plt.savefig(output_path, format='pdf')
-    print(f"Saved: {output_path}")
-    plt.close()
+# Create grouped bar plot
+sns.barplot(
+    data=error_melted,
+    x='error_label',
+    y='occurrence_rate',
+    hue='config',
+    palette='tab10',
+    ax=ax
+)
 
-def create_error_distribution_stacked(df_error, df_source, output_path):
-    """Create stacked bar chart of error distribution by project."""
-    error_cols = [col for col in df_error.columns if col not in
-                  ['translate_unit', 'ai_name', 'strategy']]
+ax.set_xlabel('Error Type', fontsize=12, fontweight='bold')
+ax.set_ylabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
+ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
+ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
+ax.grid(axis='y', alpha=0.3)
 
-    # Merge with source info
-    df_merged = df_error.merge(df_source,
-                               left_on='translate_unit',
-                               right_on='translation_unit',
-                               how='left')
+# Rotate x labels for better readability
+plt.xticks(rotation=45, ha='right')
 
-    # Aggregate by model and strategy
-    summary = df_merged.groupby(['ai_name', 'strategy'])[error_cols].mean().reset_index()
+# Add value labels on top of bars (only for values > 5% to avoid clutter)
+for container in ax.containers:
+    ax.bar_label(container, fmt='%.1f%%', fontsize=7, padding=2)
 
-    # Rename for display
-    model_names = {
-        'deepseek-v3.2': 'DeepSeek-V3.2',
-        'qwen-3.5plus': 'Qwen-3.5Plus',
-        'ChatGPT-5.1': 'ChatGPT-5.1'
-    }
-    summary['model_display'] = summary['ai_name'].map(model_names)
-    summary['strategy_display'] = summary['strategy'].map({
-        'class': 'File-by-File',
-        'method': 'Method-by-Method'
-    })
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'empirical_error_by_type.pdf', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'empirical_error_by_type.png', dpi=300, bbox_inches='tight')
+print("✓ Generated: empirical_error_by_type.pdf/png")
 
-    # Select top error types for visualization
-    error_means = summary[error_cols].mean()
-    top_errors = error_means.nlargest(5).index.tolist()
+# ===================================================================
+# Chart 5b: Horizontal Bar Chart Version
+# ===================================================================
+fig, ax = plt.subplots(figsize=(12, 8))
 
-    # Create figure
-    fig, axes = plt.subplots(1, 3, figsize=(14, 3.5), sharey=True)
+# Create horizontal bar plot
+sns.barplot(
+    data=error_melted,
+    y='error_label',
+    x='occurrence_rate',
+    hue='config',
+    palette='tab10',
+    ax=ax
+)
 
-    models = summary['model_display'].unique()
-    colors = plt.cm.Set3(range(len(top_errors)))
+ax.set_xlabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
+ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
+ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy (Horizontal)', fontsize=14, fontweight='bold')
+ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
+ax.grid(axis='x', alpha=0.3)
 
-    for idx, model in enumerate(models):
-        ax = axes[idx]
-        model_data = summary[summary['model_display'] == model]
+# Add value labels at the end of bars
+for container in ax.containers:
+    ax.bar_label(container, fmt='%.1f%%', fontsize=7, padding=3)
 
-        strategies = model_data['strategy_display'].values
-        x = np.arange(len(strategies))
-        bottom = np.zeros(len(strategies))
+plt.tight_layout()
+plt.savefig(FIGURE_DIR / 'empirical_error_by_type_horizontal.pdf', dpi=300, bbox_inches='tight')
+plt.savefig(FIGURE_DIR / 'empirical_error_by_type_horizontal.png', dpi=300, bbox_inches='tight')
+print("✓ Generated: empirical_error_by_type_horizontal.pdf/png")
 
-        for i, error_type in enumerate(top_errors):
-            values = model_data[error_type].values * 100
-            ax.bar(x, values, bottom=bottom, label=error_type.replace('_', ' '),
-                   color=colors[i], edgecolor='white', linewidth=0.5)
-            bottom += values
+# ===================================================================
+# Print Summary Statistics
+# ===================================================================
+print("\n" + "="*60)
+print("EMPIRICAL STUDY SUMMARY")
+print("="*60)
 
-        ax.set_xlabel('Translation Strategy', fontweight='bold')
-        ax.set_ylabel('Error Rate (%)' if idx == 0 else '', fontweight='bold')
-        ax.set_title(model, fontweight='bold')
-        ax.set_xticks(x)
-        ax.set_xticklabels(strategies, rotation=15, ha='right')
+print("\n--- Overall Success Rate by Model and Strategy ---")
+summary = df_data.groupby(['model', 'strategy']).agg({
+    'success_rate': ['mean', 'std'],
+    'total_cpp_count': 'sum',
+    'success_file_count': 'sum'
+}).round(2)
+print(summary)
 
-        if idx == 2:
-            ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left',
-                     fontsize=7, framealpha=0.9)
+print("\n--- Success Rate by Project ---")
+project_summary = df_data.groupby('translation_unit').agg({
+    'success_rate': ['mean', 'min', 'max']
+}).round(2)
+print(project_summary)
 
-    plt.tight_layout()
-    plt.savefig(output_path, format='pdf')
-    print(f"Saved: {output_path}")
-    plt.close()
+print("\n--- Top Error Types Across All Configurations ---")
+error_summary = df_errors[error_cols].mean().sort_values(ascending=False)
+for err_type, rate in error_summary.head(6).items():
+    label = error_labels.get(err_type, err_type)
+    print(f"{label}: {rate:.3f} errors/file")
 
-def main():
-    """Main function to generate all charts."""
-    print("Loading data...")
-    df_data, df_error, df_source = load_data()
-
-    print("\nGenerating charts...")
-
-    # 1. Success rate comparison chart
-    print("\n1. Success rate bar chart...")
-    create_success_rate_bar_chart(
-        df_data,
-        FIGURES_DIR / "empirical_success_rate.pdf"
-    )
-
-    # 2. Success rate by project
-    print("\n2. Success rate by project...")
-    create_success_rate_by_project(
-        df_data,
-        df_source,
-        FIGURES_DIR / "empirical_success_by_project.pdf"
-    )
-
-    # 3. Error distribution heatmap
-    print("\n3. Error distribution heatmap...")
-    create_error_distribution_heatmap(
-        df_error,
-        FIGURES_DIR / "empirical_error_heatmap.pdf"
-    )
-
-    # 4. Error distribution stacked bar
-    print("\n4. Error distribution stacked bar...")
-    create_error_distribution_stacked(
-        df_error,
-        df_source,
-        FIGURES_DIR / "empirical_error_stacked.pdf"
-    )
-
-    print("\nAll charts generated successfully!")
-
-if __name__ == "__main__":
-    main()
+print("\n" + "="*60)
+print("All charts generated successfully!")
+print("="*60)

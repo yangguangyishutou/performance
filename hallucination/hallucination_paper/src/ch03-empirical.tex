@@ -14,12 +14,39 @@ Given that repositories may exceed model input limits, segmentation of the sourc
 \subsection{Setup}
 
 \textbf{Dataset.}
-We selected four real-world Java projects from open-source repositories to evaluate the translation performance. These projects span multiple domains to ensure diverse scenarios:
+We selected four real-world Java projects from open-source repositories to evaluate the translation performance. In selecting translation units, we chose a series of top-ranked projects from the Java section of GitHub Trending, while excluding very famous projects (to avoid relying on prior knowledge of large models) and projects that rely too much on language features (such as reflection) and ecosystems (such as Android projects). These projects span multiple domains to ensure diverse scenarios:
+
 \begin{itemize}[leftmargin=*]
 \item \textbf{wso2-commons-httpclient}\footnote{https://github.com/wso2/commons-httpclient}: An HTTP client library (Cookie module), representing network communication utilities.
 \item \textbf{failsafe}\footnote{https://github.com/failsafe-lib/failsafe}: A fault tolerance library (CircuitBreakerExecutor and RateLimiterExecutor modules), representing resilience patterns for distributed systems.
 \item \textbf{junit5}\footnote{https://github.com/junit-team/junit5}: A testing framework (EnableJUnit4MigrationSupport module), representing testing infrastructure and migration utilities.
 \end{itemize}
+
+Given the large scale of the complete project, and for the sake of ease of experimentation, we extracted a fully functional module from the project as a translation unit. The specific method for generating translation units is as follows: First, randomly select one from the top-level functional files of the project. Then, search for all the code in the project that this file depends on, forming a complete and self-consistent unit. The example in \ref{fig:unit_example} shows the dependencies translation unit for the Cookie module.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\columnwidth]{figures/unit_example.pdf}
+\caption{An example of a translation unit extracted from source project.}
+\label{fig:unit_example}
+\end{figure}
+
+
+\begin{table*}[htbp]
+\centering
+\caption{Selected Java projects for empirical study.}
+\begin{tabular}{llll}
+\toprule
+\textbf{Translate Unit} & \textbf{File Count} & \textbf{Source Project} & \textbf{Domain} \\
+\midrule
+Cookie & 8 & wso2-commons-httpclient & http client \\
+EnableJUnit4MigrationSupport & 32 & junit5 & unit test \\
+CircuitBreakerExecutor & 23 & failsafe & fault tolerance \\
+RateLimiterExecutor & 24 & failsafe & fault tolerance \\
+\bottomrule
+\end{tabular}
+\label{tab:empirical_dataset}
+\end{table*}
 
 \textbf{Subject Models.}
 We evaluated three state-of-the-art large language models:
@@ -30,118 +57,150 @@ We evaluated three state-of-the-art large language models:
 \end{itemize}
 
 \textbf{Evaluation Metric.}
-We measure translation effectiveness using \textbf{compilation success rate}, defined as the percentage of successfully generated C++ files that compile without errors. A file is considered successfully translated only if it produces a valid compilation with no syntax errors, type mismatches, missing dependencies, or other build failures.
+We measure translation effectiveness using \textbf{compilation success rate}. We combine all the generated C++ source files and header files, and then compile each source file separately (the related header files will be compiled during this process). A successful compilation indicates that a .o file has been generated, the compilation success rate is defined as 
+$$ \frac{FileSuccessfullyCompiled}{totalCppFileCount} \times 100\% $$
 
 \textbf{Procedure.}
 For each model and segmentation scheme, we translated all Java files in the selected projects and attempted to compile the generated C++ code. We manually analyzed compilation failures and categorized errors into distinct types to identify systematic failure patterns. It is important to note that our manual analysis focuses on understanding the distribution and characteristics of identified problems, which reveal fundamental challenges in LLM-based code translation, rather than providing a complete enumeration of all possible defects.
 
-\subsection{Effectiveness (RQ1)}
+\subsection{RQ1: Translation Effectiveness}
 
-Figure~\ref{fig:empirical-success-rate} presents the overall translation success rates across different models and segmentation strategies.
+Figure~\ref{fig:empirical_success_rate} presents the overall compilation success rates across different models and segmentation strategies. We observe that all three models struggle with repository-level translation, with success rates ranging from 1.09\% to 19.32\%. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
 
-\begin{figure}[h]
+\begin{figure*}[htbp]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/empirical_success_rate.pdf}
-\caption{Overall translation success rates by model and strategy.}
-\label{fig:empirical-success-rate}
-\end{figure}
-
-\textbf{Key Findings:}
-
-\begin{enumerate}[leftmargin=*]
-\item \textbf{Low overall effectiveness}: Across all models and strategies, the highest success rate achieved was only 16.4\% (Qwen-3.5Plus with file-by-file translation). This demonstrates that current LLMs struggle significantly with repository-level C++-to-Java translation, even when using the most favorable segmentation approach.
-
-\item \textbf{File-by-file outperforms method-by-method}: The file-by-file strategy consistently achieves higher success rates than method-by-method translation across all models. For example, DeepSeek-V3.2 achieves 10.4\% success with file-by-file but only 6.0\% with method-by-method. Similarly, Qwen-3.5Plus drops from 16.4\% to 1.5\% when switching strategies. This suggests that preserving intra-file context (class structure, field declarations, method signatures) is critical for maintaining translation coherence.
-
-\item \textbf{Model performance varies significantly}: Qwen-3.5Plus demonstrates the best performance with file-by-file translation (16.4\%), followed by DeepSeek-V3.2 (10.4\%) and ChatGPT-5.1 (7.5\%). However, with method-by-method translation, all models converge to similarly low performance (1.5--6.0\%), indicating that segmentation strategy has a larger impact than model choice for this task.
-
-\item \textbf{Project-specific variations}: As shown in Figure~\ref{fig:empirical-success-by-project}, translation effectiveness varies substantially across projects. The Cookie module achieves the highest success rate (up to 44.4\% with Qwen-3.5Plus file-by-file), while CircuitBreakerExecutor consistently fails (0\% success for most configurations). This variation correlates with project complexity: simpler utility classes with fewer dependencies translate more successfully than complex modules with intricate inheritance hierarchies and extensive cross-file dependencies.
-
-\begin{figure*}[h]
-\centering
-\includegraphics[width=\textwidth]{figures/empirical_success_by_project.pdf}
-\caption{Translation success rates by project, model, and strategy.}
-\label{fig:empirical-success-by-project}
+\caption{Overall compilation success rates by model and segmentation strategy. File-by-file translation generally outperforms method-by-method across all models.}
+\label{fig:empirical_success_rate}
 \end{figure*}
 
-\item \textbf{Method-by-method strategy consistently fails}: The method-by-method approach shows near-zero success rates across most projects and models. For instance, RateLimiterExecutor achieves 0\% success with all models using method-by-method translation, compared to 5.6--11.1\% with file-by-file. This severe degradation indicates that translating methods in isolation, without visibility into class structure and related method implementations, introduces fatal inconsistencies that prevent compilation.
-\end{enumerate}
+\textbf{Impact of Segmentation Strategy.} Comparing the two segmentation schemes, file-by-file translation consistently outperforms method-by-method translation across all models. Specifically:
+\begin{itemize}[leftmargin=*]
+\item \textbf{DeepSeek-V3.2}: 10.29\% (file-by-file) vs 4.73\% (method-by-method)
+\item \textbf{Qwen-3.5Plus}: 19.32\% (file-by-file) vs 1.09\% (method-by-method)
+\item \textbf{ChatGPT-5.1}: 7.43\% (file-by-file) vs 6.04\% (method-by-method)
+\end{itemize}
 
-These findings collectively demonstrate that repository-level translation remains an open challenge for LLMs. The low success rates highlight fundamental limitations in current models' ability to (1) maintain global consistency across multiple translation units, (2) handle complex cross-file dependencies, and (3) preserve type-system correctness when operating on segmented inputs.
+The superior performance of file-by-file translation can be attributed to better preservation of contextual information. When translating entire files, models maintain awareness of class structures, member variable declarations, and inter-method relationships within the same compilation unit. In contrast, method-by-method translation isolates individual functions, forcing the model to infer dependencies without explicit context, leading to inconsistencies in type usage, API calls, and naming conventions.
 
-\subsection{Failure Patterns (RQ2)}
+\textbf{Model Performance.} Qwen-3.5Plus achieves the highest overall success rate at 19.32\% under file-by-file translation, followed by DeepSeek-V3.2 (10.29\%) and ChatGPT-5.1 (7.43\%). However, Qwen-3.5Plus exhibits extreme variance between strategies (19.32\% vs 1.09\%), indicating high sensitivity to segmentation granularity. This suggests that model architecture and training data significantly influence translation robustness across different input scopes.
 
-To understand the root causes of translation failures, we systematically categorized compilation errors into 11 distinct types based on error symptoms and underlying mechanisms. Figure~\ref{fig:empirical-error-heatmap} presents the distribution of the most common error types across models and strategies.
-
-\begin{figure}[h]
+\textbf{Project-Level Analysis.} Figure~\ref{fig:empirical_success_by_project} reveals substantial variation in difficulty across translation units. The Cookie module from wso2-commons-httpclient achieves the highest average success rate (12.96\%), while CircuitBreakerExecutor from failsafe proves most challenging (1.96\%). The EnableJUnit4MigrationSupport module demonstrates relatively stable performance (13.04\%) across most configurations.
+\begin{figure*}[htbp]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/empirical_error_heatmap.pdf}
-\caption{Distribution of common error types across models and strategies.}
-\label{fig:empirical-error-heatmap}
-\end{figure}
-
-\textbf{Dominant Error Types:}
-
+\includegraphics[width=0.95\textwidth]{figures/empirical_success_by_project.pdf}
+\caption{Compilation success rates across different projects. Performance varies significantly by translation unit, reflecting differences in code complexity and domain-specific patterns.}
+\label{fig:empirical_success_by_project}
+\end{figure*}
+Several factors contribute to this variance:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Code complexity}: Modules with deeper inheritance hierarchies (e.g., CircuitBreakerExecutor) present more translation challenges due to virtual function dispatch and abstract base class dependencies.
+\item \textbf{External dependencies}: Projects heavily reliant on third-party libraries (e.g., HTTP client utilities) introduce uncertainty when mapping Java APIs to C++ equivalents.
+\end{itemize}
+\textbf{Key Findings for RQ1.}
 \begin{enumerate}[leftmargin=*]
-\item \textbf{Build and Include Errors (55.8\%)}: The most prevalent failure mode involves missing header files, incorrect include directives, and build system configuration issues. This occurs because LLMs lack awareness of the project-wide include structure when translating individual files. For example, a translated C++ class may reference types from another translated file without including the appropriate header, leading to ``undefined type'' compilation errors.
-
-\item \textbf{Missing and Undefined Symbols (41.7\%)}: This category encompasses references to functions, variables, or classes that are declared but never defined, or referenced without any declaration. In method-by-method translation, this frequently occurs when a method calls another method that has not yet been translated or is defined in a separate file not visible to the model. Even with file-by-file translation, cross-file method calls often result in undefined references because the model cannot ensure consistent naming and signatures across translation boundaries.
-
-\item \textbf{Type System Errors (26.6\%)}: These errors manifest as type mismatches in variable declarations, function parameters, return values, and implicit conversions. Common patterns include:
-\begin{itemize}[leftmargin=*]
-\item Incorrectly mapping Java collection types to C++ templates (e.g., \texttt{ArrayList<T>} $\rightarrow$ \texttt{std::vector<T>} without proper instantiation syntax)
-\item Failing to propagate const-correctness through method chains
-\item Inconsistent type mapping between related files (e.g., using \texttt{String} in one file and \texttt{std::string} in another)
-\end{itemize}
-
-The higher prevalence of type errors in file-by-file translation (38.8\% vs. 14.5\% in method-by-method) suggests that preserving class structure exposes type system inconsistencies that are hidden when methods are translated in isolation.
-
-\item \textbf{Syntax and Language Feature Errors (7.8\%)}: These errors indicate fundamental misunderstandings of C++ syntax, including:
-\begin{itemize}[leftmargin=*]
-\item Incorrect template syntax (e.g., missing \texttt{typename} keywords, malformed template parameters)
-\item Semicolon placement and statement termination
-\item Improper use of C++-specific keywords (e.g., \texttt{virtual}, \texttt{override}, \texttt{constexpr})
-\end{itemize}
-
-While less common than build or symbol errors, syntax errors are particularly problematic because they prevent compilation even when the overall translation approach is sound.
-
-\item \textbf{Redefinition Errors (6.8\%)}: Redefinition occurs when the same symbol (function, variable, or class) is defined multiple times across different translation units. This is especially common in file-by-file translation when multiple files independently translate the same utility class or inline function, leading to linker errors. The higher rate of redefinition errors in file-by-file translation (8.4\% vs. 5.1\%) reflects this duplication challenge.
-
-\item \textbf{Inheritance and Virtual Function Errors (4.9\%)}: These errors involve incorrect handling of C++ object-oriented features, such as:
-\begin{itemize}[leftmargin=*]
-\item Missing \texttt{virtual} keywords on overridden methods
-\item Incorrect base class initialization lists in constructors
-\item Failure to declare pure virtual methods in abstract base classes
-\item Mismatched access specifiers (public/protected/private) in derived classes
-\end{itemize}
-
-The significantly higher rate in file-by-file translation (8.9\% vs. 0\%) indicates that when class hierarchies are preserved, models struggle to correctly translate inheritance relationships and maintain virtual function consistency across parent and child classes.
+\item Current LLMs achieve low compilation success rates (1--20\%) for repository-level translation, indicating substantial limitations in handling real-world project complexity.
+\item File-by-file translation outperforms method-by-method by 2--18$\times$, highlighting the critical importance of contextual breadth for maintaining translation consistency, however, for larger files, the model's handling of the details of each method may be somewhat biased..
+\item Success rates vary significantly across projects (1.96--13.04\%), suggesting that code complexity, domain patterns, and external dependencies are key factors influencing translation difficulty.
+\item Even the best-performing configuration (Qwen-3.5Plus, file-by-file) succeeds on fewer than 1 in 5 files, underscoring the need for improved translation methodologies.
 \end{enumerate}
 
-\textbf{Strategy-Specific Patterns:}
+\subsection{RQ2: Failure Patterns}
 
-Figure~\ref{fig:empirical-error-stacked} reveals distinctive error profiles for each segmentation strategy.
+To understand the root causes of translation failures, we systematically categorized compilation errors and analyzed their distribution. Figure~\ref{fig:empirical_error_by_type} presents the error type occurrence rates across all model-strategy combinations, revealing consistent patterns that transcend specific model architectures.
 
-\begin{figure*}[h]
+\begin{figure*}[htbp]
 \centering
-\includegraphics[width=\textwidth]{figures/empirical_error_stacked.pdf}
-\caption{Error type distribution by model and strategy.}
-\label{fig:empirical-error-stacked}
+\includegraphics[width=0.95\textwidth]{figures/empirical_error_by_type_horizontal.pdf}
+\caption{Error type occurrence rate by model and translation strategy. Each bar group shows the percentage of methods containing each error type, with different colors representing different model-strategy configurations. Build/Include and Missing Symbols errors dominate across all configurations.}
+\label{fig:empirical_error_by_type}
 \end{figure*}
 
-\begin{itemize}[leftmargin=*]
-\item \textbf{File-by-file}: Dominated by type system errors (38.8\%), reflecting the challenge of maintaining type consistency when translating complete class declarations. The higher inheritance error rate (8.9\%) confirms that translating class hierarchies exposes object-oriented design misunderstandings. Build/include errors remain prevalent (55.3\%) due to cross-file header dependencies.
+\textbf{Error Type Taxonomy.} We systematically categorized all compilation errors into 11 distinct types based on their underlying causes:
 
-\item \textbf{Method-by-method}: Characterized by missing/undefined symbol errors (44.9\%), as translating methods in isolation breaks call chains and type dependencies. The lower type error rate (14.5\%) is misleading—rather than indicating better type handling, it suggests that methods fail earlier due to missing symbols before type mismatches can manifest.
-\end{itemize}
-
-\textbf{Implications:}
-
-The error distribution analysis reveals that translation failures are not random but stem from systematic limitations:
 \begin{enumerate}[leftmargin=*]
-\item \textbf{Context fragmentation}: Segmentation breaks the global coherence required for successful translation, causing build errors and missing definitions that cannot be resolved without project-wide awareness.
-\item \textbf{Inconsistency propagation}: Small inconsistencies in type mapping, naming conventions, or API design compound across translation boundaries, creating cascading failures that are difficult to trace and fix.
-\item \textbf{Lack of dependency awareness}: Models cannot reliably determine correct translation order or ensure that dependencies are satisfied before use, leading to undefined symbols and incomplete definitions.
+\item \textbf{Build/Include Errors}: Missing header files, incorrect include directives, and dependency resolution failures.
+\item \textbf{Missing/Undefined Symbols}: References to undeclared functions, variables or classes.
+\item \textbf{Type System Errors}: Type mismatches, incorrect type conversions,and incomplete type definitions.
+\item \textbf{Syntax/Language Errors}: Violations of C++ syntax rules, improper use of language constructs, and semantic errors that prevent parsing.
+\item \textbf{Declaration/Definition Mismatch}: Inconsistencies between function signatures in headers and their implementations, or mismatched parameter lists.
+\item \textbf{Inheritance/Virtual Errors}: Issues related to virtual function overriding, abstract class implementations, and inheritance hierarchy problems.
+\item \textbf{Redefinition Errors}: Multiple definitions of the same variable, function, or class, often due to missing include guards or improper header structure.
+\item \textbf{Access Scope Errors}: Violations of access control rules (public/private/protected), incorrect friend declarations, and scope resolution failures.
+\item \textbf{Constructor/Destructor Errors}: Problems with constructor initialization, destructor implementation, and resource management lifecycle issues.
+\item \textbf{Template Errors}: Template declaration syntax errors, instantiation failures, and template parameter deduction problems.
+\item \textbf{Other Errors}: Compilation failures that do not fit into the above categories.
 \end{enumerate}
 
-These findings motivate the need for a translation framework that (1) maintains global project context, (2) establishes consistent conventions before translating individual units, and (3) uses dependency-aware ordering to prevent missing symbol errors—design principles that directly inform our approach presented in Section~\ref{sec:approach}.
+\textbf{Dominant Error Categories.} Across all configurations, three error categories account for the majority of methods failing compilation:
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Build/Include Errors} This error category stems from three primary challenges:
+\begin{itemize}[leftmargin=*]
+\item \textit{Missing header files}: Sometimes the model does not include the corresponding header file when using classes from standard library.
+\item \textit{Java-to-C++ mapping uncertainty}: For many classes in the Java standard library, such as Serializable and Comparator, the model cannot correctly map them to appropriate C++ classes.
+\item \textit{Header file hallucination} Due to misleading import statements in Java code, models sometimes include header files that do not exist (for example, Java's Date class is often mapped to a file named 'Date.h', which does not exist in the C++ standard library).
+\end{itemize}
+
+\item \textbf{Missing or Undefined Symbols} This category encompasses:
+\begin{itemize}[leftmargin=*]
+\item \textit{Untranslated dependencies}: When translating a method, models may reference methods from other classes that were not translated or were translated with different signatures.
+\item \textit{Inconsistent naming}: The same Java entity may receive different C++ names across different translation passes (e.g., \texttt{ArrayList} translated as \texttt{vector}, \texttt{Vector}, or \texttt{list} inconsistently).
+\item \textit{Fragmented type definitions}: Forward declarations may be omitted, or definitions may be split across headers incorrectly, causing linker failures.
+\end{itemize}
+
+\item \textbf{Type System Errors} (affecting 26.6\% of methods on average): Type mismatches, incorrect conversions, and template instantiation errors reflect fundamental differences between Java's and C++'s type systems:
+\begin{itemize}[leftmargin=*]
+\item \textit{Generics vs templates}: Java generics use type erasure, enabling flexible wildcard types (\texttt{? extends T}), whereas C++ templates require concrete type parameters, complicating generic container translation.
+\item \textit{Primitive vs object types}: Java's autoboxing automatically converts between primitives (e.g., \texttt{int}) and wrapper types (e.g., \texttt{Integer}), while C++ requires explicit conversions or template specialization.
+\item \textit{Nullability semantics}: Java's reference types can be \texttt{null}, but C++ distinguishes between pointers, references, and value types, each with different null semantics.
+\end{itemize}
+\end{enumerate}
+
+Figure~\ref{fig:empirical_error_stacked} illustrates the relative composition of error types across configurations, demonstrating that Build/Include and Missing Symbols consistently comprise 70--80\% of all errors regardless of model or strategy.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/empirical_error_stacked.pdf}
+\caption{Stacked error distribution by configuration. Each bar shows the percentage of methods containing each error type. Build/Include and Missing Symbols dominate across all model-strategy combinations.}
+\label{fig:empirical_error_stacked}
+\end{figure*}
+
+\textbf{Model-Specific Patterns.} While overall error distributions are similar, subtle differences emerge:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Qwen-3.5Plus} exhibits higher Type System error rates (affecting 83.2\% of methods for Cookie, file-by-file), suggesting weaker reasoning about generic type mappings and template constraints.
+\item \textbf{DeepSeek-V3.2} shows elevated Missing Symbols errors in fault tolerance modules (affecting 120.5--131.5\% of methods, indicating multiple errors per method), indicating difficulty maintaining API consistency across complex inheritance hierarchies.
+\item \textbf{ChatGPT-5.1} demonstrates relatively balanced error distribution but with consistently high Build/Include errors (affecting 59.6--100\% of methods), reflecting challenges in header dependency resolution.
+\end{itemize}
+
+\textbf{Strategy-Dependent Variations.} Comparing segmentation strategies:
+\begin{itemize}[leftmargin=*]
+\item \textbf{File-by-file} results in fewer methods with Missing Symbols errors on average (34.5\% vs 49.0\%), confirming that broader context helps maintain API consistency.
+\item \textbf{Method-by-method} generates more Redeclaration and Definition Mismatch errors, likely due to translating methods without visibility of existing declarations in headers.
+\item Both strategies exhibit comparable Build/Include error rates (55.8\% vs 55.7\%), indicating that header dependency resolution remains challenging regardless of segmentation granularity.
+\end{itemize}
+
+\textbf{Key Findings for RQ2.}
+\begin{enumerate}[leftmargin=*]
+\item Build/Include errors are the most common failure mode (affecting 55.8\% of methods on average), highlighting fundamental challenges in mapping Java's automatic import system to C++'s explicit include model.
+\item Missing or Undefined Symbols rank second (affecting 41.7\% of methods on average), indicating that models struggle to maintain translation completeness and API consistency across compilation units.
+\item Type System errors represent the third major category (affecting 26.6\% of methods on average), reflecting semantic gaps between Java's unified type system and C++'s more complex template-based generics.
+\item Error patterns are consistent across models and strategies, suggesting that these failures stem from inherent challenges in cross-language translation rather than model-specific deficiencies.
+\item Method-by-method translation produces more declaration/definition inconsistencies, while file-by-file better preserves API coherence at the cost of increased context window requirements.
+\end{enumerate}
+
+\subsection{Discussion}
+
+Our empirical study reveals several critical insights that motivate the design of our proposed approach:
+
+\textbf{Context is critical.} The 2--18$\times$ performance gap between file-by-file and method-by-method translation demonstrates that broader contextual awareness substantially improves translation quality. However, file-level context remains insufficient for complex projects, as evidenced by low overall success rates (max: 19.32\%). This motivates our \textbf{project-level context propagation} design, which maintains translation consistency across the entire codebase through hierarchical dependency tracking.
+
+\textbf{Dependency management is fundamental.} Build/Include and Missing Symbols errors collectively account for $\sim$60\% of all failures, indicating that models lack systematic mechanisms for tracking cross-file dependencies. Our approach addresses this through \textbf{static analysis and call graph extraction}, which explicitly model dependency relationships and guide translation ordering to ensure that dependencies are resolved before use.
+
+\textbf{Type system translation requires semantic understanding.} Type System errors persist across all models despite extensive training on code, suggesting that surface-level pattern matching is insufficient for bridging Java's and C++'s fundamentally different type semantics. Our \textbf{two-pass scheme generation} separates high-level type mapping strategy from implementation, enabling models to reason explicitly about generic-to-template conversion, nullability translation, and memory management before generating code.
+
+\textbf{Fragmented translation amplifies errors.} Method-by-method translation's poor performance reveals that processing code in isolation causes inconsistencies that compound across translation units. Our \textbf{bottom-up translation with context propagation} ensures that callees are translated before callers, allowing already-translated code to serve as reference examples and reinforcing consistent API usage patterns throughout the project.
+
+\textbf{Validation is essential.} Even under optimal configurations (Qwen-3.5Plus, file-by-file), 80\% of files fail to compile, underscoring that LLMs cannot reliably generate correct code in a single pass. Our \textbf{autonomous compilation agent} addresses this through iterative compilation and repair, automatically detecting and fixing errors that escape initial translation.
+
+These findings collectively demonstrate that repository-level translation requires a systematic approach combining static analysis, dependency-aware translation ordering, explicit scheme generation, and iterative validation—design principles that directly inform our proposed framework in Section~\ref{sec:approach}.
