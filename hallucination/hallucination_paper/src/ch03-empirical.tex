@@ -44,7 +44,7 @@ Module5 & NoopIndexDAO & 21 & 502 & Database Library \\
 \textbf{Total} & -- & 77 & 1250 & -- \\
 \bottomrule
 \end{tabular}
-\caption{Characteristics of our Evaluation Dataset}
+\caption{Characteristics of our Evaluation Dataset\todo{Project?}}
 \label{tab:dataset}
 \end{table}
 
@@ -56,27 +56,13 @@ Module5 & NoopIndexDAO & 21 & 502 & Database Library \\
 \begin{figure}[!t]
     \centering
     \includegraphics[width=0.45\textwidth]{figures/comparison.png}
-    \caption{\todo{Effectiveness of Repository-level C++-2-Java Translation using Large Language Models}}
+    \caption{\todo{Effectiveness of Repository-level C++-2-Java Translation using Large Language Models (X-axis: LLMs; Y-axis: Pass Fail Number)}}
     \label{fig:error}
 \end{figure}
 
 Table~\ref{tab:performance-comparison} presents a quantitative comparison between the two translation approaches.
 
-\begin{table}[!t]
-\centering
-\caption{Translation Performance Comparison}
-\label{tab:performance-comparison}
-\begin{tabular}{lccc}
-\toprule
-\textbf{Metric} & \textbf{File-level} & \textbf{Method-level} & \textbf{Difference} \\\\
-\midrule
-Total Items & 601 & 837 & +236 \\\\
-Error-Free Items & 547 & 720 & +173 \\\\
-Items with Errors & 54 & 117 & +63 \\\\
-Error Rate (\%) & 9.0\% & 14.0\% & +5.0pp \\\\
-\bottomrule
-\end{tabular}
-\end{table}
+% q
 
 
 \subsection{Failure Patterns (RQ2)}
