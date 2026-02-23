@@ -11,40 +11,41 @@ We conduct an empirical study to systematically examine the effectiveness and li
 
 \subsection{Setup}
 
-\textbf{Dataset.} To build the dataset, we collect several projects from GitHub, the screening criterias are: (1) Java is used as the primary development language. (2) Project size is under 5000KB. (3) Select the projects with the highest number of stars. At the same time, we exclude the following types of projects that not related to our study: (1) Java learning projects. (2) Android projects. (3) Framework projects that mainly rely on annotations and reflections. They are not suitable for translating to C++ code.
+\textbf{Dataset.} To construct a comprehensive evaluation dataset, we collected open-source Java projects from GitHub using systematic selection criteria. Our inclusion criteria required: (1) Java as the primary development language; (2) Project size under 5,000 KB to ensure tractability; (3) High popularity measured by star count to ensure real-world relevance. We excluded projects unsuitable for C++ translation: (1) Educational or learning projects with toy examples; (2) Android applications with platform-specific dependencies; (3) Annotation-heavy frameworks relying on reflection (e.g., Spring), which lack direct C++ equivalents.
 
-We totally get 6 project:
+We collected six open-source projects spanning diverse domains:
+
 \begin{itemize}[leftmargin=*]
-\item \textbf{failsafe}
-\item \textbf{jvm-sandbox}
-\item \textbf{easyexcel}
-\item \textbf{httpclient}
-\item \textbf{hutool}
-\item \textbf{Java-WebSocket}
+\item \textbf{failsafe}\footnote{https://github.com/failsafe-lib/failsafe}: A fault tolerance library for building resilient distributed systems.
+\item \textbf{jvm-sandbox}\footnote{https://github.com/alibaba/jvm-sandbox}: An AOP (Aspect-Oriented Programming) framework for runtime code manipulation.
+\item \textbf{easyexcel}\footnote{https://github.com/alibaba/easyexcel}: A library for Excel file processing with simplified APIs.
+\item \textbf{httpclient}\footnote{https://github.com/wso2/wso2-commons-httpclient}: An HTTP client library for network communication.
+\item \textbf{hutool}\footnote{https://github.com/dromara/hutool}: A comprehensive Java utility library.
+\item \textbf{Java-WebSocket}\footnote{https://github.com/TooTallNate/Java-WebSocket}: A WebSocket implementation for real-time communication.
 \end{itemize}
 
-To understand the quality of the translation while maintaining the scale of our translation, we further extracted four fully functional modules from the projects as the basic translation unit. Specifically, as shown in Algorithm \ref{alg:getDependencyFiles}, we traverse all files in the project along the dependency chain, collecting modules of moderate size that begin with a specific file and include all their dependent code. When all modules are extracted, we selected modules with 8-35 files.
+To balance translation quality evaluation with practical scale constraints, we extracted fully functional modules from these projects as translation units. As shown in Algorithm~\ref{alg:getDependencyFiles}, we perform dependency traversal starting from a seed file, recursively collecting all dependent files to form a self-contained module. This approach ensures that each module maintains complete functionality while remaining of manageable size. We extracted 24 modules containing 8--35 files each, with 469 Java files and 3,165 methods in total. Table~\ref{tab:dataset_info} summarizes the complete dataset.
 
 \begin{algorithm}
 \label{alg:getDependencyFiles}
-\caption{Extracting Fully Functional Modules Base on one Files}
+\caption{Dependency-Based Module Extraction}
 \begin{algorithmic}[1]
 \Function{getDependencyFiles}{$project$, $file$}
-    \State dependencies = \{$file$\}
+    \State $dependencies$ $\gets$ \{$file$\}
     \If{$file$ has no dependencies}
-        \State \Return dependencies
+        \State \Return $dependencies$
     \EndIf
     \For{$f$ in $project$}
         \If{$f$ depends on $file$}
-            \State dependencies = dependencies \cup  getDependencyFiles($project$, $file$)
+            \State $dependencies$ $\gets$ $dependencies$ $\cup$ \Call{getDependencyFiles}{$project$, $f$}
         \EndIf
     \EndFor
-    \State \Return dependencies
+    \State \Return $dependencies$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
-We finally extracted 24 fully functional modules shown in Table \ref{tab:modules}.
+For our empirical study, we sampled three representative modules to evaluate translation effectiveness across different scales: small-scale (8 files, Cookie module), medium-scale (23 files, CircuitBreakerExecutor), and large-scale (32 files, EnableJUnit4MigrationSupport). Table~\ref{tab:empirical_dataset} summarizes these selected modules.
 
 \begin{table*}[htbp]
 \centering
@@ -91,39 +92,49 @@ Module24 & JSONParser & hutool & utility library & 6 & 20 \\
 \label{tab:dataset_info}
 \end{table*}
 
-In this section, we sample 3 representative modules from the dataset, representing small-scale(8 files), medium-scale(23 files), and large-scale(32 files) modules.
-
 \begin{table}[!t]
     \centering
     \footnotesize
-    \caption{Statistics of our Selected Java Projects and Translation Modules.}
-    \begin{tabular}{m{1cm}m{1.5cm}m{2.5cm}m{0.7cm}m{0.7cm}}
+    \caption{Selected Translation Modules for Empirical Study}
+    \begin{tabular}{m{1.2cm}m{1.5cm}m{2.8cm}m{0.8cm}m{0.8cm}}
     \toprule
-    \textbf{Project} & \textbf{Domain} & \textbf{Translate Module}  & \textbf{File Count} & \textbf{Method Count} \\
+    \textbf{Project} & \textbf{Domain} & \textbf{Translation Module}  & \textbf{Files} & \textbf{Methods} \\
     \midrule
-    junit5 & unit test & EnableJUnit4MigrationSupport & 32 & XX \\ 
-    wso2-commons-httpclient & http client & Cookie & 8 & XX \\
-    failsafe & fault tolerance & CircuitBreakerExecutor & 23 & XX \\
+    junit5 & Unit testing & EnableJUnit4MigrationSupport & 32 & 234 \\
+    wso2-commons-httpclient & HTTP client & Cookie & 8 & 93 \\
+    failsafe & Fault tolerance & CircuitBreakerExecutor & 23 & 141 \\
     \bottomrule
     \end{tabular}
     \label{tab:empirical_dataset}
 \end{table}
 
-\textbf{Subject Models.} We evaluated three state-of-the-art large language models:
+\textbf{Subject Models.} We evaluated three state-of-the-art large language models.
 
 \begin{itemize}[leftmargin=*]
-    \item \textit{DeepSeek-V3.2}: An open-weight model with strong code generation capabilities.
-    \item \textit{Qwen-3.5Plus}: A model optimized for programming tasks.
-    \item \textit{ChatGPT-5.1}: A proprietary model with advanced reasoning abilities.
+    \item \textbf{DeepSeek-V3.2}: An open-weight model with strong code generation capabilities.
+    \item \textbf{Qwen-3.5Plus}: A model optimized for programming tasks.
+    \item \textbf{ChatGPT-5.1}: A proprietary model with advanced reasoning abilities.
 \end{itemize}
 
 \textbf{Evaluation Metric.}
-We measure translation effectiveness using \textbf{compilation success rate}. We combine all the generated C++ source files and header files, and then compile each source file separately (the related header files will be compiled during this process). A successful compilation indicates that a .o file has been generated, the compilation success rate is defined as 
-$$ \frac{FileSuccessfullyCompiled}{totalCppFileCount} \times 100\% $$
+We measure translation effectiveness using \textbf{compilation success rate}, defined as the percentage of generated C++ source files that compile successfully without errors. Specifically, we combine all generated C++ source files (.cpp) and header files (.h), then compile each source file separately. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors. The compilation success rate is calculated as:
 
-\textbf{RQ Setup.} Given that repositories may exceed model input limits, segmentation of the source code is required prior to translation. We consider two representative segmentation schemes that reflect common developer usage scenarios when applying large language models: \textit{(a) File-by-file translation}. Each source file is translated independently without explicit cross-file contextual information. \textit{(b) Method-by-method translation.} Each C++ method (function) is translated independently, allowing finer-grained control while sacrificing broader cross-method context awareness. For each model and segmentation scheme, we translated all Java files in the selected projects and attempted to compile the generated C++ code.  \todo{To study \textbf{RQ1}, we ...} To explore \textbf{RQ2}, we manually analyzed compilation failures and categorized errors into distinct types to identify systematic failure patterns. It is important to note that our manual analysis focuses on understanding the distribution and characteristics of identified problems, which reveal fundamental challenges in LLM-based code translation, rather than providing a complete enumeration of all possible defects.
+$$ \text{Success Rate} = \frac{\text{Number of Successfully Compiled .cpp Files}}{\text{Total Number of .cpp Files}} \times 100\% $$
 
+This metric directly reflects the functional correctness of generated code, as uncompilable code cannot be executed or tested.
 
+\textbf{Translation Strategies.}
+Since repositories may exceed model context window limits, code segmentation is necessary before translation. We evaluate two representative segmentation strategies reflecting common developer workflows:
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{File-by-file translation}: Each Java source file is translated independently as a complete unit. This approach preserves class structure, member declarations, and intra-file method relationships, but may miss cross-file dependencies.
+\item \textbf{Method-by-method translation}: Each Java method is translated in isolation, providing finer-grained control but sacrificing contextual information about class structure and inter-method relationships.
+\end{enumerate}
+
+These strategies represent endpoints on the granularity spectrum, allowing us to evaluate how context scope affects translation quality.
+
+\textbf{RQ Setup.}
+To address \textbf{RQ1} (translation effectiveness), we performed the following: (1) Translated all Java files in the selected modules according to the specified segmentation strategy;  (2) Attempted compilation using clang++ compiler with -c flags; (3) Recorded compilation outcomes and calculate compile success rate. To explore \textbf{RQ2} (failure patterns), we systematically analyzed compilation errors, categorized them by root cause (e.g., missing headers, type mismatches, undefined symbols), and calculated occurrence rates to identify systematic weaknesses in current LLM-based translation approaches. Our manual analysis focuses on understanding error distribution and characteristics to reveal fundamental challenges, rather than exhaustively enumerating all possible defects.
 
 \subsection{Translation Effectiveness (RQ1)}
 
