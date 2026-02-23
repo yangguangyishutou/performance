@@ -6,14 +6,12 @@ We conduct an empirical study to systematically examine the effectiveness and li
 
 \begin{itemize}[leftmargin=*]
 \item \textbf{RQ1}: How is the effectiveness of large language models in repository-level C++-to-Java translation?
-\item \textbf{RQ2}: What are the common failure patterns in large language model-driven repository-level C++-to-Java translation?
+\item \textbf{RQ2}: What are the common error patterns in large language model-driven repository-level C++-to-Java translation?
 \end{itemize}
 
 \subsection{Setup}
 
-\textbf{Dataset.} To construct a comprehensive evaluation dataset, we collected open-source Java projects from GitHub using systematic selection criteria. Our inclusion criteria required: (1) Java as the primary development language; (2) Project size under 5,000 KB to ensure tractability; (3) High popularity measured by star count to ensure real-world relevance. We excluded projects unsuitable for C++ translation: (1) Educational or learning projects with toy examples; (2) Android applications with platform-specific dependencies; (3) Annotation-heavy frameworks relying on reflection (e.g., Spring), which lack direct C++ equivalents.
-
-We collected six open-source projects spanning diverse domains:
+\textbf{Initial Project and Modules.} We retrieved open-source Java projects from GitHub using the query expression ``language:java size:<5000 sort:stars-desc''. This query specifies Java as the primary programming language, restricts the repository size to under 5,000 KB to facilitate manual analysis, and ranks the results in descending order by star count to prioritize more popular projects. We collected projects from the first \todo{XX} pages of the search results and excluded those unsuitable for C++ translation: (1) educational or tutorial projects containing toy examples; (2) Android applications with platform-specific dependencies; and (3) frameworks with sophisticated design patterns that is hard to create counterparts in C++ (e.g., the Spring framework which is annotation-intensive that heavily rely on reflection). As a result, we collected six open-source projects spanning diverse domains:
 
 \begin{itemize}[leftmargin=*]
 \item \textbf{failsafe}\footnote{https://github.com/failsafe-lib/failsafe}: A fault tolerance library for building resilient distributed systems.
@@ -24,128 +22,103 @@ We collected six open-source projects spanning diverse domains:
 \item \textbf{Java-WebSocket}\footnote{https://github.com/TooTallNate/Java-WebSocket}: A WebSocket implementation for real-time communication.
 \end{itemize}
 
-To balance translation quality evaluation with practical scale constraints, we extracted fully functional modules from these projects as translation units. As shown in Algorithm~\ref{alg:getDependencyFiles}, we perform dependency traversal starting from a seed file, recursively collecting all dependent files to form a self-contained module. This approach ensures that each module maintains complete functionality while remaining of manageable size. We extracted 24 modules containing 8--35 files each, with 469 Java files and 3,165 methods in total. Table~\ref{tab:dataset_info} summarizes the complete dataset.
+As the project may have multiple independent and separated modules, we perform module analysis to aggregate files into modules. Specifically, we iterate each Java source file, parse each Java source file into the AST representation using JavaParser~\cite{javaparse}, and obtain their import statements as well as the used types that do not need import statements in the same directory. We resolve the imported types into the corresponding Java source file. Upon completion of this process, the interconnected source files are partitioned into multiple clusters, each representing a logically coherent module that implements a specific and self-contained functionality. Overall, we identified 24 modules encompassing diverse source files and methods. A detailed summary of the dataset is presented in Table~\ref{tab:dataset_info}.
 
-\begin{algorithm}
-\label{alg:getDependencyFiles}
-\caption{Dependency-Based Module Extraction}
-\begin{algorithmic}[1]
-\Function{getDependencyFiles}{$project$, $file$}
-    \State $dependencies$ $\gets$ \{$file$\}
-    \If{$file$ has no dependencies}
-        \State \Return $dependencies$
-    \EndIf
-    \For{$f$ in $project$}
-        \If{$f$ depends on $file$}
-            \State $dependencies$ $\gets$ $dependencies$ $\cup$ \Call{getDependencyFiles}{$project$, $f$}
-        \EndIf
-    \EndFor
-    \State \Return $dependencies$
-\EndFunction
-\end{algorithmic}
-\end{algorithm}
-
-For our empirical study, we sampled three representative modules to evaluate translation effectiveness across different scales: small-scale (8 files, Cookie module), medium-scale (23 files, CircuitBreakerExecutor), and large-scale (32 files, EnableJUnit4MigrationSupport). Table~\ref{tab:empirical_dataset} summarizes these selected modules.
-
-\begin{table*}[htbp]
-\centering
-\begin{tabular}{llllll}
-\toprule
-\textbf{Translation Module} & \textbf{Main Class} & \textbf{Source Project} & \textbf{Domain} & \textbf{Java Files} & \textbf{Methods} \\
-\midrule
-Module1 & BulkheadBuilder & failsafe & fault tolerance & 25 & 140 \\
-Module2 & CircuitBreakerExecutor & failsafe & fault tolerance & 23 & 141 \\
-Module3 & DelayablePolicy & failsafe & fault tolerance & 24 & 123 \\
-Module4 & ExecutionImpl & failsafe & fault tolerance & 22 & 149 \\
-Module5 & FailsafeExecutor & failsafe & fault tolerance & 24 & 170 \\
-Module6 & FailurePolicy & failsafe & fault tolerance & 25 & 132 \\
-Module7 & RateLimiterBuilder & failsafe & fault tolerance & 25 & 155 \\
-Module8 & RateLimiterExecutor & failsafe & fault tolerance & 24 & 146 \\
-Module9 & RetryPolicyConfig & failsafe & fault tolerance & 23 & 133 \\
-Module10 & SyncExecutionImpl & failsafe & fault tolerance & 24 & 142 \\
-Module11 & TimeoutExecutor & failsafe & fault tolerance & 21 & 116 \\
-Module12 & UndeclaredThrowableStrategy & failsafe & fault tolerance & 11 & 62 \\
-\midrule
-Module13 & AdviceListenerTestCase & jvm-sandbox & AOP framework & 23 & 205 \\
-Module14 & ClassStructureByChildClassTestCase & jvm-sandbox & AOP framework & 12 & 89 \\
-Module15 & DebugLogExceptionModule & jvm-sandbox & AOP framework & 16 & 138 \\
-Module16 & EventWatchBuilderTestCase & jvm-sandbox & AOP framework & 18 & 174 \\
-Module17 & OrGroupFilter & jvm-sandbox & AOP framework & 13 & 138 \\
-Module18 & ProgressPrinter & jvm-sandbox & AOP framework & 8 & 37 \\
-Module19 & TestIssues217 & jvm-sandbox & AOP framework & 22 & 193 \\
-Module20 & TestIssues256 & jvm-sandbox & AOP framework & 18 & 170 \\
-\midrule
-Module21 & ReadRowHolder & easyexcel & Excel processing & 7 & 16 \\
-Module22 & ReadSheetHolder & easyexcel & Excel processing & 11 & 51 \\
-\midrule
-Module25 & PerMessageDeflateExtensionTest & Java-WebSocket & WebSocket & 17 & 123 \\
-Module26 & Draft\_6455Test & Java-WebSocket & WebSocket & 19 & 109 \\
-\midrule
-Module23 & Cookie & httpclient & HTTP client & 8 & 93 \\
-\midrule
-Module24 & JSONParser & hutool & utility library & 6 & 20 \\
-\midrule
-\textbf{Total} & & & \textbf{469} & \textbf{3165} \\
-\bottomrule
-\end{tabular}
-\caption{Dataset Statistics}
-\label{tab:dataset_info}
-\end{table*}
 
 \begin{table}[!t]
-    \centering
-    \footnotesize
-    \caption{Selected Translation Modules for Empirical Study}
-    \begin{tabular}{m{1.2cm}m{1.5cm}m{2.8cm}m{0.8cm}m{0.8cm}}
-    \toprule
-    \textbf{Project} & \textbf{Domain} & \textbf{Translation Module}  & \textbf{Files} & \textbf{Methods} \\
-    \midrule
-    junit5 & Unit testing & EnableJUnit4MigrationSupport & 32 & 234 \\
-    wso2-commons-httpclient & HTTP client & Cookie & 8 & 93 \\
-    failsafe & Fault tolerance & CircuitBreakerExecutor & 23 & 141 \\
-    \bottomrule
-    \end{tabular}
-    \label{tab:empirical_dataset}
+\centering
+    \begin{tabular}{m{1.8cm}m{4.35cm}m{0.5cm}m{0.5cm}}
+\toprule
+ \textbf{Project}  & \textbf{Root Class of Module} & \textbf{File (\#)} & \textbf{Method (\#)} \\
+\midrule
+\multirow{12}{*}{failsafe} & BulkheadBuilder  & 25 & 140 \\
+            & CircuitBreakerExecutor   & 23 & 141 \\
+            & DelayablePolicy   & 24 & 123 \\
+            & ExecutionImpl   & 22 & 149 \\
+            & FailsafeExecutor   & 24 & 170 \\
+            & FailurePolicy   & 25 & 132 \\
+            & RateLimiterBuilder   & 25 & 155 \\
+            & RateLimiterExecutor   & 24 & 146 \\
+            & RetryPolicyConfig   & 23 & 133 \\
+            & SyncExecutionImpl   & 24 & 142 \\
+            & TimeoutExecutor   & 21 & 116 \\
+            & UndeclaredThrowableStrategy   & 11 & 62 \\
+\midrule
+\multirow{8}{*}{jvm-sandbox} & AdviceListenerTestCase  & 23 & 205 \\
+                            &ClassStructureByChildClassTestCase  & 12 & 89 \\
+                            &DebugLogExceptionModule  & 16 & 138 \\
+                            &EventWatchBuilderTestCase  & 18 & 174 \\
+                            &OrGroupFilter  & 13 & 138 \\
+                            &ProgressPrinter  & 8 & 37 \\
+                            &TestIssues217  & 22 & 193 \\
+                            &TestIssues256  & 18 & 170 \\
+\midrule
+\multirow{2}{*}{easyexcel} & ReadRowHolder  & 7 & 16 \\
+                        & ReadSheetHolder  & 11 & 51 \\
+\midrule
+\multirow{2}{*}{Java-WebSocket} & PerMessageDeflateExtensionTest   & 17 & 123 \\
+                                & Draft\_6455Test   & 19 & 109 \\
+\midrule
+httpclient & Cookie  & 8 & 93 \\
+\midrule
+hutool & JSONParser & 6 & 20 \\
+\midrule
+\textbf{Total} & & \textbf{469} & \textbf{3,165} \\
+\bottomrule
+\end{tabular}
+\caption{Statistics of our Collected Projects and Modules (Module Root Class denotes the root class for running the module)}
+\label{tab:dataset_info}
 \end{table}
 
-\textbf{Subject Models.} We evaluated three state-of-the-art large language models.
+\textbf{Selected Modules.} For our empirical study, we randomly sampled three representative modules. i.e., \texttt{EnableJUnit4MigrationSupport} from \texttt{junit5}, \texttt{Cookie} from \texttt{httpclient}, and \texttt{CircuitBreakerExecutor} from \texttt{failsafe}. The selected modules represent varying levels of scale, including a small-scale module (8 files and 93 methods in Cookie), a medium-scale module (23 files and 141 methods in CircuitBreakerExecutor), and a large-scale module (\todo{32 files and 234 methods in EnableJUnit4MigrationSupport}). In total, the three modules include 468 methods. Based on a standard sample size calculation~\cite{sample}, this sample size ensures a 95\% confidence level with a 4.2\% margin of error relative to the overall population of 3,165 methods.
+
+\textbf{Subject LLMs.} We selected three popular and state-of-the-art large language models. i.e., \textbf{DeepSeek-V3.2}, \textbf{Qwen-3.5Plus} and \textbf{ChatGPT-5.1}.
+
+
+
+\textbf{Translation Strategies.} As an entire module may exceed the model's context window limitations, segmentation is required prior to translation. We evaluate two representative segmentation strategies that reflect common developer practices:
 
 \begin{itemize}[leftmargin=*]
-    \item \textbf{DeepSeek-V3.2}: An open-weight model with strong code generation capabilities.
-    \item \textbf{Qwen-3.5Plus}: A model optimized for programming tasks.
-    \item \textbf{ChatGPT-5.1}: A proprietary model with advanced reasoning abilities.
+\item \textbf{File-by-file translation}: Each Java source file is translated independently as a self-contained unit. This strategy preserves the class structure, member declarations, and intra-file method relationships; however, it may overlook dependencies across files.
+\item \textbf{Method-by-method translation}: Each Java method is translated in isolation, enabling finer-grained control over the translation process but sacrificing contextual information related to class structure and inter-method dependencies.
 \end{itemize}
 
-\textbf{Evaluation Metric.}
-We measure translation effectiveness using \textbf{compilation success rate}, defined as the percentage of generated C++ source files that compile successfully without errors. Specifically, we combine all generated C++ source files (.cpp) and header files (.h), then compile each source file separately. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors. The compilation success rate is calculated as:
 
-$$ \text{Success Rate} = \frac{\text{Number of Successfully Compiled .cpp Files}}{\text{Total Number of .cpp Files}} \times 100\% $$
+\textbf{RQ1 Setup.} To address translation effectiveness (RQ1), we implemented a three-step evaluation pipeline. First, we translated all Java files in the selected modules using both strategies using file-by-file translation, and all Java methods using method-by-method translation. Then, we compiled the translated Java file using clang++~\cite{clang} 20.1.8 compiler with -c flag. \todo{Regarding the translated methods, we concatenated the translated methods into the C++ file and then use the clang++ compiler.} Finally, we recorded the compilation outcomes (success/error) generated from clang++. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors. To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-to-method strategy. The annotation process consists of two phases. First, the annotators conducted pilot labeling on \todo{100} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. The inter-annotator agreement measured by Cohen's kappa was \todo{XX}. In total, the annotation process required approximately \todo{XXX} human hours.
 
-This metric directly reflects the functional correctness of generated code, as uncompilable code cannot be executed or tested.
 
-\textbf{Translation Strategies.}
-Since repositories may exceed model context window limits, code segmentation is necessary before translation. We evaluate two representative segmentation strategies reflecting common developer workflows:
+% Once all error pattern is determined, we assign a categorized tag to each method that fails to compile (a single method may have multiple types of error tags). It is important to note that our manual analysis focuses on understanding the distribution and characteristics of identified problems, which reveal fundamental challenges in LLM-based code translation, rather than providing a complete enumeration of all possible defects. This targeted approach ensures we capture the most impactful failure patterns while maintaining feasibility given the dataset size.
 
-\begin{enumerate}[leftmargin=*]
-\item \textbf{File-by-file translation}: Each Java source file is translated independently as a complete unit. This approach preserves class structure, member declarations, and intra-file method relationships, but may miss cross-file dependencies.
-\item \textbf{Method-by-method translation}: Each Java method is translated in isolation, providing finer-grained control but sacrificing contextual information about class structure and inter-method relationships.
-\end{enumerate}
+% \textbf{Evaluation Metric.}
+% generated C++ source files that compile successfully without errors. 
 
-These strategies represent endpoints on the granularity spectrum, allowing us to evaluate how context scope affects translation quality.
+% Specifically, we combine all generated C++ source files (.cpp) and header files (.h), then compile each source file separately. The compilation success rate is calculated as:
 
-\textbf{RQ Setup.}
-To address \textbf{RQ1} (translation effectiveness), we implemented a three-step evaluation pipeline: (1) Translated all Java files in the selected modules using each strategy; (2) Attempted compilation of generated C++ code using clang++ 20.1.8 compiler with -c flag to focus on syntax and type correctness without linking; (3) Recorded binary compilation outcomes (success/failure) and calculated compile success rates. To explore \textbf{RQ2} (failure pattern analysis), we conducted systematic manual analysis of compilation failures at the method granularity. For files that failed compilation, we extracted individual method implementations and compiled them in isolation to isolate specific failure points. Iteratively refining categories based on recurring patterns in compiler error messages. Keyword analysis of clang++ output (e.g., "undefined reference", "no matching function", "type mismatch") provided initial categorization cues. Once all failure pattern is determined, we assign a categorized tag to each method that fails to compile (a single method may have multiple types of error tags). It is important to note that our manual analysis focuses on understanding the distribution and characteristics of identified problems, which reveal fundamental challenges in LLM-based code translation, rather than providing a complete enumeration of all possible defects. This targeted approach ensures we capture the most impactful failure patterns while maintaining feasibility given the dataset size.
+% $$ \text{CSR} = \frac{\text{Number of Successfully Compiled .cpp Files}}{\text{Total Number of .cpp Files}}  $$
+
+% This metric directly reflects the functional correctness of generated code, as uncompilable code cannot be executed or tested.
 
 \subsection{Translation Effectiveness (RQ1)}
 
-Figure~\ref{fig:empirical_success_rate} presents the overall compilation success rates across different models and segmentation strategies. We observe that all three models struggle with repository-level translation, with success rates ranging from 1.09\% to 19.32\%. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
 
-\begin{figure*}[htbp]
+\begin{figure}[!t]
 \centering
-\includegraphics[width=0.85\textwidth]{figures/empirical_success_rate.pdf}
-\caption{Overall compilation success rates by model and segmentation strategy. File-by-file translation generally outperforms method-by-method across all models.}
-\label{fig:empirical_success_rate}
-\end{figure*}
+\includegraphics[width=0.45\textwidth]{figures/empirical_success_rate.pdf}
+\caption{Effectiveness of C++-to-Java Translation using LLMs under Two Translation Strategies}
+    \label{fig:empirical_success_rate}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.45\textwidth]{figures/empirical_success_by_project.pdf}
+\caption{Effectiveness of C++-to-Java Translation using LLMs under Two Translation Strategies w.r.t Project and Modules}
+\label{fig:empirical_success_by_project}
+\end{figure}
+
+We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, defined as the percentage of successfully compiled C++ files or methods relative to the total number of files or methods.
+
+Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. We observe that all three models struggle with repository-level translation, with success rates ranging from 1.09\% to 19.32\%. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
+
 
 \textbf{Impact of Segmentation Strategy.} Comparing the two segmentation schemes, file-by-file translation consistently outperforms method-by-method translation across all models. Specifically:
 \begin{itemize}[leftmargin=*]
@@ -159,12 +132,10 @@ The superior performance of file-by-file translation can be attributed to better
 \textbf{Model Performance.} Qwen-3.5Plus achieves the highest overall success rate at 19.32\% under file-by-file translation, followed by DeepSeek-V3.2 (10.29\%) and ChatGPT-5.1 (7.43\%). However, Qwen-3.5Plus exhibits extreme variance between strategies (19.32\% vs 1.09\%), indicating high sensitivity to segmentation granularity. This suggests that model architecture and training data significantly influence translation robustness across different input scopes.
 
 \textbf{Project-Level Analysis.} Figure~\ref{fig:empirical_success_by_project} reveals substantial variation in difficulty across translation units. The Cookie module from wso2-commons-httpclient achieves the highest average success rate (12.96\%), while CircuitBreakerExecutor from failsafe proves most challenging (1.96\%). The EnableJUnit4MigrationSupport module demonstrates relatively stable performance (13.04\%) across most configurations.
-\begin{figure*}[htbp]
-\centering
-\includegraphics[width=0.95\textwidth]{figures/empirical_success_by_project.pdf}
-\caption{Compilation success rates across different projects. Performance varies significantly by translation unit, reflecting differences in code complexity and domain-specific patterns.}
-\label{fig:empirical_success_by_project}
-\end{figure*}
+
+
+
+
 Several factors contribute to this variance:
 \begin{itemize}[leftmargin=*]
 \item \textbf{Code complexity}: Modules with deeper inheritance hierarchies (e.g., CircuitBreakerExecutor) present more translation challenges due to virtual function dispatch and abstract base class dependencies.
