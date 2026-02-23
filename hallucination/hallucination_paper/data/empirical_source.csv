@@ -1,0 +1,5 @@
+translation_unit,source_repo,domain
+Cookie,wso2-commons-httpclient,http client
+EnableJUnit4MigrationSupport,junit5,unit test
+CircuitBreakerExecutor,failsafe,fault tolerance
+RateLimiterExecutor,failsafe,fault tolerance
