@@ -4,8 +4,6 @@
 
 We conduct an empirical study to systematically examine the effectiveness and limitations of large language models for repository-level C++-to-Java translation.
 
-
-
 \begin{itemize}[leftmargin=*]
 \item \textbf{RQ1}: How is the effectiveness of large language models in repository-level C++-to-Java translation?
 \item \textbf{RQ2}: What are the common failure patterns in large language model-driven repository-level C++-to-Java translation?
@@ -13,37 +11,99 @@ We conduct an empirical study to systematically examine the effectiveness and li
 
 \subsection{Setup}
 
-\textbf{Dataset.} We targeted three open-source Java projects. \todo{Each project comprises over XXX lines of code and has more than XXX GitHub stars.} We chose those popular projects from the Java section according to the trending projects from GitHub, \todo{while excluding very famous projects (to avoid relying on prior knowledge of large models) and projects that rely too much on language features (such as reflection) and ecosystems (such as Android projects).} These projects span multiple domains to cover diverse scenarios:
+\textbf{Dataset.} To build the dataset, we collect several projects from GitHub, the screening criterias are: (1) Java is used as the primary development language. (2) Project size is under 5000KB. (3) Select the projects with the highest number of stars. At the same time, we exclude the following types of projects that not related to our study: (1) Java learning projects. (2) Android projects. (3) Framework projects that mainly rely on annotations and reflections. They are not suitable for translating to C++ code.
 
+We totally get 6 project:
 \begin{itemize}[leftmargin=*]
-\item \textbf{junit5}\footnote{https://github.com/junit-team/junit5}: A testing framework, representing testing infrastructure and migration utilities.
-\item \textbf{wso2-commons-httpclient}\footnote{https://github.com/wso2/commons-httpclient}: An HTTP client library, representing network communication utilities.
-\item \textbf{failsafe}\footnote{https://github.com/failsafe-lib/failsafe}: A fault tolerance library , representing resilience patterns for distributed systems.
+\item \textbf{failsafe}
+\item \textbf{jvm-sandbox}
+\item \textbf{easyexcel}
+\item \textbf{httpclient}
+\item \textbf{hutool}
+\item \textbf{Java-WebSocket}
 \end{itemize}
 
+To understand the quality of the translation while maintaining the scale of our translation, we further extracted four fully functional modules from the projects as the basic translation unit. Specifically, as shown in Algorithm \ref{alg:getDependencyFiles}, we traverse all files in the project along the dependency chain, collecting modules of moderate size that begin with a specific file and include all their dependent code. When all modules are extracted, we selected modules with 8-35 files.
 
-% (EnableJUnit4MigrationSupport module)
-% (Cookie module)
-% (CircuitBreakerExecutor and RateLimiterExecutor modules)
+\begin{algorithm}
+\label{alg:getDependencyFiles}
+\caption{Extracting Fully Functional Modules Base on one Files}
+\begin{algorithmic}[1]
+\Function{getDependencyFiles}{$project$, $file$}
+    \State dependencies = \{$file$\}
+    \If{$file$ has no dependencies}
+        \State \Return dependencies
+    \EndIf
+    \For{$f$ in $project$}
+        \If{$f$ depends on $file$}
+            \State dependencies = dependencies \cup  getDependencyFiles($project$, $file$)
+        \EndIf
+    \EndFor
+    \State \Return dependencies
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
-To understand the quality of the translation while maintaining the scale of our translation, we further extracted four fully functional modules from the projects as the basic translation unit. Specifically, we randomly select a top-level functional file from each project. We then trace all subsequent method invocations originating from this file, along with the corresponding dependent files, thereby constructing a complete and self-contained functional unit. 
+We finally extracted 24 fully functional modules shown in Table \ref{tab:modules}.
+
+\begin{table*}[htbp]
+\centering
+\begin{tabular}{llllll}
+\toprule
+\textbf{Translation Module} & \textbf{Main Class} & \textbf{Source Project} & \textbf{Domain} & \textbf{Java Files} & \textbf{Methods} \\
+\midrule
+Module1 & BulkheadBuilder & failsafe & fault tolerance & 25 & 140 \\
+Module2 & CircuitBreakerExecutor & failsafe & fault tolerance & 23 & 141 \\
+Module3 & DelayablePolicy & failsafe & fault tolerance & 24 & 123 \\
+Module4 & ExecutionImpl & failsafe & fault tolerance & 22 & 149 \\
+Module5 & FailsafeExecutor & failsafe & fault tolerance & 24 & 170 \\
+Module6 & FailurePolicy & failsafe & fault tolerance & 25 & 132 \\
+Module7 & RateLimiterBuilder & failsafe & fault tolerance & 25 & 155 \\
+Module8 & RateLimiterExecutor & failsafe & fault tolerance & 24 & 146 \\
+Module9 & RetryPolicyConfig & failsafe & fault tolerance & 23 & 133 \\
+Module10 & SyncExecutionImpl & failsafe & fault tolerance & 24 & 142 \\
+Module11 & TimeoutExecutor & failsafe & fault tolerance & 21 & 116 \\
+Module12 & UndeclaredThrowableStrategy & failsafe & fault tolerance & 11 & 62 \\
+\midrule
+Module13 & AdviceListenerTestCase & jvm-sandbox & AOP framework & 23 & 205 \\
+Module14 & ClassStructureByChildClassTestCase & jvm-sandbox & AOP framework & 12 & 89 \\
+Module15 & DebugLogExceptionModule & jvm-sandbox & AOP framework & 16 & 138 \\
+Module16 & EventWatchBuilderTestCase & jvm-sandbox & AOP framework & 18 & 174 \\
+Module17 & OrGroupFilter & jvm-sandbox & AOP framework & 13 & 138 \\
+Module18 & ProgressPrinter & jvm-sandbox & AOP framework & 8 & 37 \\
+Module19 & TestIssues217 & jvm-sandbox & AOP framework & 22 & 193 \\
+Module20 & TestIssues256 & jvm-sandbox & AOP framework & 18 & 170 \\
+\midrule
+Module21 & ReadRowHolder & easyexcel & Excel processing & 7 & 16 \\
+Module22 & ReadSheetHolder & easyexcel & Excel processing & 11 & 51 \\
+\midrule
+Module25 & PerMessageDeflateExtensionTest & Java-WebSocket & WebSocket & 17 & 123 \\
+Module26 & Draft\_6455Test & Java-WebSocket & WebSocket & 19 & 109 \\
+\midrule
+Module23 & Cookie & httpclient & HTTP client & 8 & 93 \\
+\midrule
+Module24 & JSONParser & hutool & utility library & 6 & 20 \\
+\midrule
+\textbf{Total} & & & & & \textbf{469} & \textbf{3165} \\
+\bottomrule
+\end{tabular}
+\caption{Dataset Statistics}
+\label{tab:dataset_info}
+\end{table*}
+
+In this section, we sample 3 representative modules from the dataset, representing small-scale(8 files), medium-scale(23 files), and large-scale(32 files) modules.
 
 \begin{table}[!t]
     \centering
     \footnotesize
-    \caption{Statistics of our Selected Java Projects and Translation Units.}
+    \caption{Statistics of our Selected Java Projects and Translation Modules.}
     \begin{tabular}{m{1cm}m{1.5cm}m{2.5cm}m{0.7cm}m{0.7cm}}
     \toprule
-    \textbf{Project} & \textbf{Domain} & \textbf{Translate Unit}  & \textbf{File Count} & \textbf{Method Count} \\
-    % &\textbf{Translate Unit}& \textbf{Source Project} & \textbf{Domain} \\
+    \textbf{Project} & \textbf{Domain} & \textbf{Translate Module}  & \textbf{File Count} & \textbf{Method Count} \\
     \midrule
     junit5 & unit test & EnableJUnit4MigrationSupport & 32 & XX \\ 
     wso2-commons-httpclient & http client & Cookie & 8 & XX \\
     failsafe & fault tolerance & CircuitBreakerExecutor & 23 & XX \\
-    %  & 8 &  &  \\
-    %  & 32 &  & unit test \\
-    %  & 23 &  &  \\
-    failsafe & fault tolerance & RateLimiterExecutor & 24 & XX \\
     \bottomrule
     \end{tabular}
     \label{tab:empirical_dataset}
