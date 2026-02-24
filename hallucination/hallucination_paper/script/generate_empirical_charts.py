@@ -30,82 +30,125 @@ model_names = {
 df_data['model'] = df_data['ai_name'].map(model_names)
 df_errors['model'] = df_errors['ai_name'].map(model_names)
 
+XY_LABEL_SIZE = 22
+FONT = 'Times New Roman'
+LEGEND_SIZE = 20
+XY_TICK_SIZE = 20
+
+# Set font for all text elements
+plt.rcParams['font.family'] = 'serif'
+plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
+plt.rcParams['font.size'] = 12
+
+
 # ===================================================================
 # Chart 1: Overall Success Rate by Model and Strategy (RQ1)
 # ===================================================================
-fig, ax = plt.subplots(figsize=(10, 6))
+if True:
+    fig, ax = plt.subplots(figsize=(10, 6))
 
-# Group by model and strategy
-grouped = df_data.groupby(['model', 'strategy'])['success_rate'].mean().reset_index()
-pivot_data = grouped.pivot(index='model', columns='strategy', values='success_rate')
+    # Group by model and strategy
+    grouped = df_data.groupby(['model', 'strategy'])['success_rate'].mean().reset_index()
+    pivot_data = grouped.pivot(index='model', columns='strategy', values='success_rate')
 
-x = np.arange(len(pivot_data.index))
-width = 0.35
+    x = np.arange(len(pivot_data.index))
+    width = 0.30
 
-bars1 = ax.bar(x - width/2, pivot_data['class'], width, label='File-by-file', color='#3498db', alpha=0.8)
-bars2 = ax.bar(x + width/2, pivot_data['method'], width, label='Method-by-method', color='#e74c3c', alpha=0.8)
+    bars1 = ax.bar(x - width/2, pivot_data['class'], width, label='File-by-file', color='#4A7298', alpha=0.8)
+    bars2 = ax.bar(x + width/2, pivot_data['method'], width, label='Method-by-method', color='#F3C846', alpha=0.8)
 
-ax.set_xlabel('Model', fontsize=12, fontweight='bold')
-ax.set_ylabel('Compilation Success Rate (%)', fontsize=12, fontweight='bold')
-ax.set_title('RQ1: Translation Effectiveness by Model and Segmentation Strategy', fontsize=14, fontweight='bold')
-ax.set_xticks(x)
-ax.set_xticklabels(pivot_data.index)
-ax.legend(loc='upper right')
-ax.grid(axis='y', alpha=0.3)
+    ax.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
+    ax.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
+    # ax.set_title('RQ1: Translation Effectiveness by Model and Segmentation Strategy', fontsize=18, fontweight='bold')
+    ax.set_xticks(x)
+    ax.set_xticklabels(pivot_data.index, fontsize=XY_LABEL_SIZE, fontfamily=FONT)
+    ax.tick_params(axis='y')
+    ax.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
+    ax.grid(axis='y', alpha=0.3)
 
-# Add value labels on bars
-for bars in [bars1, bars2]:
-    for bar in bars:
-        height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width()/2., height,
-                f'{height:.1f}%', ha='center', va='bottom', fontsize=10)
+    # Add value labels on bars
+    for bars in [bars1, bars2]:
+        for bar in bars:
+            height = bar.get_height()
+            ax.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{height:.1f}%', ha='center', va='bottom', fontsize=XY_LABEL_SIZE, fontfamily=FONT)
 
-plt.tight_layout()
-plt.savefig(FIGURE_DIR / 'empirical_success_rate.pdf', dpi=300, bbox_inches='tight')
-plt.savefig(FIGURE_DIR / 'empirical_success_rate.png', dpi=300, bbox_inches='tight')
-print("✓ Generated: empirical_success_rate.pdf/png")
+    plt.tight_layout()
+    plt.savefig(FIGURE_DIR / 'empirical_success_rate.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig(FIGURE_DIR / 'empirical_success_rate.png', dpi=300, bbox_inches='tight')
+    print("✓ Generated: empirical_success_rate.pdf/png")
 
 # ===================================================================
 # Chart 2: Success Rate by Project (RQ1)
 # ===================================================================
-fig, ax = plt.subplots(figsize=(12, 6))
+# Generate chart for class strategy
+# File-by-file Strategy Chart
+if True:
+    fig, ax1 = plt.subplots(figsize=(10, 6))
 
-projects = df_data['translation_unit'].unique()
-models = df_data['model'].unique()
-strategies = df_data['strategy'].unique()
+    projects = ['Cookie','EnableJUnit4MigrationSupport','CircuitBreakerExecutor']
+    models = df_data['model'].unique()
 
-x = np.arange(len(projects))
-width = 0.13
-bar_positions = np.arange(len(projects))
+    # Professional color scheme (blues and grays)
+    colors = ['#AC2124', '#ECB426', '#416594']
 
-colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6']
-bars_list = []
+    width = 0.2
+    bar_positions = np.arange(len(projects))
 
-for i, (model, strategy) in enumerate([(m, s) for m in models for s in strategies]):
-    data_subset = df_data[(df_data['model'] == model) & (df_data['strategy'] == strategy)]
-    rates = [data_subset[data_subset['translation_unit'] == p]['success_rate'].values[0]
-             if p in data_subset['translation_unit'].values else 0
-             for p in projects]
+    for i, model in enumerate(models):
+        data_subset = df_data[(df_data['model'] == model) & (df_data['strategy'] == 'class')]
+        rates = [data_subset[data_subset['translation_unit'] == p]['success_rate'].values[0]
+                if p in data_subset['translation_unit'].values else 0
+                for p in projects]
 
-    offset = (i - len(models)*len(strategies)/2 + 0.5) * width
-    bars = ax.bar(bar_positions + offset, rates, width,
-                  label=f'{model}\n({strategy})',
-                  alpha=0.8, color=colors[i % len(colors)])
-    bars_list.append(bars)
+        offset = (i - len(models)/2 + 0.5) * width
+        bars = ax1.bar(bar_positions + offset, rates, width,
+                    label=f'{model}', color=colors[i % len(colors)])
 
-ax.set_xlabel('Translation Unit (Project)', fontsize=12, fontweight='bold')
-ax.set_ylabel('Compilation Success Rate (%)', fontsize=12, fontweight='bold')
-ax.set_title('RQ1: Success Rate Across Different Projects', fontsize=14, fontweight='bold')
-ax.set_xticks(bar_positions)
-ax.set_xticklabels([f'{p}\n({df_source[df_source["translation_unit"]==p]["domain"].values[0]})'
-                    for p in projects], fontsize=9)
-ax.legend(loc='upper right', fontsize=8, ncol=2)
-ax.grid(axis='y', alpha=0.3)
+    ax1.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
+    ax1.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
+    # ax1.set_title('File-by-file Strategy', fontsize=XY_LABEL_SIZE, fontweight='bold')
+    ax1.set_xticks(bar_positions)
+    ax1.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_LABEL_SIZE, fontfamily=FONT)
+    ax1.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
+    ax1.grid(axis='y', alpha=0.3)
+    ax1.set_ylim(0, 100)
 
-plt.tight_layout()
-plt.savefig(FIGURE_DIR / 'empirical_success_by_project.pdf', dpi=300, bbox_inches='tight')
-plt.savefig(FIGURE_DIR / 'empirical_success_by_project.png', dpi=300, bbox_inches='tight')
-print("✓ Generated: empirical_success_by_project.pdf/png")
+    plt.tight_layout()
+    plt.savefig(FIGURE_DIR / 'empirical_success_by_project_class.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig(FIGURE_DIR / 'empirical_success_by_project_class.png', dpi=300, bbox_inches='tight')
+    print("✓ Generated: empirical_success_by_project_class.pdf/png")
+    plt.close()
+
+    # Method-by-method Strategy Chart
+    fig, ax2 = plt.subplots(figsize=(10, 6))
+
+    for i, model in enumerate(models):
+        data_subset = df_data[(df_data['model'] == model) & (df_data['strategy'] == 'method')]
+        rates = [data_subset[data_subset['translation_unit'] == p]['success_rate'].values[0]
+                if p in data_subset['translation_unit'].values else 0
+                for p in projects]
+
+        offset = (i - len(models)/2 + 0.5) * width
+        bars = ax2.bar(bar_positions + offset, rates, width,
+                    label=f'{model}', color=colors[i % len(colors)])
+
+    ax2.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
+    ax2.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
+    # ax2.set_title('Method-by-method Strategy', fontsize=XY_LABEL_SIZE, fontweight='bold')
+    ax2.set_xticks(bar_positions)
+    ax2.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_LABEL_SIZE, fontfamily=FONT)
+    ax2.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
+    ax2.grid(axis='y', alpha=0.3)
+    ax2.set_ylim(0, 100)
+
+    plt.tight_layout()
+    plt.savefig(FIGURE_DIR / 'empirical_success_by_project_method.pdf', dpi=300, bbox_inches='tight')
+    plt.savefig(FIGURE_DIR / 'empirical_success_by_project_method.png', dpi=300, bbox_inches='tight')
+    print("✓ Generated: empirical_success_by_project_method.pdf/png")
+    plt.close()
+
+exit(1)
 
 # ===================================================================
 # Chart 3: Error Type Heatmap (RQ2)
