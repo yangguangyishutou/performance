@@ -61,13 +61,12 @@ if True:
 
     ax.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
     ax.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
-    # ax.set_title('RQ1: Translation Effectiveness by Model and Segmentation Strategy', fontsize=18, fontweight='bold')
     ax.set_xticks(x)
+    ax.set_xticks(np.arange(-0.5, len(x), 0.5), minor=True)
     ax.set_xticklabels(pivot_data.index, fontsize=XY_TICK_SIZE, fontfamily=FONT)
-    ax.tick_params(axis='y')
     ax.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
     # Add more grid lines
-    ax.grid(axis='y', alpha=0.3)
+    ax.grid(True, axis='x', which='minor', alpha=0.3, color='gray')
     ax.set_yticks(np.arange(0, 101, 10))
     ax.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
 
@@ -112,12 +111,11 @@ if True:
 
     ax1.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
     ax1.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
-    # ax1.set_title('File-by-file Strategy', fontsize=XY_LABEL_SIZE, fontweight='bold')
     ax1.set_xticks(bar_positions)
+    ax1.set_xticks(np.arange(0.5, len(projects) -0.5, 0.5), minor=True)
     ax1.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax1.grid(True, axis='x', which='minor', alpha=0.3, color='gray')
     ax1.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
-    # Add more grid lines
-    ax1.grid(axis='y', alpha=0.3)
     ax1.set_yticks(np.arange(0, 101, 10))
     ax1.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
     ax1.set_ylim(0, 100)
@@ -150,11 +148,11 @@ if True:
 
     ax2.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
     ax2.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
-    # ax2.set_title('Method-by-method Strategy', fontsize=XY_LABEL_SIZE, fontweight='bold')
     ax2.set_xticks(bar_positions)
+    ax2.set_xticks(np.arange(0.5, len(projects) -0.5, 0.5), minor=True)
     ax2.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax2.grid(True, axis='x', which='minor', alpha=0.3, color='gray')
     ax2.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
-    # Add more grid lines
     ax2.grid(axis='y', alpha=0.3)
     ax2.set_yticks(np.arange(0, 101, 10))
     ax2.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
