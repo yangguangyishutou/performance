@@ -30,10 +30,12 @@ model_names = {
 df_data['model'] = df_data['ai_name'].map(model_names)
 df_errors['model'] = df_errors['ai_name'].map(model_names)
 
-XY_LABEL_SIZE = 22
+XY_LABEL_SIZE = 28
 FONT = 'Times New Roman'
 LEGEND_SIZE = 20
 XY_TICK_SIZE = 20
+VAL_LABEL_SIZE = 19
+BAR_ALPHA = 0.8
 
 # Set font for all text elements
 plt.rcParams['font.family'] = 'serif'
@@ -54,24 +56,27 @@ if True:
     x = np.arange(len(pivot_data.index))
     width = 0.30
 
-    bars1 = ax.bar(x - width/2, pivot_data['class'], width, label='File-by-file', color='#4A7298', alpha=0.8)
-    bars2 = ax.bar(x + width/2, pivot_data['method'], width, label='Method-by-method', color='#F3C846', alpha=0.8)
+    bars1 = ax.bar(x - width/2, pivot_data['class'], width, label='File-by-file', color='#4A7298', alpha=BAR_ALPHA)
+    bars2 = ax.bar(x + width/2, pivot_data['method'], width, label='Method-by-method', color='#F3C846', alpha=BAR_ALPHA)  
 
     ax.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
     ax.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
     # ax.set_title('RQ1: Translation Effectiveness by Model and Segmentation Strategy', fontsize=18, fontweight='bold')
     ax.set_xticks(x)
-    ax.set_xticklabels(pivot_data.index, fontsize=XY_LABEL_SIZE, fontfamily=FONT)
+    ax.set_xticklabels(pivot_data.index, fontsize=XY_TICK_SIZE, fontfamily=FONT)
     ax.tick_params(axis='y')
     ax.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
+    # Add more grid lines
     ax.grid(axis='y', alpha=0.3)
+    ax.set_yticks(np.arange(0, 101, 10))
+    ax.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
 
     # Add value labels on bars
     for bars in [bars1, bars2]:
         for bar in bars:
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2., height,
-                    f'{height:.1f}%', ha='center', va='bottom', fontsize=XY_LABEL_SIZE, fontfamily=FONT)
+                    f'{height:.1f}', ha='center', va='bottom', fontsize=VAL_LABEL_SIZE, fontfamily=FONT)
 
     plt.tight_layout()
     plt.savefig(FIGURE_DIR / 'empirical_success_rate.pdf', dpi=300, bbox_inches='tight')
@@ -92,7 +97,7 @@ if True:
     # Professional color scheme (blues and grays)
     colors = ['#AC2124', '#ECB426', '#416594']
 
-    width = 0.2
+    width = 0.25
     bar_positions = np.arange(len(projects))
 
     for i, model in enumerate(models):
@@ -103,16 +108,26 @@ if True:
 
         offset = (i - len(models)/2 + 0.5) * width
         bars = ax1.bar(bar_positions + offset, rates, width,
-                    label=f'{model}', color=colors[i % len(colors)])
+                    label=f'{model}', color=colors[i % len(colors)], alpha=BAR_ALPHA)
 
     ax1.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
     ax1.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
     # ax1.set_title('File-by-file Strategy', fontsize=XY_LABEL_SIZE, fontweight='bold')
     ax1.set_xticks(bar_positions)
-    ax1.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_LABEL_SIZE, fontfamily=FONT)
+    ax1.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_TICK_SIZE, fontfamily=FONT)
     ax1.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
+    # Add more grid lines
     ax1.grid(axis='y', alpha=0.3)
+    ax1.set_yticks(np.arange(0, 101, 10))
+    ax1.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
     ax1.set_ylim(0, 100)
+    
+    # Add value labels on bars
+    for bars in ax1.containers:
+        for bar in bars:
+            height = bar.get_height()
+            ax1.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{height:.1f}', ha='center', va='bottom', fontsize=VAL_LABEL_SIZE, fontfamily=FONT)
 
     plt.tight_layout()
     plt.savefig(FIGURE_DIR / 'empirical_success_by_project_class.pdf', dpi=300, bbox_inches='tight')
@@ -131,16 +146,26 @@ if True:
 
         offset = (i - len(models)/2 + 0.5) * width
         bars = ax2.bar(bar_positions + offset, rates, width,
-                    label=f'{model}', color=colors[i % len(colors)])
+                    label=f'{model}', color=colors[i % len(colors)], alpha=BAR_ALPHA)
 
     ax2.set_xlabel('', fontsize=18, fontweight='bold', fontfamily=FONT)
     ax2.set_ylabel('Compilation Success Rate (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
     # ax2.set_title('Method-by-method Strategy', fontsize=XY_LABEL_SIZE, fontweight='bold')
     ax2.set_xticks(bar_positions)
-    ax2.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_LABEL_SIZE, fontfamily=FONT)
+    ax2.set_xticklabels([p.replace('EnableJUnit4MigrationSupport', 'EnableJUnit4-\nMigrationSupport') for p in projects], fontsize=XY_TICK_SIZE, fontfamily=FONT)
     ax2.legend(loc='upper left', fontsize=LEGEND_SIZE, prop={'family': FONT, 'size': LEGEND_SIZE})
+    # Add more grid lines
     ax2.grid(axis='y', alpha=0.3)
+    ax2.set_yticks(np.arange(0, 101, 10))
+    ax2.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
     ax2.set_ylim(0, 100)
+    
+    # Add value labels on bars
+    for bars in ax2.containers:
+        for bar in bars:
+            height = bar.get_height()
+            ax2.text(bar.get_x() + bar.get_width()/2., height,
+                    f'{height:.1f}', ha='center', va='bottom', fontsize=VAL_LABEL_SIZE, fontfamily=FONT)
 
     plt.tight_layout()
     plt.savefig(FIGURE_DIR / 'empirical_success_by_project_method.pdf', dpi=300, bbox_inches='tight')
