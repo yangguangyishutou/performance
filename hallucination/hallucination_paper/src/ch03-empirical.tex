@@ -110,9 +110,16 @@ hutool & JSONParser & 6 & 20 \\
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/empirical_success_by_project.pdf}
-\caption{Effectiveness of C++-to-Java Translation using LLMs under Two Translation Strategies w.r.t Project and Modules}
-\label{fig:empirical_success_by_project}
+\includegraphics[width=0.45\textwidth]{figures/empirical_success_by_project_class.pdf}
+\caption{Effectiveness of C++-to-Java Translation using LLMs with File-by-file Strategy w.r.t Project and Modules}
+\label{fig:empirical_success_by_project_class}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.45\textwidth]{figures/empirical_success_by_project_method.pdf}
+\caption{Effectiveness of C++-to-Java Translation using LLMs with Method-by-method Strategy w.r.t Project and Modules}
+\label{fig:empirical_success_by_project_method}
 \end{figure}
 
 We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, defined as the percentage of successfully compiled C++ files or methods relative to the total number of files or methods.
