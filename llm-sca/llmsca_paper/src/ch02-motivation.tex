@@ -1,0 +1,78 @@
+\section{Motivation}
+
+% 大模型用的广泛，需要基于在 HF 等平台使用、共享、寄存
+% 迭代开发新模型，基于已有模型进行微调、合并、量化等
+% 形成了一个复杂的模型间依赖关系
+% 因为 biases & 漏洞等根据模型谱系传播，因此需要溯源，所以网络谱系构建很重要
+The proliferation of Large Language Models (LLMs) has been dramatically accelerated by collaborative platforms like the \href{https://huggingface.co/}{Hugging Face Hub}, which serves as a central repository for model sharing. A cornerstone of this ecosystem is the iterative development of new models by building upon existing ones through techniques such as fine-tuning, merging, and quantization. This process creates a complex web of inter-model dependencies, which we define as \textbf{model genealogy} or \textbf{lineage}. A clear understanding of a model's genealogy is paramount for ensuring traceability, reproducibility, and compliance, as derivative models often inherit biases, vulnerabilities, or licensing constraints from their predecessors.
+
+% 但是 HF 上已有的模型谱系信息记录机制存在严重缺陷
+% Model Tree 有时候并不能反映模型真正的谱系信息
+However, the mechanisms currently available on the Hugging Face Hub for documenting this critical lineage information are frequently inconsistent, incomplete, or entirely absent. This lack of a systematic and enforceable standard for provenance documentation poses a significant barrier to researchers and developers. The most visible symptom of this issue is the difficulty, or outright impossibility, of programmatically constructing a model's lineage--a structure ideally represented as a ``Model Tree''. This is not a superficial interface problem but a direct consequence of fundamental flaws in how provenance data is recorded at its source.
+
+% 用具体例子说明问题严重
+To illustrate the severity of this challenge, we will dissect two distinct modes of documentation failure, each representing a progressively worsening degree of information obfuscation.
+
+% 在 model card 里面 非结构化文本 
+\subsection{Problem 1: Lineage Concealed in Unstructured Text}
+In the most common scenario, lineage information exists but is locked within free-form text, rendering it inaccessible to automated tools. This forces researchers into a manual, error-prone process of discovery.
+
+\begin{tcolorbox}[
+        title={\textbf{Case Study 1: \texttt{DavidAU/NSFW\_DPO\_Noromaid-7b-GGUF}}},
+        colback=gray!5!white,
+        colframe=gray!75!black,
+        fonttitle=\bfseries,
+        sharp corners
+    ]
+    The Hugging Face repository of this model does not include a model tree; however, its model card explicitly states:
+    \begin{quote}
+        \textit{NSFW\_DPO\_Noromaid-7b-Mistral-7B-Instruct-v0.1 is a merge of the following models: mistralai/Mistral-7B-Instruct-v0.1 and athirdpath/NSFW\_DPO\_Noromaid-7b.}
+    \end{quote}
+    Notably, the Hugging Face pages of both referenced models in the model card contain their respective model trees. This reliance on unstructured documentation makes the automated construction of a lineage graph infeasible. It imposes a significant manual burden for identifying even a direct parent and completely obstructs any large-scale, systematic analysis of the model ecosystem.
+\end{tcolorbox}
+
+\begin{tcolorbox}[
+        title={\textbf{Case Study 2: \texttt{timdettmers/guanaco-13b}}},
+        colback=gray!5!white,
+        colframe=gray!75!black,
+        fonttitle=\bfseries,
+        sharp corners
+    ]
+    Another example is the \texttt{timdettmers/guanaco-13b} model. While this model is a fine-tuned version of LLaMA, this pivotal relationship is not captured in any structured, machine-readable metadata. To discover this link, a user must manually navigate to the model's repository, open the "Model Card" (a Markdown file), and parse through natural language prose to find the statement:
+    \begin{quote}
+        \textit{Guanaco models are open-source finetuned chatbots obtained through 4-bit QLoRA tuning of LLaMA base models...}
+    \end{quote}
+\end{tcolorbox}
+
+% 在外部链接 第三方平台
+\subsection{Problem 2: Lineage Outsourced to Fragile External Links}
+A more precarious situation arises when provenance information is not even located within the Hugging Face platform, but is instead hyperlinked to an external, third-party source.
+
+\begin{tcolorbox}[
+    title={\textbf{Case Study 3: \texttt{pfnet/plamo-2.1-2b-cpt}}},
+    colback=gray!5!white, % 盒子背景色
+    colframe=gray!75!black, % 边框颜色
+    fonttitle=\bfseries, % 标题字体加粗
+    sharp corners % 使用直角，更具现代感
+]
+The model's homepage lacks a model tree, and its model card merely states that the model was derived by reducing the parameter size from an 8B-parameter model, without explicitly specifying the base model used for this operation. However, the model card provides links to three technical blogs for reference. By following these external links, we can infer that the mentioned 8B-parameter model is \texttt{plano-2-8b}.
+
+\end{tcolorbox}
+
+\begin{tcolorbox}[
+        title={\textbf{Case Study 4: \texttt{Remilistrasza/Mysterious\_SDXL\_Lah}}},
+        colback=gray!5!white,
+        colframe=gray!75!black,
+        fonttitle=\bfseries,
+        sharp corners
+    ]
+    Consider the \texttt{Remilistrasza/Mysterious\_SDXL\_Lah} model. Its Model Card is starkly empty of descriptive content, offering only a single hyperlink to a page on \href{https://civitai.com/}{Civitai}, another model-sharing platform. To identify the base model, a user is forced to leave the Hugging Face ecosystem. Only upon navigating to this external page does one discover that the base model is “\textit{SDXL 1.0}”.
+
+\end{tcolorbox}
+
+% 带来的问题 信息碎片化 & 链接失效
+% 模型溯源难度增加
+This practice introduces two severe risks: \textbf{information fragmentation} and \textbf{link rot}. The integrity and availability of the lineage information become wholly dependent on the uptime and archival policies of an external website. Should the link become invalid (a 404 error), or the content on the remote page be altered or deleted, the model's traceable lineage is permanently severed. This practice renders the model's provenance fragile and unverifiable from within the Hugging Face ecosystem.
+
+% 这就需要我们的溯源方法
+These documented failures, which range from information concealed in prose to its complete omission, demonstrate a clear and pressing need for an automated and reliable method to construct model genealogies. The current reliance on inconsistent and manual documentation is an unsustainable bottleneck in an ecosystem that is scaling rapidly. To bridge this critical gap, we propose an approach to automatically identify and verify the derivative relationships between models, thereby enabling robust and scalable lineage tracing.
