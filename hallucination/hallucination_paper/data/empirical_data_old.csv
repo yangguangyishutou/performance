@@ -1,25 +1,25 @@
-translation_unit,ai_name,strategy,total_cpp_count,success_file_count
-Cookie,deepseek-v3.2,class,9,1
-Cookie,deepseek-v3.2,method,9,0
-Cookie,qwen-3.5plus,class,9,4
-Cookie,qwen-3.5plus,method,9,0
-Cookie,ChatGPT-5.1,class,9,1
-Cookie,ChatGPT-5.1,method,9,1
-CircuitBreakerExecutor,deepseek-v3.2,class,17,1
-CircuitBreakerExecutor,deepseek-v3.2,method,17,1
-CircuitBreakerExecutor,qwen-3.5plus,class,17,0
-CircuitBreakerExecutor,qwen-3.5plus,method,17,0
-CircuitBreakerExecutor,ChatGPT-5.1,class,17,0
-CircuitBreakerExecutor,ChatGPT-5.1,method,17,0
-EnableJUnit4MigrationSupport,deepseek-v3.2,class,23,3
-EnableJUnit4MigrationSupport,deepseek-v3.2,method,23,3
-EnableJUnit4MigrationSupport,qwen-3.5plus,class,23,5
-EnableJUnit4MigrationSupport,qwen-3.5plus,method,23,1
-EnableJUnit4MigrationSupport,ChatGPT-5.1,class,23,3
-EnableJUnit4MigrationSupport,ChatGPT-5.1,method,23,3
-RateLimiterExecutor,deepseek-v3.2,class,18,2
-RateLimiterExecutor,deepseek-v3.2,method,18,0
-RateLimiterExecutor,qwen-3.5plus,class,18,2
-RateLimiterExecutor,qwen-3.5plus,method,18,0
-RateLimiterExecutor,ChatGPT-5.1,class,18,1
-RateLimiterExecutor,ChatGPT-5.1,method,18,0
+translation_unit            , ai_name      , strategy, total_cpp_count, success_file_count
+Cookie                      , deepseek-v3.2, class   ,               9,                  1
+Cookie                      , deepseek-v3.2, method  ,               9,                  0
+Cookie                      , qwen-3.5plus , class   ,               9,                  4
+Cookie                      , qwen-3.5plus , method  ,               9,                  0
+Cookie                      , ChatGPT-5.1  , class   ,               9,                  1
+Cookie                      , ChatGPT-5.1  , method  ,               9,                  1
+CircuitBreakerExecutor      , deepseek-v3.2, class   ,              17,                  1
+CircuitBreakerExecutor      , deepseek-v3.2, method  ,              17,                  1
+CircuitBreakerExecutor      , qwen-3.5plus , class   ,              17,                  0
+CircuitBreakerExecutor      , qwen-3.5plus , method  ,              17,                  0
+CircuitBreakerExecutor      , ChatGPT-5.1  , class   ,              17,                  0
+CircuitBreakerExecutor      , ChatGPT-5.1  , method  ,              17,                  0
+EnableJUnit4MigrationSupport, deepseek-v3.2, class   ,              23,                  3
+EnableJUnit4MigrationSupport, deepseek-v3.2, method  ,              23,                  3
+EnableJUnit4MigrationSupport, qwen-3.5plus , class   ,              23,                  5
+EnableJUnit4MigrationSupport, qwen-3.5plus , method  ,              23,                  1
+EnableJUnit4MigrationSupport, ChatGPT-5.1  , class   ,              23,                  3
+EnableJUnit4MigrationSupport, ChatGPT-5.1  , method  ,              23,                  3
+RateLimiterExecutor         , deepseek-v3.2, class   ,              18,                  2
+RateLimiterExecutor         , deepseek-v3.2, method  ,              18,                  0
+RateLimiterExecutor         , qwen-3.5plus , class   ,              18,                  2
+RateLimiterExecutor         , qwen-3.5plus , method  ,              18,                  0
+RateLimiterExecutor         , ChatGPT-5.1  , class   ,              18,                  1
+RateLimiterExecutor         , ChatGPT-5.1  , method  ,              18,                  0

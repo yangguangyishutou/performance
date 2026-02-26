@@ -7,7 +7,7 @@ This section presents the detailed design of \tool{}, our hierarchical framework
 
 \begin{figure*}[h]
 \centering
-\includegraphics[width=\textwidth]{figures/architecture-overall.pdf}
+\includegraphics[width=\textwidth]{figures/approach/architecture-overall.pdf}
 \caption{Overall architecture of \tool{} showing the three-phase translation process.}
 \label{fig:architecture-overview}
 \end{figure*}
@@ -112,7 +112,7 @@ This structural flexibility is particularly valuable when translating between la
 
 \begin{figure*}
   \centering
-  \includegraphics[width=\textwidth]{figures/class_translation.pdf}
+  \includegraphics[width=\textwidth]{figures/approach/class_translation_prompt.pdf}
   \caption{Header-level translation scheme and data flow. The LLM analyzes the Java class structure, generates a translation scheme specifying type mappings and structural changes, then produces the corresponding C++ header file.}
   \label{fig:class-translation}
 \end{figure*}
@@ -151,7 +151,7 @@ This context-rich prompting significantly reduces hallucination by providing the
 
 \begin{figure*}
   \centering
-  \includegraphics[width=\textwidth]{figures/method_translation.pdf}
+  \includegraphics[width=\textwidth]{figures/approach/method_translation_prompt.pdf}
   \caption{Method-level translation scheme and data flow. The bottom-up translation order ensures that callee methods are translated before callers, enabling context propagation where already-translated code serves as reference.}
   \label{fig:method-translation}
 \end{figure*}

@@ -103,21 +103,21 @@ hutool & JSONParser & 6 & 20 \\
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/empirical_success_rate.pdf}
+\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/overall.pdf}
 \caption{Effectiveness of C++-to-Java Translation using LLMs under Two Translation Strategies}
     \label{fig:empirical_success_rate}
 \end{figure}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/empirical_success_by_project_class.pdf}
+\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/by_project-class.pdf}
 \caption{Effectiveness of C++-to-Java Translation using LLMs with File-by-file Strategy w.r.t Project and Modules}
 \label{fig:empirical_success_by_project_class}
 \end{figure}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{figures/empirical_success_by_project_method.pdf}
+\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/by_project-method.pdf}
 \caption{Effectiveness of C++-to-Java Translation using LLMs with Method-by-method Strategy w.r.t Project and Modules}
 \label{fig:empirical_success_by_project_method}
 \end{figure}
@@ -162,9 +162,16 @@ To understand the root causes of translation failures, we systematically categor
 
 \begin{figure*}[htbp]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/empirical_error_by_type_horizontal.pdf}
-\caption{Error type occurrence rate by model and translation strategy. Each bar group shows the percentage of methods containing each error type, with different colors representing different model-strategy configurations. Build/Include and Missing Symbols errors dominate across all configurations.}
-\label{fig:empirical_error_by_type}
+\includegraphics[width=0.95\textwidth]{figures/empirical/error_analysis/class_level_distribution2.pdf}
+\caption{Error type occurrence rate by model and translation strategy (Class-Level).}
+\label{fig:empirical_error_by_type_class}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/empirical/error_analysis/method_level_distribution2.pdf}
+\caption{Error type occurrence rate by model and translation strategy (Method-Level).}
+\label{fig:empirical_error_by_type_method}
 \end{figure*}
 
 \textbf{Error Type Taxonomy.} We systematically categorized all compilation errors into 11 distinct types based on their underlying causes:
@@ -211,9 +218,16 @@ Figure~\ref{fig:empirical_error_stacked} illustrates the relative composition of
 
 \begin{figure*}[htbp]
 \centering
-\includegraphics[width=0.9\textwidth]{figures/empirical_error_stacked.pdf}
-\caption{Stacked error distribution by configuration. Each bar shows the percentage of methods containing each error type. Build/Include and Missing Symbols dominate across all model-strategy combinations.}
+\includegraphics[width=0.9\textwidth]{figures/empirical/error_analysis/method_level_stack.pdf}
+\caption{Stacked error distribution by configuration(method-level). Each bar shows the percentage of methods containing each error type.}
 \label{fig:empirical_error_stacked}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/empirical/error_analysis/class_level_stack.pdf}
+\caption{Stacked error distribution by configuration(class-level). Each bar shows the percentage of methods containing each error type.}
+\label{fig:empirical_error_stacked_class}
 \end{figure*}
 
 \textbf{Model-Specific Patterns.} While overall error distributions are similar, subtle differences emerge:
