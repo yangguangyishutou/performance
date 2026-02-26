@@ -1,0 +1,53 @@
+\section{Empirical Results}
+
+We design experiments to explore the following research questions. 
+
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Measurement Evaluation (RQ1)}: How do different measurement metrics affect the effectiveness of LLM lineage detection?
+    \item \textbf{Lineage Type Evaluation (RQ2)}: How do different lineage types contribute to the performance of LLM lineage detection?
+    \item \textbf{Structural Evaluation (RQ3)}: How do different model layers influence the effectiveness of LLM lineage detection?
+    % \item \textbf{State-of-the-art  Evaluation (RQ4)}: How do different model layers influence the effectiveness of LLM lineage detection?
+\end{itemize}
+
+\subsection{RQ1}
+
+% put graph here, below is a demo.
+\begin{figure*}[!t]
+    \centering
+    \begin{subfigure}{0.44\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/RCE.pdf}
+           \vspace{-9pt}
+        \caption{Remote Code Execution}
+        \label{fig:sub1}
+    \end{subfigure}%
+    \begin{subfigure}{0.44\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/SID.pdf}
+           \vspace{-9pt}
+        \caption{Sensitive Information Disclosure}
+        \label{fig:sub2}
+    \end{subfigure}%
+    \hfill
+     \begin{subfigure}{0.44\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/IFO.pdf}
+            \vspace{-9pt}
+        \caption{Insecure File Operation}
+        \label{fig:sub3}
+    \end{subfigure}%
+     \begin{subfigure}{0.44\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{fig/IFO.pdf}
+           \vspace{-9pt}
+        \caption{SQL Injection}
+        \label{fig:sub4}
+    \end{subfigure}%
+    \vspace{-10pt}
+    \caption{Experimental Results w.r.t MCP Tool Vulnerability Types}
+    \label{fig:eva2}
+\end{figure*}
+
+\subsection{RQ2}
+
+\subsection{RQ3}
