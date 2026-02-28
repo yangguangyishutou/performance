@@ -6,9 +6,12 @@
 \subsection{Data Collection}
 We collect our dataset through a two-step process. First, we identify CWE entries associated with overflow vulnerabilities. Then, we extract relevant vulnerability samples from widely-used vulnerability repair datasets based on these identified CWEs.
 
+\sloppy
 To systematically identify overflow-related vulnerabilities, we adopt a two-pronged approach to collecting relevant CWE entries. First, we refer to the Common Weakness Enumeration (CWE) framework\cite{CWEHome}, specifically utilizing CWE View-1000\cite{CWE1000}, also known as the “Research Concepts View.” This view provides a semantically organized structure of software weaknesses tailored for academic analysis, emphasizing conceptual clarity and hierarchy. Based on this taxonomy, we identify CWE-119 — Improper Restriction of Operations within the Bounds of a Memory Buffer — and its descendant nodes as representative of overflow vulnerabilities. The complete list of selected CWE entries is provided in Table~\ref{tab:cwe-list}.Second, to complement the taxonomy-driven selection, we conduct a survey of recent research on vulnerability detection and repair. Using keywords such as “overflow,” “detect,” and “repair,” we search for papers published in top-tier software engineering and security venues (e.g., CCS\footnote{ACM Conference on Computer and Communications Security}, ASE\footnote{IEEE/ACM International Conference on Automated Software Engineering}). From these works\cite{le2024study,li2022pacmem,liu2025cctag,zhang2023vulnerability,kang2022tracer,gorter2024sticky,steenhoek2023empirical,ba2022efficient,guo2024precise}, we analyze the datasets used and extract the CWE identifiers associated with overflow vulnerabilities. We find that most of these CWEs are already included in the CWE View-1000 hierarchy; for those not covered, we incorporate them into our list to ensure comprehensive coverage and consistency with real-world research practices.
 
-Next, we extract overflow-related vulnerability samples from two widely used vulnerability repair datasets: BigVul\cite{bigvul} and CVEFixes\cite{bhandari2021:cvefixes}. BigVul is a large-scale dataset that collects real-world vulnerabilities and corresponding fixes from open-source projects hosted on GitHub. CVEFixes, on the other hand, focuses on Common Vulnerabilities and Exposures (CVEs) and provides fine-grained fix commits associated with specific CVE entries. To maintain consistency with BigVul, we only retain C/C++ vulnerability samples from CVEFixes.We merge the two datasets following the standard practice established in prior work\cite{zhou2024large}, including deduplication and partitioning at the function level. Before filtering, the merged dataset consists of 135 CWEs, 4,067 CVEs, and 14,216 vulnerable functions. By applying the set of CWE identifiers identified in the previous step, we construct a refined dataset focused on overflow vulnerabilities, which includes 2,054 distinct CVEs and 7,865 vulnerable functions.A detailed breakdown of the final dataset is presented in Table~\ref{tab:cwe-distribution}.
+Next, we extract overflow-related vulnerability samples from two widely used vulnerability repair datasets: BigVul\cite{bigvul} and CVEFixes\cite{bhandari2021:cvefixes}. BigVul is a large-scale dataset that collects real-world vulnerabilities and corresponding fixes from open-source projects hosted on GitHub. CVEFixes, on the other hand, focuses on Common Vulnerabilities and Exposures (CVEs) and provides fine-grained fix commits associated with specific CVE entries. To maintain consistency with BigVul, we only retain C/C++ vulnerability samples from CVEFixes.We merge the two datasets following the standard practice established in prior work\cite{zhou2024large}, including deduplication and partitioning at the function level. Before filtering, the merged dataset consists of \textcolor{red}{XXX} CWEs, \textcolor{red}{XXX} CVEs, and \textcolor{red}{XXX} vulnerable functions. By applying the set of CWE identifiers identified in the previous step, we construct a refined dataset focused on overflow vulnerabilities, which includes \textcolor{red}{XXX} distinct CVEs and \textcolor{red}{XXX} vulnerable functions.A detailed breakdown of the final dataset is presented in Table~\ref{tab:cwe-distribution}.
+
+In addition, we analyze the distribution of the number of vulnerable functions associated with each CVE, as shown in Table~\ref{tab:cve-func-dist}. The results indicate that \textcolor{red}{XXX} CVEs contain only a single vulnerable function, accounting for\textcolor{red}{XXX}\%, while \textcolor{red}{XXX} CVEs involve multiple vulnerable functions, accounting for \textcolor{red}{XXX}\%. Existing studies have largely focused on repairing single-function vulnerabilities, often simplifying multi-function vulnerabilities into single-function cases for processing. However, repairing multi-function vulnerabilities is inherently more challenging: when reduced to the single-function level, large language models lack sufficient contextual information, making correct repairs infeasible. Therefore, directly simplifying multi-function vulnerabilities into single-function cases is problematic. In this work, we further analyze, through an empirical study, the impact of these unrepairable multi-function vulnerabilities on overall repair performance.
 
 
 \begin{table}[H]
@@ -71,53 +74,62 @@ CWE-824 & 11 & 14 \\
 \textbf{Total} & \textbf{2054} & \textbf{7865} \\
 \hline
 \end{tabular}
-\caption{CWE Distribution}
+\caption{\textcolor{red}{CWE Distribution}}
 \label{tab:cwe-distribution}
+\end{table}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c|c}
+\hline
+\textbf{Number of Functions} & \textbf{Number of CVEs} \\
+\hline
+1  & xxx \\
+2  & xxx \\
+3  & xxx \\
+4  & xxx \\
+5  & xxx \\
+6  & xxx \\
+7  & xxx \\
+8  & xxx \\
+9  & xxx \\
+10 & xxx \\
+$>$10 & xxx \\
+\hline
+\textbf{Total} & \textbf{xxx} \\
+\hline
+\end{tabular}
+\caption{\textcolor{red}{Distribution of CVEs by Number of Vulnerable Functions(to be later replaced with a bar chart)}}
+\label{tab:cve-func-dist}
 \end{table}
 
 \subsection{RQ design}
 
 
-
-
 \begin{itemize}
-  \item \textbf{RQ1: Vulnerability Repairableness} 
-  % Dataset: 614         7865 at confidence 99% and error 5%.
-  %             无关的修复函数    单函数视角下无法修复   单函数视角下可修复 
-                % Irrelevant Intra-Function Unrepairable   Intra-Function Repairable
-  %单函数漏洞        N                  N                 Y
-  %多函数漏洞        Y                  Y                 Y
-  % 1. 分类的情况 2. Unrepairable的漏洞函数会如何影响"漏洞修复工具"的效果？  
-
-  % Assume 首先修复Intra-Function Repairable之后，Intra-Function Unrepairable 的函数，增加上下文之后，是否可以变成可修复的？--------Y
-
-  % 结论：有些漏洞函数的修复，是unrepairable的，不能作为评估repair的验证集
+  \item \textbf{RQ1: Vulnerability Repairability.} Are all vulnerable functions in the dataset repairable?
 
   \item \textbf{RQ2. Repairable Vulnerability Characterization.} What are the key characteristics of overflow vulnerabilities?
   % 可以repair的漏洞函数，他们的特征；不同类型和特征，
   \begin{itemize}
-    \item \textbf{Trigger Logic.} What are the common triggering patterns or logic that lead to overflows?
+
     \item \textbf{Fixing Strategies.} What kinds of repair strategies are commonly applied to overflow vulnerabilities?
   \end{itemize}
 
   % Dataset: 600
   % 使用漏洞修复工具评估的效果和区别？
-  \item \textbf{RQ3 LLM-based Repairable Vulnerability Repair Evaluation} Effectiveness with regard to baselines, vulnerability type and fixing strategies.
+  \item \textbf{RQ3 Evaluation of Existing LLM-Based Vulnerability Repair Approaches}Assessing the effectiveness of these methods in terms of (i) function repairability, (ii) vulnerability type, and (iii) applied repair strategies.
   
-  % A. 统计层面的分析
-  % baseline: 1. simple prompting 2. agent-based ... 找一下相关的工作
-  % trigger logic. fixing strategies 
-  % B. 人工采样的分析(定量分析)
 
-  % 结论： 发现多agent比单agent效果好，过度修复的问题
 
 \end{itemize}
 
 
 
+% old version of RQ design
+% The RQ was reorganized and discontinued after the meeting on August 20, 2025.
 % \begin{itemize}[leftmargin=*]
- 
-  
+
 %   \item \textbf{RQ1. Effectiveness of Simple Prompting.} How effective is a simple prompt-based approach in enabling LLMs to repair overflow vulnerabilities?
 % \begin{itemize}
 %   \item \textbf{RQ1.1 Impact of Trigger Logic.} How does the effectiveness of prompt-based LLM repair vary across different overflow trigger logics?
@@ -132,16 +144,135 @@ CWE-824 & 11 & 14 \\
 
 % \end{itemize}
 
-\subsection{RQ0: Vulnerability Characterization}
+\subsection{RQ1: Vulnerability Repairability}
+Based on prior research, a multi-function vulnerability may include functions that are unrelated to the actual repair. These functions often remain logically equivalent before and after the fix, serving mainly to improve code readability rather than contributing to the repair itself. Among the functions that are directly related to the repair, we further distinguish between two categories: functions that are repairable from a single-function perspective and those that are not. The former refers to cases where the vulnerability trigger logic can be inferred solely from the code of the function, enabling effective repair. The latter, by contrast, refers to cases where the vulnerability trigger logic cannot be deduced from the function alone, making it impossible to repair in isolation. Clearly, functions that are unreparable from a single-function perspective necessarily depend on contextual information provided by other functions to identify the vulnerability trigger logic and guide the repair.
 
-\subsubsection{ploit labeling}
+Both irrelevant functions and single-function-unrepairable functions are unique challenges associated with multi-function vulnerabilities. In contrast, functions corresponding to single-function vulnerabilities are always directly related to the vulnerability and thus do not exhibit these issues. The relationships are summarized in Table~\ref{tab:func-classification}.
 
-xxxx
+To analyze this phenomenon, we performed stratified sampling on our dataset, ensuring that the distribution of CWEs and the distribution of the number of functions per CVE were consistent with those of the overall dataset. At a 99\% confidence level with a 5\% margin of error, we randomly selected \textcolor{red}{xx} CVEs, comprising \textcolor{red}{xxx} functions, as our study sample. Through manual inspection, we found that among the functions associated with multi-function vulnerabilities, \textcolor{red}{xxx} were unrelated to the vulnerability repair, \textcolor{red}{xxx} were unreparable from a single-function perspective, and \textcolor{red}{xxx} were repairable from a single-function perspective. The detailed breakdown is presented in Table~\ref{tab:func-classification-number}.
 
-\begin{tcolorbox}[colback=gray!5!white, colframe=black!75, title=Answer to RQ0]
 
-Overflow vulnerabilities can be characterized along two axes: the \textit{trigger logic} and the \textit{repair strategy}. 
+\begin{table}[h]
+\centering
+\begin{tabular}{l|c|c|c}
+\hline
+\textbf{Vulnerability Type} & \textbf{IRF} & \textbf{UR (SFP)} & \textbf{R (SFP)} \\
+\hline
+Single-Function Vulnerability & N & N & Y \\
+Multi-Function Vulnerability  & Y & Y & Y \\
+\hline
+\end{tabular}
+\caption{Classification of Vulnerability-Related Functions. 
+IRF = Irrelevant Repair Functions; UR (SFP) = Unrepairable (Single-Function Perspective); R (SFP) = Repairable (Single-Function Perspective).}
+\label{tab:func-classification}
+\end{table}
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{>{\centering\arraybackslash}p{3cm}|c|c|c}
+\hline
+\textbf{Single-Function Vulnerability} & \multicolumn{3}{c}{\textbf{Multi-Function Vulnerability}} \\
+\cline{2-4}
+ & \textbf{IRF} & \textbf{UR (SFP)} & \textbf{R (SFP)} \\
+\hline
+xxx & xxx & xxx & xxx \\
+\hline
+\end{tabular}
+\caption{\textcolor{red}{Number of Functions by Vulnerability Type and Repairability Category. }
+IRF = Irrelevant Repair Functions; UR (SFP) = Unrepairable (Single-Function Perspective); R (SFP) = Repairable (Single-Function Perspective).}
+\label{tab:func-classification-number}
+\end{table}
+
+
+For irrelevant repair functions, we exclude them from the validation set used to evaluate vulnerability-repair tools. By contrast, functions that are unrepairable when viewed in isolation are treated as an intrinsic characteristic of multi-function vulnerabilities and therefore cannot be reduced to single-function cases.
+
+We further investigated the underlying causes of these irrelevant repair functions. Such cases may include situations where the pre- and post-repair functions are semantically equivalent and the changes merely improve code readability, or where additional functionality is introduced that is unrelated to the vulnerability fix. Functions that remain unrepairable under a single-function setting often do so because their remediation requires coordinated modifications across multiple functions, employs macro definitions, or depends on variables and contextual information that cannot be inferred from the function alone.As shown in the Table~\ref{tab:irf-ur-categories}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|c}
+\hline
+\textbf{Category} & \textbf{Description} \\
+\hline
+ccc & ccc \\
+\hline
+\end{tabular}
+\caption{\textcolor{red}{Categories of Irrelevant Repair Functions and Functions Unrepairable from a Single-Function Perspective.}}
+\label{tab:irf-ur-categories}
+\end{table}
+
+To explore whether these unrepairable functions could become repairable with broader context, we examined the effect of incorporating successfully repaired functions as supplementary information. Our manual analysis shows that, among the sampled \textcolor{red}{xxx} functions unrepairable from a single-function perspective, \textcolor{red}{xxx} became repairable when additional successfully repaired functions were provided as context, representing \textcolor{red}{xxx}\%. This finding indicates that such functions rely on inter-function contextual cues to expose the vulnerability-triggering logic and thereby guide the repair process.
+          
+
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75, title=Answer to RQ1]
+
+In multi-function vulnerabilities, approximately \textcolor{red}{xxx}\% of the functions are irrelevant repair functions and about \textcolor{red}{xxx}\% are unrepairable from a single-function perspective. Neither category can be simplified into single-function vulnerabilities. The former are excluded from the validation set for evaluating vulnerability repair tools, while the latter can become repairable in \textcolor{red}{xx}\% of cases when contextual information from already repaired functions is incorporated.
+
+\end{tcolorbox}
+% 简单总结
+% Dataset: 614         7865 at confidence 99% and error 5%.
+  %             无关的修复函数    单函数视角下无法修复   单函数视角下可修复 
+                % Irrelevant Intra-Function Unrepairable   Intra-Function Repairable
+  %单函数漏洞        N                  N                 Y
+  %多函数漏洞        Y                  Y                 Y
+  % 1. 分类的情况 2. Unrepairable的漏洞函数会如何影响"漏洞修复工具"的效果？  
+
+  % Assume 首先修复Intra-Function Repairable之后，Intra-Function Unrepairable 的函数，增加上下文之后，是否可以变成可修复的？--------Y
+
+  % 结论：有些漏洞函数的修复，是unrepairable的，不能作为评估repair的验证集
+
+
+\subsection{RQ2. Repairable Vulnerability Characterization}
+For RQ1, we focus on vulnerabilities that can be directly repaired, including functions from single-function vulnerabilities and functions that are repairable from a single-function perspective within multi-function vulnerabilities. We further analyze the repair logic of these vulnerable functions. Specifically, we manually examined and categorized the repair logic of \textcolor{red}{xxx} vulnerable functions, with the detailed classification presented in Figure~\ref{fig:vul-characterization}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{src/picture/vul_characterization.png}
+    \caption{Classification of repair logic for vulnerabilities that can be repaired in isolation, including functions from single-function vulnerabilities and single-function-repairable functions in multi-function vulnerabilities.}
+    \label{fig:vul-characterization}
+\end{figure}
+
+\textcolor{red}{This section is to be completed later and should include specific classification diagrams and quantitative data displays.}
+
+
+
+
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75, title=Answer to RQ2]
+
 
 \end{tcolorbox}
 
+\subsection{RQ3:Evaluation of Existing LLM-Based Vulnerability Repair Approaches}
 
+\subsubsection{Setup}
+
+The evaluation is conducted using several baselines, including simple prompting and agent-based approaches. Relevant prior work will be reviewed to position our methodology.
+
+\subsubsection{Statistical Analysis}
+We perform statistical analysis using common evaluation metrics such as CodeBLEU, Exact Match, and other relevant measures.
+
+\subsubsection{Manual Sampling Analysis}
+\textcolor{red}{Through manual inspection, we expect to observe that multi-agent approaches outperform single-agent ones, while also identifying potential issues of over-repair.}
+
+  % A. 统计层面的分析
+  % baseline: 1. simple prompting 2. agent-based ... 找一下相关的工作
+  % trigger logic. fixing strategies 
+  % B. 人工采样的分析(定量分析)
+
+  % 结论： 发现多agent比单agent效果好，过度修复的问题
+
+
+
+
+
+
+\begin{tcolorbox}[colback=gray!5!white, colframe=black!75, title=Answer to RQ3]
+
+\textcolor{red}{RQ3 aims to evaluate the effectiveness of existing approaches with respect to (i) function repairability, (ii) vulnerability type, and (iii) applied repair strategies, using a combination of statistical metrics and manual sampling analysis.The evaluation is expected to reveal three key issues:1.	Irrelevant repair functions and functions unrepairable from a single-function perspective significantly affect the results of prior methods. 2.	Existing statistical metrics—such as CodeBLEU and Exact Match—do not adequately capture the performance of LLM-based vulnerability repair.3.	Numerous cases of over-repair are observed.}
+
+
+
+\end{tcolorbox}

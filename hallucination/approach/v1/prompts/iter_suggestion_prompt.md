@@ -1,0 +1,1 @@
+Since the compilation issue cannot be resolved after a certain number of attempts, the entire project will proceed to the next iteration for regeneration. Please put forward the issues that need attention and relevant suggestions during the generation process based on the problems encountered during the repair process.

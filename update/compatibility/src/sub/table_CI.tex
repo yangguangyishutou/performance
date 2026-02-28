@@ -1,0 +1,47 @@
+% 每个不兼容性类别对于COT表格
+\begin{table*}[!t]
+\centering
+\small
+\caption{Categories of API Incompatibilities and Reasoning Process}\label{tab:ci-catalog}
+  \begin{tabular}{p{0.5cm} p{2.0cm} p{14.0cm}}
+    \toprule
+    Id. & Name & Reasoning Process \\
+    \midrule
+    CI1/CI3 & Parameter Addition/Deletion and Rename  & 
+    Parameters are extracted from the pre- and post-change API signatures and first matched by name to identify unchanged parameters. Unmatched parameters are candidates for addition, deletion, or renaming. Since parameter renaming preserves data-flow traces while true additions or deletions do not, we distinguish these cases by comparing their data-flow traces across versions.
+    \\
+    \hline
+    CI4 & Parameter Default Value Change
+    & 
+    Building on the detection logic of CI1 and CI3, we identify CI4 by comparing the default values of mapped default-valued parameters. When both parameter names and default values change, we first resolve parameter renaming using CI3, and subsequently compare the mapped default values to determine CI4.
+    \\
+    \hline
+    CI2 & Kwargs Key Deletion/Addition
+    &  
+    Keyword-argument keys are accessed through APIs such as \texttt{kwargs.get(`key')}. We identify key additions or deletions by statically analyzing \texttt{kwargs} usages in the function body and comparing the sets of accessed keys between API versions.
+    \\
+    \hline
+    CI5 & Parameter Boundary Range 
+    & 
+    Branch conditions are extracted and mapped across pre- and post- change APIs. For each mapped condition, we trace data flow to input parameters and compare boundary constraints, and different boundaries indicate a CI5 incompatibility.
+    \\
+    \hline
+    CI6 & Exception Addition/Deletion/Change & 
+    First, we should locate raised exceptions in both the pre-change and post-change APIs and trace the data flow from input parameters to each exception. Exceptions are mapped across versions based on the similarity of their data-flow paths and control conditions. Unmapped exceptions are classified as exception additions or deletions. For mapped exceptions, differences in input-parameter condition constraints indicate an exception incompatibility.
+    \\\hline
+    CI7 & Return Value Change
+    & 
+    We extract all return statements from the pre- and post-change APIs and compare their predecessor structures. Return predecessors are mapped across versions based on the semantic similarity of their control conditions and returned expressions. Unmapped predecessors indicate a return type change, while for mapped predecessors, differences in return conditions, value constraints, or controlling predicates are reported as a return value change.
+    \\\hline
+    CI8 & Global Variable Change
+    & 
+    We identify assignments to global variables in both API versions and group them by variable name. For variables appearing in both versions, we compare the control-flow conditions under which the variables are assigned. Differences in guarding conditions or value constraints indicate a global variable change.
+    \\
+    \hline
+    CI9 & Instance Attribute Uninitialized
+    & 
+    We identify assignments to instance attributes in both API versions and compare their presence across versions. If an attribute is assigned in one version but has no corresponding assignment in the other, we report an instance attribute uninitialized incompatibility.
+    \\
+    \bottomrule
+  \end{tabular}%
+\end{table*}

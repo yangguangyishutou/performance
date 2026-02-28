@@ -1,12 +1,11 @@
-\documentclass[sigconf,screen]{acmart}
-\settopmatter{printfolios=true,printccs=true,printacmref=true}
+\documentclass[acmsmall,screen,review,anonymous]{acmart}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
   \providecommand\BibTeX{{%
     Bib\TeX}}}
     
-\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\settopmatter{printfolios=false,printccs=false,printacmref=false}
 \renewcommand\footnotetextcopyrightpermission[1]{}    
 
 % \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
@@ -90,6 +89,7 @@
 
 % command
 \newcommand{\todo}[1]{\textcolor{red}{#1}}
+\newcommand{\done}[1]{\textcolor{blue}{#1}}
 \newcommand{\tool}{\textsc{tool}\xspace}
 \newcommand{\ie}[0]{\textit{i.e.,}\xspace}
 \newcommand{\eg}[0]{\textit{e.g.,}\xspace}
@@ -99,9 +99,10 @@
 % fix overfull
 \begin{sloppypar}
 
-    \title{Hallucinated Package}
+    \title{Unveiling LLM Hallucination in Recommending Third-party Packages}
 
-
+    % HallucinationSquat
+    
     %%
     %% The abstract is a short summary of the work to be presented in the
     %% article.
@@ -123,7 +124,7 @@
     \input{src/ch03-empirical}
     \input{src/ch04-result}
 
-    \input{src/ch05-approach}
+    % \input{src/ch05-approach}
     \input{src/ch06-evaluation}
     
     \input{src/ch07-related}
@@ -156,5 +157,6 @@
 
 % Discontinue Maintenance -> Degrade Sustainability
 % add leak data
+
 
 

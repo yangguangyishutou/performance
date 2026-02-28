@@ -27,7 +27,6 @@ Table~\ref{tab:benchmark} summarizes the statistics of our collected benchmark. 
 \begin{table}[!t] 
     \centering
     \footnotesize
-        \caption{Benchmark Statistics}\label{tab:benchmark}
     \begin{tabular}{m{1.2cm}m{1.2cm}m{1.2cm}m{1.5cm}}
     \toprule
     \multirow{1}{*}{\textbf{Label}}   & \textbf{Files (\#)}  & \textbf{Func. (\#)}   & \textbf{Aver. LOC (\#)}   \\ 
@@ -38,13 +37,13 @@ Table~\ref{tab:benchmark} summarizes the statistics of our collected benchmark. 
          \multirow{2}{*}{\shortstack{Non-\\Members}}  & \multirow{2}{*}{214} & \multirow{2}{*}{1000}  & \multirow{2}{*}{25.34} \\ 
      & & & \\ 
     \bottomrule
-    \end{tabular}
+    \end{tabular} \caption{Benchmark Statistics}\label{tab:benchmark}
 \end{table}
 
 \begin{table}[!t] 
     \centering
     \footnotesize
-    \caption{Syntax Convention Counts in our Benchmark}\label{tab:syntax-stats}
+    
     \begin{tabular}{m{4cm}m{2cm}}
     \toprule
     \textbf{Category} & \textbf{Count} \\
@@ -58,7 +57,7 @@ Table~\ref{tab:benchmark} summarizes the statistics of our collected benchmark. 
     \multicolumn{1}{l}{\textbf{Total Tokens:} } & 248,218 \\
     \multicolumn{1}{l}{\textbf{Syntax Tokens Ratio:} } & 38.4\% \\
     \bottomrule
-    \end{tabular}
+    \end{tabular}\caption{Syntax Convention Counts in our Benchmark}\label{tab:syntax-stats}
 \end{table}
 
 We count the occurrences of the syntax conventions (\ie~conditions and consequences) that existed in our benchmark. Table~\ref{tab:syntax-stats} presents the distribution of these syntax convention categories in our benchmark, which demonstrates the syntactic diversity and complexity of the collected functions. The data model accounts for the largest portion of syntax convention tokens, contributing 63,594 tokens, followed by expressions with 30,988 tokens. In total, the four categories result in 95,257 tokens that would be pruned by \tool for MIA, representing 38.4\% of the overall token set.

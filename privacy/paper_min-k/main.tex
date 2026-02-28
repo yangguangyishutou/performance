@@ -1,11 +1,12 @@
 %File: anonymous-submission-latex-2026.tex
 \documentclass[letterpaper]{article} % DO NOT CHANGE THIS
-\usepackage[submission]{aaai2026}  % DO NOT CHANGE THIS
+\usepackage{aaai2026}  % DO NOT CHANGE THIS
 \usepackage{times}  % DO NOT CHANGE THIS
 \usepackage{helvet}  % DO NOT CHANGE THIS
 \usepackage{courier}  % DO NOT CHANGE THIS
 \usepackage[hyphens]{url}  % DO NOT CHANGE THIS
 \usepackage{graphicx} % DO NOT CHANGE THIS
+\pdfoutput=1
 \urlstyle{rm} % DO NOT CHANGE THIS
 \def\UrlFont{\rm}  % DO NOT CHANGE THIS
 \usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
@@ -63,11 +64,11 @@
 \usepackage{xfrac}
 
 % save space
-\setlength\floatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats
-\setlength\textfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats on the top or the bottom and the text
-\setlength\intextsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats inserted inside the text (using h) and the text
-\setlength\dbltextfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between a float spanning both columns and the text
-\setlength\dblfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats spanning both columns.
+% \setlength\floatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats
+% \setlength\textfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats on the top or the bottom and the text
+% \setlength\intextsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats inserted inside the text (using h) and the text
+% \setlength\dbltextfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between a float spanning both columns and the text
+% \setlength\dblfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats spanning both columns.
 
 %itemize
 \newcommand{\SubItem}[1]{
@@ -87,8 +88,23 @@
 
 \title{Uncovering Pretraining Code in LLMs: A Syntax-Aware Attribution Approach}
 
+\author{
+    Yuanheng Li\textsuperscript{\rm 1}\thanks{Both authors contributed equally to this work.},
+    Zhuoyang Chen\textsuperscript{\rm 1}\footnotemark[1],
+    Xiaoyun Liu\textsuperscript{\rm 1},
+    Yuhao Wang\textsuperscript{\rm 1},\\
+    Mingwei Liu\textsuperscript{\rm 2},
+    Yang Shi\textsuperscript{\rm 1},
+    Kaifeng Huang\textsuperscript{\rm 1}\thanks{Kaifeng Huang is the corresponding author.},
+    Shengjie Zhao\textsuperscript{\rm 1}
+}
 
-
+\affiliations{
+    \textsuperscript{\rm 1}School of Computer Science and Technology, Tongji University\\
+    \textsuperscript{\rm 2}School of Software Engineering, Sun Yat-sen University  \\
+     \textsuperscript{\rm 1}\{2253551, 2253721, 2354269, 2251052, shiyang, kaifengh, shengjiezhao\}@tongji.edu.cn\\
+    \textsuperscript{\rm 2}liumw26@mail.sysu.edu.cn
+}
 
 
 % Pretraining Code Detection in Large Language Models: A Refined Code Attribution using Syntax Conventions
@@ -108,6 +124,12 @@
 
 \input{src/ch00-abstract}
 
+\begin{links}
+\link{Code and Dataset}{https://anonymous.4open.science/r/SYNPRUNE-FED7}
+\end{links}
+
+
+
 \input{src/ch01-introduction}
 \input{src/ch07-related-work}
 % \input{src/ch02-motivation}
@@ -117,7 +139,7 @@
 % \input{src/ch06-case-study}
 \input{src/ch08-conclusion}
 
-\clearpage
+%\clearpage
 
 % \bibliographystyle{ACM-Reference-Format}
 % \bibliographystyle{aaai2026.bst}
@@ -125,7 +147,7 @@
 % \bibliographystyle{abbrvnat} 
 % \input{src/ch09-appendix}
 
-\input{src/ch10-checklist}
+%\input{src/ch10-checklist}
 
 
 % \clearpage

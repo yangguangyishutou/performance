@@ -1,0 +1,254 @@
+% !TeX root = ../main.tex
+
+\section{Empirical Study}
+
+We conduct an empirical study to systematically examine the effectiveness and limitations of large language models for repository-level C++-to-Java translation.
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{RQ1}: How is the effectiveness of large language models in repository-level C++-to-Java translation?
+\item \textbf{RQ2}: What are the common error patterns in large language model-driven repository-level C++-to-Java translation?
+\end{itemize}
+
+\subsection{Setup}
+
+\textbf{Initial Project and Modules.} We retrieved open-source Java projects from GitHub using the query expression ``language:java size:<5000 sort:stars-desc''. This query specifies Java as the primary programming language, restricts the repository size to under 5,000 KB to facilitate manual analysis, and ranks the results in descending order by star count to prioritize more popular projects. We collected projects from the first \todo{XX} pages of the search results and excluded those unsuitable for C++ translation: (1) educational or tutorial projects containing toy examples; (2) Android applications with platform-specific dependencies; and (3) frameworks with sophisticated design patterns that is hard to create counterparts in C++ (e.g., the Spring framework which is annotation-intensive that heavily rely on reflection). As a result, we collected six open-source projects spanning diverse domains:
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{failsafe}\footnote{https://github.com/failsafe-lib/failsafe}: A fault tolerance library for building resilient distributed systems.
+\item \textbf{jvm-sandbox}\footnote{https://github.com/alibaba/jvm-sandbox}: An AOP (Aspect-Oriented Programming) framework for runtime code manipulation.
+\item \textbf{easyexcel}\footnote{https://github.com/alibaba/easyexcel}: A library for Excel file processing with simplified APIs.
+\item \textbf{httpclient}\footnote{https://github.com/wso2/wso2-commons-httpclient}: An HTTP client library for network communication.
+\item \textbf{hutool}\footnote{https://github.com/dromara/hutool}: A comprehensive Java utility library.
+\item \textbf{Java-WebSocket}\footnote{https://github.com/TooTallNate/Java-WebSocket}: A WebSocket implementation for real-time communication.
+\end{itemize}
+
+As the project may have multiple independent and separated modules, we perform module analysis to aggregate files into modules. Specifically, we iterate each Java source file, parse each Java source file into the AST representation using JavaParser~\cite{javaparse}, and obtain their import statements as well as the used types that do not need import statements in the same directory. We resolve the imported types into the corresponding Java source file. Upon completion of this process, the interconnected source files are partitioned into multiple clusters, each representing a logically coherent module that implements a specific and self-contained functionality. Overall, we identified 24 modules encompassing diverse source files and methods. A detailed summary of the dataset is presented in Table~\ref{tab:dataset_info}.
+
+
+\begin{table}[!t]
+\centering
+    \begin{tabular}{m{1.8cm}m{4.35cm}m{0.5cm}m{0.5cm}}
+\toprule
+ \textbf{Project}  & \textbf{Root Class of Module} & \textbf{File (\#)} & \textbf{Method (\#)} \\
+\midrule
+\multirow{12}{*}{failsafe} & BulkheadBuilder  & 25 & 140 \\
+            & CircuitBreakerExecutor   & 23 & 141 \\
+            & DelayablePolicy   & 24 & 123 \\
+            & ExecutionImpl   & 22 & 149 \\
+            & FailsafeExecutor   & 24 & 170 \\
+            & FailurePolicy   & 25 & 132 \\
+            & RateLimiterBuilder   & 25 & 155 \\
+            & RateLimiterExecutor   & 24 & 146 \\
+            & RetryPolicyConfig   & 23 & 133 \\
+            & SyncExecutionImpl   & 24 & 142 \\
+            & TimeoutExecutor   & 21 & 116 \\
+            & UndeclaredThrowableStrategy   & 11 & 62 \\
+\midrule
+\multirow{8}{*}{jvm-sandbox} & AdviceListenerTestCase  & 23 & 205 \\
+                            &ClassStructureByChildClassTestCase  & 12 & 89 \\
+                            &DebugLogExceptionModule  & 16 & 138 \\
+                            &EventWatchBuilderTestCase  & 18 & 174 \\
+                            &OrGroupFilter  & 13 & 138 \\
+                            &ProgressPrinter  & 8 & 37 \\
+                            &TestIssues217  & 22 & 193 \\
+                            &TestIssues256  & 18 & 170 \\
+\midrule
+\multirow{2}{*}{easyexcel} & ReadRowHolder  & 7 & 16 \\
+                        & ReadSheetHolder  & 11 & 51 \\
+\midrule
+\multirow{2}{*}{Java-WebSocket} & PerMessageDeflateExtensionTest   & 17 & 123 \\
+                                & Draft\_6455Test   & 19 & 109 \\
+\midrule
+httpclient & Cookie  & 8 & 93 \\
+\midrule
+hutool & JSONParser & 6 & 20 \\
+\midrule
+\textbf{Total} & & \textbf{469} & \textbf{3,165} \\
+\bottomrule
+\end{tabular}
+\caption{Statistics of our Collected Projects and Modules (Module Root Class denotes the root class for running the module)}
+\label{tab:dataset_info}
+\end{table}
+
+\textbf{Selected Modules.} For our empirical study, we randomly sampled three representative modules. i.e., \texttt{EnableJUnit4MigrationSupport} from \texttt{junit5}, \texttt{Cookie} from \texttt{httpclient}, and \texttt{CircuitBreakerExecutor} from \texttt{failsafe}. The selected modules represent varying levels of scale, including a small-scale module (8 files and 93 methods in Cookie), a medium-scale module (23 files and 141 methods in CircuitBreakerExecutor), and a large-scale module (\todo{32 files and 234 methods in EnableJUnit4MigrationSupport}). In total, the three modules include 468 methods. Based on a standard sample size calculation~\cite{sample}, this sample size ensures a 95\% confidence level with a 4.2\% margin of error relative to the overall population of 3,165 methods.
+
+\textbf{Subject LLMs.} We selected three popular and state-of-the-art large language models. i.e., \textbf{DeepSeek-V3.2}, \textbf{Qwen-3.5Plus} and \textbf{ChatGPT-5.1}.
+
+
+
+\textbf{Translation Strategies.} As an entire module may exceed the model's context window limitations, segmentation is required prior to translation. We evaluate two representative segmentation strategies that reflect common developer practices:
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{File-by-file translation}: Each Java source file is translated independently as a self-contained unit. This strategy preserves the class structure, member declarations, and intra-file method relationships; however, it may overlook dependencies across files.
+\item \textbf{Method-by-method translation}: Each Java method is translated in isolation, enabling finer-grained control over the translation process but sacrificing contextual information related to class structure and inter-method dependencies.
+\end{itemize}
+
+
+\textbf{RQ1 Setup.} To address translation effectiveness (RQ1), we implemented a three-step evaluation pipeline. First, we translated all Java files in the selected modules using both strategies using file-by-file translation, and all Java methods using method-by-method translation, \todo{(member variables of each class are alse translated separately.)}. Then, we compiled the translated Java file using clang++~\cite{clang} 20.1.8 compiler with -c flag. \todo{Regarding the translated methods, we concatenated the translated methods along with translated member variables into the C++ file and then use the clang++ compiler.} Finally, we recorded the compilation outcomes (success/error) generated from clang++. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors. To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-to-method strategy. The annotation process consists of two phases. First, the annotators conducted pilot labeling on \todo{100} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. The inter-annotator agreement measured by Cohen's kappa was \todo{XX}. In total, the annotation process required approximately \todo{XXX} human hours.
+
+
+% Once all error pattern is determined, we assign a categorized tag to each method that fails to compile (a single method may have multiple types of error tags). It is important to note that our manual analysis focuses on understanding the distribution and characteristics of identified problems, which reveal fundamental challenges in LLM-based code translation, rather than providing a complete enumeration of all possible defects. This targeted approach ensures we capture the most impactful failure patterns while maintaining feasibility given the dataset size.
+
+% \textbf{Evaluation Metric.}
+% generated C++ source files that compile successfully without errors. 
+
+% Specifically, we combine all generated C++ source files (.cpp) and header files (.h), then compile each source file separately. The compilation success rate is calculated as:
+
+% $$ \text{CSR} = \frac{\text{Number of Successfully Compiled .cpp Files}}{\text{Total Number of .cpp Files}}  $$
+
+% This metric directly reflects the functional correctness of generated code, as uncompilable code cannot be executed or tested.
+
+\subsection{Translation Effectiveness (RQ1)}
+
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/overall.pdf}
+\caption{Effectiveness of C++-to-Java Translation using LLMs under Two Translation Strategies}
+    \label{fig:empirical_success_rate}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/by_project-class.pdf}
+\caption{Effectiveness of C++-to-Java Translation using LLMs with File-by-file Strategy w.r.t Project and Modules}
+\label{fig:empirical_success_by_project_class}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/by_project-method.pdf}
+\caption{Effectiveness of C++-to-Java Translation using LLMs with Method-by-method Strategy w.r.t Project and Modules}
+\label{fig:empirical_success_by_project_method}
+\end{figure}
+
+We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, defined as the percentage of successfully compiled C++ files or methods relative to the total number of files or methods.
+
+Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. We observe that all three models struggle with repository-level translation, with success rates ranging from 1.09\% to 19.32\%. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
+
+
+\textbf{Impact of Segmentation Strategy.} Comparing the two segmentation schemes, file-by-file translation consistently outperforms method-by-method translation across all models. Specifically:
+\begin{itemize}[leftmargin=*]
+\item \textbf{DeepSeek-V3.2}: 10.29\% (file-by-file) vs 4.73\% (method-by-method)
+\item \textbf{Qwen-3.5Plus}: 19.32\% (file-by-file) vs 1.09\% (method-by-method)
+\item \textbf{ChatGPT-5.1}: 7.43\% (file-by-file) vs 6.04\% (method-by-method)
+\end{itemize}
+
+The superior performance of file-by-file translation can be attributed to better preservation of contextual information. When translating entire files, models maintain awareness of class structures, member variable declarations, and inter-method relationships within the same compilation unit. In contrast, method-by-method translation isolates individual functions, forcing the model to infer dependencies without explicit context, leading to inconsistencies in type usage, API calls, and naming conventions.
+
+\textbf{Model Performance.} Qwen-3.5Plus achieves the highest overall success rate at 19.32\% under file-by-file translation, followed by DeepSeek-V3.2 (10.29\%) and ChatGPT-5.1 (7.43\%). However, Qwen-3.5Plus exhibits extreme variance between strategies (19.32\% vs 1.09\%), indicating high sensitivity to segmentation granularity. This suggests that model architecture and training data significantly influence translation robustness across different input scopes.
+
+\textbf{Project-Level Analysis.} Figure~\ref{fig:empirical_success_by_project} reveals substantial variation in difficulty across translation units. The Cookie module from wso2-commons-httpclient achieves the highest average success rate (12.96\%), while CircuitBreakerExecutor from failsafe proves most challenging (1.96\%). The EnableJUnit4MigrationSupport module demonstrates relatively stable performance (13.04\%) across most configurations.
+
+
+
+
+Several factors contribute to this variance:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Code complexity}: Modules with deeper inheritance hierarchies (e.g., CircuitBreakerExecutor) present more translation challenges due to virtual function dispatch and abstract base class dependencies.
+\item \textbf{External dependencies}: Projects heavily reliant on third-party libraries (e.g., HTTP client utilities) introduce uncertainty when mapping Java APIs to C++ equivalents.
+\end{itemize}
+\textbf{Key Findings for RQ1.}
+\begin{enumerate}[leftmargin=*]
+\item Current LLMs achieve low compilation success rates (1--20\%) for repository-level translation, indicating substantial limitations in handling real-world project complexity.
+\item File-by-file translation outperforms method-by-method by 2--18$\times$, highlighting the critical importance of contextual breadth for maintaining translation consistency, however, for larger files, the model's handling of the details of each method may be somewhat biased..
+\item Success rates vary significantly across projects (1.96--13.04\%), suggesting that code complexity, domain patterns, and external dependencies are key factors influencing translation difficulty.
+\item Even the best-performing configuration (Qwen-3.5Plus, file-by-file) succeeds on fewer than 1 in 5 files, underscoring the need for improved translation methodologies.
+\end{enumerate}
+
+\subsection{Failure Patterns (RQ2)}
+
+To understand the root causes of translation failures, we systematically categorized compilation errors and analyzed their distribution. Figure~\ref{fig:empirical_error_by_type} presents the error type occurrence rates across all model-strategy combinations, revealing consistent patterns that transcend specific model architectures.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/empirical/error_analysis/class_level_distribution2.pdf}
+\caption{Error type occurrence rate by model and translation strategy (Class-Level).}
+\label{fig:empirical_error_by_type_class}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/empirical/error_analysis/method_level_distribution2.pdf}
+\caption{Error type occurrence rate by model and translation strategy (Method-Level).}
+\label{fig:empirical_error_by_type_method}
+\end{figure*}
+
+\textbf{Error Type Taxonomy.} We systematically categorized all compilation errors into 11 distinct types based on their underlying causes:
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Build/Include Errors}: Missing header files, incorrect include directives, and dependency resolution failures.
+\item \textbf{Missing/Undefined Symbols}: References to undeclared functions, variables or classes.
+\item \textbf{Type System Errors}: Type mismatches, incorrect type conversions,and incomplete type definitions.
+\item \textbf{Syntax/Language Errors}: Violations of C++ syntax rules, improper use of language constructs, and semantic errors that prevent parsing.
+\item \textbf{Declaration/Definition Mismatch}: Inconsistencies between function signatures in headers and their implementations, or mismatched parameter lists.
+\item \textbf{Inheritance/Virtual Errors}: Issues related to virtual function overriding, abstract class implementations, and inheritance hierarchy problems.
+\item \textbf{Redefinition Errors}: Multiple definitions of the same variable, function, or class, often due to missing include guards or improper header structure.
+\item \textbf{Access Scope Errors}: Violations of access control rules (public/private/protected), incorrect friend declarations, and scope resolution failures.
+\item \textbf{Constructor/Destructor Errors}: Problems with constructor initialization, destructor implementation, and resource management lifecycle issues.
+\item \textbf{Template Errors}: Template declaration syntax errors, instantiation failures, and template parameter deduction problems.
+\item \textbf{Other Errors}: Compilation failures that do not fit into the above categories.
+\end{enumerate}
+
+\textbf{Dominant Error Categories.} Across all configurations, three error categories account for the majority of methods failing compilation:
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Build/Include Errors} This error category stems from three primary challenges:
+\begin{itemize}[leftmargin=*]
+\item \textit{Missing header files}: Sometimes the model does not include the corresponding header file when using classes from standard library.
+\item \textit{Java-to-C++ mapping uncertainty}: For many classes in the Java standard library, such as Serializable and Comparator, the model cannot correctly map them to appropriate C++ classes.
+\item \textit{Header file hallucination} Due to misleading import statements in Java code, models sometimes include header files that do not exist (for example, Java's Date class is often mapped to a file named 'Date.h', which does not exist in the C++ standard library).
+\end{itemize}
+
+\item \textbf{Missing or Undefined Symbols} This category encompasses:
+\begin{itemize}[leftmargin=*]
+\item \textit{Untranslated dependencies}: When translating a method, models may reference methods from other classes that were translated with different signatures.
+\item \textit{Fragmented type definitions}: Forward declarations may be omitted, or definitions may be split across headers incorrectly, causing redefinition errors.
+\end{itemize}
+
+\item \textbf{Type System Errors} 
+\begin{itemize}[leftmargin=*]
+\item \textit{Unsupported overload}: Some unsupported overloaded methods were used. For example, cannot stream std::exception\_ptr directly with operator<<.
+\item \textit{Unsupported type conversion}: Some unsupported types were used. For example, cannot convert std::unique\_ptr to std::string.
+\item \textit{Wrong return type}: Incorrect return value types were returned.
+\end{itemize}
+\end{enumerate}
+
+Figure~\ref{fig:empirical_error_stacked} illustrates the relative composition of error types across configurations.
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/empirical/error_analysis/method_level_stack.pdf}
+\caption{Stacked error distribution by configuration(method-level). Each bar shows the percentage of methods containing each error type.}
+\label{fig:empirical_error_stacked}
+\end{figure*}
+
+\begin{figure*}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/empirical/error_analysis/class_level_stack.pdf}
+\caption{Stacked error distribution by configuration(class-level). Each bar shows the percentage of methods containing each error type.}
+\label{fig:empirical_error_stacked_class}
+\end{figure*}
+
+\textbf{Model-Specific Patterns.} While overall error distributions are similar, subtle differences emerge:
+\begin{itemize}[leftmargin=*]
+\item \textbf{Qwen-3.5Plus} exhibits higher Type System error rates (affecting over 99\% methods in file-by-file strategy), suggesting weaker reasoning about generic type mappings and template constraints.
+\item \textbf{DeepSeek-V3.2} shows elevated Missing Symbols errors in file-by-file strategy (affecting over 70\% methods), indicating difficulty maintaining API consistency across complex inheritance hierarchies.
+\item \textbf{ChatGPT-5.1} demonstrates relatively balanced error distribution but with consistently high Build/Include errors (affecting over 60\% methods), reflecting challenges in header dependency resolution.
+\end{itemize}
+
+\textbf{Strategy-Dependent Variations.} Comparing segmentation strategies:
+\begin{itemize}[leftmargin=*]
+\item \textbf{File-by-file} results in fewer methods with Missing Symbols errors on average, confirming that broader context helps maintain API consistency.
+\item \textbf{Method-by-method} generates more Redeclaration and Definition Mismatch errors, likely due to translating methods without visibility of existing declarations in headers.
+\item Both strategies exhibit comparable Build/Include error rates , indicating that header dependency resolution remains challenging regardless of segmentation granularity.
+\end{itemize}
+
+% \textbf{Key Findings for RQ2.}
+% \begin{enumerate}[leftmargin=*]
+% \item Build/Include errors are the most common failure mode, highlighting fundamental challenges in mapping Java's automatic import system to C++'s explicit include model.
+% \item Missing or Undefined Symbols rank second, indicating that models struggle to maintain translation completeness and API consistency across compilation units.
+% \item Type System errors represent the third major category, reflecting semantic gaps between Java's unified type system and C++'s more complex template-based generics.
+% \item Error patterns are consistent across models and strategies, suggesting that these failures stem from inherent challenges in cross-language translation rather than model-specific deficiencies.
+% \item Method-by-method translation produces more declaration/definition inconsistencies, while file-by-file better preserves API coherence at the cost of increased context window requirements.
+% \end{enumerate}
