@@ -232,7 +232,7 @@ if True:
         )
 
         # Convert to percentage
-        error_melted['occurrence_rate'] = error_melted['occurrence_rate'] * 100
+        error_melted['occurrence_rate'] = error_melted['occurrence_rate']
 
         # Create short error labels
         
@@ -256,7 +256,7 @@ if True:
 
         ax.set_xlabel('Error Type', fontsize=12, fontweight='bold')
         ax.set_ylabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
-        ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
+        # ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
         ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
         ax.grid(axis='y', alpha=0.3)
 
@@ -290,7 +290,7 @@ if True:
 
         ax.set_xlabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
         ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
-        ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy (Horizontal)', fontsize=14, fontweight='bold')
+        # ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy (Horizontal)', fontsize=14, fontweight='bold')
         ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
         ax.grid(axis='x', alpha=0.3)
 
@@ -321,7 +321,7 @@ if True:
         )
 
         # Convert to percentage (already converted, but ensure)
-        error_melted_class['occurrence_rate'] = error_melted_class['occurrence_rate'] * 100
+        error_melted_class['occurrence_rate'] = error_melted_class['occurrence_rate']
         error_melted_class['error_label'] = error_melted_class['error_type'].map(error_labels)
 
         # Sort by error type
@@ -341,7 +341,7 @@ if True:
 
         ax.set_xlabel('Percentage of Files with Error (%)', fontsize=12, fontweight='bold')
         ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
-        ax.set_title('RQ2: Class-Level Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
+        # ax.set_title('RQ2: Class-Level Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
         ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
         ax.grid(axis='x', alpha=0.3)
 

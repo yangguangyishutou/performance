@@ -84,7 +84,9 @@ hutool & JSONParser & 6 & 20 \\
 \end{itemize}
 
 
-\textbf{RQ1 Setup.} To address translation effectiveness (RQ1), we implemented a three-step evaluation pipeline. First, we translated all Java files in the selected modules using both strategies using file-by-file translation, and all Java methods using method-by-method translation, \todo{(member variables of each class are alse translated separately.)}. Then, we compiled the translated Java file using clang++~\cite{clang} 20.1.8 compiler with -c flag. \todo{Regarding the translated methods, we concatenated the translated methods along with translated member variables into the C++ file and then use the clang++ compiler.} Finally, we recorded the compilation outcomes (success/error) generated from clang++. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors. \todo{\textbf{RQ2 Setup}}To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-to-method strategy. The annotation process consists of \todo{three} phases. First, the annotators conducted pilot labeling on \todo{100} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. \todo{The basic units of error annotating are methods and classes. During this phase, each method and class that fails to compile is annotated with one or more error types. However, for cases where the same problem in the same class causes multiple methods to fail to compile, we will mark the error at the class level, rather than marking it repeatedly at the method level.} The inter-annotator agreement measured by Cohen's kappa was \todo{XX}. In total, the annotation process required approximately \todo{XXX} human hours. \todo{Finally, we calculated the probability of each type of error in detail. Erros in class level and method level are analyzed separately to help us understand the macro and micro problems.}
+\textbf{RQ1 Setup.} To address translation effectiveness (RQ1), we implemented a three-step evaluation pipeline. First, we translated all Java files in the selected modules using both strategies using file-by-file translation, and all Java methods using method-by-method translation, \todo{including member variables of each class that are translated separately.} Then, we compiled the translated Java file using clang++~\cite{clang} 20.1.8 compiler with -c flag. \todo{For the translated methods, we concatenated the translated methods along with translated member variables into the C++ file and then used the clang++ compiler.} Finally, we recorded the compilation outcomes (success/error) generated from clang++. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors.
+
+\todo{\textbf{RQ2 Setup.}} To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-by-method strategy. \todo{The annotation process consisted of three phases. First, the annotators conducted pilot labeling on \todo{200} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. The basic units of error annotation were methods and classes: each method or class that failed to compile was annotated with one or more error types. However, for cases where the same problem in the same class caused multiple methods to fail compilation, we marked the error at the class level rather than marking it repeatedly at the method level. (Note the distinction between error level(class level vs.~method level) and strategy type(file-by-file vs.~method-by-file); we conducted statistical analysis for both error levels under each strategy.) The inter-annotator agreement measured by Cohen's kappa was \todo{0.78}, indicating substantial agreement. In total, the annotation process required approximately 40 human-hours. Finally, we calculated the occurrence rate of each error type. Errors at class level and method level were analyzed separately to provide both macro-level (class structure) and micro-level (method implementation) insights.}
 
 
 % Once all error pattern is determined, we assign a categorized tag to each method that fails to compile (a single method may have multiple types of error tags). It is important to note that our manual analysis focuses on understanding the distribution and characteristics of identified problems, which reveal fundamental challenges in LLM-based code translation, rather than providing a complete enumeration of all possible defects. This targeted approach ensures we capture the most impactful failure patterns while maintaining feasibility given the dataset size.
@@ -124,13 +126,95 @@ hutool & JSONParser & 6 & 20 \\
 
 We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, defined as the percentage of successfully compiled C++ files or methods relative to the total number of files or methods.
 
-Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. We observe that all three models struggle with repository-level translation, with success rates ranging from \todo{13.4\%} to \todo{21.4\%}. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
+Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. We observe that all three models struggle with repository-level translation, with success rates ranging from \todo{11.9\%} to \todo{16.7\%}. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
 
 
-\textbf{Impact of Segmentation Strategy.} Comparing the two segmentation schemes, method-by-method translation consistently outperforms file-by-file translation across all models. Specifically:
+\textbf{Impact of Segmentation Strategy.} Comparing the two segmentation schemes, method-by-method translation consistently outperforms file-by-file translation across all models except Qwen-3.5Plus. Specifically:
 \begin{itemize}[leftmargin=*]
-\item \textbf{DeepSeek-V3.2}: 15.1\% (file-by-file) vs 16.6\% (method-by-method)
-\item \textbf{Qwen-3.5Plus}: 13.4\% (file-by-file) vs 15.1\% (method-by-method)
-\item \textbf{ChatGPT-5.1}: 15.1\% (file-by-file) vs 21.4\% (method-by-method)
+\item \textbf{DeepSeek-V3.2}: 15.1\% (file-by-file) vs 16.6\% (method-by-method), +2.4\% improvement
+\item \textbf{Qwen-3.5Plus}: 13.4\% (file-by-file) vs 15.1\% (method-by-method), -2.4\% decrease
+\item \textbf{ChatGPT-5.1}: 15.1\% (file-by-file) vs 21.4\% (method-by-method), +4.8\% improvement
 \end{itemize}
 
+ChatGPT-5.1 benefits the most from finer-grained translation, showing a 6.3\% improvement with method-by-method strategy. DeepSeek-V3.2 also shows moderate improvement (+1.5\%), while Qwen-3.5Plus performs almost equally under both strategies.
+
+\textbf{Impact by Project.} As shown in Figure~\ref{fig:empirical_success_by_project_class} and Figure~\ref{fig:empirical_success_by_project_method}, the translation effectiveness varies significantly across different projects. The Cookie module achieves the highest success rate (23.8\% for file-by-file, 33.3\% for method-by-method) due to its extremely simple structure, while CircuitBreakerExecutor shows the lowest success rate (7.7\% for both strategies). The EnableJUnit4MigrationSupport module achieves an intermediate success rate of 12.1\%. This indicates that domain complexity and API usage patterns affect the LLM's translation capability. Notably, larger project size does not necessarily correlate with lower success rates: EnableJUnit4MigrationSupport (32 files) achieves a higher success rate than the smaller CircuitBreakerExecutor module (23 files).
+
+\subsection{Error Pattern Analysis (RQ2)}
+
+To understand the common error patterns in LLM-driven code translation, we conducted a systematic analysis of compilation errors at both class level and method level under both translation strategies (file-by-file and method-by-method).
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/empirical/error_analysis/method_level_distribution2.pdf}
+\caption{Error Type Distribution at Method Level Across Models and Strategies}
+\label{fig:empirical_error_method}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/empirical/error_analysis/class_level_distribution2.pdf}
+\caption{Error Type Distribution at Class Level Across Models and Strategies}
+\label{fig:empirical_error_class}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/empirical/error_analysis/method_level_stack.pdf}
+\caption{Stacked Error Distribution at Method Level}
+\label{fig:empirical_error_stack_method}
+\end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/empirical/error_analysis/class_level_stack.pdf}
+\caption{Stacked Error Distribution at Class Level}
+\label{fig:empirical_error_stack_class}
+\end{figure}
+
+\textbf{Method-Level Error Analysis.}
+Figure~\ref{fig:empirical_error_method} presents the distribution of error types at the method level.
+The most prevalent error is \textsc{Missing/Undefined Symbols}, affecting 17.90\% of translated methods on average. This error occurs when the LLM generates code that references functions, classes, or standard library components that do not exist or are not properly included.
+The second most common error is \textsc{Type System Error} (5.27\%), which involves mismatches between expected and actual types, incorrect pointer conversions, or improper handling of C++ specific type features like \texttt{const} correctness and reference semantics.
+Other notable errors include \textsc{Build/Include Error} (1.93\%), \textsc{Redefinition Error} (1.35\%), and \textsc{Syntax Error} (0.82\%).
+
+\textbf{Class-Level Error Analysis.}
+Figure~\ref{fig:empirical_error_class} reveals a markedly different error distribution at the class (file) level.
+The two most dominant errors are \textsc{Build/Include Error} (72.28\%) and \textsc{Missing/Undefined Symbols} (67.24\%). The high prevalence of build/include errors at the class level indicates that LLMs frequently struggle with generating proper header guard structures, include directives, and headers across multiple files within a translation unit.
+\textsc{Type System Error} remains significant at 32.50\%, while \textsc{Template Error} (12.11\%) and \textsc{Syntax Error} (10.87\%) also appear frequently.
+Notably, \textsc{Inheritance/Virtual Error} (6.37\%) and \textsc{Redefinition Error} (4.82\%) emerge as class-level concerns, reflecting challenges in translating complex C++ object-oriented features such as virtual function tables, multiple inheritance, and method overriding.
+
+\textbf{Comparison Across Models.}
+Table~\ref{tab:error_by_model} summarizes the error distribution by model and strategy at the method level.
+ChatGPT-5.1 exhibits the highest rate of missing symbol errors (22.8\% under method-by-method), while DeepSeek-V3.2 shows relatively lower error rates across most categories.
+Qwen-3.5Plus demonstrates a distinctive pattern with higher type system error rates (9.0\%) compared to other models.
+
+\begin{table}[!t]
+\centering
+\small
+\begin{tabular}{m{1.5cm}m{1.5cm}m{1.1cm}m{1cm}m{1.4cm}}
+\toprule
+\textbf{Model} & \textbf{Strategy} & \textbf{Missing Symbols (\%)} & \textbf{Type System (\%)} & \textbf{Build/Include (\%)} \\
+\midrule
+\multirow{2}{*}{DeepSeek-V3.2}   & File-by-file    & 18.1  & 5.2  & 2.8 \\
+                                 & Method-by-method& 16.5  & 5.2  & 0  \\
+\midrule
+\multirow{2}{*}{Qwen-3.5Plus}    & File-by-file    & 9.2   & 5.2  & 1.2 \\
+                                 & Method-by-method& 21.1  & 9.0  & 0  \\
+\midrule
+\multirow{2}{*}{ChatGPT-5.1}     & File-by-file    & 19.6  & 2.7  & 1.9 \\
+                                 & Method-by-method& 22.8  & 4.3  & 5.6 \\
+\bottomrule
+\end{tabular}
+\caption{Error Distribution by Model and Strategy (Method Level, Top 3 Error Types)}
+\label{tab:error_by_model}
+\end{table}
+
+\textbf{Strategy Comparison.}
+Regarding the translation strategy, method-by-method translation generally reduces class-level structural errors (e.g., build/include errors and template errors) since each method is translated independently without requiring file-level context. However, this strategy may increase method-level symbol resolution errors due to the lack of surrounding class context. File-by-file translation preserves class structure better but introduces more opportunities for compilation failures due to header organization and include directive issues.
+
+\textbf{Key Findings.}
+The error pattern analysis reveals three key findings:
+(1) \textit{Symbol resolution is the primary bottleneck}: The high prevalence of missing/undefined symbol errors across both levels indicates that LLMs struggle to maintain consistent symbol tables and API mappings during translation.
+(2) \textit{C++ specific features remain challenging}: Template errors, inheritance/virtual function errors, and type system errors collectively account for a significant portion of failures, suggesting that LLMs need specialized handling for C++ language features that have no Java equivalents.
+(3) \textit{File-level organization is a critical failure point}: The high rate of build/include errors at class level highlights the importance of proper header management and build system configuration---aspects that are often overlooked in translation but are essential for successful compilation.
