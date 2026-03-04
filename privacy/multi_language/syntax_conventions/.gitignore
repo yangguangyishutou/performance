@@ -2,6 +2,7 @@
 data/
 logs/
 venv/
+node_modules/
 
 # Python 相关
 __pycache__/
