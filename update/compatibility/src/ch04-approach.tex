@@ -1,188 +1,235 @@
 \section{Approach}
 
-% \subsection{XXX}
-This section details our methodology for detecting Python API incompatibilities using Large Language Models (LLMs) with structured Chain-of-Thought (COT) prompting. We first outline the overall workflow and core challenges, then elaborate on the design principles compared to existing methods, and technical implementation
-This section details our methodology for detecting Python API incompatibilities using Large Language Models (LLMs) with structured Chain-of-Thought (COT) prompting. We first outline the overall workflow and core challenges, then elaborate on the design principles compared to existing methods, and technical implementation
+This section details our approach for detecting Python API incompatibilities. We first outline the approach overview, and then elaborate the core components.
 
-\subsection{CoT}
 
-\subsection{Overview and Challenges}
 
-Our approach targets code-level changed API pairs (excluding module-level, class-level, and API addition/deletion changes) between two versions of a Python project. Figure x illustrates the end-to-end workflow. First, we extract all APIs from two versions of the project and filter API pairs to retain only those with code-level modifications. Then we instruct LLM with COT guidance to performs line-by-line code analysis. Finally, The LLM generates a structured JSON output, including detected incompatibility types, detailed reasons for each type, and auxiliary information.
 
-figure x
+% 找一个有代表性的例子：人在看兼容性问题的时候，是 先看方法签名，再看方法体，然后看返回值。用一张图，来比较清楚地表达开发者判断兼容性问题时的逻辑，即人的chain-of-thought
+\subsection{Challenges and Design Motivation}
 
-During this three-step process, we need to address the following three challenges:
+
+Existing static analysis methods (e.g., Shen et al.~\cite{shen2024static}) rely on handcrafted rules. However, rule design requires substantial expert knowledge, making such approaches difficult to generalize to new libraries or previously unseen incompatibilities. Moreover, rule-based methods fail to capture semantic context. For example, when a parameter is renamed from \texttt{arguments} to \texttt{args}, the corresponding AST patterns differ syntactically. As a result, rule-based approaches cannot recognize the underlying rename operation.
+
+Having witnessed the effectiveness of large language models (LLMs) in software engineering tasks\cite{he2025llm, hou2024large, xia2025demystifying}, we naturally think of the opportunities of leveraging LLMs to detect incompatible Python APIs. However, recognizing their limitations and to fully harness their potential, we identify the following three challenges in its practical application.
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.7\textwidth]{fig/overview.pdf}
+    \caption{Overview of \tool}
+    \label{fig:overview}
+\end{figure*}
 
 \begin{itemize}
-    \item \textbf{High-Level Description Misalignment (C1)}: Existing LLM-based methods[x] often rely on high-level incompatibility descriptions rather than code-level semantics. This disconnect causes LLMs to struggle with mapping abstract descriptions to concrete code changes.
-    \item \textbf{Scalability with Incompatibility Categories (C2)}: As the number of incompatibility categories increases, naive prompting leads to exponential growth in prompt token size and LLM runtime. For N categories, this approach requires N independent LLM calls per API pair, making it infeasible for large-scale analysis.
-    \item \textbf{Unreliable and Inconsistent Outputs (C3)}: LLMs exhibit inherent output randomness—they may produce contradictory judgments for the same prompt (e.g., labeling a parameter rename as “compatible” in one run and “incompatible” in another) or include internally inconsistent reasoning (e.g., citing non-existent code lines to support a claim).
-    \item \textbf{Unstructured COT Reasoning (C4)}: Without guided thinking frameworks, LLMs' intermediate reasoning (e.g., how they identify a parameter default value change) remains unstructured. This makes it impossible to verify the validity of the LLM's conclusions.
+    \item \textbf{I. Linking incompatibility category description to specific code changes.} Each incompatibility category begins with a brief description of how it manifests. However, when such descriptions are provided directly to an LLM, it may fail to fully infer their correspondence to specific code changes. This misalignment between natural-language descriptions and syntactic code changes creates a gap that can hinder the model's effectiveness.
+    \item \textbf{II. Scalability with categories of incompatibilities.} Each incompatibility category exhibits distinct syntactic characteristics. A natural approach is to design a dedicated instruction for the LLM for each category. However, as the number of incompatibility categories grows, this approach would require repeated API scanning and reasoning, leading to excessive token consumption and longer execution times, ultimately rendering it impractical for large-scale analyses.
+    \item \textbf{III. LLM hallucination and unreliability.} The LLM may generate hallucinated content and exhibit low confidence in its responses. As a result, some outputs may contain false, contradictory, or inconsistent claims. e.g., citing non-existent code lines to support an assertion.
 \end{itemize}
 
-\subsection{Methodology Design}
-
-To address the above challenges, we design a one-pass COT analysis framework with structured prompting, built on insights from prior empirical studies and innovations in LLM guidance.
 
 
-We first establish a comprehensive taxonomy of Python API incompatibilities, extending the 7-category framework proposed by Shen et al. [x] (a foundational empirical study on Python API evolution). Shen et al. identified incompatibilities rooted in parameters (CI1-CI5), exceptions (CI6), and return values (CI7). Through our own data collection, we validated these 7 categories and discovered two new, previously unreported types:
+To address Challenges \textbf{I} and \textbf{III}, the LLM should fully comprehend the causes of incompatibility from the perspective of code changes and their underlying logic across versions. This requires the LLM to analyze code in a manner similar to a static analyzer, while additionally capturing semantic intent. To tackle Challenge \textbf{II}, the LLM should examine the code statements of both versions sequentially from top to bottom and produce intermediate analysis results for each statement. These intermediate states can then be aggregated to determine the final incompatibility category upon completion of the analysis. Furthermore, to mitigate hallucination and unreliability, additional reflection mechanisms are required to validate the LLM's analysis.
 
-\textbf{CI8}: global variable change
-\textbf{CI9}: reference variable change
+Guided by these requirements, we propose decomposing the reasoning process for incompatibility classification into fine-grained steps. The LLM incrementally computes intermediate states while analyzing each statement and integrates them into a unified, structured reasoning framework, thereby addressing Challenges I and II. In addition, we incorporate a self-reflection phase in which the LLM validates its static analysis results from the perspective of test-case behavior.
 
-Table x
+\input{src/sub/table_CI}
 
 
-\subsubsection{Limitation of Current Methods}
+\subsection{Approach Overview}\label{subsec:approach_overview}
 
-Traditional static analysis methods (e.g., Shen et al. [2024]) rely on handcrafted rules. However, Rule design requires expert knowledge making it hard to generalize to new libraries or unknown incompatibilities. For example, shen define data structure P to record parameter information for the detection of CI1-CI5. However, without detailed study into incompatible examples. it is hard to design rules for detections. Besides, These methods fail to interpret semantic context while many crucial infomation should be analyzed through variable names, comments, usage in function bodies, etc. For example, Shen et al.'s method cannot recognize that renaming a parameter from arguments to args is a compatibility issue—since the AST pattern for parameter names differs, but the static rule does not link the semantic similarity between arguments and args.
+We propose \tool. As shown in Figure \ref{fig:overview}, \tool is divided into two phases: \textit{Static-oriented Incompatibility Reasoning} and \textit{Dynamic Simulated Reflection}.
 
-In our method, by leveraging LLMs' semantic understanding capabilities, our approach directly addresses this limitation. The LLM integrates contextual cues to identify semantic changes, even when syntactic patterns are non-trivial.
+In the first phase, \tool performs control-flow graph (CFG) construction, source-sink labeling, graph traversal, and incompatibility analysis. Both API$_b$ and API$_a$ are analyzed once during CFG construction. Subsequently, source-sink labeling and graph traversal are conducted on the constructed CFGs. The notions of source and sink originate from security analysis\todo{CITE}. In our context, sources correspond to input variables (e.g., parameters), while sinks denote statement endpoints that may trigger incompatibilities. \tool then traverses the CFGs to collect statements along paths from sources to sinks. Finally, all incompatibility categories are determined in a single incompatibility analysis step by comparing the source-sink paths and their intermediate data objects. We structure incompatibility reasoning to align LLM understanding with code-level changes, thus addressing Challenge I, and design a workflow that supports multiple incompatibility types, thus addressing Challenge II.
 
-\subsubsection{One-Pass COT Analysis Framework}
 
-To tackle scalability and output unreliability, we design a one-pass COT framework guided by two core principles: two-stage analysis and unified scanning. First, the LLMs is instructed to process the parameter list, which is syntactically structured, then analyze the function body, which is semantically rich—aligning with how developers naturally review code changes.  We embed rules for all 9 incompatibility categories into a single prompt to enable the LLM to detect multiple incompatibilities in one analysis pass, avoiding repeated LLM calls. The framework is divided into four sequential phases, each with predefined data structures and rules to guide the LLM's reasoning. This design offers three key advantages: efficiency, as runtime is independent of the number of incompatibility categories (all rules are processed in one pass); reduced misjudgment, as it enforces dependencies between interdependent categories (e.g., analyzing CI1 (parameter addition) before CI4 (default value change) to avoid misclassifying added parameters as default value changes); and structured reasoning, as each phase outputs intermediate data structures like parameter mappings and exception type lists, which make the LLM's logic traceable and verifiable.
+In the second phase, \tool comprises a test case generator, a step-by-step simulator, and a simulated result analyzer. Unlike the first phase, this phase reflects on the identified incompatibility categories and aims to generate valid test cases that validate the correctness of the determined categories. The process simulates a dynamic execution scenario in which the LLM generates test cases, infers intermediate results as statements are executed, and ultimately confirms the incompatibility category based on these intermediate outcomes. This phase addresses Challenge III.
 
-\subsubsection{Structured Prompt Design}
 
-The prompt is the backbone of our framework, structured to enforce consistency and guide the LLM's COT reasoning. It includes four components: Instructions, Analysis Phases, Source Code, and Examples. A simplified template is shown below (full rules are provided in Appendix A):
+\subsection{Static-oriented Incompatibility Reasoning}\label{subsec:static_reasoning}
 
-\lstset{
-  breaklines=true, % 核心：开启自动换行
-}
+This section details our static analysis framework. Unlike traditional compiler-level approaches, we employ a lightweight, semantic abstraction designed to efficiently detect behavioral incompatibilities between API versions.
 
-\begin{lstlisting}[]
-Analyze two versions of a Python API function (`code_v1` and `code_v2`) to detect incompatibilities. The output must be in JSON format.
+\subsubsection{Control Flow Graph Construction}\label{subsubsec:cfg_construction}
 
-    ### Instructions
-    Please strictly follow the `Analysis Phases` to identify all incompatibility types (CI1 - CI9) and provide concise reasons. The final output must include:
-    - `additional_info`: Key variables/structures used in analysis (e.g., parameter mappings).
-    - `reasons`: One-sentence explanations linking code changes to incompatibility types.
-    - `incompatibility`: List of detected types 
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/prompt_cfg.pdf}
+    \caption{Prompt for Control Flow Graph Construction}
+    \label{fig:cfg}
+\end{figure}
 
-    ### Analysis Phases
-    #### Phase 0: Initialization
-    Initialize the result dictionary:
-    {
-    "incompatibility": [], "reasons": [], "additional_info": {"param_mapping": {}, "exception_list_v1": [], ...}
-    }
-    #### Phase 1: Parameter List Processing
-    Extract parameter lists from `code_v1` and `code_v2`, then build:
-    #### Phase 2: Initial Incompatibility Analysis 
-    Use `P1`/`P2` to update results:
-    #### Phase 3: Function Body Processing (Line-by-Line)
-    Initialize data structures for `code_v1`/`code_v2`:
-    #### Phase 4: Comprehensive Incompatibility Analysis
-    Use Phase 1-3 data structures to detect remaining types:
 
-    ### Source Code
-    "code_v1": ...
-    "code_v2": ...
 
-    ### Examples
-    }
-\end{lstlisting}
+We formulate Control Flow Graph (CFG) construction as a structured inference task performed by an LLM guided by an explicit static-analysis prompt. The CFG is constructed in a single pass over the function body. This one-pass design is critical for scalability, as it supports efficient analysis across multiple incompatibility types. We provide the prompt in Figure \ref{fig:cfg}. Given a Python function as input, the LLM is instructed to reason about program execution syntax and infer control-flow structure at the function level. The model first introduces a single Entry node representing function invocation and a single Exit node representing normal termination. The function body is then decomposed into fine-grained execution units, where each CFG node corresponds to at most one statement or expression, ensuring a single entry and exit per node.
 
-\subsubsection{Data Structure and Detection Design}
+The LLM infers directed edges between nodes to represent all feasible control transfers, including fall-through edges, conditional branches with explicitly labeled true/false outcomes, loop back-edges, and exceptional control-flow edges arising from exception handling and context managers (Requirement 3). To preserve precise control-flow semantics, all return statements are connected directly to the Exit node (Requirement 4). Each inferred edge is annotated with the corresponding control condition and source-level information (e.g., line numbers), producing an explicit and machine-readable representation of execution paths.
 
-The analysis leverages several core data structures to capture critical information from function signatures and bodies, facilitating subsequent incompatibility checks. Based on the detecing process for different incompatibility types, we design following data structure which is initialized at begining and update throughout the scanning of the source code. 
+The constructed Control Flow Graph is represented as a list of directed edges. Each edge is encoded as a tuple containing the source node identifier (\textit{from\_id}) and its corresponding code content (\textit{from\_content}), the destination node identifier (\textit{to\_id}) and its content (\textit{to\_content}), and an edge label (edge) that describes the control-flow semantics. The CFG is expected to adhere to the following format:
 
-\textbf{Parameter Lists (P1, P2):} These lists encode the parameters of source code. Each parameter is represented as a tuple (name, position index, type, default value), where type includes positional, optional (with a default value), or kwargs, enabling direct comparison of parameter presence, order, and defaults.
+\begin{verbatim}
+[{
+		"from_id": ID, "from_content": content, 
+		"to_id": ID, "to_content": content,
+		"edge": "If, Line Number, True"
+	}…]
+\end{verbatim}
 
-\textbf{KWARGS}: A string storing the name of the kwargs parameter if present in both code v1 and code v2; empty otherwise. This structure anchors the analysis of keyword argument keys accessed within the function body.
 
-\textbf{ReName: A list of tuples (name1, name2)}: name1 (from code v1) and name2 (from code v2) are semantically similar or share the same position index, indicating potential parameter renaming.
+The edge label explicitly records the control construct type (e.g., conditional branch), the source line number, and the branch (e.g., True or False). This representation captures both structural and semantic control-flow information while remaining compact and machine-readable.
 
-\textbf{Keyword Argument Keys (K1, K2)}: Lists of keys explicitly accessed via kwargs (e.g., kwargs.get('key') or kwargs['key']) in code v1 and code v2, respectively. These capture dependencies on dynamic keyword arguments.
 
-\textbf{Renamed Parameter Usage (ReNUsage1, ReNUsage2)}: Dictionaries mapping parameters in ReName pairs to lists of code lines where they are used. This tracks contextual usage to validate renaming.
+% \begin{algorithm}[!t]
+% \caption{Single-Pass CFG Construction}
+% \label{alg:cfg_construction}
+% \begin{algorithmic}[1]
+% \STATE Initialize $C, D, E, R \leftarrow \emptyset$, $CS \leftarrow \text{stack}()$
+% \FOR{each line $L$ in function body (top-down)}
+%     \STATE Update $CS$ if entering/exiting a condition scope
+%     \IF{$L$ defines a new condition}
+%         \STATE Normalize condition string, add to $C$, push index to $CS$
+%     \ELSIF{$L$ is assignment ($v = expr$)}
+%         \STATE Extract dependencies and type
+%         \STATE $D.\text{append}((v, type, deps, \text{snapshot}(CS)))$
+%     \ELSIF{$L$ raises exception}
+%         \STATE $E.\text{append}((type, \text{snapshot}(CS)))$
+%     \ELSIF{$L$ returns}
+%         \STATE $R.\text{append}((expr, \text{snapshot}(CS)))$
+%     \ENDIF
+% \ENDFOR
+% \end{algorithmic}
+% \end{algorithm}
 
-\textbf{Condition Statements (C1, C2)}: Lists of condition strings (e.g., if x > 0) extracted from code v1 and code v2, indexed sequentially to link with dependent logic (e.g., assignments, exceptions).
+% An important aspect of the construction process is its deliberate selectivity. Only entities that are relevant to API-level incompatibility are recorded. Conditions are retained only insofar as they guard observable behaviors. Data flows are recorded only for assignments that may affect return values, exceptions, global state, or reference parameters. Conversely, many elements commonly present in full CFGs are intentionally ignored, including call graphs, logging statements, exception messages, loop iteration counts, and internal refactoring that does not affect externally visible behavior. This pruning is essential for maintaining robustness when the analysis is performed by an LLM.
 
-\textbf{Data Flow (D1, D2)}: Lists of tuples (variable name, variable type, dependent variables, condition indices) capturing variable assignments. variable type distinguishes local variable, global variable, and reference variable (e.g., self), while dependent variables and condition indices track dependencies and associated conditions.
+\subsubsection{Source-Sink Labeling}
 
-\textbf{Exceptions (E1, E2)}: Lists of tuples pairing explicit exception types (e.g., ValueError) with indices of conditions under which they are raised (from C1/C2), excluding implicit behaviors or unthrown exceptions.
 
-\textbf{Return Values (R1, R2)}: Lists of tuples pairing return expressions with condition indices, capturing how return values vary under different conditions.
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/prompt_label.pdf}
+    \caption{Prompt for Source-Sink Labeling}
+    \label{fig:label}
+\end{figure}
 
-The 9 types of incompatibility can be detected based on the data structure above. The detection rules are showed in Table x.
+Given a Control Flow Graph constructed for a Python function, we perform source-sink labeling by traversing the CFG starting from the Entry node. This process is framed as a structured reasoning task executed by an LLM with expertise in control-flow analysis. The traversal follows feasible execution paths and inspects each visited node to identify source and sink semantics based on predefined rules. We provide the corresponding prompt in Figure \ref{fig:label}.
 
-Table x
+Specifically, a source is defined as the first CFG node encountered along an execution path that references a function parameter. This definition ensures that each path has at most one source node and captures the earliest point at which external input enters the control flow. The sources correspond to the function parameters, including positional arguments, optional parameters with default values, and \texttt{**kwargs}, collectively defining the input surface of the API. While \texttt{**kwargs} itself is labeled as a source, we treat each individual key accessed via \texttt{kwargs.get(`key')} or \texttt{kwargs[`key']} as a distinct, fine-grained source. These keys are tracked separately in subsequent analyses to capture precise parameter-level data flow.
 
-\subsection{Multi-Agent-Based Incompatibility Category Validation}
+A sink represents a terminal or side-effect-inducing operation in the context of incompatibilities. We identified sinks under three conditions: (1) \textit{exit\_pred}: a node that precedes the Exit node, such as a return statement; (2) \textit{global\_var} or \textit{attri\_var}: the last assignment along a path to a global variable or a class attribute; or (3) \textit{raise}: a node that contains a raise statement. Each identified source or sink is emitted as a structured record containing its classification (\texttt{source} or \texttt{sink}), an explicit sink subtype for sinks, and the corresponding CFG node id and its content. The result is expected to adhere to the following format:
+\begin{verbatim}
+[{
+	"type": "source|sink",
+	"sink_type": "exit_pred|global_var
+                |attri_var|raise"
+	"node": ["node_id": ID, 
+                "node_content": content]
+}]
+\end{verbatim}
 
-To address judgment biases in the incompatibility category candidates generated by the CoT-LLM, we design a multi-agent collaborative validation framework. It implements accurate verification of candidate categories through a process of "test case generation, simulation execution, and comprehensive evaluation," ultimately filtering out truly valid API incompatibility types. The framework comprises three functionally independent yet collaboratively working agent modules: the Test Case Generation Agent, Simulation Agent, and Comprehensive Analysis Agent. These modules form a validation chain through explicit information interaction, ensuring the objectivity and reliability of validation results.
+
+
+% The most prominent sinks are \textbf{return statements}. Each return expression is labeled as a sink because it directly determines the value observed by the caller. Importantly, return sinks are condition-sensitive: a return expression is associated with the set of active condition indices under which it executes. \textbf{Explicit exception statements} form another critical class of sinks. Each \texttt{raise} or \texttt{assert} statement is labeled as a sink because exceptions alter the control flow visible to callers. The label records the exception type and the guarding conditions, while exception messages are intentionally excluded. Beyond direct outputs, certain \textbf{side effects} are labeled as sinks. Assignments to global variables are labeled because they may affect program state beyond the function boundary. Similarly, assignments to reference parameters (e.g., \texttt{self} or mutable objects) are labeled when they modify the reference itself or its attributes.
+
+% The labeling process is tightly integrated with the one-pass scan used for CFG construction. When a labeled source is introduced, it is recorded once and referenced symbolically. When a labeled sink is encountered, it is recorded together with the current condition stack. Data-flow entries in $D$ act as the connective tissue between sources and sinks. Local variables that neither originate from labeled sources nor contribute to labeled sinks are left unlabeled, reducing noise for LLM-based reasoning.
+
+\subsubsection{Graph Traversing}
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/prompt_traverse.pdf}
+    \caption{Prompt for Graph Traversing}
+    \label{fig:traverse}
+\end{figure}
+
+
+Given a Control Flow Graph and a set of identified source and sink nodes, we extract source-sink paths by traversing the CFG from each source to its corresponding sinks. The traversal explores all feasible execution paths, including normal flows, loops, conditional branches, and exceptional edges, ensuring that all paths from inputs to outputs or side-effect locations are captured. We provide the corresponding prompt in Figure \ref{fig:traverse}.
+
+Specifically, each source-sink path is represented as an ordered sequence of CFG edges. Each edge records its source and destination node IDs and content, along with the associated control-flow condition (e.g., the outcome of an \texttt{if} statement and the source line number). The output is structured as a list of paths, each assigned a unique \texttt{path\_id} and labeled with the corresponding source-sink pair. Each path includes the sequence of edges in the format:
+
+\begin{verbatim}
+[{
+	"path_id": 1,
+	"source-sink": "",
+	"edges":[{
+			"from_id": ID, "from_content": content
+			 "to_id": ID, "to_content": content,
+			"edge": "If, Line Number, True"
+			}, {
+			"from_id": ID, "from_content": content
+			 "to_id": ID, "to_content": content,
+			"edge": "If, Line Number, True", …
+			}]
+}]
+\end{verbatim}
+
+
+
+\subsubsection{Incompatibility Analysis}
+
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.45\textwidth]{fig/prompt_analysis.pdf}
+    \caption{Prompt for Incompatibility Analysis}
+    \label{fig:icom_analysis}
+\end{figure}
+
+To systematically detect incompatibilities between two Python API versions, we leverage a control-flow-based analysis on source-sink paths extracted from the function's Control Flow Graph. The analysis is organized into four categories: parameter, exception, global variable and class attribute, and return incompatibilities. We provide the corresponding prompt in Figure \ref{fig:icom_analysis}.
+
+\textit{1. Parameter Incompatibilities.} Parameter-level changes can significantly impact the behavior of an API. We first group source-sink paths by parameter name and perform a stepwise comparison between the two API versions. Default value changes (CI4) are identified when a parameter exists in both versions but its default value differs. Such changes may silently affect function behavior if callers rely on defaults. Parameter addition, deletion, and renaming (CI1, CI3) are detected by comparing added and removed parameters along with the semantic similarity of their source-sink paths. If the paths are semantically equivalent, an added parameter is considered a renamed parameter; otherwise, it is classified as a new addition. This ensures that structural changes in the API interface are accurately captured. Kwargs key changes (CI2) are analyzed by inspecting keys accessed through kwargs in both versions. If the set of keys differs, we classify the discrepancy as a Kwargs Key Addition or Deletion, reflecting modifications in the API's flexible keyword arguments.
+
+\textit{2. Exception Incompatibilities.} Changes in exception handling can break client code or change the conditions under which errors are triggered. We isolate source-sink paths where the sink represents a raise statement and group them by exception type. Exception addition or deletion (CI6) is detected when an exception appears in one version but not in the other. Parameter boundary changes (CI5) are captured by analyzing the control-flow conditions guarding each raise statement. If the triggering parameter value ranges differ between API versions, we report a Parameter Range Change for Exception, highlighting changes in the preconditions required to raise an exception.
+
+\textit{3. Non-local Variable Incompatibilities.} APIs may modify global or instance-level variables, and changes in these assignments can propagate unexpected side effects. We examine source-sink paths whose sink corresponds to a global or attribute variable. For global variables, differences in the control-flow conditions under which the variable is assigned are reported as a Global Variable Value Change (CI8). For instance attributes, if a variable is assigned in one version but unassigned in the other, it is marked as an Instance Attribute Uninitialized change (CI9). This captures cases where object state initialization diverges across versions.
+
+\textit{4. Return Incompatibilities.} Changes in the return behavior of an API can directly affect downstream computations. We focus on source-sink paths with a exit\_pred sink, comparing the number of predecessors and mapping them across versions using semantic similarity. Return type changes are identified when a new predecessor type appears in one version that has no corresponding predecessor in the other. Return value changes (CI7) are reported when mapped predecessors exhibit differences in return conditions, value constraints, or controlling predicates. This ensures that modifications in the API's output behavior are systematically captured.
+
+Overall, this multi-step analysis leverages semantic equivalence and control-flow reasoning to provide a precise, interpretable identification of API incompatibilities. By considering parameters, exceptions, non-local variables, and return behavior, the method can uncover both overt and subtle changes that may affect client code.
+
+
+% The analysis phase assumes that control-flow and data-flow information has already been selectively traversed and aligned across versions. It reasons over the extracted information to determine whether specific compatibility rules are violated.
+
+% \paragraph{Signature-Level Incompatibilities}
+% These are resolved entirely outside the graph to prevent spurious interactions. This includes \textbf{parameter addition/deletion (CI1)} and \textbf{default value changes (CI4)}, which are detected through direct comparison of parameter lists.
+
+% \paragraph{Body-Level Incompatibilities}
+% Using the traversed graph information, we apply deterministic rules to detect the following:
+
+% \begin{itemize}
+%     \item \textbf{Kwargs Incompatibility (CI2):} The analysis compares the sets of explicitly accessed kwargs keys ($K1$ and $K2$) identified during traversal. A mismatch indicates a change in the effective input surface. Since unused keys are filtered out, this directly reflects behavioral differences.
+%     \item \textbf{Parameter Rename Incompatibility (CI3):} We evaluate whether pairs of renamed parameters (from \textit{ReName}) have structurally equivalent data-flow subgraphs. If the extracted subgraphs differ only in variable names but preserve the roles in computations and conditions, it is a valid rename; otherwise, it is an incompatibility.
+%     \item \textbf{Range Incompatibility (CI5):} The analysis inspects whether parameter-controlled conditions lead to different exception behaviors across versions. This relies on comparing exception nodes together with the identified guarding conditions.
+%     \item \textbf{Exception Incompatibility (CI6):} This covers differences in exception types, the addition/removal of exception statements, or exception behavior under non-input-related conditions. Separating CI5 and CI6 ensures that range changes and general type changes are not conflated.
+%     \item \textbf{Return Value Incompatibility (CI7):} We compare aligned return nodes and their data-flow slices. If a return expression in one version has no counterpart in the other, or if upstream data flows produce different values, an incompatibility is reported.
+%     \item \textbf{Global Variable Incompatibility (CI8):} Differences in the presence of global-variable assignments or their dependency structures indicate potential changes to externally visible shared state.
+%     \item \textbf{Reference Parameter Incompatibility (CI9):} The analysis inspects assignments to reference parameters and their attributes, focusing strictly on state mutations rather than access patterns.
+% \end{itemize}
+
+% Across all types, the analysis applies these rules deterministically to the traversed graph information, ensuring that each reported incompatibility is accompanied by a concise, structurally grounded reason.
+
+
+\subsection{\todo{Dynamic Simulated Reflection}}
+
+
+\todo{To address judgment biases in the incompatibility category candidates generated by the CoT-LLM, we design a multi-agent collaborative validation framework. It implements accurate verification of candidate categories through a process of "test case generation, simulation execution, and comprehensive evaluation," ultimately filtering out truly valid API incompatibility types. The framework comprises three functionally independent yet collaboratively working agent modules: the Test Case Generation Agent, Simulation Agent, and Comprehensive Analysis Agent. These modules form a validation chain through explicit information interaction, ensuring the objectivity and reliability of validation results.}
+
+\subsubsection{Test Case Generation}
 
 The Test Case Generation Agent serves as the initiator of the validation process, tasked with constructing targeted test inputs to probe potential incompatibilities. Its core functionality is to generate pairs of calling statements—one for the old API version and one for the new—along with supplementary context, based on the provided old and new API code snippets, the candidate incompatibility category, and the underlying reasoning. The design of these test cases adheres to a critical principle: they must be highly likely to trigger the alleged incompatibility if it indeed exists. For instance, when evaluating a candidate issue related to changed default parameter values, the agent will craft calling statements that omit the affected parameters, thereby exposing discrepancies in behavior caused by the default value shift. The output of this agent follows a structured format, explicitly separating the calling statements and supplementary information for the old and new APIs to ensure clarity in subsequent processing.
 
+The collaborative workflow of the three agents forms a closed-loop validation pipeline. Starting with a candidate incompatibility category, the Test Case Generation Agent tailors probes to expose potential issues, the Simulation Agent generates empirical behavioral data, and the Comprehensive Analysis Agent renders a data-driven judgment. This division of labor ensures that each stage of validation is handled by a specialized component, reducing the risk of subjective biases that might arise from a single model’s judgment. By structuring the validation as an explicit information flow—from test design to execution to analysis—the framework enhances the transparency and reproducibility of the verification process. Ultimately, this multi-agent approach strengthens the reliability of incompatibility category identification, providing a robust mechanism to filter out spurious candidates and retain only those that are empirically validated.
+
+\subsubsection{Step-by-step Simulation}
+
 Upon receiving the test cases from the Test Case Generation Agent, the Simulation Agent takes on the role of executing these tests in a controlled environment. Its primary responsibility is to simulate the runtime behavior of both the old and new API versions when invoked with the generated test inputs. This involves parsing the API code, instantiating necessary objects (if applicable), and executing the calling statements step-by-step. The agent meticulously records the execution results: if the program exits normally with a return value, it captures the specific output; if an exception is raised (e.g., missing arguments, type errors), it documents the error type and description. By faithfully replicating runtime scenarios, this agent transforms abstract code differences into concrete behavioral outcomes, providing empirical data for validating the alleged incompatibility.
+
+
+\subsubsection{Simulated Result Analysis}
 
 The Comprehensive Analysis Agent acts as the final evaluator, synthesizing information from the preceding stages to assess the validity of the candidate incompatibility category. It takes as input the definition of the incompatibility type, the reasoning behind the initial diagnosis, and the behavioral results generated by the Simulation Agent. Using a scoring mechanism ranging from 0 to 10, the agent evaluates the alignment between the diagnosed incompatibility, the test case design, and the observed runtime behaviors. The score is determined based on three key criteria: logical consistency (whether the reasoning logically leads to the alleged incompatibility), rigor of evidence (whether the simulation results clearly demonstrate the expected behavioral discrepancy), and coherence (whether all components of the validation process reinforce the same conclusion). A higher score indicates greater confidence in the existence of the specific incompatibility, while a lower score suggests either flaws in the initial diagnosis or inadequacies in the test scenario.
 
-The collaborative workflow of the three agents forms a closed-loop validation pipeline. Starting with a candidate incompatibility category, the Test Case Generation Agent tailors probes to expose potential issues, the Simulation Agent generates empirical behavioral data, and the Comprehensive Analysis Agent renders a data-driven judgment. This division of labor ensures that each stage of validation is handled by a specialized component, reducing the risk of subjective biases that might arise from a single model’s judgment. By structuring the validation as an explicit information flow—from test design to execution to analysis—the framework enhances the transparency and reproducibility of the verification process. Ultimately, this multi-agent approach strengthens the reliability of incompatibility category identification, providing a robust mechanism to filter out spurious candidates and retain only those that are empirically validated.
 
-\subsection{implementation}
+% \subsection{Implementation}
 
-We implement the approach using Python, leveraging open-source tools and APIs to balance reproducibility and efficiency. For API extraction, we combine the GitHub API and Python's standard ast library: the GitHub API fetches source code for specific project versions to enable automated data collection, while the ast library builds ASTs for function-level slicing—extracting only the function body (excluding imports or global statements outside the API). For LLM interaction, we use DeepSeek-chat API with temperature 0 to minimize randomness and max-tokens 2048 to accommodate structured outputs. 
+% We implement the approach using Python, leveraging open-source tools and APIs to balance reproducibility and efficiency. For API extraction, we combine the GitHub API and Python's standard ast library: the GitHub API fetches source code for specific project versions to enable automated data collection, while the ast library builds ASTs for function-level slicing—extracting only the function body (excluding imports or global statements outside the API). For LLM interaction, we use DeepSeek-chat API with temperature 0 to minimize randomness and max-tokens 2048 to accommodate structured outputs. 
 
 
-% 每个不兼容性类别对于COT表格
-\begin{table}[htbp]
-\centering
-\small
-\caption{Compatibility Incompatibility Categories (CI) — detection \& rules}
-\label{tab:ci-catalog}
-% Scale the table to the text width so it no longer overflows the page
-  \begin{tabular}{p{0.5cm} p{1.0cm} p{5.0cm} p{4.0cm}}
-    \hline
-    CI & Name & Data-structure construction rules & Incompatibility identification rules \\
-    \hline
-
-    CI1 & Parameter Addition / Deletion
-    & Signature-level: parameter appears or disappears between versions. Build P1 and P2: list parameters as tuples (name, position index, type, default).
-    & Trigger when: a parameter exists in P1 but not in P2; or a positional parameter exists in P2 but not in P1; or an inserted optional param in P2 is not last and causes positional shifts. \\
-
-    \hline
-    CI2 & Kwargs Key Addition / Deletion
-    & If both versions have `**kwargs`, set `KWARGS` = param name; extract K1 and K2: explicit keys accessed via `kwargs.get` or `kwargs['key']`. Statements to detect include body expressions like `kwargs.get('key')` or `kwargs['key']`.
-    & Trigger when `KWARGS` is non-empty and K1 $\neq$ K2 (keys added or removed). \\
-
-    \hline
-    CI3 & Parameter Rename
-    & Produce ReName pairs (name1, name2) by semantic or positional match; collect ReNUsage1/2: lines where each renamed parameter is used; collect D1/D2 for data-flow context. Detect from signature name pairs and body lines that use the parameter (assignments/usages).
-    & Trigger when a ReName pair exists and ReNUsage patterns are highly similar (identical lines or structurally identical data-flow where only variable names differ). \\
-
-    \hline
-    CI4 & Default Value Change
-    & Compare P1 and P2 default value fields for same-named parameters (or matched by position if appropriate). Statements to detect: function signature default values.
-    & Trigger when a parameter exists in both P1 and P2 but its stored default values differ. \\
-
-    \hline
-    CI5 & Parameter Range / Condition Change (affects exceptions)
-    & Build C1/C2 (condition strings), E1/E2 (explicit raises with condition index), and D1/D2 to map conditions to parameters. Statements to detect include condition statements (`if`, `while`, `try` scopes) and `raise` / `assert` lines referencing parameters.
-    & Trigger when exception-related conditions tied to a parameter present in both versions change so that raising behavior or range checks differ. \\
-
-    \hline
-    CI6 & Exception Add/Delete or Type Change
-    & Record E1/E2: explicit exception types with associated condition indices. Statements to detect: `raise ExceptionType(...)` and `assert` lines in function body.
-    & Trigger when exception type(s) differ between E1 and E2 (type added, removed, or changed). If len(E1)$\neq$len(E2), mark CI6 (and often CI5 as well).\\
-
-    \hline
-    CI7 & Return Value Change
-    & Collect R1/R2: return expressions with condition indices; use D1/D2 to trace data-flow dependencies of returned variables. Statements to detect: `return` (or `yield`) statements and their returned expressions.
-    & Trigger when a return expression in one version is absent in the other or when the data-flow producing the return value differs in a way that changes content/type/structure. \\
-
-    \hline
-    CI8 & Global Variable Change
-    & In D1/D2, mark entries with variable type = `global variable` and record dependent variables and conditions. Statements to detect: assignment statements referencing names classified as global; `global` / `nonlocal` markers.
-    & Trigger when global-variable data-flow differs between versions and those differences may change the global value assignment or visible state. \\
-
-    \hline
-    CI9 & Reference Parameter Change (e.g., `self`)
-    & In D1/D2, mark entries with variable type = `reference variable` (including `self`); collect attribute assignment sites and dependency lists. Statements to detect: assignment statements to reference variables or their attributes, direct reassignments of reference param.
-    & Trigger when: the reference parameter itself is reassigned; a new attribute is assigned in one version but not the other; or an existing attribute assignment has materially different assignment logic/dependencies. \\
-
-    \hline
-  \end{tabular}%
-\end{table}

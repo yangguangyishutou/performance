@@ -3,21 +3,23 @@
 \section{Conclusions}
 % In this work, we explored the use of membership inference attacks (MIAs) to detect whether specific code snippets were seen during pretraining. While existing MIA methods have shown some success on natural language data, they often overlook the structural and syntactic characteristics unique to source code. We identified that syntax-determined tokens—those mandated by language rules rather than author intent—can confound attribution signals and reduce MIA effectiveness.
 
-We introduced \tool, a syntax-pruned MIA technique specifically tailored for detecting pretraining code members from LLMs. By filtering out syntax-constrained tokens from the analysis, \tool focuses on more semantically meaningful signals of memorization. We evaluated \tool on a real-world benchmark of Python functions, carefully constructed to distinguish between verifiable members and non-members. Our results show that \tool consistently outperforms existing MIA baselines, improves robustness across code lengths, and provides practical evidence of memorization in deployed LLMs. 
 
-\section*{Appendix}
+Identifying the inclusion of specific code samples in LLM training data is crucial for enhancing transparency, supporting accountability, and ensuring copyright compliance. We introduced \tool, a syntax-pruned MIA technique specifically tailored for detecting pretraining code members from LLMs. %By filtering out syntax-constrained tokens from the analysis, 
+\tool focuses on more semantically meaningful signals of memorization. 
+We evaluate \tool on a real-world benchmark of Python functions that distinguishes verifiable members from non-members, showing that \tool consistently outperforms existing MIA baselines. %, remains robust across code lengths, and provides practical evidence of memorization in deployed LLMs.
 
-We have provided the dataset and the replicating code at \textit{\url{https://anonymous.4open.science/r/SYNPRUNE-FED7/}}.
+% We evaluated \tool on a real-world benchmark of Python functions, carefully constructed to distinguish between verifiable members and non-members. Our results show that \tool consistently outperforms existing MIA baselines, improves robustness across code lengths, and provides practical evidence of memorization in deployed LLMs. 
 
-\section*{Ethics Statement}
+\appendix
 
 
+\section{Ethics Statement}
 
 This work is motivated by the pressing concern of respecting intellectual property in the development of large language models (LLMs), particularly regarding the use of copyrighted code in pretraining datasets. While membership inference attacks (MIAs) raise privacy and model extraction concerns, we limit our use to research contexts aimed at evaluating potential copyright risks, not for exploitation. We adhere to responsible disclosure norms and aim to foster greater transparency and accountability in LLM development.
 
 
-\section*{Acknowledgements}
+\section{Acknowledgements}
 
-This work was supported in part by the National Key R\&D Program of China (Grant No. 2023YFC3806000 and 2023YFC3806002), in part by the National Natural Science Foundation of China (Grant No. 6240234 and 62402113),
+This work was supported in part by the National Key R\&D Program of China (Grant No. 2023YFC3806000 and 2023YFC3806002), in part by the National Natural Science Foundation of China (Grant No. 62402342, 62402113),
 in part by Shanghai Municipal Science and Technology Major Project No. 2021SHZDZX0100, and in part by Shanghai Sailing Program (No. 24YF2749500). The authors would also like to thank the anonymous reviewers for their careful work and valuable suggestions. 
 
