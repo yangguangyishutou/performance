@@ -2,11 +2,11 @@
 
 \section{Empirical Study}
 
-We conduct an empirical study to systematically examine the effectiveness and limitations of large language models for repository-level C++-to-Java translation.
+We conduct an empirical study to systematically examine the effectiveness and limitations of large language models for repository-level Java-to-C++ translation.
 
 \begin{itemize}[leftmargin=*]
-\item \textbf{RQ1}: How is the effectiveness of large language models in repository-level C++-to-Java translation?
-\item \textbf{RQ2}: What are the common error patterns in large language model-driven repository-level C++-to-Java translation?
+\item \textbf{RQ1}: How is the effectiveness of large language models in repository-level Java-to-C++ translation?
+\item \textbf{RQ2}: What are the common error patterns in large language model-driven repository-level Java-to-C++ translation?
 \end{itemize}
 
 \subsection{Setup}
@@ -31,37 +31,39 @@ As the project may have multiple independent and separated modules, we perform m
 \toprule
  \textbf{Project}  & \textbf{Root Class of Module} & \textbf{File (\#)} & \textbf{Method (\#)} \\
 \midrule
-\multirow{12}{*}{failsafe} & BulkheadBuilder  & 25 & 140 \\
-            & CircuitBreakerExecutor   & 23 & 141 \\
-            & DelayablePolicy   & 24 & 123 \\
-            & ExecutionImpl   & 22 & 149 \\
-            & FailsafeExecutor   & 24 & 170 \\
-            & FailurePolicy   & 25 & 132 \\
-            & RateLimiterBuilder   & 25 & 155 \\
-            & RateLimiterExecutor   & 24 & 146 \\
-            & RetryPolicyConfig   & 23 & 133 \\
-            & SyncExecutionImpl   & 24 & 142 \\
-            & TimeoutExecutor   & 21 & 116 \\
-            & UndeclaredThrowableStrategy   & 11 & 62 \\
+\multirow{12}{*}{failsafe} & BulkheadBuilder.java  & 25 & 140 \\
+            & CircuitBreakerExecutor.java   & 23 & 141 \\
+            & DelayablePolicy.java   & 24 & 123 \\
+            & ExecutionImpl.java   & 22 & 149 \\
+            & FailsafeExecutor.java   & 24 & 170 \\
+            & FailurePolicy.java   & 25 & 132 \\
+            & RateLimiterBuilder.java   & 25 & 155 \\
+            & RateLimiterExecutor.java   & 24 & 146 \\
+            & RetryPolicyConfig.java   & 23 & 133 \\
+            & SyncExecutionImpl.java   & 24 & 142 \\
+            & TimeoutExecutor.java   & 21 & 116 \\
+            & UndeclaredThrowableStrategy.java   & 11 & 62 \\
 \midrule
-\multirow{8}{*}{jvm-sandbox} & AdviceListenerTestCase  & 23 & 205 \\
-                            &ClassStructureByChildClassTestCase  & 12 & 89 \\
-                            &DebugLogExceptionModule  & 16 & 138 \\
-                            &EventWatchBuilderTestCase  & 18 & 174 \\
-                            &OrGroupFilter  & 13 & 138 \\
-                            &ProgressPrinter  & 8 & 37 \\
-                            &TestIssues217  & 22 & 193 \\
-                            &TestIssues256  & 18 & 170 \\
+\multirow{8}{*}{jvm-sandbox} & AdviceListenerTestCase.java  & 23 & 205 \\
+                            &ClassStructureByChildClassTestCase.java  & 12 & 89 \\
+                            &DebugLogExceptionModule.java  & 16 & 138 \\
+                            &EventWatchBuilderTestCase.java  & 18 & 174 \\
+                            &OrGroupFilter.java  & 13 & 138 \\
+                            &ProgressPrinter.java  & 8 & 37 \\
+                            &TestIssues217.java  & 22 & 193 \\
+                            &TestIssues256.java  & 18 & 170 \\
 \midrule
-\multirow{2}{*}{easyexcel} & ReadRowHolder  & 7 & 16 \\
-                        & ReadSheetHolder  & 11 & 51 \\
+\multirow{2}{*}{easyexcel} & ReadRowHolder.java  & 7 & 16 \\
+                        & ReadSheetHolder.java  & 11 & 51 \\
 \midrule
-\multirow{2}{*}{Java-WebSocket} & PerMessageDeflateExtensionTest   & 17 & 123 \\
-                                & Draft\_6455Test   & 19 & 109 \\
+\multirow{2}{*}{Java-WebSocket} & PerMessageDeflateExtensionTest.java   & 17 & 123 \\
+                                & Draft\_6455Test.java   & 19 & 109 \\
 \midrule
-httpclient & Cookie  & 8 & 93 \\
+httpclient & Cookie.java  & 8 & 93 \\
 \midrule
-hutool & JSONParser & 6 & 20 \\
+hutool & JSONParser.java & 6 & 20 \\
+\midrule
+ \todo{junit} & EnableJUnit4MigrationSupport.java\\
 \midrule
 \textbf{Total} & & \textbf{469} & \textbf{3,165} \\
 \bottomrule
@@ -89,28 +91,37 @@ hutool & JSONParser & 6 & 20 \\
 \todo{\textbf{RQ2 Setup.}} To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-by-method strategy. \todo{The annotation process consisted of three phases. First, the annotators conducted pilot labeling on \todo{200} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. The basic units of error annotation were methods and classes: each method or class that failed to compile was annotated with one or more error types. However, for cases where the same problem in the same class caused multiple methods to fail compilation, we marked the error at the class level rather than marking it repeatedly at the method level. (Note the distinction between error level(class level vs.~method level) and strategy type(file-by-file vs.~method-by-file); we conducted statistical analysis for both error levels under each strategy.) The inter-annotator agreement measured by Cohen's kappa was \todo{0.78}, indicating substantial agreement. In total, the annotation process required approximately 40 human-hours. Finally, we calculated the occurrence rate of each error type. Errors at class level and method level were analyzed separately to provide both macro-level (class structure) and micro-level (method implementation) insights.}
 
 
-% Once all error pattern is determined, we assign a categorized tag to each method that fails to compile (a single method may have multiple types of error tags). It is important to note that our manual analysis focuses on understanding the distribution and characteristics of identified problems, which reveal fundamental challenges in LLM-based code translation, rather than providing a complete enumeration of all possible defects. This targeted approach ensures we capture the most impactful failure patterns while maintaining feasibility given the dataset size.
-
-% \textbf{Evaluation Metric.}
-% generated C++ source files that compile successfully without errors. 
-
-% Specifically, we combine all generated C++ source files (.cpp) and header files (.h), then compile each source file separately. The compilation success rate is calculated as:
-
-% $$ \text{CSR} = \frac{\text{Number of Successfully Compiled .cpp Files}}{\text{Total Number of .cpp Files}}  $$
-
-% This metric directly reflects the functional correctness of generated code, as uncompilable code cannot be executed or tested.
 
 \subsection{Translation Effectiveness (RQ1)}
+
+
+\begin{table}[!t]
+\centering
+    \begin{tabular}{m{3cm}m{1cm}m{1cm}m{1cm}}
+\toprule
+ \textbf{Root Class of Module} & \textbf{Java File (\#)} & \textbf{Java Method (\#)} & \textbf{Translated CPP/Header File (\#)}  \\
+\midrule
+    CircuitBreakerExecutor.java   & 23 & 141 \\
+\midrule
+    Cookie  & 8 & 93 \\
+\midrule
+    EnableJUnit4MigrationSupport.java &  & \\
+\midrule
+\textbf{Total} & & \textbf{XXX} & \textbf{XXX} \\
+\bottomrule
+\end{tabular}
+\caption{Translated Results for our Selected Models}
+\label{tab:dataset_info}
+\end{table}
+
 
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/overall.pdf}
-\caption{Effectiveness of C++-to-Java Translation using LLMs under Two Translation Strategies}
-    \label{fig:empirical_success_rate}
+\caption{Effectiveness of Java-to-C++ Translation using LLMs under Two Translation Strategies}
+    \label{fig:rq11}
 \end{figure}
-
-
 
 
 \begin{figure*}[!t]
@@ -119,7 +130,7 @@ hutool & JSONParser & 6 & 20 \\
         \centering
         \includegraphics[width=\linewidth]{figures/empirical/success_rate/by_project-class.pdf}
            \vspace{-9pt}
-        \caption{File-by-file Strategy}
+        \caption{file-by-file translation}
         \label{fig:sub1}
     \end{subfigure}%
     \hfill
@@ -127,37 +138,64 @@ hutool & JSONParser & 6 & 20 \\
         \centering
         \includegraphics[width=\linewidth]{figures/empirical/success_rate/by_project-method.pdf}
            \vspace{-9pt}
-        \caption{Method-by-method Strategy }
+        \caption{method-by-method translation}
         \label{fig:sub2}
     \end{subfigure}%
     \vspace{-10pt}
-    \caption{Effectiveness of C++-to-Java Translation using LLMs with Method-by-method Strategy w.r.t Project and Modules}
-    \label{fig:eva2}
+    \caption{Effectiveness of Java-to-C++ Translation using LLMs with Translation Strategies w.r.t Project and Modules}
+    \label{fig:rq12}
 \end{figure*}
 
 We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, defined as the percentage of successfully compiled C++ files or methods relative to the total number of files or methods.
 
-Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. 
 
 
-Overall, the file-to-file translation 
-We observe that all three models struggle with repository-level translation, with success rates ranging from 1.09\% to 19.32\%. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
+\textbf{Model-wise Comparison.} Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. Under the file-by-file strategy, where the entire source file is translated in a single step, ChatGPT-5.1 and DeepSeek-V3.2 achieve identical compilation success rates of \todo{15.1\%}, while Qwen-3.5Plus performs slightly lower at \todo{13.4\%}. It indicates that full-file translation remains challenging for all models, with overall success rates below 16\%. Under the method-by-method strategy, where individual functions are translated separately, performance improves for all models. ChatGPT-5.1 shows the most notable gain, increasing from 15.1\% to 21.4\%, representing the highest overall success rate in the figure. DeepSeek-V3.2 exhibits a modest improvement from 15.1\% to 16.6\%, while Qwen-3.5Plus rises from 13.4\% to 15.1\%.
 
 
-\textbf{Impact of Segmentation Strategy.} Comparing the two segmentation schemes, method-by-method translation consistently outperforms file-by-file translation across all models except Qwen-3.5Plus. Specifically:
-\begin{itemize}[leftmargin=*]
-\item \textbf{DeepSeek-V3.2}: 15.1\% (file-by-file) vs 16.6\% (method-by-method), +2.4\% improvement
-\item \textbf{Qwen-3.5Plus}: 13.4\% (file-by-file) vs 15.1\% (method-by-method), -2.4\% decrease
-\item \textbf{ChatGPT-5.1}: 15.1\% (file-by-file) vs 21.4\% (method-by-method), +4.8\% improvement
-\end{itemize}
+Overall, we can observe that method-by-method translation consistently outperforms file-by-file translation across all three models, suggesting that finer-grained decomposition reduces structural and dependency-related translation errors. Besides, ChatGPT-5.1 benefits the most from the granular strategy, showing a substantial improvement of 6.3 percentage points, whereas DeepSeek-V3.2 and Qwen-3.5Plus exhibit only moderate gains. However, despite these improvements, the overall compilation success rates remain relatively low, highlighting the persistent difficulty of fully automated Java-to-C++ translation using current LLMs.
 
-ChatGPT-5.1 benefits the most from finer-grained translation, showing a 6.3\% improvement with method-by-method strategy. DeepSeek-V3.2 also shows moderate improvement (+1.5\%), while Qwen-3.5Plus performs almost equally under both strategies.
+\textbf{Project-wise Comparison.} Figure~\ref{fig:rq12} further breaks down the compilation success rate (\%) of C++-to-Java translation across three modules under two translation strategies. i.e., Cookie, EnableJUnit4MigrationSupport, and CircuitBreakerExecutor. Under the file-by-file translation strategy, the models exhibit different performance patterns across the three modules. For the \texttt{Cookie} module, DeepSeek-V3.2 and ChatGPT-5.1 achieve the highest compilation success rates at 28.6\%, outperforming Qwen-3.5Plus, which reaches 14.3\%. In contrast, for \texttt{EnableJUnit4MigrationSupport}, Qwen-3.5Plus performs best with 18.2\%, while both DeepSeek-V3.2 and ChatGPT-5.1 obtain 9.1\%. For \texttt{CircuitBreakerExecutor}, all three models show identical and relatively low performance, each achieving 7.7\%. Under the method-by-method translation strategy, the performance distribution becomes more consistent across models. All three models achieve their highest success rates on the \texttt{Cookie} module, where ChatGPT-5.1 reaches a highest 42.9\%, and DeepSeek and Qwen both achieve 28.6\%. For \texttt{EnableJUnit4MigrationSupport}, the success rates decrease to 13.6\% for DeepSeek-V3.2 and ChatGPT-5.1 and 9.1\% for Qwen-3.5Plus. Similar to the file-by-file results, \texttt{CircuitBreakerExecutor} remains the most challenging module, with all models achieving the lowest performance at 7.7\%.
 
-\textbf{Impact by Project.} As shown in Figure~\ref{fig:empirical_success_by_project_class} and Figure~\ref{fig:empirical_success_by_project_method}, the translation effectiveness varies significantly across different projects. The Cookie module achieves the highest success rate (23.8\% for file-by-file, 33.3\% for method-by-method) due to its extremely simple structure, while CircuitBreakerExecutor shows the lowest success rate (7.7\% for both strategies). The EnableJUnit4MigrationSupport module achieves an intermediate success rate of 12.1\%. This indicates that domain complexity and API usage patterns affect the LLM's translation capability. Notably, larger project size does not necessarily correlate with lower success rates: EnableJUnit4MigrationSupport (32 files) achieves a higher success rate than the smaller CircuitBreakerExecutor module (23 files).
+
+Overall, these results highlight two main observations. First, different models demonstrate varying strengths across projects in both file-by-file and method-to-method translation, with lowest to 7.7\% and highest to 42.9\%. Second, method-by-method translation produces a noticeable performance gain for all models. The results suggests that the effectiveness of translation varies significantly across projects and models, and the project complexity plays an important role in translation difficulty. It indicates that specific code characteristics such as code structure or different usage of code syntax may influence translation success.
+
+
 
 \subsection{Error Pattern Analysis (RQ2)}
 
+
+\begin{table}[!t]
+\centering
+    \begin{tabular}{m{3cm}m{2cm}m{2cm}}
+\toprule
+ \textbf{Error Type} & \multicolumn{2}{c}{\textbf{Error (\#)}} \\
+ \cmidrule{2-3}
+ &                  file-by-file translation    &  method-by-method translation  \\ 
+\midrule
+    Missing Symbols & 141 \\
+    Type System & 141 \\
+    Build/Include & 141 \\
+    Redefinition & 141 \\
+    Syntax & 141 \\
+    Template & 141 \\
+    Constructor/Destructor & 141 \\
+    Mismatched Def-Use & 141 \\
+    Inheritance/Virtual & 141 \\
+    Other & 141 \\
+\midrule
+\textbf{Total} & \textbf{XXX} & \textbf{XXX} \\
+\bottomrule
+\end{tabular}
+\caption{Taxonomy of Translation Errors}\label{tab:errors}
+\end{table}
+
+
 To understand the common error patterns in LLM-driven code translation, we conducted a systematic analysis of compilation errors at both class level and method level under both translation strategies (file-by-file and method-by-method).
+
+\begin{itemize}
+    \item \textbf{Missing Symbols.}
+\end{itemize}
 
 \begin{figure}[!t]
 \centering
