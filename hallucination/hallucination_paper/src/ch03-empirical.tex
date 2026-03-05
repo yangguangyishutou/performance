@@ -81,8 +81,8 @@ hutool & JSONParser.java & 6 & 20 \\
 \textbf{Translation Strategies.} As an entire module may exceed the model's context window limitations, segmentation is required prior to translation. We evaluate two representative segmentation strategies that reflect common developer practices:
 
 \begin{itemize}[leftmargin=*]
-\item \textbf{File-by-file translation}: Each Java source file is translated independently as a self-contained unit. This strategy preserves the class structure, member declarations, and intra-file method relationships; however, it may overlook dependencies across files.
-\item \textbf{Method-by-method translation}: Each Java method is translated in isolation, enabling finer-grained control over the translation process but sacrificing contextual information related to class structure and inter-method dependencies.
+\item \textbf{File-by-file translation}: Each Java source file is translated independently as a self-contained unit. This strategy preserves the class structure, member declarations, and intra-file method relationships; however, it may overlook dependencies across files. \todo{XXX}
+\item \textbf{Method-by-method translation}: Each Java method is translated in isolation, enabling finer-grained control over the translation process but sacrificing contextual information related to class structure and inter-method dependencies. \todo{XXX}
 \end{itemize}
 
 
@@ -195,6 +195,18 @@ To understand the common error patterns in LLM-driven code translation, we condu
 
 \begin{itemize}
     \item \textbf{Missing Symbols.}
+    \item \textbf{SYNTAX_LANGUAGE_ERROR}: Syntax and language feature errors
+    \item 
+\item \textbf{TYPE_SYSTEM_ERROR}: Errors of type system, e.g., variable/parameter type mismatch; incorrect return value type; type undefined or incomplete; illegal type conversion, ...
+\item \textbf{DECLARE_DEFINITION_MISMATCH}: Inconsistent declaration and definition signatures, or mismatched parameter tables.
+\item \textbf{MISSING_UNDEFINED_SYMBOLS}: Missing or undefined functions/variables/classes/...
+\item \textbf{INHERITANCE_VIRTUAL_ERROR}: Issues related to override, virtual, and abstract classes, etc.
+\item \textbf{CONSTRUCTOR_DESTRUCTOR_ERROR}: Issues related to constructor and destructor.
+\item \textbf{TEMPLATE_ERROR}: Template issues related to declaration, instantiation, derivation, etc.
+\item \textbf{ACCESS_SCOPE_ERROR}: Access control and scope errors
+\item \textbf{REDEFINITION_ERROR}: Redefinition of variables, functions, or classes.
+\item \textbf{BUILD_INCLUDE_ERROR}: Errors of wrong building system, missing header files, wrong dependencies, etc.
+% 11. OTHER_ERROR: Other unexpected errors.
 \end{itemize}
 
 \begin{figure}[!t]
