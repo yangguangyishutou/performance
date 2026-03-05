@@ -110,23 +110,38 @@ hutool & JSONParser & 6 & 20 \\
     \label{fig:empirical_success_rate}
 \end{figure}
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/by_project-class.pdf}
-\caption{Effectiveness of C++-to-Java Translation using LLMs with File-by-file Strategy w.r.t Project and Modules}
-\label{fig:empirical_success_by_project_class}
-\end{figure}
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.45\textwidth]{figures/empirical/success_rate/by_project-method.pdf}
-\caption{Effectiveness of C++-to-Java Translation using LLMs with Method-by-method Strategy w.r.t Project and Modules}
-\label{fig:empirical_success_by_project_method}
-\end{figure}
+
+
+\begin{figure*}[!t]
+    \centering
+    \begin{subfigure}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/empirical/success_rate/by_project-class.pdf}
+           \vspace{-9pt}
+        \caption{File-by-file Strategy}
+        \label{fig:sub1}
+    \end{subfigure}%
+    \hfill
+    \begin{subfigure}{0.45\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{figures/empirical/success_rate/by_project-method.pdf}
+           \vspace{-9pt}
+        \caption{Method-by-method Strategy }
+        \label{fig:sub2}
+    \end{subfigure}%
+    \vspace{-10pt}
+    \caption{Effectiveness of C++-to-Java Translation using LLMs with Method-by-method Strategy w.r.t Project and Modules}
+    \label{fig:eva2}
+\end{figure*}
 
 We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, defined as the percentage of successfully compiled C++ files or methods relative to the total number of files or methods.
 
-Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. We observe that all three models struggle with repository-level translation, with success rates ranging from \todo{11.9\%} to \todo{16.7\%}. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
+Figure~\ref{fig:empirical_success_rate} presents the overall effectiveness across different LLMs and segmentation strategies. 
+
+
+Overall, the file-to-file translation 
+We observe that all three models struggle with repository-level translation, with success rates ranging from 1.09\% to 19.32\%. This reveals a significant gap between the capabilities of current LLMs and the requirements of real-world project translation tasks.
 
 
 \textbf{Impact of Segmentation Strategy.} Comparing the two segmentation schemes, method-by-method translation consistently outperforms file-by-file translation across all models except Qwen-3.5Plus. Specifically:
