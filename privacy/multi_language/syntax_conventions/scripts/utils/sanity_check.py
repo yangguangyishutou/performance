@@ -10,7 +10,7 @@
 import json
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 
 
 # 已知的语法规则
@@ -33,13 +33,44 @@ SYNTAX_RULES = {
 }
 
 
-def check_constraint_pair(constraint: Dict[str, Any], language: str) -> List[str]:
+def validate_bracket_matching(s: str) -> Tuple[bool, str]:
+    """
+    验证字符串中的括号是否正确配对（针对前缀模式）
+
+    注意：conditional 是前缀模式，允许未闭合的左括号，
+    但不允许错误的括号类型（如右括号没有对应的左括号）
+
+    Args:
+        s: 要验证的字符串
+
+    Returns:
+        (is_valid, error_message) - is_valid 为 True 表示合法
+    """
+    stack = []  # 存储左括号
+    bracket_pairs = {')': '(', ']': '[', '}': '{'}
+
+    for i, char in enumerate(s):
+        if char in '([{':
+            stack.append((char, i))
+        elif char in ')]}':
+            if not stack or stack[-1][0] != bracket_pairs[char]:
+                # 错误：右括号没有对应的左括号或类型不匹配
+                return False, f"位置 {i}: 右括号 '{char}' 没有对应的左括号"
+            stack.pop()
+
+    # 注意：我们不再检查 stack 是否为空
+    # 因为 conditional 是前缀，允许有未闭合的括号（如 "async (" 是合法的）
+    return True, ""
+
+
+def check_constraint_pair(constraint: Dict[str, Any], language: str, construct_name: str = "") -> List[str]:
     """
     检查单个约束对的合理性
 
     Args:
         constraint: 约束字典
         language: 语言名称
+        construct_name: 构造名称（用于特定规则检查）
 
     Returns:
         错误列表
@@ -49,6 +80,17 @@ def check_constraint_pair(constraint: Dict[str, Any], language: str) -> List[str
     conditional = constraint.get("conditional", "")
     consequent = constraint.get("consequent", "")
     note = constraint.get("note", "")
+
+    # 检查 0: conditional 中的括号匹配（仅检测真正错误的括号类型）
+    is_valid, error_msg = validate_bracket_matching(conditional)
+    if not is_valid:
+        errors.append(
+            f"❌ 错误：conditional 中的括号不匹配\n"
+            f"   conditional: '{conditional}'\n"
+            f"   {error_msg}\n"
+            f"   说明：conditional 作为前缀可以包含未闭合的左括号（如 'async (' 是合法的），\n"
+            f"        但右括号必须有对应的左括号（如 'if () }}' 是非法的）"
+        )
 
     # 检查 1: getter/setter 括号类型
     if conditional in ["get", "set"]:
@@ -72,8 +114,9 @@ def check_constraint_pair(constraint: Dict[str, Any], language: str) -> List[str
                 f"   正确 consequent: '[PROPERTY], [' （计算属性名必须用方括号）"
             )
 
-    # 检查 2: Rest 参数后跟逗号
-    if "..." in conditional and "," in consequent:
+    # 检查 2: Rest 参数后跟逗号（仅对 Rest parameters 构造生效）
+    # 注意：Spread syntax (...).json 等其他使用 ... 的构造可以跟逗号
+    if "Rest parameter" in construct_name and "..." in conditional and "," in consequent:
         errors.append(
             f"❌ 错误：Rest 参数后不能跟逗号\n"
             f"   conditional: {conditional}\n"
@@ -137,7 +180,7 @@ def check_construct_file(file_path: Path) -> Dict[str, Any]:
     all_errors = []
 
     for i, constraint in enumerate(constraints, 1):
-        errors = check_constraint_pair(constraint, language)
+        errors = check_constraint_pair(constraint, language, construct)
         if errors:
             all_errors.append({
                 "constraint_index": i,
@@ -165,10 +208,16 @@ def main():
         description="检查提取的语法约束的合理性"
     )
     parser.add_argument(
+        "--language",
+        type=str,
+        default=None,
+        help="语言名称 (javascript, java, c)，将自动使用对应的目录"
+    )
+    parser.add_argument(
         "--dir",
         type=str,
-        default="data/extracted",
-        help="提取结果目录"
+        default=None,
+        help="提取结果目录（如果指定 --language，则此项被忽略）"
     )
     parser.add_argument(
         "--verbose",
@@ -178,7 +227,14 @@ def main():
 
     args = parser.parse_args()
 
-    extract_dir = Path(args.dir)
+    # 确定检查目录
+    if args.language:
+        extract_dir = Path(f"{args.language}/data/extracted")
+    elif args.dir:
+        extract_dir = Path(args.dir)
+    else:
+        # 默认使用 JavaScript
+        extract_dir = Path("javascript/data/extracted")
 
     if not extract_dir.exists():
         print(f"❌ 目录不存在: {extract_dir}")

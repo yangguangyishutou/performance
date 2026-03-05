@@ -41,3 +41,29 @@ Our benchmark exhibits several notable characteristics that reflect its diversit
     
     \item \textbf{Real-World Relevance}: The benchmark reflects actual user-driven derivation patterns on Hugging Face, providing insights into community practices such as model fine-tuning trends, adapter usage, and quantization adoption.
 \end{itemize}
+
+% show the statistics of the benchmark
+\begin{table}[t]
+    \centering
+    \caption{Statistics of the \textsc{GrandMoTHer} benchmark.}
+    \label{tab:grandmother-statistics}
+    \small
+    \begin{tabular}{l r}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        \#Graphs & 31 \\
+        \#Model pairs (edges) & 248 \\
+        Min / Median / Max pairs per graph & 1 / 6 / 22 \\
+        Avg.\ pairs per graph & 8.0 \\
+        \#Models (nodes) & 279 \\
+        \#Root models & 31 \\
+        \#Intermediate models & 44 \\
+        \#Leaf models & 204 \\
+        Share of leaf models & 73.1\% \\
+        Min / Avg / Max models per graph & 2 / 9.0 / 23 \\
+        Avg.\ out-degree of non-leaf models & 3.31 \\
+        Max fine-tuning depth & 2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}

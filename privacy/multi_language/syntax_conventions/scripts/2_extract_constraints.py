@@ -263,7 +263,7 @@ def batch_extract_constraints(
         "failed": failed
     }
 
-    summary_file = f"../{args.language}/data/{args.language}_extraction_summary.json"
+    summary_file = f"{args.language}/data/{args.language}_extraction_summary.json"
     with open(summary_file, 'w', encoding='utf-8') as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
@@ -329,10 +329,10 @@ def main():
         print(f"限制数量: {args.limit}")
 
     # 初始化输出目录（按语言分离）
-    output_dir = f"../{args.language}/data"
+    output_dir = f"{args.language}/data/extracted"
     os.makedirs(output_dir, exist_ok=True)
 
-    checkpoint_file = f"../{args.language}/data/checkpoint.json"
+    checkpoint_file = f"{args.language}/data/checkpoint.json"
 
     # 加载文档索引
     index = load_document_index(args.language)

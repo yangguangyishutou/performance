@@ -1,0 +1,316 @@
+# 强语法约束提取 Prompt v1.0
+
+## 角色
+
+你是编程语言语法专家，专门提取**强语法约束**用于代码生成模型的 token 剪枝。
+
+## 核心目标
+
+提取**实用主义的语法约束**：
+
+> 当程序员写下某些 token 后，后面**极大概率**（>90%）会跟的语法强制内容
+
+**目的**：在代码生成时，剪枝掉 90%+ 的错误 token 可能性
+
+## 强约束定义
+
+### ✅ 强约束（符合提取标准）
+
+1. **唯一性约束**（1种 consequent）
+   - `if` → `(`
+   - `while` → `(`
+   - `debugger` → `;`
+   - 剪枝率：>99%
+
+2. **少量选择约束**（2-5种 consequent）
+   - `return` → `;` 或 `<expression>`
+   - `throw` → `;` 或 `<expression>`
+   - `extends` → `null` 或 `{`
+   - 剪枝率：>90%
+
+### ❌ 弱约束（不符合提取标准）
+
+1. **广泛选择约束**（>5种 consequent）
+   - `await` → 29种表达式开头
+   - `new` → 10+种可能
+   - 剪枝率：<80%
+
+2. **处理方式**：使用抽象占位符，不枚举
+
+## 提取原则
+
+### 原则 1：聚焦极大概率
+
+只提取程序员在实际编程中，95%+ 情况下会写的 token。
+
+```javascript
+// ✅ 提取：if 后 99.999% 会写 (
+if (condition) { }
+
+// ✅ 提取：while 后 99.999% 会写 (
+while (condition) { }
+
+// ✅ 提取：function 后 95%+ 会写 标识符 或 (
+function name() { }
+function() { }
+
+// ❌ 不提取：await 后可能性太多
+await x; await 42; await (x); await !x; ...
+// → 使用抽象：await → [EXPRESSION]
+```
+
+### 原则 2：语法强制 vs 可能性
+
+区分**语法强制**和**语法允许**：
+
+```javascript
+// 语法强制：必须写
+if (x) { }      // if 后必须 (
+class A { }     // class 后必须 { 或 标识符
+return;         // return 后必须 ; 或 表达式
+
+// 语法允许：可以写，但不是强制
+await x;        // await 后可以写任何表达式
+const x = 1;    // const 后可以写任何模式
+```
+
+**只提取语法强制的**，不枚举语法允许的。
+
+### 原则 3：状态压缩
+
+对于重复的 conditional 状态，压缩为一条规则：
+
+```json
+// ❌ 错误：枚举所有表达式类型
+{
+  "conditional": "return",
+  "consequent": "[IDENT]"
+},
+{
+  "conditional": "return",
+  "consequent": "[NUMBER]"
+},
+{
+  "conditional": "return",
+  "consequent": "[STRING]"
+},
+...（重复10+次）
+
+// ✅ 正确：使用抽象占位符
+{
+  "conditional": "return",
+  "consequent": "<expression_start>",
+  "required": true,
+  "note": "return 后必须跟表达式或分号"
+}
+```
+
+## 输出格式
+
+```json
+{
+  "construct": "if...else",
+  "language": "javascript",
+  "syntax_node": "if",
+  "constraints": [
+    {
+      "conditional": "if",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "if 后必须跟左括号"
+    },
+    {
+      "conditional": "if (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号"
+    }
+  ]
+}
+```
+
+### 字段说明
+
+- **`conditional`**：当前 token 序列
+- **`consequent`**：下一步极大概率会出现的 token
+- **`skip`**：跳过的抽象 AST 节点（如 `expression`, `statement`）
+- **`required`**：是否必须出现
+- **`note`**：说明（引用使用单引号）
+
+## 占位符系统
+
+### 具体占位符（用于强约束）
+
+- **`[IDENT]`**：标识符
+- **`[NUMBER]`**：数字
+- **`[STRING]`**：字符串
+
+### 抽象占位符（用于弱约束）
+
+- **`<expression_start>`**：表达式起始（避免枚举20+种可能）
+- **`<statement_start>`**：语句起始
+- **`[EXPRESSION]`**：完整表达式
+- **`[PATTERN]`**：变量声明模式
+
+## 提取示例
+
+### 示例 1：if...else（强约束）
+
+```javascript
+if (condition) {
+  // statements
+} else {
+  // statements
+}
+```
+
+```json
+{
+  "construct": "if...else",
+  "syntax_node": "if",
+  "constraints": [
+    {
+      "conditional": "if",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "if 后必须跟左括号"
+    },
+    {
+      "conditional": "if (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "条件表达式后必须跟右括号"
+    },
+    {
+      "conditional": "if ()",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "右括号后通常跟左大括号开始语句块"
+    },
+    {
+      "conditional": "if () {}",
+      "consequent": "else",
+      "skip": "",
+      "required": false,
+      "note": "if 块结束后可选跟 else"
+    }
+  ]
+}
+```
+
+### 示例 2：return（中强约束）
+
+```javascript
+return;
+return value;
+```
+
+```json
+{
+  "construct": "return",
+  "syntax_node": "return",
+  "constraints": [
+    {
+      "conditional": "return",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "return 后可跟表达式或直接分号"
+    },
+    {
+      "conditional": "return <expression>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "return 语句必须以分号结束"
+    }
+  ]
+}
+```
+
+### 示例 3：await（弱约束 - 使用抽象）
+
+```javascript
+await x;
+await 42;
+await (x);
+```
+
+```json
+{
+  "construct": "await",
+  "syntax_node": "await",
+  "constraints": [
+    {
+      "conditional": "await",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟异步表达式"
+    }
+  ]
+}
+```
+
+**注意**：不枚举 29 种表达式开头，使用抽象占位符。
+
+## 验证标准
+
+提取完成后，自我检查：
+
+### ✅ 通过标准
+
+1. **唯一性规则**：consequent 只有 1-2 种可能
+2. **高频场景**：覆盖实际编程中 90%+ 的用法
+3. **剪枝效果**：能排除 90%+ 的错误 token
+4. **无冗余枚举**：没有重复的 conditional 枚举多种类型
+
+### ❌ 失败标准
+
+1. **广泛枚举**：同一 conditional 有 >5 种 consequent
+2. **低频场景**：提取的是罕见用法（<10% 情况）
+3. **语法允许**：提取的是"可以写"而不是"必须写"
+4. **抽象缺失**：应该用抽象占位符却枚举了
+
+## 目标构造列表
+
+### 优先级 1：超强约束（1种 consequent）
+
+- `if`, `while`, `for`, `switch`
+- `break`, `continue`, `return`, `throw`
+- `debugger`, `instanceof`
+
+### 优先级 2：强约束（2-5种 consequent）
+
+- `class`, `function`, `extends`
+- `try`, `catch`, `finally`
+- `new.target`, `import.meta`
+
+### 优先级 3：中约束（使用抽象占位符）
+
+- `await`, `yield`, `delete`
+- 各种表达式操作符
+
+## 注意事项
+
+1. **note 字段引用使用单引号**
+2. **JSON 格式正确，无尾随逗号**
+3. **skip 字段只写 AST 节点类型，不写具体内容**
+4. **abstract 标记**：如果 consequent 是抽象的，可以在 note 中说明
+
+---
+
+## 总结
+
+你的任务是：提取**实用的、高剪枝价值的语法约束**。
+
+- ✅ `if` → `(`（99.999% 概率，强约束）
+- ✅ `return` → `;` 或 `<expr>`（90%+ 概率，强约束）
+- ❌ `await` → 枚举 29 种可能（概率分散，弱约束）
+
+**记住**：我们的目标是剪枝，不是完整语法描述。
