@@ -194,19 +194,21 @@ Overall, these results highlight two main observations. First, different models 
 To understand the common error patterns in LLM-driven code translation, we conducted a systematic analysis of compilation errors at both class level and method level under both translation strategies (file-by-file and method-by-method).
 
 \begin{itemize}
-    \item \textbf{Missing Symbols.}
-    \item \textbf{SYNTAX_LANGUAGE_ERROR}: Syntax and language feature errors
-    \item 
-\item \textbf{TYPE_SYSTEM_ERROR}: Errors of type system, e.g., variable/parameter type mismatch; incorrect return value type; type undefined or incomplete; illegal type conversion, ...
-\item \textbf{DECLARE_DEFINITION_MISMATCH}: Inconsistent declaration and definition signatures, or mismatched parameter tables.
-\item \textbf{MISSING_UNDEFINED_SYMBOLS}: Missing or undefined functions/variables/classes/...
-\item \textbf{INHERITANCE_VIRTUAL_ERROR}: Issues related to override, virtual, and abstract classes, etc.
+
+    % \item \textbf{INHERITANCE_VIRTUAL_ERROR}: Issues related to override, virtual, and abstract classes, etc.
+    \item \textbf{Language Syntax Violation}: Syntax and language feature errors.
+    
+    \item \textbf{Type Error}: Errors of type system, e.g., variable/parameter type mismatch; incorrect return value type; type undefined or incomplete; illegal type conversion, ...
+    \item \textbf{Declaration Mismatch}: Mismatch between translated header file and source file. 
+    \item \textbf{Undefined Symbols}: Missing or undefined functions, variables, classes, etc.
+    \item \textbf{Duplicated Definitions}: Redefinition of variables, functions, or classes.
+    \item \textbf{Header File Error}: Errors of wrong building system, missing header files, wrong  dependencies, etc.
+    \item \textbf{Wrong Access Control}: Access control and scope errors
+
 \item \textbf{CONSTRUCTOR_DESTRUCTOR_ERROR}: Issues related to constructor and destructor.
 \item \textbf{TEMPLATE_ERROR}: Template issues related to declaration, instantiation, derivation, etc.
-\item \textbf{ACCESS_SCOPE_ERROR}: Access control and scope errors
-\item \textbf{REDEFINITION_ERROR}: Redefinition of variables, functions, or classes.
-\item \textbf{BUILD_INCLUDE_ERROR}: Errors of wrong building system, missing header files, wrong dependencies, etc.
-% 11. OTHER_ERROR: Other unexpected errors.
+
+
 \end{itemize}
 
 \begin{figure}[!t]
