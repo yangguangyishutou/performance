@@ -13,12 +13,28 @@ We design experiments to explore the following research questions.
     % \item \textbf{State-of-the-art Evaluation (RQ4)}: How do different model layers influence the effectiveness of LLM lineage detection?
     % analyze why existing methods fail to detect lineage
     \item \textbf{Failure Analysis (RQ4)}: Why do existing methods fail to detect lineage?
+    \item \textbf{Integration (RQ4)}: using the above findings, the best performance can achieve? (80\%)
 \end{itemize}
 
 \subsection{Setup}
 
-% TODO Metric除了 边的accuracy百分比，也可以是能否生成一摸一样的tree/总的tree的比例？
+
+\textbf{Measurement Metrics.} XXX
+
+% 定义好/不好。
+% TODO Metric除了 边的accuracy百分比，也可以是能否生成
+% 准确的边数/ 总边数
+% 错误的边？
+% accuracy = precision, recall
+% 一摸一样的tree/总的tree的比例？
 % TODO accuracy包括了 precision 和recall，是不是要分开？
+\textbf{Accuracy.}  
+
+\textbf{Layers.} XXX 
+
+
+\textbf{Graph Algorithms.} XX 
+
 
 \subsection{RQ1: Measurement Evaluation}
 
@@ -29,7 +45,7 @@ We design experiments to explore the following research questions.
     \label{tab:rq1-metrics-comp}
     \centering
     % \resizebox{\columnwidth}{!}{
-        \begin{tabular}{m{1.8cm}m{1.35cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}}
+        \begin{tabular}{m{1.8cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}}
             \toprule
             \textbf{Direction Method} & \textbf{L2} & \textbf{Cos.} & \textbf{Abs Mean} & \textbf{Abs Max} & \textbf{Sparse Abs.} & \textbf{Sparse Rel.} \\ 
             \midrule
@@ -42,9 +58,9 @@ We design experiments to explore the following research questions.
 
 
 % TODO Graph: Accuracy with regard to Model families?
+% 横轴是6个家族，纵轴是 L2数据的分布，比如某个模型家族有10个模型，存在最大的L2 和最小的L2
 
-% TODO Accuracy using different thresholds?
-
+Summary: L2+kurtosis performs best.
 
 \subsection{RQ2: Layers in Transformer Block Evaluation}
 
@@ -68,7 +84,7 @@ We design experiments to explore the following research questions.
     \label{fig:rq2-l2-layer-contrib}
 \end{figure}
 
-
+\textbf{Summary: using QKV layer performs best. K layer contributes most.}
 
 \subsection{RQ3: Graph Algorithms Evaluation}
 
@@ -80,7 +96,7 @@ We design experiments to explore the following research questions.
     \begin{tabular}{@{}lcc@{}}
         \toprule
         \textbf{Graph Algorithm} & \textbf{Accuracy (\%)} \\ \midrule
-        Baseline (MoTHer) & - & - \\
+        MoTHer w/o kurtosis & - & - \\
         + MoTHer-Timestamp & - & - \\
         + Hard-Constraint & - & - \\
         + Undirected-Mst  & - & - \\ 
@@ -88,6 +104,11 @@ We design experiments to explore the following research questions.
         \bottomrule
     \end{tabular}
 \end{table}
+
+Mother baseline. 
+Mother baseline kurtosis->Timestamp
+
+\textbf{Summary: }
 
 \subsection{RQ4: Failure Analysis}
 
@@ -106,3 +127,6 @@ We design experiments to explore the following research questions.
     \caption{Case study illustrating erroneous edges in the constructed lineage graph (RQ4).}
     \label{fig:rq4-error-case}
 \end{figure}
+
+
+\textbf{Multi-hop Analysis (RQ3)}: XX
