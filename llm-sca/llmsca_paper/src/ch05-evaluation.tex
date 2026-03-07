@@ -3,21 +3,17 @@
 We design experiments to explore the following research questions. 
 
 \begin{itemize}[leftmargin=*]
-    % calculate the distances between model pairs using L2/abs_mean/abs_max/1-cosine
+    % Using different distance metrics/direction methods/graph methods to detect lineage
     \item \textbf{Measurement Evaluation (RQ1)}: How do different measurement metrics affect the effectiveness of LLM lineage detection?
-    % \item \textbf{Lineage Type Evaluation (RQ2)}: How do different lineage types contribute to the performance of LLM lineage detection?
-    % calculate the distances between model pairs using mlp/k/q/v/o
+    % calculate the contribution of different model layers to the effectiveness of LLM lineage detection
     \item \textbf{Layers in Transformer Block Evaluation (RQ2)}: How do different model layers influence the effectiveness of LLM lineage detection?
-    % using different graph algorithms to detect lineage, like Chu-Liu-Edmonds algorithm...
-    \item \textbf{Graph Algorithms Evaluation (RQ3)}: How do different graph algorithms influence the effectiveness of LLM lineage detection?
-    % \item \textbf{State-of-the-art Evaluation (RQ4)}: How do different model layers influence the effectiveness of LLM lineage detection?
-    % analyze why existing methods fail to detect lineage
-    \item \textbf{Failure Analysis (RQ4)}: Why do existing methods fail to detect lineage?
+
+    \item \textbf{Failure Analysis (RQ3)}: Why do existing methods fail to detect lineage?
+
     \item \textbf{Integration (RQ4)}: using the above findings, the best performance can achieve? (80\%)
 \end{itemize}
 
 \subsection{Setup}
-
 
 \textbf{Measurement Metrics.} XXX
 
@@ -38,95 +34,359 @@ We design experiments to explore the following research questions.
 
 \subsection{RQ1: Measurement Evaluation}
 
-
-
-\begin{table}[!t]
-    \caption{Lineage Detection Accuracy (\%) w.r.t. Different Measurement Metrics (RQ1)}
-    \label{tab:rq1-metrics-comp}
+\begin{table}[t]
+    \caption{Lineage Detection Accuracy (\%) w.r.t. Different Measurement Metrics, Direction Methods, and Graph Algorithms (RQ1)}
+    \label{tab:rq1-comprehensive}
     \centering
-    % \resizebox{\columnwidth}{!}{
-        \begin{tabular}{m{1.8cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}m{0.5cm}}
-            \toprule
-            \textbf{Direction Method} & \textbf{L2} & \textbf{Cos.} & \textbf{Abs Mean} & \textbf{Abs Max} & \textbf{Sparse Abs.} & \textbf{Sparse Rel.} \\ 
-            \midrule
-            \todo{kurtosis} & 72.1 & 65.4 & 58.9 & 44.2 & ... \\
-            \todo{timestamp} & 72.1 & 65.4 & 58.9 & 44.2 & ... \\
-            \bottomrule
-        \end{tabular}
-    % }
+    \footnotesize
+    \setlength{\tabcolsep}{3pt}
+    \begin{tabular}{@{}p{2.2cm}c*{6}{c}@{}}
+        \toprule
+        \multirow{2}{*}{\textbf{Graph Algorithm}} & \multirow{2}{*}{\textbf{Dir.}} & \multicolumn{6}{c}{\textbf{Measurement Metric}} \\
+        \cmidrule(lr){3-8}
+        & & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} \\
+        \midrule
+        \multirow{2}{*}{+ MoTHer} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \midrule
+        \multirow{2}{*}{+ Hard-Constraint} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \midrule
+        \multirow{2}{*}{+ Undirected-Mst} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \midrule
+        \multirow{2}{*}{+ atlas\_snake\_fan} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \bottomrule
+    \end{tabular}%
 \end{table}
 
-
-% TODO Graph: Accuracy with regard to Model families?
-% 横轴是6个家族，纵轴是 L2数据的分布，比如某个模型家族有10个模型，存在最大的L2 和最小的L2
-
-Summary: L2+kurtosis performs best.
+Summary: L2+timestamp+xxgraph algorithm performs best.
 
 \subsection{RQ2: Layers in Transformer Block Evaluation}
 
 
-% heatmap show different layers' contribution to tree construction accuracy
-% TODO: heatmap，里面应该是一个正方形的cell？，但是这里为啥是两个三角形？有斜线？
+% upset plot shows different layers' contribution to tree construction accuracy
 \begin{figure}[t]
     \centering
-    \includegraphics[width=\columnwidth]{fig/rq2_layer_combo_heatmap.pdf}
+    \includegraphics[width=\columnwidth]{fig/rq2_upset.pdf}
     \caption{Accuracy of lineage detection with different combinations of transformer block components (RQ2).}
-    \label{fig:rq2-layer-combo-heatmap}
+    \label{fig:rq2-upset}
 \end{figure}
 
-
-% figures show different layers' contribution to L2 distance
-% TODO 图展示了不同层对L2指标的影响，那么前面还有cos等5个指标，应该还有5张图？
-\begin{figure}[!t]
-    \centering
-    \includegraphics[width=\columnwidth]{fig/rq2_l2_layer_contrib.pdf}
-    \caption{Contribution of different transformer block components (K/Q/V/O/MLP) to L2 distance (RQ2).}
-    \label{fig:rq2-l2-layer-contrib}
-\end{figure}
 
 \textbf{Summary: using QKV layer performs best. K layer contributes most.}
 
-\subsection{RQ3: Graph Algorithms Evaluation}
-
-% except for MoTHer, we use timestamp as direction method for other graph algorithms
-\begin{table}[t]
-    \caption{Lineage Detection Accuracy (\%) w.r.t. Different Graph Algorithms (RQ3). Except for MoTHer, we use timestamp as the direction method for other graph algorithms.}
-    \label{tab:rq4-ablation}
-    \centering
-    \begin{tabular}{@{}lcc@{}}
-        \toprule
-        \textbf{Graph Algorithm} & \textbf{Accuracy (\%)} \\ \midrule
-        MoTHer w/o kurtosis & - & - \\
-        + MoTHer-Timestamp & - & - \\
-        + Hard-Constraint & - & - \\
-        + Undirected-Mst  & - & - \\ 
-        + atlas\_snake\_fan & - & - \\
-        \bottomrule
-    \end{tabular}
-\end{table}
-
-Mother baseline. 
-Mother baseline kurtosis->Timestamp
-
 \textbf{Summary: }
 
-\subsection{RQ4: Failure Analysis}
+\subsection{RQ3: Failure Analysis}
 
 % sector graph error analysis of siblings-edge & grandparent-child-edge portion w. timestamp & parent-child-inverse-edge w/o. timestamp
-\begin{figure}[!t]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig/rq4_error_edge_pie.pdf}
-    \caption{Proportion of different types of erroneous edges in the constructed lineage graph (RQ4).}
+    \caption{Proportion of different types of erroneous edges in the constructed lineage graph (RQ3).}
     \label{fig:rq4-error-pie}
 \end{figure}
 
 % a example of case study of ...
-\begin{figure}[!t]
+\begin{figure}[t]
     \centering
     \includegraphics[width=\columnwidth]{fig/rq4_error_case_study.pdf}
-    \caption{Case study illustrating erroneous edges in the constructed lineage graph (RQ4).}
+    \caption{Case study illustrating erroneous edges in the constructed lineage graph (RQ3).}
     \label{fig:rq4-error-case}
 \end{figure}
 
 
 \textbf{Multi-hop Analysis (RQ3)}: XX
+
+
+% figures show different layers' contribution to different distance metrics using sub graphs
+\begin{figure*}[t]
+    \centering
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/rq2_l2_layer_contrib.pdf}
+        \caption{L2 Distance}
+        \label{fig:rq2-l2-layer-contrib}
+    \end{subfigure}%
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/rq2_cos_layer_contrib.pdf}
+        \caption{Cosine Similarity}
+        \label{fig:rq2-cos-layer-contrib}
+    \end{subfigure}%
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/rq2_abs_mean_layer_contrib.pdf}
+        \caption{Abs Mean}
+        \label{fig:rq2-abs-mean-layer-contrib}
+    \end{subfigure}
+    
+    \vspace{0.3cm}
+    
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/rq2_abs_max_layer_contrib.pdf}
+        \caption{Abs Max}
+        \label{fig:rq2-abs-max-layer-contrib}
+    \end{subfigure}%
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/rq2_sparse_abs_layer_contrib.pdf}
+        \caption{Sparse Abs.}
+        \label{fig:rq2-sparse-abs-layer-contrib}
+    \end{subfigure}%
+    \hfill
+    \begin{subfigure}{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{fig/rq2_sparse_rel_layer_contrib.pdf}
+        \caption{Sparse Rel.}
+        \label{fig:rq2-sparse-rel-layer-contrib}
+    \end{subfigure}
+    
+    \caption{Contribution of different transformer block components (K/Q/V/O/MLP) to various distance metrics (RQ2).}
+    \label{fig:rq2-all-metrics-layer-contrib}
+\end{figure*}
+
+
+% Graph: L2 distance distribution with regard to Model families
+% Distance metric distributions across different model families
+\begin{figure*}[t]
+    \centering
+    % L2 Distance
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_l2_boxplot.pdf}
+            \caption{Qwen}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_l2_boxplot.pdf}
+            \caption{LLaMA}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_l2_boxplot.pdf}
+            \caption{Granite}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_l2_boxplot.pdf}
+            \caption{Mistral}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_l2_boxplot.pdf}
+            \caption{Others}
+        \end{subfigure}
+        \caption{L2 Distance}
+        \label{fig:rq1-l2-boxplots}
+    \end{subfigure}
+    
+    \vspace{0.3cm}
+    
+    % Cosine Similarity
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_cos_boxplot.pdf}
+            \caption{Qwen}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_cos_boxplot.pdf}
+            \caption{LLaMA}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_cos_boxplot.pdf}
+            \caption{Granite}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_cos_boxplot.pdf}
+            \caption{Mistral}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_cos_boxplot.pdf}
+            \caption{Others}
+        \end{subfigure}
+        \caption{Cosine Similarity}
+        \label{fig:rq1-cos-boxplots}
+    \end{subfigure}
+    
+    \vspace{0.3cm}
+    
+    % Abs Mean
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_abs_mean_boxplot.pdf}
+            \caption{Qwen}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_abs_mean_boxplot.pdf}
+            \caption{LLaMA}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_abs_mean_boxplot.pdf}
+            \caption{Granite}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_abs_mean_boxplot.pdf}
+            \caption{Mistral}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_abs_mean_boxplot.pdf}
+            \caption{Others}
+        \end{subfigure}
+        \caption{Abs Mean}
+        \label{fig:rq1-abs-mean-boxplots}
+    \end{subfigure}
+    
+    \vspace{0.3cm}
+    
+    % Abs Max
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_abs_max_boxplot.pdf}
+            \caption{Qwen}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_abs_max_boxplot.pdf}
+            \caption{LLaMA}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_abs_max_boxplot.pdf}
+            \caption{Granite}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_abs_max_boxplot.pdf}
+            \caption{Mistral}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_abs_max_boxplot.pdf}
+            \caption{Others}
+        \end{subfigure}
+        \caption{Abs Max}
+        \label{fig:rq1-abs-max-boxplots}
+    \end{subfigure}
+    
+    \vspace{0.3cm}
+    
+    % Sparse Abs.
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_sparse_abs_boxplot.pdf}
+            \caption{Qwen}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_sparse_abs_boxplot.pdf}
+            \caption{LLaMA}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_sparse_abs_boxplot.pdf}
+            \caption{Granite}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_sparse_abs_boxplot.pdf}
+            \caption{Mistral}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_sparse_abs_boxplot.pdf}
+            \caption{Others}
+        \end{subfigure}
+        \caption{Sparse Abs.}
+        \label{fig:rq1-sparse-abs-boxplots}
+    \end{subfigure}
+    
+    \vspace{0.3cm}
+    
+    % Sparse Rel.
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_sparse_rel_boxplot.pdf}
+            \caption{Qwen}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_sparse_rel_boxplot.pdf}
+            \caption{LLaMA}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_sparse_rel_boxplot.pdf}
+            \caption{Granite}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_sparse_rel_boxplot.pdf}
+            \caption{Mistral}
+        \end{subfigure}%
+        \hfill
+        \begin{subfigure}{0.19\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_sparse_rel_boxplot.pdf}
+            \caption{Others}
+        \end{subfigure}
+        \caption{Sparse Rel.}
+        \label{fig:rq1-sparse-rel-boxplots}
+    \end{subfigure}
+    
+    \caption{Distance metric distributions across different model families (RQ1).}
+    \label{fig:rq1-all-metrics-boxplots}
+\end{figure*}
