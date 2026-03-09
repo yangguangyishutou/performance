@@ -88,7 +88,10 @@ hutool & JSONParser.java & 6 & 20 \\
 
 \textbf{RQ1 Setup.} To address translation effectiveness (RQ1), we implemented a three-step evaluation pipeline. First, we translated all Java files in the selected modules using both strategies using file-by-file translation, and all Java methods using method-by-method translation, \todo{including member variables of each class that are translated separately.} Then, we compiled the translated Java file using clang++~\cite{clang} 20.1.8 compiler with -c flag. \todo{For the translated methods, we concatenated the translated methods along with translated member variables into the C++ file and then used the clang++ compiler.} Finally, we recorded the compilation outcomes (success/error) generated from clang++. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors.
 
-\todo{\textbf{RQ2 Setup.}} To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-by-method strategy. \todo{The annotation process consisted of three phases. First, the annotators conducted pilot labeling on \todo{200} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. The basic units of error annotation were methods and classes: each method or class that failed to compile was annotated with one or more error types. However, for cases where the same problem in the same class caused multiple methods to fail compilation, we marked the error at the class level rather than marking it repeatedly at the method level. (Note the distinction between error level(class level vs.~method level) and strategy type(file-by-file vs.~method-by-file); we conducted statistical analysis for both error levels under each strategy.) The inter-annotator agreement measured by Cohen's kappa was \todo{0.78}, indicating substantial agreement. In total, the annotation process required approximately 40 human-hours. Finally, we calculated the occurrence rate of each error type. Errors at class level and method level were analyzed separately to provide both macro-level (class structure) and micro-level (method implementation) insights.}
+\todo{\textbf{RQ2 Setup.}} To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-by-method strategy. The annotation process consisted of three phases. First, the annotators conducted pilot labeling on \todo{200} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. 
+\todo{The annotators distinguish errors into inter-class errors and intra-method errors. Inter-class errors may cause multiple parts of a class (e.g., several methods) to fail to compile, whereas intra-method errors only cause the specific method in which they occur to fail compilation.} In total, the annotation process required approximately 40 human-hours. The inter-annotator agreement measured by Cohen's kappa was \todo{0.78}, indicating substantial agreement. Finally, we calculated the occurrence rate of each error type.
+
+% However, for cases where the same problem in the same class caused multiple methods to fail compilation, we marked the error at the class level rather than marking it repeatedly at the method level. (Note the distinction between error level(class level vs.~method level) and strategy type(file-by-file vs.~method-by-file); we conducted statistical analysis for both error levels under each strategy.)
 
 
 
@@ -173,15 +176,15 @@ Overall, these results highlight two main observations. First, different models 
  \cmidrule{2-3}
  &                  file-by-file translation    &  method-by-method translation  \\ 
 \midrule
-    Missing Symbols & 141 \\
-    Type System & 141 \\
-    Build/Include & 141 \\
-    Redefinition & 141 \\
-    Syntax & 141 \\
-    Template & 141 \\
-    Constructor/Destructor & 141 \\
-    Mismatched Def-Use & 141 \\
-    Inheritance/Virtual & 141 \\
+   \textbf{Syntax Rule Violation} & 141 \\
+   \textbf{Type Error} & 141 \\
+    \textbf{Declaration Mismatch} & 141 \\
+   \textbf{Undefined Symbols} & 141 \\
+    \textbf{Undefined Symbols} & 141 \\
+    \textbf{Duplicated Definitions} & 141 \\
+    \textbf{Header File Error} & 141 \\
+    % Mismatched Def-Use & 141 \\
+    % Inheritance/Virtual & 141 \\
     Other & 141 \\
 \midrule
 \textbf{Total} & \textbf{XXX} & \textbf{XXX} \\
@@ -193,37 +196,45 @@ Overall, these results highlight two main observations. First, different models 
 
 To understand the common error patterns in LLM-driven code translation, we conducted a systematic analysis of compilation errors at both class level and method level under both translation strategies (file-by-file and method-by-method).
 
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.8\textwidth]{fig/examples.pdf}
+\caption{Examples of the Six error Types}
+\label{fig:examples}
+\end{figure*}
+
 \begin{itemize}
 
     % \item \textbf{INHERITANCE_VIRTUAL_ERROR}: Issues related to override, virtual, and abstract classes, etc.
-    \item \textbf{Language Syntax Violation}: Syntax and language feature errors.
-    
-    \item \textbf{Type Error}: Errors of type system, e.g., variable/parameter type mismatch; incorrect return value type; type undefined or incomplete; illegal type conversion, ...
-    \item \textbf{Declaration Mismatch}: Mismatch between translated header file and source file. 
-    \item \textbf{Undefined Symbols}: Missing or undefined functions, variables, classes, etc.
-    \item \textbf{Duplicated Definitions}: Redefinition of variables, functions, or classes.
-    \item \textbf{Header File Error}: Errors of wrong building system, missing header files, wrong  dependencies, etc.
-    \item \textbf{Wrong Access Control}: Access control and scope errors
-
-\item \textbf{CONSTRUCTOR_DESTRUCTOR_ERROR}: Issues related to constructor and destructor.
-\item \textbf{TEMPLATE_ERROR}: Template issues related to declaration, instantiation, derivation, etc.
-
-
+    % \item \textbf{Wrong Access Control}: Access control and scope errors
+    \item \textbf{Syntax Rule Violation}: The code does not conform to the formal grammatical rules defined by the programming language. e.g., illegal or incorrect use of keywords such as \texttt{private}, \texttt{override}, and \texttt{virtual}.
+    \item \textbf{Type Error}: Errors caused by incorrect, incompatible, or undefined variable types. e.g., variable type mismatch, incompatible return value type, undefined types, illegal type conversion.
+    \item \textbf{Declaration Mismatch}: Inconsistent class or method declarations between translated header code and source code. 
+    \item \textbf{Undefined Symbols}: Classes, functions, or variables that are declared or referenced but not defined. 
+    \item \textbf{Duplicated Definitions}: Classes, functions, or variables that are defined multiple times within the same scope. 
+    \item \textbf{Header File Error}: Incorrect, or incomplete header file dependencies.
 \end{itemize}
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=0.48\textwidth]{figures/empirical/error_analysis/method_level_distribution2.pdf}
-\caption{Error Type Distribution at Method Level Across Models and Strategies}
-\label{fig:empirical_error_method}
-\end{figure}
+
+\textbf{\textit{Examples.}} Figure \ref{fig:examples}  illustrates six representative categories of issues that arise during the translation from Java to C++. \textbf{Syntax rule violations} occur when language-specific constructs are incorrectly mapped, such as dereferencing a void* pointer (\texttt{typeid(*obj)}). \textbf{Type errors} emerge when incompatible types are used, for example when the \texttt{LangUtils::equals} method expects const void* but receives std::string arguments. \textbf{Declaration mismatch} here refer to inconsistency of parameters between \texttt{compare} declaration in Cookie.h and implementation in Cookie.cpp. \textbf{Undefined symbol} refers to the \texttt{Delayed} parameter which is not properly defined in the translated code.\textbf{Duplicated definition} here refers to the multiply-defined \texttt{isAutogenerated} property. Finally, header file errors arise from missing or incorrect header dependencies (e.g., missing sstream.h required by \texttt{std::ostringstream}).
+
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.48\textwidth]{figures/empirical/error_analysis/class_level_distribution2.pdf}
-\caption{Error Type Distribution at Class Level Across Models and Strategies}
+\caption{Intra-Class Error Type Distribution Across Models and Strategies}
 \label{fig:empirical_error_class}
 \end{figure}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.48\textwidth]{figures/empirical/error_analysis/method_level_distribution2.pdf}
+\caption{Intra-Method Error Type Distribution Across Models and Strategies}
+\label{fig:empirical_error_method}
+\end{figure}
+
+
 
 \begin{figure}[!t]
 \centering
@@ -239,43 +250,42 @@ To understand the common error patterns in LLM-driven code translation, we condu
 \label{fig:empirical_error_stack_class}
 \end{figure}
 
-\textbf{Method-Level Error Analysis.}
+\todo{\textbf{Intra-Method Error Analysis.}
 Figure~\ref{fig:empirical_error_method} presents the distribution of error types at the method level.
 The most prevalent error is \textsc{Missing/Undefined Symbols}, affecting 17.90\% of translated methods on average. This error occurs when the LLM generates code that references functions, classes, or standard library components that do not exist or are not properly included.
 The second most common error is \textsc{Type System Error} (5.27\%), which involves mismatches between expected and actual types, incorrect pointer conversions, or improper handling of C++ specific type features like \texttt{const} correctness and reference semantics.
-Other notable errors include \textsc{Build/Include Error} (1.93\%), \textsc{Redefinition Error} (1.35\%), and \textsc{Syntax Error} (0.82\%).
+Other notable errors include \textsc{Build/Include Error} (1.93\%), \textsc{Redefinition Error} (1.35\%), and \textsc{Syntax Error} (0.82\%).}
 
-\textbf{Class-Level Error Analysis.}
-Figure~\ref{fig:empirical_error_class} reveals a markedly different error distribution at the class (file) level.
+\todo{\textbf{Intra-Class Error Analysis.} Figure~\ref{fig:empirical_error_class} reveals a markedly different error distribution at the class (file) level.
 The two most dominant errors are \textsc{Build/Include Error} (72.28\%) and \textsc{Missing/Undefined Symbols} (67.24\%). The high prevalence of build/include errors at the class level indicates that LLMs frequently struggle with generating proper header guard structures, include directives, and headers across multiple files within a translation unit.
 \textsc{Type System Error} remains significant at 32.50\%, while \textsc{Template Error} (12.11\%) and \textsc{Syntax Error} (10.87\%) also appear frequently.
-Notably, \textsc{Inheritance/Virtual Error} (6.37\%) and \textsc{Redefinition Error} (4.82\%) emerge as class-level concerns, reflecting challenges in translating complex C++ object-oriented features such as virtual function tables, multiple inheritance, and method overriding.
+Notably, \textsc{Inheritance/Virtual Error} (6.37\%) and \textsc{Redefinition Error} (4.82\%) emerge as class-level concerns, reflecting challenges in translating complex C++ object-oriented features such as virtual function tables, multiple inheritance, and method overriding.}
 
 \textbf{Comparison Across Models.}
 Table~\ref{tab:error_by_model} summarizes the error distribution by model and strategy at the method level.
 ChatGPT-5.1 exhibits the highest rate of missing symbol errors (22.8\% under method-by-method), while DeepSeek-V3.2 shows relatively lower error rates across most categories.
 Qwen-3.5Plus demonstrates a distinctive pattern with higher type system error rates (9.0\%) compared to other models.
 
-\begin{table}[!t]
-\centering
-\small
-\begin{tabular}{m{1.5cm}m{1.5cm}m{1.1cm}m{1cm}m{1.4cm}}
-\toprule
-\textbf{Model} & \textbf{Strategy} & \textbf{Missing Symbols (\%)} & \textbf{Type System (\%)} & \textbf{Build/Include (\%)} \\
-\midrule
-\multirow{2}{*}{DeepSeek-V3.2}   & File-by-file    & 18.1  & 5.2  & 2.8 \\
-                                 & Method-by-method& 16.5  & 5.2  & 0  \\
-\midrule
-\multirow{2}{*}{Qwen-3.5Plus}    & File-by-file    & 9.2   & 5.2  & 1.2 \\
-                                 & Method-by-method& 21.1  & 9.0  & 0  \\
-\midrule
-\multirow{2}{*}{ChatGPT-5.1}     & File-by-file    & 19.6  & 2.7  & 1.9 \\
-                                 & Method-by-method& 22.8  & 4.3  & 5.6 \\
-\bottomrule
-\end{tabular}
-\caption{Error Distribution by Model and Strategy (Method Level, Top 3 Error Types)}
-\label{tab:error_by_model}
-\end{table}
+% \begin{table}[!t]
+% \centering
+% \small
+% \begin{tabular}{m{1.5cm}m{1.5cm}m{1.1cm}m{1cm}m{1.4cm}}
+% \toprule
+% \textbf{Model} & \textbf{Strategy} & \textbf{Missing Symbols (\%)} & \textbf{Type System (\%)} & \textbf{Build/Include (\%)} \\
+% \midrule
+% \multirow{2}{*}{DeepSeek-V3.2}   & File-by-file    & 18.1  & 5.2  & 2.8 \\
+%                                  & Method-by-method& 16.5  & 5.2  & 0  \\
+% \midrule
+% \multirow{2}{*}{Qwen-3.5Plus}    & File-by-file    & 9.2   & 5.2  & 1.2 \\
+%                                  & Method-by-method& 21.1  & 9.0  & 0  \\
+% \midrule
+% \multirow{2}{*}{ChatGPT-5.1}     & File-by-file    & 19.6  & 2.7  & 1.9 \\
+%                                  & Method-by-method& 22.8  & 4.3  & 5.6 \\
+% \bottomrule
+% \end{tabular}
+% \caption{Error Distribution by Model and Strategy (Method Level, Top 3 Error Types)}
+% \label{tab:error_by_model}
+% \end{table}
 
 \textbf{Strategy Comparison.}
 Regarding the translation strategy, method-by-method translation generally reduces class-level structural errors (e.g., build/include errors and template errors) since each method is translated independently without requiring file-level context. However, this strategy may increase method-level symbol resolution errors due to the lack of surrounding class context. File-by-file translation preserves class structure better but introduces more opportunities for compilation failures due to header organization and include directive issues.
