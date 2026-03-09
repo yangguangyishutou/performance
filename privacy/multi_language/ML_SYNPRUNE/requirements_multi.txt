@@ -1,0 +1,10 @@
+transformers==4.36.0
+torch
+numpy
+scikit-learn
+pandas
+datasets
+accelerate
+bitsandbytes
+tree-sitter
+tqdm
