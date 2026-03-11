@@ -81,8 +81,8 @@ hutool & JSONParser.java & 6 & 20 \\
 \textbf{Translation Strategies.} As an entire module may exceed the model's context window limitations, segmentation is required prior to translation. We evaluate two representative segmentation strategies that reflect common developer practices:
 
 \begin{itemize}[leftmargin=*]
-\item \textbf{File-by-file translation}: Each Java source file is translated independently as a self-contained unit. This strategy preserves the class structure, member declarations, and intra-file method relationships; however, it may overlook dependencies across files. \todo{XXX}
-\item \textbf{Method-by-method translation}: Each Java method is translated in isolation, enabling finer-grained control over the translation process but sacrificing contextual information related to class structure and inter-method dependencies. \todo{XXX}
+\item \textbf{File-by-file translation}: Each Java source file is translated independently. \todo{We assume that other files in the project have already been translated, and then require the model to generate a complete header and source file from this file in one go.} This strategy preserves the class structure, member declarations, and intra-file method relationships; however, it may overlook dependencies across files, and it's easy to overlook details when dealing with large files.
+\item \textbf{Method-by-method translation}: Each Java method is translated in isolation. \todo{Specifically, we first generate declarations for each method and field to form the header file, and then generate method bodies for each method separately to form the source file.}
 \end{itemize}
 
 

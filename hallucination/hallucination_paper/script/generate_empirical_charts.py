@@ -221,7 +221,7 @@ config_colors = {
 # 创建颜色列表用于seaborn
 color_list = [config_colors[config] for config in sorted(config_colors.keys())]
 
-if True:
+if False:
 
     """
     竖版-method_level
@@ -514,29 +514,52 @@ if False:
 # ===================================================================
 # Chart 4: Stacked Error Distribution by Configuration (RQ2)  (class_level & method_level)
 # ===================================================================
-if False:
+if True:
     """
     method_level
     """
     # Aggregate error data
-    stacked_data = df_errors.groupby(['model', 'strategy'])[error_type_cols].mean().reset_index()
-    stacked_data['config'] = stacked_data['model'] + ' (' + stacked_data['strategy'].replace({
-        'class': 'file-by-file',
-        'method': 'method-by-method'
-    }) + ')'
+    stacked_data = df_errors.groupby(['strategy', 'model'])[error_type_cols].mean().reset_index()
+    stacked_data['config'] = stacked_data['model']
 
     # Select top 8 error types for clarity and group others
     stacked_data_plot = stacked_data.set_index('config')[error_type_cols]
     stacked_data_plot.columns = [error_labels.get(col, col) for col in stacked_data_plot.columns]
 
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(12, 10))
 
     stacked_data_plot.plot(kind='bar', stacked=True, ax=ax, colormap='tab20')
-    ax.set_xlabel('Model (Strategy)', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Percentage of Methods with Error', fontsize=12, fontweight='bold')
-    ax.set_title('RQ2: Error Type Distribution by Configuration', fontsize=14, fontweight='bold')
-    ax.legend(title='Error Type', bbox_to_anchor=(1.05, 1), loc='upper left')
+    # ax.set_xlabel('Model (Strategy)', fontsize=12, fontweight='bold')
+    ax.set_yticks(np.arange(0, 51, 5))
+    ax.set_yticklabels(np.arange(0, 51, 5), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax.set_ylabel('Percentage of Methods with Error', fontsize=XY_LABEL_SIZE, fontweight='bold')
+
+    ax.set_xlabel('')
+    # For categorical x-axis, set ticks using positions instead of labels
+    ax.set_xticks(range(len(stacked_data_plot.index)))
+    ax.set_xticklabels(stacked_data_plot.index, fontsize=XY_TICK_SIZE, fontfamily=FONT, rotation=0, ha='center')
+    # ax.set_title('RQ2: Error Type Distribution by Configuration', fontsize=14, fontweight='bold')
+    ax.legend(loc='upper left', fontsize=LEGEND_SIZE)
     ax.grid(axis='y', alpha=0.3)
+    
+    # Adjust layout to make room for group labels
+    plt.subplots_adjust(bottom=0.2)
+    
+    # Add group labels with curly braces below x-axis
+    # File-by-file group (first 3 ticks)
+    ax.text(1, -0.08, 'file-by-file', transform=ax.get_xaxis_transform(),
+            ha='center', va='top', fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    # Draw left brace
+    ax.annotate('', xy=(0, -0.06), xytext=(2, -0.06),
+                xycoords=ax.get_xaxis_transform(),
+                arrowprops=dict(arrowstyle='<->', color='black', linewidth=1.5))
+    # Method-by-method group (last 3 ticks)
+    ax.text(4, -0.08, 'method-by-method', transform=ax.get_xaxis_transform(),
+            ha='center', va='top', fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    # Draw right brace
+    ax.annotate('', xy=(3, -0.06), xytext=(5, -0.06),
+                xycoords=ax.get_xaxis_transform(),
+                arrowprops=dict(arrowstyle='<->', color='black', linewidth=1.5))
 
     plt.tight_layout()
     plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_stack.pdf', dpi=300, bbox_inches='tight')
