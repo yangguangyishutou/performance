@@ -35,12 +35,10 @@ df_errors['model'] = df_errors['ai_name'].map(model_names)
 df_errors_class['model'] = df_errors_class['ai_name'].map(model_names)
 
 # Convert error counts to percentages (rate per method/file)
-error_type_cols = [
-    'SYNTAX_LANGUAGE_ERROR', 'TYPE_SYSTEM_ERROR', 'DECLARE_DEFINITION_MISMATCH',
-    'MISSING_UNDEFINED_SYMBOLS', 'INHERITANCE_VIRTUAL_ERROR', 'CONSTRUCTOR_DESTRUCTOR_ERROR',
-    'TEMPLATE_ERROR', 'ACCESS_SCOPE_ERROR', 'REDEFINITION_ERROR', 'BUILD_INCLUDE_ERROR',
-    'OTHER_ERROR'
-]
+error_type_cols = df_errors_method.columns.tolist()
+# 移除 translate_unit,ai_name,strategy,method_count
+for col in ['translate_unit', 'ai_name', 'strategy', 'method_count', 'all', "model"]:
+    error_type_cols.remove(col)
 
 # Convert method-level errors to percentage of methods with error
 for col in error_type_cols:
@@ -196,17 +194,12 @@ if True:
 # ===================================================================
 # 定义错误类型短标签
 error_labels = {
-    'SYNTAX_LANGUAGE_ERROR': 'Syntax',
-    'TYPE_SYSTEM_ERROR': 'Type System',
-    'DECLARE_DEFINITION_MISMATCH': 'Decl/Def Mismatch',
-    'MISSING_UNDEFINED_SYMBOLS': 'Missing Symbols',
-    'INHERITANCE_VIRTUAL_ERROR': 'Inheritance/Virtual',
-    'CONSTRUCTOR_DESTRUCTOR_ERROR': 'Constructor/Destructor',
-    'TEMPLATE_ERROR': 'Template',
-    'ACCESS_SCOPE_ERROR': 'Access Scope',
-    'REDEFINITION_ERROR': 'Redefinition',
-    'BUILD_INCLUDE_ERROR': 'Build/Include',
-    'OTHER_ERROR': 'Other'
+    "Language Syntax Violation": "Syntax",
+    "Type Error": "Type System",
+    "Declaration Mismatch": "Decl/Def Mismatch",
+    "Undefined Symbols": "Undefined Symbols",
+    "Duplicated Definitions": "Duplicated Definitions",
+    "Header File Error": "Header File Error",
 }
 if True:
 
