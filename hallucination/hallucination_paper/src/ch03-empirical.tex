@@ -63,7 +63,7 @@ httpclient & Cookie.java  & 8 & 93 \\
 \midrule
 hutool & JSONParser.java & 6 & 20 \\
 \midrule
- \todo{junit} & EnableJUnit4MigrationSupport.java\\
+ \todo{junit} & EnableJUnit4MigrationSupport.java & 32 & 246 \\
 \midrule
 \textbf{Total} & & \textbf{469} & \textbf{3,165} \\
 \bottomrule
@@ -101,13 +101,13 @@ hutool & JSONParser.java & 6 & 20 \\
 \toprule
  \textbf{Root Class of Module} & \textbf{Java File (\#)} & \textbf{Java Method (\#)} & \textbf{Translated CPP/Header File (\#)}  \\
 \midrule
-    CircuitBreakerExecutor.java   & 23 & 141 \\
+    CircuitBreakerExecutor.java   & 23 & 141 & 13/23\\
 \midrule
-    Cookie  & 8 & 93 \\
+    Cookie  & 8 & 93 & 7/8\\
 \midrule
-    EnableJUnit4MigrationSupport.java &  & \\
+    EnableJUnit4MigrationSupport.java & 32 & 246 & 21/32\\
 \midrule
-\textbf{Total} & & \textbf{XXX} & \textbf{XXX} \\
+\textbf{Total} & \textbf{63} & \textbf{480} & \textbf{41/63}\\
 \bottomrule
 \end{tabular}
 \caption{Translated Results for our Selected Models}
@@ -171,20 +171,16 @@ Overall, these results highlight two main observations. First, different models 
 \toprule
  \textbf{Error Type} & \multicolumn{2}{c}{\textbf{Error (\#)}} \\
  \cmidrule{2-3}
- &                  file-by-file translation    &  method-by-method translation  \\ 
+ &                             file-by-file translation    &  method-by-method translation  \\ 
 \midrule
-    Missing Symbols & 141 \\
-    Type System & 141 \\
-    Build/Include & 141 \\
-    Redefinition & 141 \\
-    Syntax & 141 \\
-    Template & 141 \\
-    Constructor/Destructor & 141 \\
-    Mismatched Def-Use & 141 \\
-    Inheritance/Virtual & 141 \\
-    Other & 141 \\
+    Language Syntax Violation & 62 & 63 \\
+    Type Error & 81 & 110 \\
+    Declaration Mismatch & 2 & 2 \\
+    Undefined Symbols & 212 & 259 \\
+    Duplicated Definitions & 23 & 21 \\
+    Header File Error & 111 & 104 \\
 \midrule
-\textbf{Total} & \textbf{XXX} & \textbf{XXX} \\
+\textbf{Total} & \textbf{494} & \textbf{560} \\
 \bottomrule
 \end{tabular}
 \caption{Taxonomy of Translation Errors}\label{tab:errors}
@@ -203,10 +199,10 @@ To understand the common error patterns in LLM-driven code translation, we condu
     \item \textbf{Undefined Symbols}: Missing or undefined functions, variables, classes, etc.
     \item \textbf{Duplicated Definitions}: Redefinition of variables, functions, or classes.
     \item \textbf{Header File Error}: Errors of wrong building system, missing header files, wrong  dependencies, etc.
-    \item \textbf{Wrong Access Control}: Access control and scope errors
+    % \item \textbf{Wrong Access Control}: Access control and scope errors
 
-\item \textbf{CONSTRUCTOR_DESTRUCTOR_ERROR}: Issues related to constructor and destructor.
-\item \textbf{TEMPLATE_ERROR}: Template issues related to declaration, instantiation, derivation, etc.
+% \item \textbf{CONSTRUCTOR_DESTRUCTOR_ERROR}: Issues related to constructor and destructor.
+% \item \textbf{TEMPLATE_ERROR}: Template issues related to declaration, instantiation, derivation, etc.
 
 
 \end{itemize}
