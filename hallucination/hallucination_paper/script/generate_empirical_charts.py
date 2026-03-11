@@ -35,12 +35,10 @@ df_errors['model'] = df_errors['ai_name'].map(model_names)
 df_errors_class['model'] = df_errors_class['ai_name'].map(model_names)
 
 # Convert error counts to percentages (rate per method/file)
-error_type_cols = [
-    'SYNTAX_LANGUAGE_ERROR', 'TYPE_SYSTEM_ERROR', 'DECLARE_DEFINITION_MISMATCH',
-    'MISSING_UNDEFINED_SYMBOLS', 'INHERITANCE_VIRTUAL_ERROR', 'CONSTRUCTOR_DESTRUCTOR_ERROR',
-    'TEMPLATE_ERROR', 'ACCESS_SCOPE_ERROR', 'REDEFINITION_ERROR', 'BUILD_INCLUDE_ERROR',
-    'OTHER_ERROR'
-]
+error_type_cols = df_errors_method.columns.tolist()
+# 移除 translate_unit,ai_name,strategy,method_count
+for col in ['translate_unit', 'ai_name', 'strategy', 'method_count', 'all', "model"]:
+    error_type_cols.remove(col)
 
 # Convert method-level errors to percentage of methods with error
 for col in error_type_cols:
@@ -66,7 +64,7 @@ plt.rcParams['font.size'] = 12
 # ===================================================================
 # Chart 1: Overall Success Rate by Model and Strategy (RQ1)
 # ===================================================================
-if True:
+if False:
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Group by model and strategy
@@ -107,7 +105,7 @@ if True:
 # ===================================================================
 # Generate chart for class strategy
 # File-by-file Strategy Chart
-if True:
+if False:
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
     projects = ['Cookie','EnableJUnit4MigrationSupport','CircuitBreakerExecutor']
@@ -196,18 +194,33 @@ if True:
 # ===================================================================
 # 定义错误类型短标签
 error_labels = {
-    'SYNTAX_LANGUAGE_ERROR': 'Syntax',
-    'TYPE_SYSTEM_ERROR': 'Type System',
-    'DECLARE_DEFINITION_MISMATCH': 'Decl/Def Mismatch',
-    'MISSING_UNDEFINED_SYMBOLS': 'Missing Symbols',
-    'INHERITANCE_VIRTUAL_ERROR': 'Inheritance/Virtual',
-    'CONSTRUCTOR_DESTRUCTOR_ERROR': 'Constructor/Destructor',
-    'TEMPLATE_ERROR': 'Template',
-    'ACCESS_SCOPE_ERROR': 'Access Scope',
-    'REDEFINITION_ERROR': 'Redefinition',
-    'BUILD_INCLUDE_ERROR': 'Build/Include',
-    'OTHER_ERROR': 'Other'
+    "Language Syntax Violation": "Syntax",
+    "Type Error": "Type System",
+    "Declaration Mismatch": "Decl/Def Mismatch",
+    "Undefined Symbols": "Undefined Symbols",
+    "Duplicated Definitions": "Duplicated Definitions",
+    "Header File Error": "Header File Error",
 }
+
+# 统一颜色配置
+#551F33
+#CBBBC1
+#BD4146
+#E4B7BC
+#ECC68C
+#F5E4C8
+config_colors = {
+    'Qwen-3.5Plus (file-by-file)': '#551F33',      
+    'Qwen-3.5Plus (method-by-method)': '#CBBBC1',  
+    'ChatGPT-5.1 (file-by-file)': '#BD4146',       
+    'ChatGPT-5.1 (method-by-method)': '#E4B7BC',   
+    'DeepSeek-V3.2 (file-by-file)': '#ECC68C',     
+    'DeepSeek-V3.2 (method-by-method)': '#F5E4C8'  
+}
+
+# 创建颜色列表用于seaborn
+color_list = [config_colors[config] for config in sorted(config_colors.keys())]
+
 if True:
 
     """
@@ -250,14 +263,16 @@ if True:
             x='error_label',
             y='occurrence_rate',
             hue='config',
-            palette='tab10',
+            palette=color_list,
             ax=ax
         )
 
-        ax.set_xlabel('Error Type', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
+        ax.set_xlabel('', fontsize=12, fontweight='bold')
+        ax.set_xticklabels(error_order, fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        ax.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        ax.set_ylabel('Percentage of Methods with Error (%)', fontsize=XY_LABEL_SIZE, fontweight='bold')
         # ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
-        ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
+        ax.legend(title='Configuration', loc='upper right', fontsize=LEGEND_SIZE)
         ax.grid(axis='y', alpha=0.3)
 
         # Rotate x labels for better readability
@@ -284,14 +299,16 @@ if True:
             y='error_label',
             x='occurrence_rate',
             hue='config',
-            palette='tab10',
+            palette=color_list,
             ax=ax
         )
 
-        ax.set_xlabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
+        ax.set_xlabel('Percentage of Methods with Error (%)', fontsize=XY_LABEL_SIZE, fontweight='bold')
+        ax.set_ylabel('', fontsize=XY_LABEL_SIZE, fontweight='bold')
+        ax.set_yticklabels(error_order, fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        ax.set_xticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
         # ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy (Horizontal)', fontsize=14, fontweight='bold')
-        ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
+        ax.legend(title='Configuration', loc='lower right', fontsize=LEGEND_SIZE)
         ax.grid(axis='x', alpha=0.3)
 
         # Add value labels at the end of bars
@@ -302,6 +319,61 @@ if True:
         plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_distribution2.pdf', dpi=300, bbox_inches='tight')
         # plt.savefig(FIGURE_DIR / 'error_analysis' / 'method_level_distribution2.png', dpi=300, bbox_inches='tight')
         print("✓ Generated: empirical/error_analysis/method_level_distribution2.pdf/png")
+
+
+    """
+    竖版-class_level
+    """
+    if True:
+        error_by_config_class = df_errors_class.groupby(['model', 'strategy'])[error_type_cols].mean().reset_index()
+        error_by_config_class['config'] = error_by_config_class['model'] + ' (' + error_by_config_class['strategy'].replace({
+            'class': 'file-by-file',
+            'method': 'method-by-method'
+        }) + ')'
+
+        error_melted_class = error_by_config_class.melt(
+            id_vars=['config'],
+            value_vars=error_type_cols,
+            var_name='error_type',
+            value_name='occurrence_rate'
+        )
+
+        # Convert to percentage (already converted, but ensure)
+        error_melted_class['occurrence_rate'] = error_melted_class['occurrence_rate']
+        error_melted_class['error_label'] = error_melted_class['error_type'].map(error_labels)
+
+        # Sort by error type
+        error_order_class = error_melted_class.groupby('error_label')['occurrence_rate'].mean().sort_values(ascending=False).index
+        error_melted_class['error_label'] = pd.Categorical(error_melted_class['error_label'], categories=error_order_class, ordered=True)
+
+        fig, ax = plt.subplots(figsize=(14, 7))
+
+        sns.barplot(
+            data=error_melted_class,
+            x='error_label',
+            y='occurrence_rate',
+            hue='config',
+            palette=color_list,
+            ax=ax
+        )
+
+        ax.set_xlabel('', fontsize=12, fontweight='bold')
+        ax.set_xticklabels(error_order_class, fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        ax.set_ylabel('Percentage of Files with Error (%)', fontsize=XY_LABEL_SIZE, fontweight='bold')
+        ax.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        ax.legend(title='Configuration', loc='upper right', fontsize=LEGEND_SIZE)
+        ax.grid(axis='y', alpha=0.3)
+
+        # Rotate x labels for better readability
+        plt.xticks(rotation=45, ha='right')
+
+        # Add value labels on top of bars
+        for container in ax.containers:
+            ax.bar_label(container, fmt='%.1f%%', fontsize=7, padding=2)
+
+        plt.tight_layout()
+        plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'class_level_distribution1.pdf', dpi=300, bbox_inches='tight')
+        print("✓ Generated: empirical/error_analysis/class_level_distribution1.pdf/png")
 
     """
     横版-class_level
@@ -335,14 +407,16 @@ if True:
             y='error_label',
             x='occurrence_rate',
             hue='config',
-            palette='tab10',
+            palette=color_list,
             ax=ax
         )
 
-        ax.set_xlabel('Percentage of Files with Error (%)', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
+        ax.set_xlabel('Percentage of Files with Error (%)', fontsize=XY_LABEL_SIZE, fontweight='bold')
+        ax.set_yticklabels(error_order_class, fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        ax.set_xticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        # ax.set_ylabel('', fontsize=XY_LABEL_SIZE, fontweight='bold')
         # ax.set_title('RQ2: Class-Level Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
-        ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
+        ax.legend(title='Configuration', loc='lower right', fontsize=LEGEND_SIZE)
         ax.grid(axis='x', alpha=0.3)
 
         # Add value labels at the end of bars
@@ -353,33 +427,6 @@ if True:
         plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'class_level_distribution2.pdf', dpi=300, bbox_inches='tight')
         # plt.savefig(FIGURE_DIR / 'error_analysis' / 'class_level_distribution1.png', dpi=300, bbox_inches='tight')
         print("✓ Generated: empirical/error_analysis/class_level_distribution2.pdf/png")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -467,7 +514,7 @@ if False:
 # ===================================================================
 # Chart 4: Stacked Error Distribution by Configuration (RQ2)  (class_level & method_level)
 # ===================================================================
-if True:
+if False:
     """
     method_level
     """
