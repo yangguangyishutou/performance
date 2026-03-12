@@ -85,11 +85,14 @@ hutool & JSONParser.java & 6 & 20 \\
 \item \textbf{Method-by-method translation}: Each Java method is translated in isolation. \todo{Specifically, we first generate declarations for each method and field to form the header file, and then generate method bodies for each method separately to form the source file.}
 \end{itemize}
 
+\todo{Illustration examples of file-to-file and method-to-method.}
+
 
 \textbf{RQ1 Setup.} To address translation effectiveness (RQ1), we implemented a three-step evaluation pipeline. First, we translated all Java files in the selected modules using both strategies using file-by-file translation, and all Java methods using method-by-method translation, \todo{including member variables of each class that are translated separately.} Then, we compiled the translated Java file using clang++~\cite{clang} 20.1.8 compiler with -c flag. \todo{For the translated methods, we concatenated the translated methods along with translated member variables into the C++ file and then used the clang++ compiler.} Finally, we recorded the compilation outcomes (success/error) generated from clang++. A file is considered successfully compiled when the compiler produces a corresponding object file (.o) without fatal errors.
 
 \todo{\textbf{RQ2 Setup.}} To analyze error patterns (RQ2), we conducted systematic manual analysis of compilation errors. For files that failed compilation, we retain individual method implementations and temporarily remove the rest methods and compiled it to isolate specific failure points. Five of the annotators perform open card sorting where they iteratively refine categories based on recurring patterns in compiler error messages. They keywords from clang++ output (e.g., ``undefined reference'', ``no matching function'', ``type mismatch'') provided meaningful semantic cues. The same procedure is applied to methods translated under the method-by-method strategy. The annotation process consisted of three phases. First, the annotators conducted pilot labeling on \todo{200} cases to familiarize themselves with the task and establish initial categories. Second, they independently annotated the remaining cases, with each case subsequently reviewed and confirmed by another annotator. 
 \todo{The annotators distinguish errors into \textbf{class-level errors} and \textbf{method-level errors}. Class-level errors may cause multiple parts of a class (e.g., several methods) to fail to compile, whereas method-level errors only cause the specific method in which they occur to fail compilation.} In total, the annotation process required approximately 40 human-hours. The inter-annotator agreement measured by Cohen's kappa was \todo{0.78}, indicating substantial agreement. Finally, we calculated the occurrence rate of each error type.
+
 
 % However, for cases where the same problem in the same class caused multiple methods to fail compilation, we marked the error at the class level rather than marking it repeatedly at the method level. (Note the distinction between error level(class level vs.~method level) and strategy type(file-by-file vs.~method-by-file); we conducted statistical analysis for both error levels under each strategy.)
 
@@ -100,7 +103,7 @@ hutool & JSONParser.java & 6 & 20 \\
 
 \begin{table}[!t]
 \centering
-    \begin{tabular}{m{3cm}m{1cm}m{1cm}m{1cm}}
+    \begin{tabular}{m{4cm}m{1cm}m{1cm}m{1cm}}
 \toprule
  \textbf{Root Class of Module} & \textbf{Java File (\#)} & \textbf{Java Method (\#)} & \textbf{Translated CPP/Header File (\#)}  \\
 \midrule
@@ -149,7 +152,7 @@ hutool & JSONParser.java & 6 & 20 \\
     \label{fig:rq12}
 \end{figure}
 
-We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, defined as the percentage of successfully compiled C++ files or methods relative to the total number of files or methods.
+We measure the effectiveness of translation using the \textbf{compilation success rate (CSR)}, \todo{defined as the percentage of successfully compiled C++ files relative to the total number of \textbf{CPP} files.}
 
 
 
@@ -165,7 +168,12 @@ Overall, these results highlight two main observations. First, different models 
 
 \summary{XXX}
 
-\subsection{Error Pattern Analysis (RQ2)}
+
+\subsection{Translation Length (RQ2)}
+
+\todo{Fig. here}
+
+\subsection{Error Pattern Analysis (RQ3)}
 
 \begin{figure*}[!t]
 \centering
@@ -189,7 +197,7 @@ Overall, these results highlight two main observations. First, different models 
     Duplicated Definitions & 23 & 21 \\
     Header File Error & 111 & 104 \\
 \midrule
-\textbf{Total} & \textbf{494} & \textbf{560} \\
+\textbf{Total} & \textbf{491} & \textbf{559} \\
 \bottomrule
 \end{tabular}
 \caption{Taxonomy of Translation Errors}\label{tab:errors}
@@ -197,9 +205,7 @@ Overall, these results highlight two main observations. First, different models 
 
 
 
-To understand the common error patterns in LLM-driven code translation, we conducted a systematic analysis of compilation errors at both class level and method level under both translation strategies (file-by-file and method-by-method). Table~\ref{tab:errors} presents the detailed distribution of error types across the six categories. In total, the three models generate \todo{494} errors in the file-by-file translation setting and \todo{560} errors in the method-by-method translation setting.
-
-
+To understand the common error patterns in LLM-driven code translation, we conducted a systematic analysis of compilation errors at both class level and method level under both translation strategies (file-by-file and method-by-method). Table~\ref{tab:errors} presents the detailed distribution of error types across the six categories. In total, the three models generate \todo{494} errors in the file-by-file translation setting and \todo{560} errors in the method-by-method translation setting. \todo{Reasons of more method-by-method errors.}
 
 \begin{itemize}
     \item \textbf{Syntax Rule Violation}: The code does not conform to the formal grammatical rules defined by the programming language. e.g., illegal or incorrect use of keywords such as \texttt{private}, \texttt{override}, and \texttt{virtual}.
@@ -224,7 +230,7 @@ To understand the common error patterns in LLM-driven code translation, we condu
 \end{figure}
 
 
-\textbf{Comparison of class-level and method-level errors.} Figure~\ref{fig:empirical_error_method} presents the percentage of class-level and method-level errors across the six error types aggregated from the three models. Overall, class-level errors account for 51.6\% of the total error population, while method-level errors account for 48.4\%. For class-level errors, \textit{Header File Error} and \textit{Undefined Symbols} represent the largest proportions, accounting for 17.7\% and 16.2\% of the total errors, respectively. \textit{Syntax Rule Violation} and \textit{Type Error} follow, each contributing 8.1\%. \textit{Declaration Mismatch} occurs rarely, accounting for only 0.2\% of the total errors. For method-level errors, \textit{Undefined Symbols} constitute the largest proportion, accounting for 28.7\% of the total errors. \textit{Type Error} follows with 10.1\%. The remaining error types—\textit{Syntax Rule Violation}, \textit{Duplicated Definitions}, and \textit{Header File Error}—occur less frequently, accounting for 3.8\%, 2.8\%, and 2.8\%, respectively. This result indicates that both class-level and method-level errors contribute substantially to the overall C++ translation errors. Regarding the error types, \textit{Undefined Symbols} accounts for the largest proportion, followed by \textit{Type Error} and \textit{Header File Error}.
+\textbf{Comparison of class-level and method-level errors.} Figure~\ref{fig:empirical_error_class} presents the percentage of class-level and method-level errors across the six error types aggregated from the three models. Overall, class-level errors account for 51.6\% of the total error population, while method-level errors account for 48.4\%. For class-level errors, \textit{Header File Error} and \textit{Undefined Symbols} represent the largest proportions, accounting for 17.7\% and 16.2\% of the total errors, respectively. \textit{Syntax Rule Violation} and \textit{Type Error} follow, each contributing 8.1\%. \textit{Declaration Mismatch} occurs rarely, accounting for only 0.2\% of the total errors. For method-level errors, \textit{Undefined Symbols} constitute the largest proportion, accounting for 28.7\% of the total errors. \textit{Type Error} follows with 10.1\%. The remaining error types—\textit{Syntax Rule Violation}, \textit{Duplicated Definitions}, and \textit{Header File Error}—occur less frequently, accounting for 3.8\%, 2.8\%, and 2.8\%, respectively. This result indicates that both class-level and method-level errors contribute substantially to the overall C++ translation errors. Regarding the error types, \textit{Undefined Symbols} accounts for the largest proportion, followed by \textit{Type Error} and \textit{Header File Error}.
 
 \begin{figure*}[!t]
     \centering

@@ -1,0 +1,58 @@
+A.java:
+
+class A{
+ private String d;
+ public methodB(){}
+ public methodC(){}
+}
+
+--------------- 			10个文件，一个文件2个方法，20个方法
+
+file-to-file:
+
+class A{
+ private String d;
+ public methodB(){}
+ public methodC(){}
+}
+===============> A.h + A.cpp      10个.h文件，10个.cpp文件 ===编译文件 ====。  8.5个编译不通过。
+
+gpt error + ds +qwen error = 494 error = method-level(syntax rule+ type +mismatch + duplication) + class-level 
+
+100 + 200 + 194
+
+-----------------
+
+method-to-method:
+
+
+class A{
+ private String d;
+ public methodB(){}
+ public methodC(){}
+}
+===============> A.h 
+A.h:
+
+class A{
+ private String d;
+ public methodB();
+ public methodC();
+}
+
+
+
+ public methodB(){} ====> functionBContent;
+ public methodC(){} ====> functionCContent;
+
+functionB() + functionC()
+===============> 				10个.h文件，10个.cpp文件====编译文件 == 8 个文件编译不通过
+
+public A::methodB() {functionBContent}
+
+public A::methodC() {functionCContent}
+
+
+
+
+
