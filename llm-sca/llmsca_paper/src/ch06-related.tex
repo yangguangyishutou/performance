@@ -1,5 +1,10 @@
 \section{Related Work}
 
+
+\subsection{Model Signature and Watermark}
+
+
+\subsection{Model Lineage Analysis}
 % 介绍如何判断两个模型是否相关
 % watermarking 仅凭模型输出的一段文本来判断 牺牲文本的生成质量
     % kirchenbauer2024watermarklargelanguagemodels
@@ -32,3 +37,8 @@ Beyond pairwise verification, pioneering works scale similarity metrics to recon
 % Transformer 中不同层的作用和更新规律
 \noindent\textbf{Layer-wise Dynamics in Transformers.}
 Understanding the layer-wise internal mechanisms of Transformers has long been a focal point for model interpretability and architecture optimization. While early studies analyzed the hierarchical progression of linguistic features across hidden layers~\cite{van_Aken_2019,kornblith2019similarityneuralnetworkrepresentations}, recent evidence suggests that Transformer components exhibit significant functional specialization and asymmetric sensitivity during model evolution. For instance, Feed-Forward Networks (FFN) are increasingly recognized as key-value memories that store factual knowledge~\cite{geva-etal-2021-transformer}, while attention sub-layers (Q, K, V) govern contextual alignment. The success of parameter-efficient fine-tuning (PEFT) further underscores this heterogeneity, demonstrating that updates to specific matrices like $W_q$ and $W_v$ are often sufficient to capture the majority of model shifts~\cite{lora}. In the context of model provenance, specific weight blocks have been found to maintain invariant spectral signatures during reuse~\cite{wang2025ghosttransformerdetectingmodel}, yet existing lineage detection frameworks largely treat all parameters as a homogeneous vector space when calculating inter-model distances. It remains unexplored how individual components--namely the Q, K, V, and MLP matrices--differentially contribute to the fidelity and robustness of macroscopic lineage graph reconstruction.
+
+
+\subsection{Software Supply Chain}
+
+
