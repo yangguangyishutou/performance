@@ -2,30 +2,36 @@
 
 
 \subsection{Model Signature and Watermark}
-
-
-\subsection{Model Lineage Analysis}
-% 介绍如何判断两个模型是否相关
 % watermarking 仅凭模型输出的一段文本来判断 牺牲文本的生成质量
+    % TurningYourWeaknessIntoStrength 强调水印的早期后门植入方法
+    % protectItelligentPropertyDeepNeuralNetworksWatermarking 强调基于水印的知识产权保护机制
     % kirchenbauer2024watermarklargelanguagemodels
     % yang2023watermarkingtextgeneratedblackbox
     % christ2023undetectablewatermarkslanguagemodels
     % kuditipudi2024robustdistortionfreewatermarkslanguage
-% -> model fingerprinting 主动输入特定的查询并观察对应输出 修改模型 可能影响性能 指纹容易被检测或过滤 抗微调能力差
-    % fingerprintingdiffusionmodel
-    % xu-etal-2024-instructional
-    % russinovich2025heythatsmodelintroducing
+Determining the provenance and protecting the intellectual property of deep learning models has traditionally relied on watermarking techniques~\cite{protectItelligentPropertyDeepNeuralNetworksWatermarking}. Early methods introduced watermarks by embedding backdoors into the network during the training phase~\cite{TurningYourWeaknessIntoStrength}. While effective for verifying ownership, contemporary watermarking approaches for Large Language Models (LLMs) primarily rely on embedding specific statistical patterns into the generated text to identify ownership from outputs~\cite{kirchenbauer2024watermarklargelanguagemodels,yang2023watermarkingtextgeneratedblackbox,christ2023undetectablewatermarkslanguagemodels,kuditipudi2024robustdistortionfreewatermarkslanguage}. However, this inherently alters the output distribution, frequently sacrificing the model's generation quality and practical utility.
+
+\subsection{Model Lineage Analysis}
+% -> model fingerprinting 主动输入特定的查询并观察对应输出 修改模型 可能影响性能 指纹容易被检测或过滤 抗微调能力差 or 需要额外训练提取特征
+    % xu-etal-2024-instructional 指令微调
+    % russinovich2025heythatsmodelintroducing chan&hash 技术将特定的指纹提示词与目标回复进行强绑定
     % nasery2025scalablefingerprintinglargelanguage 指纹遗忘率仍会随规模上升
+    % trap 设计对抗性提示后缀，诱导目标LLM生成预定义的响应
+    % CoTSRF 训练一个独立的 CoT 提取器提取 CoT 特征 作为指纹
+    % RoFL 白盒 动态推理 输出的统计信息作为指纹
+% 介绍如何判断两个模型是否相关
 % -> similarity metrics 判断模型相似度 但仅仅是两个模型之间
+    % neuralLineage 白盒 or 训练分类器 但是针对图像分类等小模型
     % pasquinillmmapfingerprintinglargelanguage 黑盒判断一个模型是否和已知模型相关 动态推理 输出判断
     % zhang2024reefrepresentationencodingfingerprints 白盒 动态推理 激活值 CKA 两个模型是否相关
     % wu2025gradientbasedmodelfingerprintingllm 白盒 动态推理 梯度统计量
     % wang2025ghosttransformerdetectingmodel 白盒 静态分析 SVD 两个模型是否相关
     % yoon2025intrinsicfingerprintllmscontinue 白盒 静态分析 层级间的统计一致性
+    % matrix 白盒 静态分析 利用嵌入矩阵的正交关系矩阵
     % huref 白盒 静态分析 计算不变量(对抗排列和缩放攻击) 
     % wu2026llmdna 白盒 静态分析 计算不变量(对抗排列和缩放攻击) SVD
 \noindent\textbf{Model Attribution and Similarity Metrics.} 
-Determining the provenance of Large Language Models (LLMs) traditionally relies on watermarking, which identifies ownership from outputs but sacrifices generation quality~\cite{kirchenbauer2024watermarklargelanguagemodels,yang2023watermarkingtextgeneratedblackbox,christ2023undetectablewatermarkslanguagemodels,kuditipudi2024robustdistortionfreewatermarkslanguage}. Alternatively, active model fingerprinting injects specific triggers via lightweight tuning~\cite{fingerprintingdiffusionmodel,xu-etal-2024-instructional,russinovich2025heythatsmodelintroducing}. However, these intrusive modifications risk performance degradation and exhibit poor robustness against complex fine-tuning~\cite{nasery2025scalablefingerprintinglargelanguage}. Consequently, recent research has shifted toward post-hoc similarity metrics, which evaluate model relationships without prior injection. These approaches are broadly categorized into dynamic inference and static analysis. Dynamic methods evaluate pairwise similarity during runtime, operating either as black-box approaches comparing output distributions~\cite{pasquinillmmapfingerprintinglargelanguage} or white-box approaches computing activation similarities (e.g., CKA)~\cite{zhang2024reefrepresentationencodingfingerprints} and gradient statistics~\cite{wu2025gradientbasedmodelfingerprintingllm}. However, dynamic inference necessitates extensive computational resources and forward-pass overhead. This significant cost has driven a transition toward static analysis, which directly examines white-box weights. While initial static approaches utilize cross-layer statistical consistencies~\cite{yoon2025intrinsicfingerprintllmscontinue} or Singular Value Decomposition (SVD)~\cite{wang2025ghosttransformerdetectingmodel}, they can be vulnerable to weight manipulations. To robustly determine whether two models are related even under adversarial permutation and scaling attacks, state-of-the-art static methods focus on computing structural invariants~\cite{huref}, often integrating SVD to extract these robust architectural signatures~\cite{wu2026llmdna}. Despite their efficacy, all aforementioned metrics evaluate similarity strictly in a pairwise manner.
+To avoid the continuous generation degradation inherent to watermarks, active model fingerprinting proactively injects query-response triggers via instruction tuning~\cite{xu-etal-2024-instructional, russinovich2025heythatsmodelintroducing}, adversarial prompt suffixes~\cite{trap}, stealthy Chain-of-Thought extractors~\cite{CoTSRF}, or output statistics~\cite{RoFL}. However, these intrusive modifications remain susceptible to detection, performance degradation, and fine-tuning-induced forgetting, which exacerbates as model scales increase~\cite{nasery2025scalablefingerprintinglargelanguage}. Consequently, research has shifted toward non-intrusive, post-hoc similarity metrics. These approaches initially focused on dynamic runtime inference, evaluating pairwise similarity through black-box output distributions~\cite{pasquinillmmapfingerprintinglargelanguage} or white-box activation and gradient statistics~\cite{zhang2024reefrepresentationencodingfingerprints, wu2025gradientbasedmodelfingerprintingllm}. Because dynamic inference incurs prohibitive forward-pass computational overhead, recent methods transition to static weight analysis. While early static techniques trace full training trajectories for smaller architectures~\cite{neuralLineage}, LLM-centric approaches extract cross-layer statistical consistencies~\cite{yoon2025intrinsicfingerprintllmscontinue} or utilize Singular Value Decomposition (SVD)~\cite{wang2025ghosttransformerdetectingmodel}. To further resist adversarial permutation and scaling attacks, state-of-the-art static methods compute robust structural invariants~\cite{huref} and orthogonal embedding relations~\cite{matrix, wu2026llmdna}. Despite these advancements in extraction efficiency and robustness, all aforementioned metrics are fundamentally limited to strictly pairwise similarity evaluation.
 
 % 介绍构建模型谱系
     % yax2025phylolminferringphylogeny 黑盒 动态推理 词表的概率分布距离 Nei 遗传距离公式 构建进化树 根据距离判断 无根 容易找错根模型 无法方向判断
