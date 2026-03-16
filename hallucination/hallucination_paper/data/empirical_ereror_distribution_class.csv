@@ -1,0 +1,20 @@
+translate_unit,ai_name,strategy,file_count,Language Syntax Violation,Type Error,Declaration Mismatch,Undefined Symbols,Duplicated Definitions,Header File Error,Other Errors,all
+CircuitBreakerExecutor,qwen-3.5plus,class,231,6,2,0,9,0,14,1,231
+CircuitBreakerExecutor,deepseek-v3.2,class,231,3,4,0,14,0,13,2,231
+CircuitBreakerExecutor,ChatGPT-5.1,class,231,5,2,1,15,2,12,0,231
+CircuitBreakerExecutor,qwen-3.5plus,method,231,2,3,0,13,0,3,0,231
+CircuitBreakerExecutor,deepseek-v3.2,method,231,3,0,0,43,0,7,0,231
+CircuitBreakerExecutor,ChatGPT-5.1,method,231,2,2,0,46,0,5,0,231
+Cookie,qwen-3.5plus,class,54,1,2,0,2,0,5,0,54
+Cookie,deepseek-v3.2,class,54,2,1,0,4,1,2,0,54
+Cookie,ChatGPT-5.1,class,54,0,3,0,4,0,4,0,54
+Cookie,qwen-3.5plus,method,54,0,4,0,1,0,0,0,54
+Cookie,deepseek-v3.2,method,54,0,6,1,1,8,0,0,54
+Cookie,ChatGPT-5.1,method,54,0,2,0,0,0,0,0,54
+EnableJUnit4MigrationSupport,qwen-3.5plus,class,206,15,5,0,6,1,10,0,206
+EnableJUnit4MigrationSupport,deepseek-v3.2,class,206,7,10,0,12,4,17,0,206
+EnableJUnit4MigrationSupport,ChatGPT-5.1,class,206,7,6,0,14,0,19,0,206
+EnableJUnit4MigrationSupport,qwen-3.5plus,method,206,2,11,0,17,7,0,0,206
+EnableJUnit4MigrationSupport,deepseek-v3.2,method,206,2,13,0,2,0,0,0,206
+EnableJUnit4MigrationSupport,ChatGPT-5.1,method,206,5,5,0,9,0,0,0,206
+

@@ -1,0 +1,67 @@
+\section{Introduction}
+
+
+% 1. 软件版本更新很常见。
+
+Software version updates are a routine and inevitable part of modern software development. As software systems evolve to incorporate new features, improve performance, or fix defects, updates are released frequently across ecosystems. This continuous evolution is essential for maintaining software quality and relevance; however, it also introduces challenges for developers who rely on stable interfaces and predictable behavior. Understanding how version updates propagate through software systems is therefore key to ensuring long-term maintainability. In July 2024, a faulty update to CrowdStrike’s Falcon endpoint detection software caused millions of Windows systems worldwide to crash and reboot into blue-screen or recovery mode. This defective update — effectively a broken API/behavior in a widely-deployed component — triggered a global IT outage impacting airlines, hospitals, government services, cloud infrastructure, and more.
+
+% 2. 版本更新的主要对外表现为API的更新
+
+Among the various types of changes introduced during software evolution, API modifications represent the most noticeable and impactful updates. APIs serve as the boundary of interaction between components, libraries, and applications. When these interfaces change, downstream systems that depend on them must adapt accordingly. As a result, API updates—whether additions, deletions, or behavioral modifications—often become the primary source of observable change for developers and tools.
+
+% 3. 除了API增删，API内部的修改导致的兼容性问题影响下游开发者的使用
+
+Beyond obvious operations such as adding or removing methods, more subtle internal API changes can also significantly affect compatibility. For example, modifications to parameter types, default values, method semantics, or exception behaviors may not be immediately visible but can still break client code or alter expected functionality. Such implicit or semantic changes are particularly difficult for downstream developers to detect, and their resulting incompatibilities may only surface during runtime or testing, often at considerable cost.
+
+% 4. 现有对于API兼容性问题的检测的工作，主要的方法，\cite{A,  B, C-shenkang} 以及存在的局限性
+
+Over the years, a variety of techniques have been proposed to detect API compatibility issues, as reflected in prior work such as \cite{A, B, C-shenkang}. These approaches typically rely on static analysis, syntactic differencing, or rule-based models to identify breaking changes. While effective for many classes of incompatibilities, they still face notable limitations. Many tools struggle with semantic reasoning, cannot generalize across heterogeneous codebases, or fail to capture subtle behavioral differences that arise from complex modifications. Consequently, a reliable and generalizable solution remains elusive.
+
+% 5. LLM的理解带来了很大的机遇，他在很多与Evolution相关的工作中\cite{XX,XX,XX}都被证明存在很好的效果
+
+Recent advancements in large language models (LLMs) present new possibilities for addressing this challenge. The strong reasoning, pattern recognition, and code-understanding capabilities of LLMs have been demonstrated in numerous software-evolution-related tasks \cite{XX, XX, XX}, such as code migration, patch generation, and refactoring analysis. These successes suggest that LLMs are well suited to infer semantic changes, understand API behavior in context, and detect inconsistencies that traditional static tools overlook.
+
+% 6. 我们的工作提出了XXXX的方法 
+
+Motivated by these observations, our work introduces a novel method for XXXX. The proposed approach leverages LLM-based reasoning to analyze API changes at both syntactic and semantic levels, enabling a more comprehensive and context-aware detection of compatibility issues. By integrating structured change analysis with model-driven inference, our method aims to bridge the gap between purely syntactic detection mechanisms and deep semantic understanding.
+
+% 7. 实验结果
+
+To evaluate the effectiveness of our approach, we conducted extensive experiments using real-world software projects and diverse API evolution scenarios. The results demonstrate that our method effectively identifies a broader range of compatibility issues compared to baseline tools, particularly in cases that involve complex or subtle semantic changes. Quantitative metrics and qualitative analyses both show that LLM-based reasoning significantly enhances detection accuracy and robustness.
+
+
+
+
+% 8. Contribution
+
+In summary, this work makes several key contributions. First, we provide a systematic analysis of the limitations in existing API compatibility detection methods. Second, we introduce a new LLM-driven technique that unifies syntactic differencing with semantic reasoning. Third, we develop an evaluation framework grounded in real-world software evolution data. Finally, our experimental findings offer evidence that LLMs can meaningfully advance the state of the art in API compatibility analysis.
+
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.85\textwidth]{fig/example.pdf}
+    \caption{Illustration of Incompatibility Types}
+    \label{fig:example}
+\end{figure*}
+
+
+\begin{itemize}
+    \item We 
+    \item We 
+    \item We 
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

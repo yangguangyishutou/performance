@@ -31,7 +31,7 @@ MIAs in LLMs share the same intuitions of MIAs in machine learning that models m
 These methods assume access to pretraining data to train shadow or reference models. Yang et al.~\cite{yang2024gotcha} presented \textsc{GotCha}, a membership inference attack using surrogate models tailored for code LLMs.
 However, training such models is computationally expensive, and pretraining data is often unavailable, especially for commercial LLMs.
 Differently, several MIAs on LLMs typically exploit the model's token-level outputs and probabilities~\cite{carlini2021extracting}, often in combination with techniques such as synonym substitution to leverage neighboring data~\cite{mattern2023membership}, detection of low-probability tokens~\cite{shi2023detecting}, or calibration of token probabilities using term frequency divergence~\cite{zhang2024pretraining}. 
-However, their effectiveness is still limited, as Duan~\cite{duan2024membership} found that MIAs on LLMs perform only marginally better than random guessing. In addition, most existing MIAs for LLMs target general natural language text rather than code.
+However, their effectiveness is still limited, as Duan~\cite{duan2024membership} found that MIAs on LLMs perform only marginally better than random guessing. In addition, most existing MIAs for LLMs target general natural language text rather~than~code.
 
 % and data transparency is often lacking—particularly for commercial LLMs, where pretraining datasets are rarely disclosed.
 % However, training shadow or reference models involves high computational cost. Meanwhile, such data availability and transparency does not always hold for LLMs, especially for commercial LLMs.

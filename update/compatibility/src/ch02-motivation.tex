@@ -1,0 +1,89 @@
+
+\section{Background}
+
+
+\subsection{Python Incompatibility Types}\label{sec:back:1}
+
+
+We focus on incompatible APIs in Python, a widely used language whose issues are representative of modern software ecosystems. The incompatible APIs involve the interaction between the upstream dependencies and the downstream client usages. Given an API evolves from an older version to a newer version, the \textit{forward incompatibility} occurs when the newer version introduces changes that prevent existing client code from running correctly, and the \textit{backward incompatibility} occurs when code written for the newer version cannot run correctly on the older version. The incompatible APIs can introduce substantial development overhead and may result in production failures or service disruptions.
+
+
+Specifically, Python incompatibilities can be categorized into \textit{interface-level changes} and internal-level changes. Interface-level changes occur when supported interfaces are modified, such as changes to API signatures or removed entirely, often leading to immediate failures in client code. In contrast, internal-level changes give rise to \textit{behavioral incompatibilities} that are hidden within API implementations. In such cases, the API signature may remain unchanged, allowing client code to execute without errors, yet the program may exhibit altered semantics due to modifications in default parameters, output values, or exception-handling behavior.
+
+As an interpreted language, Python exhibits many dynamic characteristics, which hinder the early identification of incompatibilities. In many cases, such incompatibilities manifest as \textit{behavioral incompatibilities} that affect program execution without causing immediate failures. These issues are more concealed and difficult to detect at an early stage, and therefore tend to lead to more severe consequences.
+
+% A common source is backward incompatibility, where previously supported interfaces are modified or removed in newer Python or library versions, causing legacy code to fail. Conversely, forward incompatibility arises when applications adopt newly introduced APIs or language features that are unavailable in older environments. 
+
+% The incompatibilities that hinder the to run correctly include 
+
+% 动机：为什么，我们要去做API兼容性的检测，这个问题很重要，很值得研究
+
+\subsection{Real-world Python Incompatibilities}
+
+We select three real-world Python incompatibilities to illustrate their hidden characteristics and the practical consequences they can cause.
+
+\textbf{Example of Return Change.} This incompatibility originates from the dictionary iteration APIs (e.g., \texttt{dict.items()}, \texttt{dict.keys()}) in Python. In Python versions earlier than 3.7, the iteration order of dictionaries was unspecified and could vary across executions, whereas Python $\ge$ 3.7 guarantees that dictionaries preserve insertion order (``\textit{Changed in version 3.7: Dictionary order is guaranteed to be insertion order}''~\cite{python37example, so1}). As a result, client code that implicitly relies on nondeterministic ordering in older versions, or assumes deterministic ordering in newer versions, may exhibit unexpected or incorrect results when executed under the opposite version, despite using the same API and input data.
+
+\textbf{Example of Exception Change.} This incompatibility arises from the generator execution (e.g. \texttt{(\_\_iter\_\_()}) semantics in Python. Prior to the adoption of PEP 479~\cite{pep479}, raising StopIteration error inside a generator would silently terminate the iteration. After PEP 479, the same behavior results in a raised RuntimeError. Consequently, client code that relies on the generator API without explicitly handling this runtime error may execute correctly in older Python versions but crash at runtime in newer versions, even though the generator interface and invocation remain unchanged.
+
+\textbf{Example of Default Parameter Change.} This incompatibility originates from the \texttt{sum()} and \texttt{mean()} APIs in NumPy, where the default value of the \texttt{dtype} parameter changed across versions. In older versions of NumPy ($\le$ 1.19), these functions used the same data type as the input array for intermediate computations (e.g., int32)~\cite{w3cub}, which could result in silent overflow when processing large integer arrays. In newer versions ($\ge$ 1.20), the default parameter was changed to a larger integer type (e.g., int64), preventing overflow~\cite{so2, numpy17}. Therefore, client code that relies on the previous behavior may produce different numerical results when executed under a newer version, evqen when the same input and API calls are used.
+
+
+% To understand the prevalence and severity of these issues, we perform a lightweight empirical study on Python API incompatibilities in the wild. Specifically, we selected 53 popular projects from GitHub, such as \texttt{urllib3}, \texttt{aioboto3}, and \texttt{flask}. We initially harvested 8,167 issues using keywords related to compatibility and exceptions (e.g., 'version', 'TypeError', 'AttributeError', 'evolution', 'exception'). To ensure data quality, we applied a multi-stage filtering process. First, we filtered out general bug reports, fixes, and issues with incomplete descriptions, reducing the dataset to 2,480 candidates. Next, to focus on code-level incompatibilities, we retained 1,460 issues that were explicitly related to dependency logic rather than environment misconfigurations. Subsequently, we screened the issues based on the completeness of versioning and function information. Finally, we performed a manual verification on the remaining candidates to filter out false positives, yielding 68 confirmed incompatibility issues.
+
+% These collected issues reveal a recurring pattern where developers struggle with unexpected breaking changes triggered by third-party library updates. A representative case is found in \texttt{aiobotocore} issue \#52\footnote{https://github.com/aio-libs/aiobotocore/issues/52}, where the upstream dependency \texttt{botocore} introduced a new parameter to an internal function. This change caused a mismatch in the downstream usage, resulting in a runtime crash: \texttt{TypeError: \_get\_clien\_args() takes 9 positional arguments but 10 were given}. The discussion in this issue highlights the significant overhead and frustration caused by such instability. One developer complained that the upstream library makes frequent changes that break aiobotocore, forcing them to manually downgrade the package to restore functionality. The project maintainer acknowledged that their library relies on internal interfaces that change often, and ultimately decided to pin version of botocore as a desperate workaround.
+
+% As the above case illustrates, resolving such incompatibility issues requires deep semantic analysis of variable types and execution paths. These subtle changes are often difficult to detect through traditional static analysis alone. Fortunately, Large Language Models (LLMs) possess the semantic understanding capabilities necessary to bridge this gap, enabling more accurate detection of complex API incompatibilities.
+
+
+% 介绍一下Python API的语法，以及可能存在的兼容性问题分类
+\subsection{Categories of Incompatibilities}
+
+Following the compatibility types presented in Section~\ref{sec:back:1}, we provide a summary of Python incompatibility categories. We base our categorization on the prior studies by Shen et al.~\cite{shen2024static} and Zhang et al.~\cite{zhang2020python}. Shen et al. identified incompatibilities arising from parameters (CI1-CI5), exceptions (CI6), and return values (CI7). While these studies define seven primary incompatibility types, our labeling process revealed two additional types, which we include in our categorization.
+
+We use Figure~\ref{fig:example} as an exemplary code snippet to aid understanding. The figure shows a merge of the code before (\texttt{API}$_b$) and after (\texttt{API}$_a$) the change, where red lines indicate deletions and green lines indicate additions in the later version.
+
+
+\begin{itemize}[leftmargin=*]
+    \item {\textbf{Parameter Deletion/Addition (CI1)}: The function parameter is either deleted in the \texttt{API}$_{b}$ or added in the \texttt{API}$_{a}$. As shown in Figure~\ref{fig:example}, \texttt{amount} is required in \texttt{API}$_{b}$ but removed in \texttt{API}$_{a}$. Calling \texttt{API}$_{a}$ with (amount=1) will raise ``{TypeError}: fun() got an unexpected keyword argument 'amount'.}
+    
+    \item \textbf{Mismatched Keys in KWargs (CI2)}: Different keys may exist in the \texttt{API}$_{b}$ and \texttt{API}$_{a}$. As shown in Figure~\ref{fig:example}, \texttt{API}$_b$ extracts the value associated with the key \texttt{'key'} from \texttt{**kwargs}, whereas \texttt{API}$_a$ retrieves \texttt{'key\_for\_check'}. If the client code invokes \texttt{API}$_a$ using the original \texttt{kwargs}, a \texttt{KeyError} for \texttt{'key\_for\_check'} may be raised.
+
+    \item \textbf{Parameter Rename (CI3)}: The function parameter from \texttt{API}$_{b}$ is renamed in the \texttt{API}$_{a}$. As shown in Figure~\ref{fig:example}, the parameter \texttt{n\_size} in \texttt{API}$_b$ is renamed to \texttt{n\_dim} in \texttt{API}$_a$. Consequently, invoking \texttt{API}$_a$ with \texttt{n\_size=value} raises ``{TypeError}: "fun() got an unexpected keyword argument 'n\_size'"''.
+    
+    \item \textbf{Parameter Default Value Change (CI4)}: The default value of a parameter in \texttt{API}$_b$ is modified in \texttt{API}$_a$. As shown in Figure~\ref{fig:example}, the default value of \texttt{flag} changes from \texttt{True} in \texttt{API}${_b}$ to \texttt{False} in \texttt{API}${_a}$. Consequently, invoking the API without explicitly specifying \texttt{flag} may lead to a different execution path and produce different results. In this example, \texttt{API}$_b$ may return \texttt{True} at line 6, whereas \texttt{API}$_a$ continues execution to line 17 and returns \texttt{new\_val}.
+    
+
+
+    \item \textbf{Parameter Boundary Value Change (CI5)}: The boundary values of the parameter change across API versions, leading to different behaviors when the same parameter value is supplied. As shown in Figure~\ref{fig:example}, the condition for raising a \texttt{TypeError} changes from \texttt{n\_size} $< 0$ in \texttt{API}${_b}$ to \texttt{n\_dim} $\le 0$ in \texttt{API}${_a}$. Consequently, providing \texttt{n\_size} or \texttt{n\_dim} with a value of 0 yields different outcomes. Specifically, an exception is raised in \texttt{API}${_a}$ but not in \texttt{API}${_b}$.
+
+    \item \textbf{Exception Change (CI6)}: \texttt{API}$_b$ and \texttt{API}$_a$ raise different exceptions under the same conditions, where one API introduces an exception that is not present in the other and may therefore lack appropriate handling logic. As shown in Figure~\ref{fig:example}, when \texttt{len(new\_val)} equals zero, \texttt{API}$_b$ raises a \texttt{ValueError}, whereas \texttt{API}$_a$ raises a \texttt{LENError}.
+    
+
+    \item \textbf{Return Value Change (CI7)}: The returned value changes given the same client invocation. 
+    
+    As shown in Figure~\ref{fig:example},
+    As noted in CI4, changing a default can cause the API to return different values for the same call (e.g. \texttt{False} in \texttt{API}$_{before}$ vs. \texttt{new\_var(list)} in \texttt{API}$_{a}$.
+    
+    \item \textbf{Global Variable Value Change (CI8)}: The value of a global variable may change even when the same API input is used. As shown in Figure~\ref{fig:example}, both \texttt{API}$_b$ and \texttt{API}$_a$ reference the global variable \texttt{GLOBALX}. When \texttt{flag} is \texttt{True}, \texttt{API}$_b$ assigns \texttt{GLOBALX = n\_size}, whereas \texttt{API}$_a$ assigns \texttt{GLOBALX = n\_dim} or \texttt{None}.
+    
+    
+    \item \textbf{Instance Attribute Uninitialized (CI9)}: The instance attribute that exists in one version of an API may become uninitialized in another version. As shown in Figure~\ref{fig:example}, \texttt{API}${b}$ assigns \texttt{self.mFlag = flag}, whereas \texttt{API}${_a}$ does not. Because Python uses a dynamic object model, where instance attributes are created at runtime upon first assignment, \texttt{self.mFlag} does not exist in \texttt{API}$_{a}$.
+
+
+
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

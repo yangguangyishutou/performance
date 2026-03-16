@@ -3,46 +3,53 @@
 % \usepackage{newtxtext,newtxmath}  % 推荐 ACM 兼容字体
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
-\AtBeginDocument{%
-  \providecommand\BibTeX{{%
-    Bib\TeX}}}
+% \AtBeginDocument{%
+%   \providecommand\BibTeX{{%
+%     Bib\TeX}}}
     
-\settopmatter{printfolios=true,printccs=false,printacmref=false}
-\renewcommand\footnotetextcopyrightpermission[1]{}    
+% \settopmatter{printfolios=true,printccs=false,printacmref=false}
+% \renewcommand\footnotetextcopyrightpermission[1]{}    
 
-% \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
 
-\usepackage{tcolorbox} 
+\usepackage{tcolorbox}
 \usepackage{xspace}
-\usepackage{flushend}
+% \usepackage{flushend}  % Not available in MiKTeX, not essential for ACM format
 \usepackage{enumitem}
 \usepackage{algorithm}
-% example style
+\usepackage{algpseudocode}
+
+% % example style
 \usepackage{amsthm}
 \theoremstyle{acmdefinition}
 \newtheorem{exmp}{Example}[section]
 
+
 % tables
-\usepackage{multirow}
-\usepackage{booktabs}
-\usepackage{tabularx}
-\usepackage{pifont}
-\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\usepackage{booktabs}   % professional table rules
+\usepackage{multirow}   % multi-row cells
+\usepackage{tabularx}   % auto-width tables
+\usepackage{subcaption} % sub-figures / sub-tables
 
-\usepackage{subcaption}
 
-\usepackage{lmodern}
+
+% \usepackage{pifont}
+% \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+% TikZ for drawing flowcharts
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning}
+% \usepackage{lmodern}
 
 % fraction
-\usepackage{nicefrac, xfrac}
+% \usepackage{nicefrac, xfrac}
 
 % save space
-\usepackage{microtype}
-\setlength\floatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats
-\setlength\textfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats on the top or the bottom and the text
-\setlength\intextsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats inserted inside the text (using h) and the text
-\setlength\dbltextfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between a float spanning both columns and the text
-\setlength\dblfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats spanning both columns.
+% \usepackage{microtype}
+% \setlength\floatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats
+% \setlength\textfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats on the top or the bottom and the text
+% \setlength\intextsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats inserted inside the text (using h) and the text
+% \setlength\dbltextfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between a float spanning both columns and the text
+% \setlength\dblfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats spanning both columns.
 
 % \usepackage{fancyhdr}
 % \pagestyle{fancy}
@@ -51,19 +58,27 @@
 
 
 %itemize
-\newcommand{\SubItem}[1]{
-    {\setlength\itemindent{15pt} \item[-] #1}
-}
+% \newcommand{\SubItem}[1]{
+%     {\setlength\itemindent{15pt} \item[-] #1}
+% }
 
 
 % command
 \newcommand{\todo}[1]{\textcolor{red}{#1}}
-\newcommand{\minor}[1]{\textcolor{black}{#1}}
 \newcommand{\tool}{\textsc{tool}\xspace}
+\newcommand{\summary}[1]{
+ \begin{center}
+  \begin{tcolorbox}[colback=gray!10,colframe=black!25,width=1\columnwidth,arc=1mm, auto outer arc,boxrule=0.5pt,boxsep=5pt,left=3pt,right=3pt,top=0pt,bottom=0pt]
+  \textbf{\textit{Summary}:} #1
+  \end{tcolorbox}
+ \end{center}
+}
+
+\listfiles
 
 \begin{document}
 
-\title[\tool]{\tool}
+\title{Towards Repository-Level Java to C++ Translation with Large Language Models}
 
 
 %%
@@ -114,11 +129,9 @@
 
 \input{src/ch01-introduction}
 \input{src/ch02-related-work}
-\input{src/ch03-setup}
-\input{src/ch04-empirical}
-\input{src/ch05-tool}
-\input{src/ch06-discussion}
-\input{src/ch07-conclusion}
+\input{src/ch03-empirical}
+\input{src/ch04-approach}
+\input{src/ch05-evaluation}
 
 \clearpage
 
@@ -134,7 +147,3 @@
 \endinput
 %%
 %% End of file `sample-sigconf.tex'.
-
-% TODO 与最相关工作的比较 的文字
-% TODO Figure.6 去掉了非0 TP的文字。
-% program repharsing

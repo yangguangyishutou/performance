@@ -1,0 +1,82 @@
+\section{Related Work}
+
+
+\subsection{Model Signature and Watermark}
+
+
+Model watermarking deliberately embedded the query-response triggers into the model to protect model's intellectual property. Popular techniques include \todo{instruction tuning~\cite{xu-etal-2024-instructional, russinovich2025heythatsmodelintroducing}, adversarial prompt suffixes~\cite{trap}, stealthy Chain-of-Thought extractors~\cite{CoTSRF}, and output statistics~\cite{RoFL}.} However, watermarking techniques involve intrusive modifications to models and are still susceptible to adversarial detection, performance degradation, and fine-tuning-induced forgetting~\cite{nasery2025scalablefingerprintinglargelanguage}.
+
+Model signature, on the other hand, focuses on characterizing the uniqueness of the models using a non-intrusive way.
+A number of studies have focused on dynamic runtime inference due to its generalizability in measuring different models within a unified framework. These techniques include \todo{extracting independent functional representations~\cite{wu2026llmdna}}, comparing black-box output distribution similarities~\cite{pasquinillmmapfingerprintinglargelanguage}, and analyzing white-box activation and gradient statistics~\cite{zhang2024reefrepresentationencodingfingerprints, wu2025gradientbasedmodelfingerprintingllm}. \todo{Specifically, Wu et al.~\cite{wu2026llmdna}, XXX.} However, dynamic inference incurs prohibitive computational overhead, as it necessitates evaluating the model on a large number of input samples during runtime.
+
+In contrast, static techniques inspect internal model signatures and parameters without runtime inference, enabling faster and more general model signature comparisons.
+
+\todo{Yu and Wang~\cite{neuralLineage} proposes to trace full training trajectories for smaller architectures~\cite{neuralLineage} XXX
+
+Yoon et al.~\cite{yoon2025intrinsicfingerprintllmscontinue} proposes to extract cross-layer statistical consistencies XXX
+
+Wang et al.~\cite{wang2025ghosttransformerdetectingmodel} utilize Singular Value Decomposition (SVD) to XXX.}
+
+To further resist adversarial permutation and scaling attacks, Zeng et al.~\cite{huref} proposes to robust structural invariants and Zhang~\cite{matrix} leverages orthogonal embedding relations.
+
+In the model structure perspective, 
+
+
+Understanding the layer-wise internal mechanisms of Transformers has long been a focal point for model interpretability and architecture optimization. While 
+
+early studies analyzed the hierarchical progression of linguistic features across hidden layers~\cite{van_Aken_2019,kornblith2019similarityneuralnetworkrepresentations}, recent evidence suggests that Transformer components exhibit significant functional specialization and asymmetric sensitivity during model evolution. For instance, Feed-Forward Networks (FFN) are increasingly recognized as key-value memories that store factual knowledge~\cite{geva-etal-2021-transformer}, while attention sub-layers (Q, K, V) govern contextual alignment. The success of parameter-efficient fine-tuning (PEFT) further underscores this heterogeneity, demonstrating that updates to specific matrices like $W_q$ and $W_v$ are often sufficient to capture the majority of model shifts~\cite{lora}. In the context of model provenance, specific weight blocks have been found to maintain invariant spectral signatures during reuse~\cite{wang2025ghosttransformerdetectingmodel}, yet existing lineage detection frameworks largely treat all parameters as a homogeneous vector space when calculating inter-model distances. It remains unexplored how individual components--namely the Q, K, V, and MLP matrices--differentially contribute to the fidelity and robustness of macroscopic lineage graph reconstruction.
+% state-of-the-art static methods compute robust structural invariants~\cite{huref} and orthogonal embedding relations~\cite{matrix}.
+
+% Despite these advancements in extraction efficiency and robustness, all aforementioned static metrics are fundamentally limited to strictly pairwise similarity evaluation.
+
+
+% Transformer 中不同层的作用和更新规律
+% \noindent\textbf{Layer-wise Dynamics in Transformers.}
+
+% watermarking 仅凭模型输出的一段文本来判断 牺牲文本的生成质量
+    % TurningYourWeaknessIntoStrength 强调水印的早期后门植入方法
+    % protectItelligentPropertyDeepNeuralNetworksWatermarking 强调基于水印的知识产权保护机制
+    % kirchenbauer2024watermarklargelanguagemodels
+    % yang2023watermarkingtextgeneratedblackbox
+    % christ2023undetectablewatermarkslanguagemodels
+    % kuditipudi2024robustdistortionfreewatermarkslanguage
+% Determining the provenance and protecting the intellectual property of deep learning models has traditionally relied on watermarking techniques~\cite{protectItelligentPropertyDeepNeuralNetworksWatermarking}. Early methods introduced watermarks by embedding backdoors into the network during the training phase~\cite{TurningYourWeaknessIntoStrength}. While effective for verifying ownership, contemporary watermarking approaches for Large Language Models (LLMs) primarily rely on embedding specific statistical patterns into the generated text to identify ownership from outputs~\cite{kirchenbauer2024watermarklargelanguagemodels,yang2023watermarkingtextgeneratedblackbox,christ2023undetectablewatermarkslanguagemodels,kuditipudi2024robustdistortionfreewatermarkslanguage}. However, this inherently alters the output distribution, frequently sacrificing the model's generation quality and practical utility.
+
+
+% -> model fingerprinting 主动输入特定的查询并观察对应输出 修改模型 可能影响性能 指纹容易被检测或过滤 抗微调能力差 or 需要额外训练提取特征
+    % xu-etal-2024-instructional 指令微调
+    % russinovich2025heythatsmodelintroducing chan&hash 技术将特定的指纹提示词与目标回复进行强绑定
+    % nasery2025scalablefingerprintinglargelanguage 指纹遗忘率仍会随规模上升
+    % trap 设计对抗性提示后缀，诱导目标LLM生成预定义的响应
+    % CoTSRF 训练一个独立的 CoT 提取器提取 CoT 特征 作为指纹
+    % RoFL 白盒 动态推理 输出的统计信息作为指纹
+% 介绍如何判断两个模型是否相关
+% -> similarity metrics 判断模型相似度 但仅仅是两个模型之间
+    % neuralLineage 白盒 or 训练分类器 但是针对图像分类等小模型
+    % pasquinillmmapfingerprintinglargelanguage 黑盒判断一个模型是否和已知模型相关 动态推理 输出判断
+    % wu2026llmdna 黑盒 动态推理 通过一个低维向量来表示模型的功能行为
+    % zhang2024reefrepresentationencodingfingerprints 白盒 动态推理 激活值 CKA 两个模型是否相关
+    % wu2025gradientbasedmodelfingerprintingllm 白盒 动态推理 梯度统计量
+    % wang2025ghosttransformerdetectingmodel 白盒 静态分析 SVD 两个模型是否相关
+    % yoon2025intrinsicfingerprintllmscontinue 白盒 静态分析 层级间的统计一致性
+    % matrix 白盒 静态分析 利用嵌入矩阵的正交关系矩阵
+    % huref 白盒 静态分析 计算不变量(对抗排列和缩放攻击) 
+% \noindent\textbf{Model Attribution and Similarity Metrics.} 
+
+
+\subsection{Software and LLM Supply Chain}
+
+
+
+\subsection{Model Lineage Analysis}
+% 介绍构建模型谱系
+    % yax2025phylolminferringphylogeny 黑盒 动态推理 词表的概率分布距离 Nei 遗传距离公式 构建进化树 根据距离判断 无根 容易找错根模型 无法方向判断
+    % horwitz2025unsupervised 白盒 l2 峰度 构建谱系
+    % horwitz2025charting 白盒 l2 时间戳 构建谱系
+\noindent\textbf{Ecosystem-Scale Model Lineage Reconstruction.} 
+
+Beyond pairwise verification, pioneering works scale similarity metrics to reconstruct macroscopic evolutionary graphs of the open-source ecosystem, aiming to uncover complex $N$-to-$N$ genealogical trees~\cite{rahman2025hugginggraphunderstandingsupplychain}. Initial black-box methods leverage dynamic inference to compute vocabulary probability differences, such as Nei's genetic distance, for phylogenetic tree construction~\cite{yax2025phylolminferringphylogeny}. However, relying purely on distance yields unrooted trees that fail to infer evolutionary directionality and often misidentify root models. To resolve this lack of directionality, recent white-box approaches incorporate intrinsic or extrinsic signals. Specifically, they utilize weight-based $L_2$ distances combined with layer kurtosis~\cite{horwitz2025unsupervised} or metadata timestamps~\cite{horwitz2025charting} to construct directed lineages, accurately charting how foundation models adapt and branch over time.
+
+
+
+

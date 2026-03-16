@@ -1,0 +1,55 @@
+\section{Related Work}
+
+% compatibility检测方法
+\subsection{API Incompatibility Detection}
+
+
+The API compatibility comes with the subsequence of API evolution, which has been extensively studied. Lamothe et al.~\cite{lamothe2021systematic} conducted in their systematic API evolution review that automatic identifying API change causes and uniform benchmarks as the main remaining challenges. In the context of API compatibility, Cai et al.\cite{cai2019large} conducted a large-scale longitudinal study on Android runtime compatibility, while Liu et al.\cite{liu2022automatically} summarized five categories of API-induced compatibility issues. More recently, the focus has deepened into device-specific compatibility behaviors~\cite{dong2024same} and compatibility issues caused by vendor customizations~\cite{chen2024demystifying}. Beyond mobile, such challenges are also prevalent in system software like Linux~\cite{tsai2016study}, programming languages and its client applications like Java~\cite{jayasuriya2024understanding} and NPM ecosystem~\cite{kong2025toward}. In deep learning systems, compatibility issues spanning software and hardware stacks have been rigorously characterized~\cite{wang2023compatibility}. 
+
+To tackle the problem of incompatibility detection, a natural approach is to construct and execute test cases to trigger API behaviors across different versions. Sun et al.~\cite{sun2022mining} proposed JUnitTestGen, which mines real-world API usages to generate executable unit tests. Going a step further to ensure comprehensive coverage, Mahmud et al.~\cite{mahmud2024apicia} introduced APICIA, which performs a bidirectional impact analysis. Besides, to address client-specific upgrades, Zhu et al.~\cite{zhu2023client} utilized a knowledge-guided framework to generate incompatibility-revealing tests, while Chen et al.~\cite{chen2020taming} leveraged cross-project testing to detect behavioral backward incompatibilities in Python. Beyond standard testing, more sophisticated dynamic techniques have been introduced to analyze complex dependency chains. Kong et al.~\cite{kong2025more} employed dynamic object relation graphs to precisely detect breaking changes in JavaScript. Furthermore, Cheng et al. propose ReadPyE~\cite{cheng2023revisiting}, which addresses the challenge that dynamic analysis requires valid execution environments by automatically generating compatible Python runtimes.
+
+However, testing-based analysis is often limited by high computational costs, its reliance on existing test suites, and inherent coverage issues. In contrast, static analysis offers a more scalable and practical alternative. Addressing device fragmentation, Wei et al.~\cite{wei2016taming} pioneered FicFinder to characterize device-specific issues, a direction later advanced by Pivot~\cite{wei2019pivot} to learn API-device correlations from large corpora. To tackle general API evolution, Li et al.~\cite{li2018cid} introduced CiD to model API lifecycles. He et al.~\cite{he2018understanding} developed IctApiFinder to detect incompatible usages. Beyond general compatibility issues, existing work has examined several specific types of problems, including complex callbacks~\cite{mahmud2022acid, huang2018understanding}, field-level evolutions~\cite{mahmud2024empirical}, AndroMevol-related changes~\cite{liu2023automatically}, and incompatibilities caused by recurring design smells~\cite{jin2025design}. In Java, APIDiff~\cite{brito2018apidiff} and Roseau~\cite{latappy2025roseau} focus on identifying breaking changes. In Python, static analysis has been tailored to its specific ecosystem. Zhang et al.\cite{zhang2020python} developed PyCompat to handle framework API evolution, while Zhao et al.~\cite{zhao2023knowledge} constructed knowledge bases to detect version incompatibilities in deep learning stacks. Other studies target specific risks such as breaking changes in packages~\cite{du2022aexpy}, deprecated APIs~\cite{vadlamani2021apiscanner}, and complex variadic parameters~\cite{zhang2024coding}. More recently, static approaches have expanded to classify Python incompatibility types~\cite{shen2024static} and solve cross-repository issues via offline database construction~\cite{xie2024pet}.
+
+% Nevertheless, the Python language presents unique challenges that are distinct from these ecosystems. 
+% Zhang et al.~\cite{zhang2020python} revealed that the Python framework APIs evolve with patterns significantly different from Java. One of the most prominent challenges lies in the dynamic nature of the Python language. Recent works have further categorized Python-specific incompatibility symptoms~\cite{shen2024static} and cross-repository conflicts~\cite{xie2024pet}, underscoring the impact of Python's dynamic features.
+
+\todo{Despite the advancements, the static-based approaches encounter severe bottlenecks. State what bottlenecks?. To bridge these gaps, we integrate LLMs, enhanced via Chain-of-Thought (CoT) reasoning and multi-agent collaboration to achieve accurate XX.}
+
+% when applied to dynamic languages. 
+% Python's dynamic features, such as runtime type inference and dynamic attribute access, often evade capture by rigid control-flow or data-flow analysis, resulting in high false positive rates or missed subtle semantic changes.
+% This approach capitalizes on LLMs' ability to interpret implicit API behaviors, infer context-dependent compatibility rules, and adapt to diverse usage scenarios—capabilities that resolve the semantic detection limitations of all preceding traditional static methods.
+
+% In the Android ecosystem, early research progressed in device fragmentation and general API evolution. 
+% Existing studies have also introduced techniques for repairing incompatibility issues. Xia et al.\cite{xia2020android} designed RAPID to mine repair templates from application history. 
+% Researchers have applied LLMs to address various challenges in library evolution, primarily focusing on two distinct tasks: managing deprecated APIs and adapting code generation. 
+
+% LLMs for evolution
+\subsection{LLMs for Library Evolution}
+
+With the rapid advancement of Large Language Models (LLMs), researchers have actively explored their potential in automating complex tasks within the domain of library evolution.
+
+
+For deprecated APIs, Mahmud et al.~\cite{mahmud2024automated} proposed GUPPY, the first LLM-based approach to automatically update Android deprecated API usages without requiring manual templates. Similarly, to prevent the introduction of outdated APIs during generation, Bai et al.~\cite{bai2024apilot} developed APILOT, which leverages real-time differential analysis to verify LLM outputs against a database of outdated APIs. 
+% To enhance the performance of LLMs in various tasks, advanced prompting and architectural techniques have been employed. Chain-of-Thought (CoT), originally proposed by Wei et al.\cite{wei2022chain} to elicit reasoning, has evolved significantly. 
+Zhang et al.\cite{zhang2025enhancing} enhanced Chain-of-Thought (CoT) by constructing task-specific reasoning patterns. In code synthesis, Li et al.~\cite{li2025structured} further advanced this by proposing Structured CoT (SCoT), which explicitly embeds programming logic (e.g., branches and loops) into the reasoning chain to constrain the model's output. Liu et al.\cite{liu2024era} proposed ERA-CoT to capture entity relationships for better context understanding. 
+% Li et al.~\cite{li2025structured} introduced Structured Chain-of-Thought (SCoT) for API usage adaptation and robust code generation. By incorporating programming structures (sequence, branch, loop) into intermediate reasoning steps, SCoT aims to solve the low accuracy of LLMs in generating complex, structurally correct code that adapts to specific requirements.
+Meanwhile, agent-based systems provide another promising approach for library evolution issues. 
+% \todo{THOSE ARE not LLM FOR LIBRARY EVOLUTION: Ma et al.\cite{ma2024combining} proposed iAudit, a multi-agent framework combining a Ranker and Critic to debate vulnerabilities in smart contracts. Similarly, Sun et al.\cite{sun2024gptscan} developed GPTScan, which combines GPT's capability in recognizing key variables with static program analysis to detect logic vulnerabilities.}
+Despite these advancements, fundamental challenges persist in applying LLMs to library evolution. Wang et al.\cite{wang2024llms} quantitatively revealed that LLMs frequently utilize deprecated APIs due to outdated training data. Liang et al.\cite{liang2025rustevo} confirmed that in the Retrieval-Augmented Generation (RAG), the knowledge cutoff significantly hampers performance. 
+
+
+\todo{Critically, existing solutions has a drawback that: current CoT approaches and multi-agent frameworks lack design for API compatibility issues. To address these limitations, our work introduces a specialized multi-agent framework. We design a CoT prompt mechanism to explicitly reason about incompatibility categories and orchestrate Input-Generator and Simulater agents to construct a closed-loop verification system.}
+
+
+
+\subsection{LLM-powered Static Analysis}
+
+
+\todo{XXX}
+
+LLMDFA: Analyzing Dataflow in Code with Large Language Models
+
+Large Language Model (LLM) for Software Security: Code Analysis, Malware Analysis, Reverse Engineering
+
+Llm-powered static binary taint analysis
+

@@ -1,0 +1,26 @@
+\section{Introduction}
+
+
+% The rapid proliferation of Model Context Protocol (MCP) servers reflects the growing demand for standardized, scalable, and interoperable infrastructure to support large language model (LLM) applications. 
+
+As LLM-powered systems are increasingly deployed in real-world environments, developers require reliable mechanisms to connect models with external tools, data sources, and execution environments. MCP servers have emerged as an ideal solution. Their open design and compatibility with diverse development ecosystems have accelerated adoption across open-source communities and industrial platforms.
+
+However, the increasing adoption of MCP servers has also expanded their attack surface, exposing them to a variety of security threats. As middleware components that bridge LLMs with external tools, file systems, and environments, MCP servers often operate with elevated privileges and direct access to sensitive resources, making them attractive targets for adversaries. For example, the Markdownify MCP Server exposed the improper input handling~\cite{cve5276} that allowed crafted payloads to trigger unintended command execution. The case illustrates that, despite their functional benefits, MCP servers remain insufficiently hardened and are increasingly becoming a critical security bottleneck in the LLM application supply chain.
+
+
+Recent research and industry practices have begun to develop targeted vulnerability detection methods for MCP servers~\cite{radosevich2025mcp, wang2025mcpguard, hou2025model, hou2026smcp, coleman2025behavioral}. Nevertheless, despite the emergence of various detection techniques, the effectiveness of MCP server vulnerability detectors remains largely unclear due to the absence of standardized evaluation criteria and representative datasets. 
+
+To address this gap, we propose a dedicated benchmark for MCP server vulnerability detection. Our benchmark constructs from real-world MCP server vulnerability types, including remote code execution (RCE), denial of service (DoS), SQL injection (SQLi), insecure file operations (IFO) and sensitive information disclosure (SID). It comprises \todo{75} vulnerable MCP servers and \todo{75} corresponding vulnerability-fixed MCP servers as paired counterparts.
+
+We conducted an evaluation of existing MCP server vulnerability detection methods using the curated dataset. We adopt the Matched Pair Accuracy (MPA) metric to evaluate detection methods, which highlights the limitations of existing approaches more effectively than traditional precision and recall. This evaluation highlights both the strengths and limitations of current detection techniques, demonstrating the effectiveness of our benchmark in uncovering their shortcomings and identifying areas for improvement. We have released the benchmark and the replicating artifact in ~\cite{artifact}. Overall, our paper makes the following contribution:
+
+\begin{itemize}[leftmargin=*]
+    \item We propose \bench, an LLM-generated benchmark guided by manually crafted rules covering five common vulnerability types for MCP vulnerability detection.
+    \item We propose the Matched Pair Accuracy for paired vulnerable and fixed MCP tools, providing a more precise measure of a detector’s understanding of vulnerable code than standard metrics.
+\end{itemize}
+
+
+
+
+
+

@@ -1,0 +1,47 @@
+% !TeX root = ../main.tex
+
+\section{Results}
+
+Table~\ref{tab:overall-results} summarizes the overall translation performance across all 30 modules.
+
+\begin{table*}[h]
+\centering
+\caption{Overall Translation Performance}
+\label{tab:overall-results}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{CompileUnit} & \textbf{FileCount} & \textbf{CppFileCount} & \textbf{Methods}& \textbf{SuccessFileCount} & \textbf{SuccessRate} \\
+\midrule
+BulkheadBuilder & 70 & 15 & 97 & 10 & 66.67\% \\
+CircuitBreakerExecutor & 64 & 13 & 84 & 12 & 92.31\% \\
+ClassStructureByChildClassTestCase & 44 & 10 & 76 & 9 & 90.00\% \\
+Cookie & 20 & 7 & 79 & 4 & 57.14\% \\
+DebugLogExceptionModule & 31 & 9 & 85 & 8 & 88.89\% \\
+DelayablePolicy & 58 & 13 & 86 & 10 & 76.92\% \\
+Draft\_6455Test & 38 & 13 & 87 & 10 & 76.92\% \\
+EventWatchBuilderTestCase & 38 & 11 & 122 & 10 & 90.91\% \\
+ExecutionImpl & 54 & 12 & 105 & 10 & 83.33\% \\
+FailsafeExecutor & 68 & 14 & 131 & 9 & 64.29\% \\
+FailurePolicy & 60 & 13 & 94 & 11 & 84.62\% \\
+Issue231Test & 61 & 15 & 104 & 13 & 86.67\% \\
+Issue260Test & 62 & 14 & 84 & 12 & 85.71\% \\
+JSONParser & 17 & 4 & 17 & 4 & 100.00\% \\
+OrGroupFilter & 27 & 8 & 86 & 7 & 87.50\% \\
+PerMessageDeflateExtensionTest & 39 & 14 & 104 & 9 & 64.29\% \\
+ProgressPrinter & 14 & 2 & 11 & 2 & 100.00\% \\
+RateLimiterBuilder & 68 & 15 & 102 & 12 & 80.00\% \\
+RateLimiterExecutor & 61 & 14 & 93 & 7 & 50.00\% \\
+ReadRowHolder & 10 & 2 & 13 & 2 & 100.00\% \\
+ReadSheetHolder & 28 & 5 & 49 & 4 & 80.00\% \\
+RetryPolicyConfig & 56 & 12 & 97 & 9 & 75.00\% \\
+SyncExecutionImpl & 59 & 12 & 97 & 9 & 75.00\% \\
+TestIssues217 & 55 & 13 & 129 & 10 & 76.92\% \\
+TestIssues256 & 40 & 12 & 118 & 10 & 83.33\% \\
+TimeoutExecutor & 55 & 12 & 82 & 10 & 83.33\% \\
+UndeclaredThrowableStrategy & 31 & 6 & 56 & 4 & 66.67\% \\
+\midrule
+\textbf{TOTAL ALL PROJECTS} & \textbf{1293} & \textbf{308} & \textbf{2440} & \textbf{241} & \textbf{78.25\%} \\
+\bottomrule
+\end{tabular}
+\end{table*}
+

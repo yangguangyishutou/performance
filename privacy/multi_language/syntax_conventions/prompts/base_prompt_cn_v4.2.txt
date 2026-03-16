@@ -1,0 +1,163 @@
+# 语法约束提取 Prompt v4.2 (优化版)
+
+你是编程语言语法专家，负责从语法文档中提取"条件-结果"(Condition-Consequence)约束对，用于 token 匹配和剪枝。
+
+## 核心方法
+
+将语法结构**原子分解**为最小步骤：`当前token序列` → `下一步必须出现的token`
+
+## 输出格式
+
+```json
+{
+  "construct": "if...else",
+  "language": "javascript",
+  "syntax_node": "if",
+  "constraints": [
+    {"conditional": "if", "consequent": "(", "skip": "", "required": true, "note": "if 后必须跟左括号"},
+    {"conditional": "if (", "consequent": ")", "skip": "expression", "required": true, "note": "左括号后必须跟右括号（中间跳过条件表达式）"}
+  ]
+}
+```
+
+**字段说明**：
+- `syntax_node`: 主语法节点（如 `if`, `function`），只定义一次
+- `conditional`: 累积的token序列（必须包含之前的完整token）
+- `consequent`: **必须只有一个值**，多个选项需拆分为独立规则
+- `skip`: 可跳过的AST节点类型（如 `expression`, `statement`）
+- `required`: 是否必须
+- `note`: **必须使用单引号**引用
+
+## 占位符
+
+**基础**: `[IDENT]`(标识符) `[NUMBER]` `[STRING]` `[TEMPLATE]` `[REGEX]`
+
+**聚合**（优先使用）：
+- `[PROPERTY]` → 代替所有属性名类型（identifier/string/number/computed）
+- `<expression_start>` → 表达式起始
+- `<statement_start>` → 语句起始
+
+## 三大核心规则
+
+### 1. consequent 拆分（必须遵守）
+
+❌ **错误**: `"consequent": "{, <statement_start>"` (逗号分隔)
+✅ **正确**: 拆分为两条独立规则
+```json
+[
+  {"conditional": "if ()", "consequent": "{", "note": "右括号后必须跟左大括号"},
+  {"conditional": "if ()", "consequent": "<statement_start>", "note": "右括号后必须跟语句起始"}
+]
+```
+
+**原则**: 每个consequent只能一个值，多个选项=多条规则
+
+### 2. 括号匹配验证
+
+生成conditional时必须确保括号正确配对：
+
+| conditional | 状态 |
+|------------|------|
+| `"if () {}"` | ✅ 正确 |
+| `"if () }"` | ❌ 缺少左大括号 |
+| `"if (}"` | ❌ 括号类型不匹配 |
+| `"function () }"` | ❌ 常见错误 |
+
+**验证方法**: 从左到右扫描，确保每个`(`都有`)`，每个`{`都有`}`，每个`[`都有`]`
+
+### 3. 语法合法性
+
+- ❌ **不提取**标记为"SyntaxError"或"Invalid"的用法
+- ❌ **不提取**二元算术/逻辑运算符（`+`, `-`, `*`, `/`, `&&`, `||`, `==`, `>`, `<`等）- 这些后可跟任何表达式
+- ✅ **只提取**合法的语法约束
+
+## 示例
+
+### if...else
+```json
+{
+  "construct": "if...else",
+  "syntax_node": "if",
+  "constraints": [
+    {"conditional": "if", "consequent": "(", "skip": "", "required": true, "note": "if 后必须跟左括号"},
+    {"conditional": "if (", "consequent": ")", "skip": "expression", "required": true, "note": "左括号后必须跟右括号"},
+    {"conditional": "if ()", "consequent": "{", "skip": "", "required": true, "note": "右括号后必须跟左大括号"},
+    {"conditional": "if ()", "consequent": "<statement_start>", "skip": "", "required": true, "note": "右括号后必须跟语句起始"},
+    {"conditional": "if () {", "consequent": "}", "skip": "statement_block", "required": true, "note": "左大括号后必须跟右大括号"},
+    {"conditional": "if () {}", "consequent": "else", "skip": "", "required": false, "note": "if 语句块后可选择性跟随 else"},
+    {"conditional": "else", "consequent": "{", "skip": "", "required": true, "note": "else 后必须跟左大括号"},
+    {"conditional": "else", "consequent": "<statement_start>", "skip": "", "required": true, "note": "else 后必须跟语句起始"},
+    {"conditional": "else {", "consequent": "}", "skip": "statement_block", "required": true, "note": "else 左大括号后必须跟右大括号"}
+  ]
+}
+```
+
+### Rest Parameters（展示如何避免非法语法）
+```json
+{
+  "construct": "Rest parameters",
+  "syntax_node": "...",
+  "constraints": [
+    {"conditional": "...", "consequent": "[IDENT]", "skip": "", "required": true, "note": "Rest 参数语法 ... 后必须跟标识符名称"},
+    {"conditional": "... [IDENT]", "consequent": ")", "skip": "", "required": true, "note": "Rest 参数必须是最后一个参数，其后必须跟随右括号"}
+  ]
+}
+```
+注意：没有生成 `... [IDENT] ,` → `[IDENT]` 的规则，因为这违反语法（Rest参数后不能跟逗号）
+
+### Arrow Function（展示拆分规则）
+```json
+{
+  "construct": "Arrow function expressions",
+  "syntax_node": "function",
+  "constraints": [
+    {"conditional": "async", "consequent": "(", "skip": "", "required": false, "note": "async 关键字后可跟左括号"},
+    {"conditional": "async", "consequent": "[IDENT]", "skip": "", "required": false, "note": "async 关键字后可跟参数标识符"},
+    {"conditional": "async (", "consequent": ")", "skip": "parameters", "required": true, "note": "async 左括号后必须跟右括号"},
+    {"conditional": "async ()", "consequent": "=>", "skip": "", "required": true, "note": "async 无参括号后必须跟箭头"},
+    {"conditional": "async [IDENT]", "consequent": "=>", "skip": "", "required": true, "note": "async 单参数标识符后必须跟箭头"},
+    {"conditional": "async () =>", "consequent": "{", "skip": "", "required": true, "note": "async 箭头后必须跟左大括号"},
+    {"conditional": "async () =>", "consequent": "<expression_start>", "skip": "", "required": true, "note": "async 箭头后必须跟表达式起始"},
+    {"conditional": "async () => {", "consequent": "}", "skip": "statement_block", "required": true, "note": "async 箭头左大括号后必须跟右大括号"},
+    {"conditional": "(", "consequent": ")", "skip": "parameters", "required": true, "note": "左括号后必须跟右括号"},
+    {"conditional": "()", "consequent": "=>", "skip": "", "required": true, "note": "无参括号后必须跟箭头"},
+    {"conditional": "() =>", "consequent": "{", "skip": "", "required": true, "note": "箭头后必须跟左大括号"},
+    {"conditional": "() =>", "consequent": "<expression_start>", "skip": "", "required": true, "note": "箭头后必须跟表达式起始"},
+    {"conditional": "() => {", "consequent": "}", "skip": "statement_block", "required": true, "note": "箭头左大括号后必须跟右大括号"},
+    {"conditional": "[IDENT]", "consequent": "=>", "skip": "", "required": true, "note": "单参数标识符后必须跟箭头"},
+    {"conditional": "[IDENT] =>", "consequent": "{", "skip": "", "required": true, "note": "箭头后必须跟左大括号"},
+    {"conditional": "[IDENT] =>", "consequent": "<expression_start>", "skip": "", "required": true, "note": "箭头后必须跟表达式起始"},
+    {"conditional": "[IDENT] => {", "consequent": "}", "skip": "statement_block", "required": true, "note": "箭头左大括号后必须跟右大括号"}
+  ]
+}
+```
+
+## syntax_node 类型参考
+
+| 构造类型 | syntax_node |
+|---------|--------------|
+| 条件语句 | `if`, `else`, `elif` |
+| 循环 | `for`, `while`, `do...while` |
+| 函数 | `function` |
+| 类 | `class` |
+| 声明 | `var`, `let`, `const` |
+
+## 提取任务
+
+**文档内容**：
+{DOCUMENTATION}
+
+**构造名称**: {CONSTRUCT_NAME}
+**语言**: {LANGUAGE}
+
+**提取要求**：
+1. 识别主语法节点（syntax_node）
+2. 原子分解：每个括号单独配对
+3. conditional必须累积（包含之前完整token序列）
+4. 多个consequent选项必须拆分为独立规则
+5. 确保括号正确配对
+6. note中使用单引号
+7. 不提取SyntaxError的用法
+8. 如是二元运算符，返回错误（不提取）
+
+请提取该构造的**所有**语法约束对。

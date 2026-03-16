@@ -1,0 +1,152 @@
+\documentclass[sigconf,screen]{acmart}
+\settopmatter{printfolios=true,printccs=true,printacmref=true}
+%%
+%% \BibTeX command to typeset BibTeX logo in the docs
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    Bib\TeX}}}
+    
+\settopmatter{printfolios=true,printccs=false,printacmref=false}
+\renewcommand\footnotetextcopyrightpermission[1]{}    
+
+% \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
+
+\usepackage{tcolorbox}
+\usepackage{xspace}
+\usepackage{flushend}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{algorithm}
+% font
+% \usepackage{lmodern}
+% \usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=cyan,
+}
+
+% example style
+\usepackage{amsthm}
+\theoremstyle{acmdefinition}
+\newtheorem{exmp}{Example}[section]
+
+% tables
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\usepackage{subcaption}
+
+% fraction
+% \usepackage{nicefrac, xfrac}
+
+
+%itemize
+\newcommand{\SubItem}[1]{
+    {\setlength\itemindent{15pt} \item[-] #1}
+}
+
+
+% save space
+\usepackage{microtype}
+\setlength\floatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats
+\setlength\textfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats on the top or the bottom and the text
+\setlength\intextsep{0.2\baselineskip plus 3pt minus 2pt} % distance between floats inserted inside the text (using h) and the text
+\setlength\dbltextfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between a float spanning both columns and the text
+\setlength\dblfloatsep{0.2\baselineskip plus 3pt minus 2pt} % distance between two floats spanning both columns.
+
+% \usepackage{fancyhdr}
+% \pagestyle{fancy}
+% \fancyhead{}
+% \fancyhead[LO]{\footnotesize{Killing Two Birds with One Stone}}
+
+\usepackage{tikz}
+% \newcommand\round[2]{\par
+%     \noindent\begin{tikzpicture}%
+%         \node[draw = #1, fill = #1, rectangle, rounded corners, 
+%               minimum size = 5.5mm, text = white, text width = 2cm](char){#2};
+%     \end{tikzpicture}\par%
+% }%
+\definecolor{s1}{RGB}{179,218,219}
+\definecolor{s2}{RGB}{82,122,154}
+\definecolor{s3}{RGB}{36,53,84}
+
+\newcommand\round[2]{%
+    \tikz[baseline=-0.5ex]{
+        \node[draw = #1, fill = #1, rectangle, rounded corners, 
+              minimum size = 5.5mm, text = white, text width = 2cm](char){#2};
+    }%
+}
+    
+
+
+% command
+\newcommand{\todo}[1]{\textcolor{red}{#1}}
+\newcommand{\tool}{\textsc{tool}\xspace}
+\newcommand{\ie}[0]{\textit{i.e.,}\xspace}
+\newcommand{\eg}[0]{\textit{e.g.,}\xspace}
+
+
+\begin{document}
+% fix overfull
+\begin{sloppypar}
+
+    \title{Large Language Model Lineage Analysis: How far are we?}
+
+
+    %%
+    %% Keywords. The author(s) should pick words that accurately describe
+    %% the work being presented. Separate the keywords with commas.
+    %\keywords{datasets, neural networks, gaze detection, text tagging}
+
+    \begin{abstract}
+        \input{src/ch00-abstract}
+    \end{abstract}
+
+    \maketitle
+
+    \input{src/ch01-introduction}
+    \input{src/ch02-motivation}
+    \input{src/ch03-benchmark}
+    \input{src/ch04-approach}
+    \input{src/ch05-evaluation}
+    \input{src/ch06-related}
+    \input{src/ch07-discussion}
+    \input{src/ch08-conclusion}
+
+    \bibliographystyle{ACM-Reference-Format}
+    \bibliography{src/reference}
+
+\end{sloppypar}
+\end{document}
+\endinput
+
+
+% TODO
+% 3. Risk， mitigation图的严谨性
+% implant malicious code -> implant maliciousness into artifacts
+% code data, model ,prompt顺序
+% citation是最后一步
+
+
+
+% collect of data.
+% generate abnormal content in risk on LLM apps.
+% legal risk: unauthorized content
+% general risks: introduce performance regression.
+% general risks: terminate service
+% risk on artifacts: leak data
+
+% exploit LLM App vul 里面要介绍用llm生成unsafe 的code
+
+% Discontinue Maintenance -> Degrade Sustainability
+% add leak data
+
+

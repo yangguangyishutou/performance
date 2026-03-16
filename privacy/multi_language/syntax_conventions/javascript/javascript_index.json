@@ -1,0 +1,1264 @@
+{
+  "language": "javascript",
+  "total_constructs": 82,
+  "constructs_with_syntax": 74,
+  "index": {
+    "JavaScript reference": {
+      "file": "index.md",
+      "full_path": "js/reference/index.md",
+      "construct": "JavaScript reference",
+      "category": "expressions",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "Template literals (Template strings)": {
+      "file": "template_literals/index.md",
+      "full_path": "js/reference/template_literals/index.md",
+      "construct": "Template literals (Template strings)",
+      "category": "expressions",
+      "syntax": "```js-nolint\n`string text`\n\n`string text line 1\n string text line 2`\n\n`string text ${expression} string text`\n\ntagFunction`string text ${expression} string text`\n```\n\n### Parameters\n\n- `string text`\n  - : The string text that will become part of the template literal. Almost all characters are allowed literally, including [line breaks](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#line_terminators) and other [whitespace characters](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space). However, invalid escape sequences will cause a syntax error, unless a [tag function](#tagged_templates_and_escape_sequences) is used.\n- `expression`\n  - : An expression to be inserted in the current position, whose value is converted to a string or passed to `tagFunction`.\n- `tagFunction`\n  - : If specified, it will be called with the template strings array and substitution expressions, and the return value becomes the value of the template literal. See [tagged templates](#tagged_templates).",
+      "has_syntax": true
+    },
+    "Expressions and operators": {
+      "file": "operators/index.md",
+      "full_path": "js/reference/operators/index.md",
+      "construct": "Expressions and operators",
+      "category": "expressions",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "Classes": {
+      "file": "classes/index.md",
+      "full_path": "js/reference/classes/index.md",
+      "construct": "Classes",
+      "category": "compound_statements",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "Statements and declarations": {
+      "file": "statements/index.md",
+      "full_path": "js/reference/statements/index.md",
+      "construct": "Statements and declarations",
+      "category": "compound_statements",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "Functions": {
+      "file": "functions/index.md",
+      "full_path": "js/reference/functions/index.md",
+      "construct": "Functions",
+      "category": "expressions",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "Default parameters": {
+      "file": "functions/default_parameters/index.md",
+      "full_path": "js/reference/functions/default_parameters/index.md",
+      "construct": "Default parameters",
+      "category": "expressions",
+      "syntax": "```js-nolint\nfunction fnName(param1 = defaultValue1, /* \u2026, */ paramN = defaultValueN) {\n  // \u2026\n}\n```",
+      "has_syntax": true
+    },
+    "Rest parameters": {
+      "file": "functions/rest_parameters/index.md",
+      "full_path": "js/reference/functions/rest_parameters/index.md",
+      "construct": "Rest parameters",
+      "category": "expressions",
+      "syntax": "```js-nolint\nfunction f(a, b, ...theArgs) {\n  // \u2026\n}\n```\n\nThere are some additional syntax restrictions:\n\n- A function definition can only have one rest parameter.\n- The rest parameter must be the last parameter in the function definition.\n- [Trailing commas](/en-US/docs/Web/JavaScript/Reference/Trailing_commas) are not allowed after the rest parameter.\n- The rest parameter cannot have a [default value](/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters).",
+      "has_syntax": true
+    },
+    "Arrow function expressions": {
+      "file": "functions/arrow_functions/index.md",
+      "full_path": "js/reference/functions/arrow_functions/index.md",
+      "construct": "Arrow function expressions",
+      "category": "expressions",
+      "syntax": "```js-nolint\n() => expression\n\nparam => expression\n\n(param) => expression\n\n(param1, paramN) => expression\n\n() => {\n  statements\n}\n\nparam => {\n  statements\n}\n\n(param1, paramN) => {\n  statements\n}\n```\n\n[Rest parameters](/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters), [default parameters](/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters), and [destructuring](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring) within params are supported, and always require parentheses:\n\n```js-nolint\n(a, b, ...r) => expression\n(a = 400, b = 20, c) => expression\n([a, b] = [10, 20]) => expression\n({ a, b } = { a: 10, b: 20 }) => expression\n```\n\nArrow functions can be [`async`](/en-US/docs/Web/JavaScript/Reference/Statements/async_function) by prefixing the expression with the `async` keyword.\n\n```js-nolint\nasync param => expression\nasync (param1, param2, ...paramN) => {\n  statements\n}\n```",
+      "has_syntax": true
+    },
+    "get": {
+      "file": "functions/get/index.md",
+      "full_path": "js/reference/functions/get/index.md",
+      "construct": "get",
+      "category": "expressions",
+      "syntax": "```js-nolint\n{ get prop() { /* \u2026 */ } }\n{ get [expression]() { /* \u2026 */ } }\n```\n\nThere are some additional syntax restrictions:\n\n- A getter must have exactly zero parameters.\n\n### Parameters\n\n- `prop`\n  - : The name of the property to bind to the given function. In the same way as other properties in [object initializers](/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer), it can be a string literal, a number literal, or an identifier.\n- `expression`\n  - : You can also use expressions for a computed property name to bind to the given function.",
+      "has_syntax": true
+    },
+    "Method definitions": {
+      "file": "functions/method_definitions/index.md",
+      "full_path": "js/reference/functions/method_definitions/index.md",
+      "construct": "Method definitions",
+      "category": "expressions",
+      "syntax": "```js-nolint\n({\n  property(parameters) {},\n  *generator(parameters) {},\n  async property(parameters) {},\n  async *generator(parameters) {},\n\n  // with computed keys\n  [expression](parameters) {},\n  *[expression](parameters) {},\n  async [expression](parameters) {},\n  async *[expression](parameters) {},\n})\n```",
+      "has_syntax": true
+    },
+    "set": {
+      "file": "functions/set/index.md",
+      "full_path": "js/reference/functions/set/index.md",
+      "construct": "set",
+      "category": "expressions",
+      "syntax": "```js-nolint\n{ set prop(val) { /* \u2026 */ } }\n{ set [expression](val) { /* \u2026 */ } }\n```\n\nThere are some additional syntax restrictions:\n\n- A setter must have exactly one parameter.\n\n### Parameters\n\n- `prop`\n  - : The name of the property to bind to the given function. In the same way as other properties in [object initializers](/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer), it can be a string literal, a number literal, or an identifier.\n- `val`\n  - : An alias for the variable that holds the value attempted to be assigned to\n    `prop`.\n- `expression`\n  - : You can also use expressions for a computed property name to bind to the given function.",
+      "has_syntax": true
+    },
+    "The arguments object": {
+      "file": "functions/arguments/index.md",
+      "full_path": "js/reference/functions/arguments/index.md",
+      "construct": "The arguments object",
+      "category": "expressions",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "arguments.callee": {
+      "file": "functions/arguments/callee/index.md",
+      "full_path": "js/reference/functions/arguments/callee/index.md",
+      "construct": "arguments.callee",
+      "category": "expressions",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "arguments.length": {
+      "file": "functions/arguments/length/index.md",
+      "full_path": "js/reference/functions/arguments/length/index.md",
+      "construct": "arguments.length",
+      "category": "expressions",
+      "syntax": "",
+      "has_syntax": false
+    },
+    "arguments[Symbol.iterator]()": {
+      "file": "functions/arguments/symbol.iterator/index.md",
+      "full_path": "js/reference/functions/arguments/symbol.iterator/index.md",
+      "construct": "arguments[Symbol.iterator]()",
+      "category": "expressions",
+      "syntax": "```js-nolint\narguments[Symbol.iterator]()\n```\n\n### Parameters\n\nNone.\n\n### Return value\n\nThe same return value as {{jsxref(\"Array.prototype.values()\")}}: a new [iterable iterator object](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator) that yields the value of each index in the `arguments` object.",
+      "has_syntax": true
+    },
+    "if...else": {
+      "file": "statements/if...else/index.md",
+      "full_path": "js/reference/statements/if...else/index.md",
+      "construct": "if...else",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nif (condition)\n  statement1\n\n// With an else clause\nif (condition)\n  statement1\nelse\n  statement2\n```\n\n- `condition`\n  - : An expression that is considered to be either {{Glossary(\"truthy\")}} or {{Glossary(\"falsy\")}}.\n- `statement1`\n  - : Statement that is executed if _condition_ is {{Glossary(\"truthy\")}}. Can be any statement, including further nested `if` statements. To execute multiple statements, use a [block](/en-US/docs/Web/JavaScript/Reference/Statements/block) statement (`{ /* ... */ }`) to group those statements. To execute no statements, use an [empty](/en-US/docs/Web/JavaScript/Reference/Statements/Empty) statement.\n- `statement2`\n  - : Statement that is executed if `condition` is {{Glossary(\"falsy\")}} and the `else` clause exists. Can be any statement, including block statements and further nested `if` statements.",
+      "has_syntax": true
+    },
+    "do...while": {
+      "file": "statements/do...while/index.md",
+      "full_path": "js/reference/statements/do...while/index.md",
+      "construct": "do...while",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\ndo\n  statement\nwhile (condition);\n```\n\n- `statement`\n  - : A statement that is executed at least once and re-executed as long as the condition evaluates to true. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.\n- `condition`\n  - : An expression evaluated _after_ each pass through the loop. If this condition [evaluates to true](/en-US/docs/Glossary/Truthy), `statement` is re-executed. When condition [evaluates to false](/en-US/docs/Glossary/Falsy), execution continues with the statement after the `do...while` loop.",
+      "has_syntax": true
+    },
+    "for...of": {
+      "file": "statements/for...of/index.md",
+      "full_path": "js/reference/statements/for...of/index.md",
+      "construct": "for...of",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nfor (variable of iterable)\n  statement\n```\n\n- `variable`\n  - : Receives a value from the sequence on each iteration. May be either a declaration with [`const`](/en-US/docs/Web/JavaScript/Reference/Statements/const), [`let`](/en-US/docs/Web/JavaScript/Reference/Statements/let), [`var`](/en-US/docs/Web/JavaScript/Reference/Statements/var), [`using`](/en-US/docs/Web/JavaScript/Reference/Statements/using), [`await using`](/en-US/docs/Web/JavaScript/Reference/Statements/await_using), or an [assignment](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment) target (e.g., a previously declared variable, an object property, or a [destructuring pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring)). Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for...of` loop is in.\n- `iterable`\n  - : An iterable object. The source of the sequence of values on which the loop operates.\n- `statement`\n  - : A statement to be executed on every iteration. May reference `variable`. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+      "has_syntax": true
+    },
+    "with": {
+      "file": "statements/with/index.md",
+      "full_path": "js/reference/statements/with/index.md",
+      "construct": "with",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nwith (expression)\n  statement\n```\n\n- `expression`\n  - : Adds the given expression to the scope chain used when evaluating the statement. The parentheses around the expression are required.\n- `statement`\n  - : Any statement. To execute multiple statements, use a [block](/en-US/docs/Web/JavaScript/Reference/Statements/block) statement (`{ ... }`) to group those statements.",
+      "has_syntax": true
+    },
+    "Empty statement": {
+      "file": "statements/empty/index.md",
+      "full_path": "js/reference/statements/empty/index.md",
+      "construct": "Empty statement",
+      "category": "single_statements",
+      "syntax": "```js-nolint\n;\n```",
+      "has_syntax": true
+    },
+    "using": {
+      "file": "statements/using/index.md",
+      "full_path": "js/reference/statements/using/index.md",
+      "construct": "using",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nusing name1 = value1;\nusing name1 = value1, name2 = value2;\nusing name1 = value1, name2 = value2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) and _not_ a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN`\n  - : Initial value of the variable. It can be any legal expression but its value must be either `null`, `undefined`, or an object with a `[Symbol.dispose]()` method.",
+      "has_syntax": true
+    },
+    "Labeled statement": {
+      "file": "statements/label/index.md",
+      "full_path": "js/reference/statements/label/index.md",
+      "construct": "Labeled statement",
+      "category": "single_statements",
+      "syntax": "```js-nolint\nlabel:\n  statement\n```\n\n- `label`\n  - : Any JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) that is not a [reserved word](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#reserved_words).\n- `statement`\n  - : A JavaScript statement. `break` can be used within any labeled statement, and `continue` can be used within labeled looping statements.",
+      "has_syntax": true
+    },
+    "var": {
+      "file": "statements/var/index.md",
+      "full_path": "js/reference/statements/var/index.md",
+      "construct": "var",
+      "category": "single_statements",
+      "syntax": "```js-nolint\nvar name1;\nvar name1 = value1;\nvar name1 = value1, name2 = value2;\nvar name1, name2 = value2;\nvar name1 = value1, name2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) or a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN` {{optional_inline}}\n  - : Initial value of the variable. It can be any legal expression. Default value is `undefined`.",
+      "has_syntax": true
+    },
+    "return": {
+      "file": "statements/return/index.md",
+      "full_path": "js/reference/statements/return/index.md",
+      "construct": "return",
+      "category": "single_statements",
+      "syntax": "```js-nolint\nreturn;\nreturn expression;\n```\n\n- `expression` {{optional_inline}}\n  - : The expression whose value is to be returned. If omitted, `undefined` is returned.",
+      "has_syntax": true
+    },
+    "try...catch": {
+      "file": "statements/try...catch/index.md",
+      "full_path": "js/reference/statements/try...catch/index.md",
+      "construct": "try...catch",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\ntry {\n  tryStatements\n} catch (exceptionVar) {\n  catchStatements\n} finally {\n  finallyStatements\n}\n```\n\n- `tryStatements`\n  - : The statements to be executed.\n- `catchStatements`\n  - : Statement that is executed if an exception is thrown in the `try` block.\n- `exceptionVar` {{optional_inline}}\n  - : An optional [identifier or pattern](#catch_binding) to hold the caught exception for the associated `catch` block. If the `catch` block does not use the exception's value, you can omit the `exceptionVar` and its surrounding parentheses.\n- `finallyStatements`\n  - : Statements that are executed before control flow exits the `try...catch...finally` construct. These statements execute regardless of whether an exception was thrown or caught.",
+      "has_syntax": true
+    },
+    "function": {
+      "file": "statements/function/index.md",
+      "full_path": "js/reference/statements/function/index.md",
+      "construct": "function",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nfunction name(param0) {\n  statements\n}\nfunction name(param0, param1) {\n  statements\n}\nfunction name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n### Parameters\n\n- `name`\n  - : The function name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. Maximum number of arguments varies in different engines. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+      "has_syntax": true
+    },
+    "throw": {
+      "file": "statements/throw/index.md",
+      "full_path": "js/reference/statements/throw/index.md",
+      "construct": "throw",
+      "category": "single_statements",
+      "syntax": "```js-nolint\nthrow expression;\n```\n\n- `expression`\n  - : The expression to throw.",
+      "has_syntax": true
+    },
+    "const": {
+      "file": "statements/const/index.md",
+      "full_path": "js/reference/statements/const/index.md",
+      "construct": "const",
+      "category": "single_statements",
+      "syntax": "```js-nolint\nconst name1 = value1;\nconst name1 = value1, name2 = value2;\nconst name1 = value1, name2 = value2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) or a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN`\n  - : Initial value of the variable. It can be any legal expression.",
+      "has_syntax": true
+    },
+    "for...in": {
+      "file": "statements/for...in/index.md",
+      "full_path": "js/reference/statements/for...in/index.md",
+      "construct": "for...in",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nfor (variable in object)\n  statement\n```\n\n### Parameters\n\n- `variable`\n  - : Receives a string property name on each iteration. May be either a declaration with [`const`](/en-US/docs/Web/JavaScript/Reference/Statements/const), [`let`](/en-US/docs/Web/JavaScript/Reference/Statements/let), or [`var`](/en-US/docs/Web/JavaScript/Reference/Statements/var), or an [assignment](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment) target (e.g., a previously declared variable, an object property, or a [destructuring pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring)). Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for...in` loop is in.\n- `object`\n  - : Object whose non-symbol enumerable properties are iterated over.\n- `statement`\n  - : A statement to be executed on every iteration. May reference `variable`. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+      "has_syntax": true
+    },
+    "async function*": {
+      "file": "statements/async_function_star_/index.md",
+      "full_path": "js/reference/statements/async_function_star_/index.md",
+      "construct": "async function*",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nasync function* name(param0) {\n  statements\n}\nasync function* name(param0, param1) {\n  statements\n}\nasync function* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> Async generator functions do not have arrow function counterparts.\n\n> [!NOTE]\n> `function` and `*` are separate tokens, so they can be separated by [whitespace or line terminators](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space). However, there cannot be a line terminator between `async` and `function`, otherwise a semicolon is [automatically inserted](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#automatic_semicolon_insertion), causing `async` to become an identifier and the rest to become a `function*` declaration.\n\n### Parameters\n\n- `name`\n  - : The function name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements comprising the body of the function.",
+      "has_syntax": true
+    },
+    "Expression statement": {
+      "file": "statements/expression_statement/index.md",
+      "full_path": "js/reference/statements/expression_statement/index.md",
+      "construct": "Expression statement",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nexpression;\n```\n\n- `expression`\n  - : An arbitrary [expression](/en-US/docs/Web/JavaScript/Reference/Operators) to be evaluated. There are [certain expressions](#forbidden_expressions) that may be ambiguous with other statements and are thus forbidden.",
+      "has_syntax": true
+    },
+    "let": {
+      "file": "statements/let/index.md",
+      "full_path": "js/reference/statements/let/index.md",
+      "construct": "let",
+      "category": "single_statements",
+      "syntax": "```js-nolint\nlet name1;\nlet name1 = value1;\nlet name1 = value1, name2 = value2;\nlet name1, name2 = value2;\nlet name1 = value1, name2, /* \u2026, */ nameN = valueN;\n```\n\n### Parameters\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) or a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN` {{optional_inline}}\n  - : Initial value of the variable. It can be any legal expression. Default value is `undefined`.",
+      "has_syntax": true
+    },
+    "for await...of": {
+      "file": "statements/for-await...of/index.md",
+      "full_path": "js/reference/statements/for-await...of/index.md",
+      "construct": "for await...of",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nfor await (variable of iterable)\n  statement\n```\n\n- `variable`\n  - : Receives a value from the sequence on each iteration. May be either a declaration with [`const`](/en-US/docs/Web/JavaScript/Reference/Statements/const), [`let`](/en-US/docs/Web/JavaScript/Reference/Statements/let), or [`var`](/en-US/docs/Web/JavaScript/Reference/Statements/var), or an [assignment](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment) target (e.g., a previously declared variable, an object property, or a [destructuring pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring)). Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for await...of` loop is in.\n- `iterable`\n  - : An async iterable or sync iterable. The source of the sequence of values on which the loop operates.\n- `statement`\n  - : A statement to be executed on every iteration. May reference `variable`. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+      "has_syntax": true
+    },
+    "for": {
+      "file": "statements/for/index.md",
+      "full_path": "js/reference/statements/for/index.md",
+      "construct": "for",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nfor (initialization; condition; afterthought)\n  statement\n```\n\n- `initialization` {{optional_inline}}\n  - : An expression (including [assignment expressions](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment)) or variable declaration evaluated once before the loop begins. Typically used to initialize a counter variable. This expression may optionally declare new variables with `var` or `let` keywords. Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for` loop is in. Variables declared with `let` are local to the statement.\n\n    The result of this expression is discarded.\n\n- `condition` {{optional_inline}}\n  - : An expression to be evaluated before each loop iteration. If this expression [evaluates to true](/en-US/docs/Glossary/Truthy), `statement` is executed. If the expression [evaluates to false](/en-US/docs/Glossary/Falsy), execution exits the loop and goes to the first statement after the `for` construct.\n\n    This conditional test is optional. If omitted, the condition always evaluates to true.\n\n- `afterthought` {{optional_inline}}\n  - : An expression to be evaluated at the end of each loop iteration. This occurs before the next evaluation of `condition`. Generally used to update or increment the counter variable.\n- `statement`\n  - : A statement that is executed as long as the condition evaluates to true. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements. To execute no statement within the loop, use an [empty statement](/en-US/docs/Web/JavaScript/Reference/Statements/Empty) (`;`).",
+      "has_syntax": true
+    },
+    "switch": {
+      "file": "statements/switch/index.md",
+      "full_path": "js/reference/statements/switch/index.md",
+      "construct": "switch",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nswitch (expression) {\n  case caseExpression1:\n    statements\n  case caseExpression2:\n    statements\n  // \u2026\n  case caseExpressionN:\n    statements\n  default:\n    statements\n}\n```\n\n- `expression`\n  - : An expression whose result is matched against each `case` clause.\n- `caseExpressionN` {{optional_inline}}\n  - : A `case` clause used to match against `expression`. If the value of `expression` matches the value of any `caseExpressionN`, execution starts from the first statement after that `case` clause until either the end of the `switch` statement or the first encountered `break`.\n- `default` {{optional_inline}}\n  - : A `default` clause; if provided, this clause is executed if the value of `expression` doesn't match any of the `case` clauses. A `switch` statement can only have one `default` clause.",
+      "has_syntax": true
+    },
+    "class": {
+      "file": "statements/class/index.md",
+      "full_path": "js/reference/statements/class/index.md",
+      "construct": "class",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nclass name {\n  // class body\n}\nclass name extends otherName {\n  // class body\n}\n```",
+      "has_syntax": true
+    },
+    "debugger": {
+      "file": "statements/debugger/index.md",
+      "full_path": "js/reference/statements/debugger/index.md",
+      "construct": "debugger",
+      "category": "single_statements",
+      "syntax": "```js-nolint\ndebugger;\n```",
+      "has_syntax": true
+    },
+    "function*": {
+      "file": "statements/function_star_/index.md",
+      "full_path": "js/reference/statements/function_star_/index.md",
+      "construct": "function*",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nfunction* name(param0) {\n  statements\n}\nfunction* name(param0, param1) {\n  statements\n}\nfunction* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> Generator functions do not have arrow function counterparts.\n\n> [!NOTE]\n> `function` and `*` are separate tokens, so they can be separated by [whitespace or line terminators](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space).\n\n### Parameters\n\n- `name`\n  - : The function name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements comprising the body of the function.",
+      "has_syntax": true
+    },
+    "export": {
+      "file": "statements/export/index.md",
+      "full_path": "js/reference/statements/export/index.md",
+      "construct": "export",
+      "category": "single_statements",
+      "syntax": "```js-nolint\n// Exporting declarations\nexport let name1, name2/*, \u2026 */; // also var\nexport const name1 = 1, name2 = 2/*, \u2026 */; // also var, let\nexport function functionName() { /* \u2026 */ }\nexport class ClassName { /* \u2026 */ }\nexport function* generatorFunctionName() { /* \u2026 */ }\nexport const { name1, name2: bar } = o;\nexport const [ name1, name2 ] = array;\n\n// Export list\nexport { name1, /* \u2026, */ nameN };\nexport { variable1 as name1, variable2 as name2, /* \u2026, */ nameN };\nexport { variable1 as \"string name\" };\nexport { name1 as default /*, \u2026 */ };\n\n// Default exports\nexport default expression;\nexport default function functionName() { /* \u2026 */ }\nexport default class ClassName { /* \u2026 */ }\nexport default function* generatorFunctionName() { /* \u2026 */ }\nexport default function () { /* \u2026 */ }\nexport default class { /* \u2026 */ }\nexport default function* () { /* \u2026 */ }\n\n// Aggregating modules\nexport * from \"module-name\";\nexport * as name1 from \"module-name\";\nexport { name1, /* \u2026, */ nameN } from \"module-name\";\nexport { import1 as name1, import2 as name2, /* \u2026, */ nameN } from \"module-name\";\nexport { default, /* \u2026, */ } from \"module-name\";\nexport { default as name1 } from \"module-name\";\n```\n\n- `nameN`\n  - : Identifier to be exported (so that it can be imported via {{jsxref(\"Statements/import\", \"import\")}} in another script). If you use an alias with `as`, the actual exported name can be specified as a string literal, which may not be a valid identifier.",
+      "has_syntax": true
+    },
+    "break": {
+      "file": "statements/break/index.md",
+      "full_path": "js/reference/statements/break/index.md",
+      "construct": "break",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nbreak;\nbreak label;\n```\n\n- `label` {{optional_inline}}\n  - : Identifier associated with the label of the statement to break to. If the `break` statement is not nested within a loop or {{jsxref(\"Statements/switch\", \"switch\")}}, then the label identifier is required.",
+      "has_syntax": true
+    },
+    "async function": {
+      "file": "statements/async_function/index.md",
+      "full_path": "js/reference/statements/async_function/index.md",
+      "construct": "async function",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nasync function name(param0) {\n  statements\n}\nasync function name(param0, param1) {\n  statements\n}\nasync function name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> There cannot be a line terminator between `async` and `function`, otherwise a semicolon is [automatically inserted](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#automatic_semicolon_insertion), causing `async` to become an identifier and the rest to become a `function` declaration.\n\n### Parameters\n\n- `name`\n  - : The function's name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements comprising the body of the function. The `await`\n    mechanism may be used.",
+      "has_syntax": true
+    },
+    "import": {
+      "file": "statements/import/index.md",
+      "full_path": "js/reference/statements/import/index.md",
+      "construct": "import",
+      "category": "single_statements",
+      "syntax": "```js-nolint\nimport defaultExport from \"module-name\";\nimport * as name from \"module-name\";\nimport { export1 } from \"module-name\";\nimport { export1 as alias1 } from \"module-name\";\nimport { default as alias } from \"module-name\";\nimport { export1, export2 } from \"module-name\";\nimport { export1, export2 as alias2, /* \u2026 */ } from \"module-name\";\nimport { \"string name\" as alias } from \"module-name\";\nimport defaultExport, { export1, /* \u2026 */ } from \"module-name\";\nimport defaultExport, * as name from \"module-name\";\nimport \"module-name\";\n```\n\n- `defaultExport`\n  - : Name that will refer to the default export from the module. Must be a valid JavaScript identifier.\n- `module-name`\n  - : The module to import from. Only single quoted and double quoted string literals are allowed. The evaluation of the specifier is host-specified. Most hosts align with browsers and resolve the specifiers as URLs relative to the current module URL (see [`import.meta.url`](/en-US/docs/Web/JavaScript/Reference/Operators/import.meta)). Node, bundlers, and other non-browser environments often define their own features on top of this, so you should find documentation for them to understand the exact rules. The [module specifier resolution](#module_specifier_resolution) section also has more information.\n- `name`\n  - : Name of the module object that will be used as a kind of namespace when referring to the imports. Must be a valid JavaScript identifier.\n- `exportN`\n  - : Name of the exports to be imported. The name can be either an identifier or a string literal, depending on what `module-name` declares to export. If it is a string literal, it must be aliased to a valid identifier.\n- `aliasN`\n  - : Names that will refer to the named imports. Must be a valid JavaScript identifier.\n\nThe `\"module-name\"` may be followed by a set of [import attributes](/en-US/docs/Web/JavaScript/Reference/Statements/import/with), starting with the `with` keyword.",
+      "has_syntax": true
+    },
+    "continue": {
+      "file": "statements/continue/index.md",
+      "full_path": "js/reference/statements/continue/index.md",
+      "construct": "continue",
+      "category": "single_statements",
+      "syntax": "```js-nolint\ncontinue;\ncontinue label;\n```\n\n- `label` {{optional_inline}}\n  - : Identifier associated with the label of the statement.",
+      "has_syntax": true
+    },
+    "while": {
+      "file": "statements/while/index.md",
+      "full_path": "js/reference/statements/while/index.md",
+      "construct": "while",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nwhile (condition)\n  statement\n```\n\n- `condition`\n  - : An expression evaluated _before_ each pass through the loop. If this condition [evaluates to true](/en-US/docs/Glossary/Truthy), `statement` is executed. When condition [evaluates to false](/en-US/docs/Glossary/Falsy), execution continues with the statement after the `while` loop.\n- `statement`\n  - : A statement that is executed as long as the condition evaluates to true. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+      "has_syntax": true
+    },
+    "await using": {
+      "file": "statements/await_using/index.md",
+      "full_path": "js/reference/statements/await_using/index.md",
+      "construct": "await using",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nawait using name1 = value1;\nawait using name1 = value1, name2 = value2;\nawait using name1 = value1, name2 = value2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) and _not_ a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN`\n  - : Initial value of the variable. It can be any legal expression but its value must be either `null`, `undefined`, or an object with a [`[Symbol.asyncDispose]()`](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncDispose) or [`[Symbol.dispose]()`](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/dispose) method.",
+      "has_syntax": true
+    },
+    "Block statement": {
+      "file": "statements/block/index.md",
+      "full_path": "js/reference/statements/block/index.md",
+      "construct": "Block statement",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\n{\n  StatementList\n}\n```\n\n- `StatementList`\n  - : Statements and declarations grouped within the block statement.",
+      "has_syntax": true
+    },
+    "Import attributes": {
+      "file": "statements/import/with/index.md",
+      "full_path": "js/reference/statements/import/with/index.md",
+      "construct": "Import attributes",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nimport { names } from \"module-name\" with {};\nimport { names } from \"module-name\" with { key: \"data\" };\nimport { names } from \"module-name\" with { key: \"data\", key2: \"data2\" };\nimport { names } from \"module-name\" with { key: \"data\", key2: \"data2\", /* \u2026, */ keyN: \"dataN\" };\n\nexport { names } from \"module-name\" with {};\nexport { names } from \"module-name\" with { key: \"data\" };\nexport { names } from \"module-name\" with { key: \"data\", key2: \"data2\" };\nexport { names } from \"module-name\" with { key: \"data\", key2: \"data2\", /* \u2026, */ keyN: \"dataN\" };\n```\n\n### Parameters\n\n- `keyN`\n  - : An attribute key. Can be an identifier or a string literal. All keys must be unique and must be known to the runtime.\n- `\"dataN\"`\n  - : An attribute value. Must be a string literal.\n\n### Exceptions\n\n- {{jsxref(\"SyntaxError\")}}\n  - : An unsupported `key` was specified in a _static import_.\n\n- {{jsxref(\"TypeError\")}}\n  - : An unsupported `key` was specified in a _dynamic import_.\n\nNote that specifying an unsupported value for a supported key may also result in an exception in some cases, depending on the key.",
+      "has_syntax": true
+    },
+    "extends": {
+      "file": "classes/extends/index.md",
+      "full_path": "js/reference/classes/extends/index.md",
+      "construct": "extends",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nclass ChildClass extends ParentClass { /* \u2026 */ }\n```\n\n- `ParentClass`\n  - : An expression that evaluates to a constructor function (including a class) or `null`.",
+      "has_syntax": true
+    },
+    "Public class fields": {
+      "file": "classes/public_class_fields/index.md",
+      "full_path": "js/reference/classes/public_class_fields/index.md",
+      "construct": "Public class fields",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nclass ClassWithField {\n  instanceField;\n  instanceFieldWithInitializer = \"instance field\";\n  static staticField;\n  static staticFieldWithInitializer = \"static field\";\n}\n```\n\nThere are some additional syntax restrictions:\n\n- The name of a static property (field or method) cannot be `prototype`.\n- The name of a class field (static or instance) cannot be `constructor`.",
+      "has_syntax": true
+    },
+    "Static initialization blocks": {
+      "file": "classes/static_initialization_blocks/index.md",
+      "full_path": "js/reference/classes/static_initialization_blocks/index.md",
+      "construct": "Static initialization blocks",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nclass ClassWithSIB {\n  static {\n    // \u2026\n  }\n}\n```",
+      "has_syntax": true
+    },
+    "static": {
+      "file": "classes/static/index.md",
+      "full_path": "js/reference/classes/static/index.md",
+      "construct": "static",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nclass ClassWithStatic {\n  static staticField;\n  static staticFieldWithInitializer = value;\n  static staticMethod() {\n    // \u2026\n  }\n}\n```\n\nThere are some additional syntax restrictions:\n\n- The name of a static property (field or method) cannot be `prototype`.\n- The name of a class field (static or instance) cannot be `constructor`.",
+      "has_syntax": true
+    },
+    "Private elements": {
+      "file": "classes/private_elements/index.md",
+      "full_path": "js/reference/classes/private_elements/index.md",
+      "construct": "Private elements",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nclass ClassWithPrivate {\n  #privateField;\n  #privateFieldWithInitializer = 42;\n\n  #privateMethod() {\n    // \u2026\n  }\n\n  static #privateStaticField;\n  static #privateStaticFieldWithInitializer = 42;\n\n  static #privateStaticMethod() {\n    // \u2026\n  }\n}\n```\n\nThere are some additional syntax restrictions:\n\n- All private identifiers declared within a class must be unique. The namespace is shared between static and instance elements. The only exception is when the two declarations define a getter-setter pair.\n- The private identifier cannot be `#constructor`.",
+      "has_syntax": true
+    },
+    "constructor": {
+      "file": "classes/constructor/index.md",
+      "full_path": "js/reference/classes/constructor/index.md",
+      "construct": "constructor",
+      "category": "compound_statements",
+      "syntax": "```js-nolint\nconstructor() { /* \u2026 */ }\nconstructor(argument0) { /* \u2026 */ }\nconstructor(argument0, argument1) { /* \u2026 */ }\nconstructor(argument0, argument1, /* \u2026, */ argumentN) { /* \u2026 */ }\n```\n\nThere are some additional syntax restrictions:\n\n- A class method called `constructor` cannot be a [getter](/en-US/docs/Web/JavaScript/Reference/Functions/get), [setter](/en-US/docs/Web/JavaScript/Reference/Functions/set), [async](/en-US/docs/Web/JavaScript/Reference/Statements/async_function), or [generator](/en-US/docs/Web/JavaScript/Reference/Statements/function*).\n- A class cannot have more than one `constructor` method.",
+      "has_syntax": true
+    },
+    "Property accessors": {
+      "file": "operators/property_accessors/index.md",
+      "full_path": "js/reference/operators/property_accessors/index.md",
+      "construct": "Property accessors",
+      "category": "expressions",
+      "syntax": "```js-nolint\nobject.propertyName\nobject[expression]\nobject.#privateProperty\n```",
+      "has_syntax": true
+    },
+    "instanceof": {
+      "file": "operators/instanceof/index.md",
+      "full_path": "js/reference/operators/instanceof/index.md",
+      "construct": "instanceof",
+      "category": "expressions",
+      "syntax": "```js-nolint\nobject instanceof constructor\n```\n\n### Parameters\n\n- `object`\n  - : The object to test.\n- `constructor`\n  - : Constructor to test against.\n\n### Exceptions\n\n- {{jsxref(\"TypeError\")}}\n  - : Thrown if `constructor` is not an object. If `constructor` doesn't have a [`[Symbol.hasInstance]()`](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance) method, it must also be a function.",
+      "has_syntax": true
+    },
+    "Object initializer": {
+      "file": "operators/object_initializer/index.md",
+      "full_path": "js/reference/operators/object_initializer/index.md",
+      "construct": "Object initializer",
+      "category": "expressions",
+      "syntax": "```js-nolint\no = {\n  a: \"foo\",\n  b: 42,\n  c: {},\n  1: \"number literal property\",\n  \"foo:bar\": \"string literal property\",\n\n  shorthandProperty,\n\n  method(parameters) {\n    // \u2026\n  },\n\n  get property() {},\n  set property(value) {},\n\n  [expression]: \"computed property\",\n\n  __proto__: prototype,\n\n  ...spreadProperty,\n};\n```",
+      "has_syntax": true
+    },
+    "delete": {
+      "file": "operators/delete/index.md",
+      "full_path": "js/reference/operators/delete/index.md",
+      "construct": "delete",
+      "category": "expressions",
+      "syntax": "```js-nolint\ndelete object.property\ndelete object[property]\n```\n\n> [!NOTE]\n> The syntax allows a wider range of expressions following the `delete` operator, but only the above forms lead to meaningful behaviors.\n\n### Parameters\n\n- `object`\n  - : The name of an object, or an expression evaluating to an object.\n- `property`\n  - : The property to delete.\n\n### Return value\n\n`true` for all cases except when the property is an [own](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn) [non-configurable](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#configurable_attribute) property, in which case `false` is returned in non-strict mode.\n\n### Exceptions\n\n- {{jsxref(\"TypeError\")}}\n  - : Thrown in [strict mode](/en-US/docs/Web/JavaScript/Reference/Strict_mode) if the property is an own non-configurable property.\n- {{jsxref(\"ReferenceError\")}}\n  - : Thrown if `object` is [`super`](/en-US/docs/Web/JavaScript/Reference/Operators/super).",
+      "has_syntax": true
+    },
+    "Destructuring": {
+      "file": "operators/destructuring/index.md",
+      "full_path": "js/reference/operators/destructuring/index.md",
+      "construct": "Destructuring",
+      "category": "expressions",
+      "syntax": "```js-nolint\nconst [a, b] = array;\nconst [a, , b] = array;\nconst [a = aDefault, b] = array;\nconst [a, b, ...rest] = array;\nconst [a, , b, ...rest] = array;\nconst [a, b, ...{ pop, push }] = array;\nconst [a, b, ...[c, d]] = array;\n\nconst { a, b } = obj;\nconst { a: a1, b: b1 } = obj;\nconst { a: a1 = aDefault, b = bDefault } = obj;\nconst { a, b, ...rest } = obj;\nconst { a: a1, b: b1, ...rest } = obj;\nconst { [key]: a } = obj;\n\nlet a, b, a1, b1, c, d, rest, pop, push;\n[a, b] = array;\n[a, , b] = array;\n[a = aDefault, b] = array;\n[a, b, ...rest] = array;\n[a, , b, ...rest] = array;\n[a, b, ...{ pop, push }] = array;\n[a, b, ...[c, d]] = array;\n\n({ a, b } = obj); // parentheses are required\n({ a: a1, b: b1 } = obj);\n({ a: a1 = aDefault, b = bDefault } = obj);\n({ a, b, ...rest } = obj);\n({ a: a1, b: b1, ...rest } = obj);\n```",
+      "has_syntax": true
+    },
+    "in": {
+      "file": "operators/in/index.md",
+      "full_path": "js/reference/operators/in/index.md",
+      "construct": "in",
+      "category": "expressions",
+      "syntax": "```js-nolint\nprop in object\n#prop in object\n```\n\n### Parameters\n\n- `prop`\n  - : A string or symbol representing a property name (non-symbols will be [coerced to strings](/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#string_coercion)). Can also be a [private element identifier](/en-US/docs/Web/JavaScript/Reference/Classes/Private_elements).\n- `object`\n  - : Object to check if it (or its prototype chain) contains the property with specified name (`prop`).\n\n### Exceptions\n\n- {{jsxref(\"TypeError\")}}\n  - : Thrown if `object` is not an object (i.e., a primitive).",
+      "has_syntax": true
+    },
+    "Grouping operator ( )": {
+      "file": "operators/grouping/index.md",
+      "full_path": "js/reference/operators/grouping/index.md",
+      "construct": "Grouping operator ( )",
+      "category": "expressions",
+      "syntax": "```js-nolint\n(expression)\n```\n\n### Parameters\n\n- `expression`\n  - : Any [expression](/en-US/docs/Web/JavaScript/Reference/Operators) to be evaluated, including [comma-joined](/en-US/docs/Web/JavaScript/Reference/Operators/Comma_operator) expressions.",
+      "has_syntax": true
+    },
+    "yield*": {
+      "file": "operators/yield_star_/index.md",
+      "full_path": "js/reference/operators/yield_star_/index.md",
+      "construct": "yield*",
+      "category": "expressions",
+      "syntax": "```js-nolint\nyield* expression\n```\n\n### Parameters\n\n- `expression` {{optional_inline}}\n  - : An iterable object.\n\n### Return value\n\nReturns the value returned by that iterator when it's closed (when `done` is `true`).",
+      "has_syntax": true
+    },
+    "function expression": {
+      "file": "operators/function/index.md",
+      "full_path": "js/reference/operators/function/index.md",
+      "construct": "function expression",
+      "category": "expressions",
+      "syntax": "```js-nolint\nfunction (param0) {\n  statements\n}\nfunction (param0, param1) {\n  statements\n}\nfunction (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nfunction name(param0) {\n  statements\n}\nfunction name(param0, param1) {\n  statements\n}\nfunction name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keyword `function` to avoid ambiguity with a [`function` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/function). The `function` keyword only begins an expression when it appears in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+      "has_syntax": true
+    },
+    "await": {
+      "file": "operators/await/index.md",
+      "full_path": "js/reference/operators/await/index.md",
+      "construct": "await",
+      "category": "expressions",
+      "syntax": "```js-nolint\nawait expression\n```\n\n### Parameters\n\n- `expression`\n  - : A {{jsxref(\"Promise\")}}, a [thenable object](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#thenables), or any value to wait for.\n\n### Return value\n\nThe fulfillment value of the promise or thenable object, or, if the expression is not thenable, the expression's own value.\n\n### Exceptions\n\nThrows the rejection reason if the promise or thenable object is rejected.",
+      "has_syntax": true
+    },
+    "async function* expression": {
+      "file": "operators/async_function_star_/index.md",
+      "full_path": "js/reference/operators/async_function_star_/index.md",
+      "construct": "async function* expression",
+      "category": "expressions",
+      "syntax": "```js-nolint\nasync function* (param0) {\n  statements\n}\nasync function* (param0, param1) {\n  statements\n}\nasync function* (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nasync function* name(param0) {\n  statements\n}\nasync function* name(param0, param1) {\n  statements\n}\nasync function* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keywords `async function` to avoid ambiguity with an [`async function*` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/async_function*). The `async function` keywords only begin an expression when they appear in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+      "has_syntax": true
+    },
+    "\"null\"": {
+      "file": "operators/null/index.md",
+      "full_path": "js/reference/operators/null/index.md",
+      "construct": "\"null\"",
+      "category": "expressions",
+      "syntax": "```js-nolint\nnull\n```",
+      "has_syntax": true
+    },
+    "super": {
+      "file": "operators/super/index.md",
+      "full_path": "js/reference/operators/super/index.md",
+      "construct": "super",
+      "category": "expressions",
+      "syntax": "```js-nolint\nsuper()\nsuper(arg1)\nsuper(arg1, arg2)\nsuper(arg1, arg2, /* \u2026, */ argN)\n\nsuper.propertyOnParent\nsuper[expression]\n```",
+      "has_syntax": true
+    },
+    "Spread syntax (...)": {
+      "file": "operators/spread_syntax/index.md",
+      "full_path": "js/reference/operators/spread_syntax/index.md",
+      "construct": "Spread syntax (...)",
+      "category": "expressions",
+      "syntax": "```js-nolint\nmyFunction(a, ...iterableObj, b)\n[1, ...iterableObj, '4', 'five', 6]\n{ ...obj, key: 'value' }\n```",
+      "has_syntax": true
+    },
+    "void operator": {
+      "file": "operators/void/index.md",
+      "full_path": "js/reference/operators/void/index.md",
+      "construct": "void operator",
+      "category": "expressions",
+      "syntax": "```js-nolint\nvoid expression\n```",
+      "has_syntax": true
+    },
+    "import.meta": {
+      "file": "operators/import.meta/index.md",
+      "full_path": "js/reference/operators/import.meta/index.md",
+      "construct": "import.meta",
+      "category": "expressions",
+      "syntax": "```js-nolint\nimport.meta\n```\n\n### Value\n\nThe `import.meta` object is created by the host environment, as an extensible [`null`-prototype](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object#null-prototype_objects) object where all properties are writable, configurable, and enumerable. The spec doesn't specify any properties to be defined on it, but hosts usually implement the following properties:\n\n- `url`\n  - : The full URL to the module, includes query parameters and/or hash (following the `?` or `#`). In browsers, this is either the URL from which the script was obtained (for external scripts), or the URL of the containing document (for inline scripts). In Node.js, this is the file path (including the `file://` protocol).\n- [`resolve`](/en-US/docs/Web/JavaScript/Reference/Operators/import.meta/resolve)\n  - : Resolves a module specifier to a URL using the current module's URL as base.",
+      "has_syntax": true
+    },
+    "new": {
+      "file": "operators/new/index.md",
+      "full_path": "js/reference/operators/new/index.md",
+      "construct": "new",
+      "category": "expressions",
+      "syntax": "```js-nolint\nnew constructor\nnew constructor()\nnew constructor(arg1)\nnew constructor(arg1, arg2)\nnew constructor(arg1, arg2, /* \u2026, */ argN)\n```\n\n### Parameters\n\n- `constructor`\n  - : A class or function that specifies the type of the object instance. The expression can be anything with sufficient [precedence](/en-US/docs/Web/JavaScript/Reference/Operators/Operator_precedence#table), including an identifier, a [property access](/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors), or another `new` expression, but [optional chaining](/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) is not allowed.\n- `arg1`, `arg2`, \u2026, `argN`\n  - : A list of values that the `constructor` will be called with. `new Foo` is equivalent to `new Foo()`, i.e., if no argument list is specified, `Foo` is called without arguments.",
+      "has_syntax": true
+    },
+    "yield": {
+      "file": "operators/yield/index.md",
+      "full_path": "js/reference/operators/yield/index.md",
+      "construct": "yield",
+      "category": "expressions",
+      "syntax": "```js-nolint\nyield\nyield expression\n```\n\n### Parameters\n\n- `expression` {{optional_inline}}\n  - : The value to yield from the generator function via [the iterator protocol](/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol). If omitted, `undefined` is yielded.\n\n### Return value\n\nReturns the optional value passed to the generator's `next()` method to resume its execution.\n\n> [!NOTE]\n> This means `next()` is asymmetric: it always sends a value to the currently suspended `yield`, but returns the operand of the next `yield`. The argument passed to the first `next()` call cannot be retrieved because there's no currently suspended `yield`.",
+      "has_syntax": true
+    },
+    "class expression": {
+      "file": "operators/class/index.md",
+      "full_path": "js/reference/operators/class/index.md",
+      "construct": "class expression",
+      "category": "expressions",
+      "syntax": "```js-nolint\nclass {\n  // class body\n}\nclass name {\n  // class body\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keyword `class` to avoid ambiguity with a [`class` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/class). The `class` keyword only begins an expression when it appears in a context that cannot accept statements.",
+      "has_syntax": true
+    },
+    "this": {
+      "file": "operators/this/index.md",
+      "full_path": "js/reference/operators/this/index.md",
+      "construct": "this",
+      "category": "expressions",
+      "syntax": "```js-nolint\nthis\n```\n\n### Value\n\nIn non\u2013strict mode, `this` is always a reference to an object. In strict mode, it can be any value. For more information on how the value is determined, see the description below.",
+      "has_syntax": true
+    },
+    "function* expression": {
+      "file": "operators/function_star_/index.md",
+      "full_path": "js/reference/operators/function_star_/index.md",
+      "construct": "function* expression",
+      "category": "expressions",
+      "syntax": "```js-nolint\nfunction* (param0) {\n  statements\n}\nfunction* (param0, param1) {\n  statements\n}\nfunction* (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nfunction* name(param0) {\n  statements\n}\nfunction* name(param0, param1) {\n  statements\n}\nfunction* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keyword `function` to avoid ambiguity with a [`function*` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/function*). The `function` keyword only begins an expression when it appears in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+      "has_syntax": true
+    },
+    "Optional chaining (?.)": {
+      "file": "operators/optional_chaining/index.md",
+      "full_path": "js/reference/operators/optional_chaining/index.md",
+      "construct": "Optional chaining (?.)",
+      "category": "expressions",
+      "syntax": "```js-nolint\nobj?.prop\nobj?.[expr]\nfunc?.(args)\n```",
+      "has_syntax": true
+    },
+    "async function expression": {
+      "file": "operators/async_function/index.md",
+      "full_path": "js/reference/operators/async_function/index.md",
+      "construct": "async function expression",
+      "category": "expressions",
+      "syntax": "```js-nolint\nasync function (param0) {\n  statements\n}\nasync function (param0, param1) {\n  statements\n}\nasync function (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nasync function name(param0) {\n  statements\n}\nasync function name(param0, param1) {\n  statements\n}\nasync function name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keywords `async function` to avoid ambiguity with an [`async function` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/async_function). The `async function` keywords only begin an expression when they appear in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+      "has_syntax": true
+    },
+    "Comma operator (,)": {
+      "file": "operators/comma_operator/index.md",
+      "full_path": "js/reference/operators/comma_operator/index.md",
+      "construct": "Comma operator (,)",
+      "category": "expressions",
+      "syntax": "```js-nolint\nexpr1, expr2, expr3/* , \u2026 */\n```\n\n### Parameters\n\n- `expr1`, `expr2`, `expr3`, \u2026\n  - : One or more expressions, the last of which is returned as the value of the compound expression.",
+      "has_syntax": true
+    },
+    "import()": {
+      "file": "operators/import/index.md",
+      "full_path": "js/reference/operators/import/index.md",
+      "construct": "import()",
+      "category": "expressions",
+      "syntax": "```js-nolint\nimport(moduleName)\nimport(moduleName, options)\n```\n\nThe `import()` call is a syntax that closely resembles a function call, but `import` itself is a keyword, not a function. You cannot alias it like `const myImport = import`, which will throw a {{jsxref(\"SyntaxError\")}}.\n\n[Trailing commas](/en-US/docs/Web/JavaScript/Reference/Trailing_commas) are only allowed if the runtime also supports `options`. Check [browser compatibility](#browser_compatibility).\n\n### Parameters\n\n- `moduleName`\n  - : The module to import from. The evaluation of the specifier is host-specified, but always follows the same algorithm as static [import declarations](/en-US/docs/Web/JavaScript/Reference/Statements/import).\n- `options`\n  - : An object containing import options. The following key is recognized:\n    - `with`\n      - : The [import attributes](/en-US/docs/Web/JavaScript/Reference/Statements/import/with).\n\n### Return value\n\nReturns a promise which:\n\n- If the referenced module is loaded and evaluated successfully, fulfills to a [module namespace object](#module_namespace_object): an object containing all exports from `moduleName`.\n- If the [coercion to string](/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#string_coercion) of `moduleName` throws, rejects with the thrown error.\n- If module fetching and loading fails for any reason, rejects with an implementation-defined error (Node uses a generic `Error`, while all browsers use `TypeError`). Common causes may include:\n  - In a file-system-based module system (Node.js, for example), if accessing the file system fails (permission denied, file not found, etc.).\n  - In a web-based module system (browsers, for example), if the network request fails (not connected to the Internet, CORS issue, etc.) or an HTTP error occurs (404, 500, etc.).\n- If evaluation of the referenced module throws, rejects with the thrown error.\n\n> [!NOTE]\n> `import()` never synchronously throws an error.",
+      "has_syntax": true
+    },
+    "new.target": {
+      "file": "operators/new.target/index.md",
+      "full_path": "js/reference/operators/new.target/index.md",
+      "construct": "new.target",
+      "category": "expressions",
+      "syntax": "```js-nolint\nnew.target\n```\n\n### Value\n\n`new.target` is guaranteed to be a constructable function value or `undefined`.\n\n- In class constructors, it refers to the class that `new` was called upon, which may be a subclass of the current constructor, because subclasses transitively call the superclass's constructor through [`super()`](/en-US/docs/Web/JavaScript/Reference/Operators/super).\n- In ordinary functions, if the function is constructed directly with [`new`](/en-US/docs/Web/JavaScript/Reference/Operators/new), `new.target` refers to the function itself. If the function is called without `new`, `new.target` is {{jsxref(\"undefined\")}}. Functions can be used as the base class for [`extends`](/en-US/docs/Web/JavaScript/Reference/Classes/extends), in which case `new.target` may refer to the subclass.\n- If a constructor (class or function) is called via {{jsxref(\"Reflect.construct()\")}}, then `new.target` refers to the value passed as `newTarget` (which defaults to `target`).\n- In [arrow functions](/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions), `new.target` is inherited from the surrounding scope. If the arrow function is not defined within another class or function which has a `new.target` {{Glossary(\"binding\")}}, then a syntax error is thrown.\n- In [static initialization blocks](/en-US/docs/Web/JavaScript/Reference/Classes/Static_initialization_blocks), `new.target` is {{jsxref(\"undefined\")}}.",
+      "has_syntax": true
+    },
+    "typeof": {
+      "file": "operators/typeof/index.md",
+      "full_path": "js/reference/operators/typeof/index.md",
+      "construct": "typeof",
+      "category": "expressions",
+      "syntax": "```js-nolint\ntypeof operand\n```\n\n### Parameters\n\n- `operand`\n  - : An expression representing the object or [primitive](/en-US/docs/Glossary/Primitive) whose type is to be returned.",
+      "has_syntax": true
+    },
+    "import.meta.resolve()": {
+      "file": "operators/import.meta/resolve/index.md",
+      "full_path": "js/reference/operators/import.meta/resolve/index.md",
+      "construct": "import.meta.resolve()",
+      "category": "expressions",
+      "syntax": "```js-nolint\nimport.meta.resolve(moduleName)\n```\n\n### Parameters\n\n- `moduleName`\n  - : A string that specifies a potentially importable module. This may be a relative path (such as `\"./lib/helper.js\"`), a bare name (such as `\"my-module\"`), or an absolute URL (such as `\"https://example.com/lib/helper.js\"`).\n\n### Return value\n\nReturns a string corresponding to the path that would be imported if the argument were passed to [`import()`](/en-US/docs/Web/JavaScript/Reference/Operators/import).",
+      "has_syntax": true
+    }
+  },
+  "by_category": {
+    "data_model": [],
+    "expressions": [
+      {
+        "file": "template_literals/index.md",
+        "full_path": "js/reference/template_literals/index.md",
+        "construct": "Template literals (Template strings)",
+        "category": "expressions",
+        "syntax": "```js-nolint\n`string text`\n\n`string text line 1\n string text line 2`\n\n`string text ${expression} string text`\n\ntagFunction`string text ${expression} string text`\n```\n\n### Parameters\n\n- `string text`\n  - : The string text that will become part of the template literal. Almost all characters are allowed literally, including [line breaks](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#line_terminators) and other [whitespace characters](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space). However, invalid escape sequences will cause a syntax error, unless a [tag function](#tagged_templates_and_escape_sequences) is used.\n- `expression`\n  - : An expression to be inserted in the current position, whose value is converted to a string or passed to `tagFunction`.\n- `tagFunction`\n  - : If specified, it will be called with the template strings array and substitution expressions, and the return value becomes the value of the template literal. See [tagged templates](#tagged_templates).",
+        "has_syntax": true
+      },
+      {
+        "file": "functions/default_parameters/index.md",
+        "full_path": "js/reference/functions/default_parameters/index.md",
+        "construct": "Default parameters",
+        "category": "expressions",
+        "syntax": "```js-nolint\nfunction fnName(param1 = defaultValue1, /* \u2026, */ paramN = defaultValueN) {\n  // \u2026\n}\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "functions/rest_parameters/index.md",
+        "full_path": "js/reference/functions/rest_parameters/index.md",
+        "construct": "Rest parameters",
+        "category": "expressions",
+        "syntax": "```js-nolint\nfunction f(a, b, ...theArgs) {\n  // \u2026\n}\n```\n\nThere are some additional syntax restrictions:\n\n- A function definition can only have one rest parameter.\n- The rest parameter must be the last parameter in the function definition.\n- [Trailing commas](/en-US/docs/Web/JavaScript/Reference/Trailing_commas) are not allowed after the rest parameter.\n- The rest parameter cannot have a [default value](/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters).",
+        "has_syntax": true
+      },
+      {
+        "file": "functions/arrow_functions/index.md",
+        "full_path": "js/reference/functions/arrow_functions/index.md",
+        "construct": "Arrow function expressions",
+        "category": "expressions",
+        "syntax": "```js-nolint\n() => expression\n\nparam => expression\n\n(param) => expression\n\n(param1, paramN) => expression\n\n() => {\n  statements\n}\n\nparam => {\n  statements\n}\n\n(param1, paramN) => {\n  statements\n}\n```\n\n[Rest parameters](/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters), [default parameters](/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters), and [destructuring](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring) within params are supported, and always require parentheses:\n\n```js-nolint\n(a, b, ...r) => expression\n(a = 400, b = 20, c) => expression\n([a, b] = [10, 20]) => expression\n({ a, b } = { a: 10, b: 20 }) => expression\n```\n\nArrow functions can be [`async`](/en-US/docs/Web/JavaScript/Reference/Statements/async_function) by prefixing the expression with the `async` keyword.\n\n```js-nolint\nasync param => expression\nasync (param1, param2, ...paramN) => {\n  statements\n}\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "functions/get/index.md",
+        "full_path": "js/reference/functions/get/index.md",
+        "construct": "get",
+        "category": "expressions",
+        "syntax": "```js-nolint\n{ get prop() { /* \u2026 */ } }\n{ get [expression]() { /* \u2026 */ } }\n```\n\nThere are some additional syntax restrictions:\n\n- A getter must have exactly zero parameters.\n\n### Parameters\n\n- `prop`\n  - : The name of the property to bind to the given function. In the same way as other properties in [object initializers](/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer), it can be a string literal, a number literal, or an identifier.\n- `expression`\n  - : You can also use expressions for a computed property name to bind to the given function.",
+        "has_syntax": true
+      },
+      {
+        "file": "functions/method_definitions/index.md",
+        "full_path": "js/reference/functions/method_definitions/index.md",
+        "construct": "Method definitions",
+        "category": "expressions",
+        "syntax": "```js-nolint\n({\n  property(parameters) {},\n  *generator(parameters) {},\n  async property(parameters) {},\n  async *generator(parameters) {},\n\n  // with computed keys\n  [expression](parameters) {},\n  *[expression](parameters) {},\n  async [expression](parameters) {},\n  async *[expression](parameters) {},\n})\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "functions/set/index.md",
+        "full_path": "js/reference/functions/set/index.md",
+        "construct": "set",
+        "category": "expressions",
+        "syntax": "```js-nolint\n{ set prop(val) { /* \u2026 */ } }\n{ set [expression](val) { /* \u2026 */ } }\n```\n\nThere are some additional syntax restrictions:\n\n- A setter must have exactly one parameter.\n\n### Parameters\n\n- `prop`\n  - : The name of the property to bind to the given function. In the same way as other properties in [object initializers](/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer), it can be a string literal, a number literal, or an identifier.\n- `val`\n  - : An alias for the variable that holds the value attempted to be assigned to\n    `prop`.\n- `expression`\n  - : You can also use expressions for a computed property name to bind to the given function.",
+        "has_syntax": true
+      },
+      {
+        "file": "functions/arguments/symbol.iterator/index.md",
+        "full_path": "js/reference/functions/arguments/symbol.iterator/index.md",
+        "construct": "arguments[Symbol.iterator]()",
+        "category": "expressions",
+        "syntax": "```js-nolint\narguments[Symbol.iterator]()\n```\n\n### Parameters\n\nNone.\n\n### Return value\n\nThe same return value as {{jsxref(\"Array.prototype.values()\")}}: a new [iterable iterator object](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Iterator) that yields the value of each index in the `arguments` object.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/property_accessors/index.md",
+        "full_path": "js/reference/operators/property_accessors/index.md",
+        "construct": "Property accessors",
+        "category": "expressions",
+        "syntax": "```js-nolint\nobject.propertyName\nobject[expression]\nobject.#privateProperty\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/instanceof/index.md",
+        "full_path": "js/reference/operators/instanceof/index.md",
+        "construct": "instanceof",
+        "category": "expressions",
+        "syntax": "```js-nolint\nobject instanceof constructor\n```\n\n### Parameters\n\n- `object`\n  - : The object to test.\n- `constructor`\n  - : Constructor to test against.\n\n### Exceptions\n\n- {{jsxref(\"TypeError\")}}\n  - : Thrown if `constructor` is not an object. If `constructor` doesn't have a [`[Symbol.hasInstance]()`](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance) method, it must also be a function.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/object_initializer/index.md",
+        "full_path": "js/reference/operators/object_initializer/index.md",
+        "construct": "Object initializer",
+        "category": "expressions",
+        "syntax": "```js-nolint\no = {\n  a: \"foo\",\n  b: 42,\n  c: {},\n  1: \"number literal property\",\n  \"foo:bar\": \"string literal property\",\n\n  shorthandProperty,\n\n  method(parameters) {\n    // \u2026\n  },\n\n  get property() {},\n  set property(value) {},\n\n  [expression]: \"computed property\",\n\n  __proto__: prototype,\n\n  ...spreadProperty,\n};\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/delete/index.md",
+        "full_path": "js/reference/operators/delete/index.md",
+        "construct": "delete",
+        "category": "expressions",
+        "syntax": "```js-nolint\ndelete object.property\ndelete object[property]\n```\n\n> [!NOTE]\n> The syntax allows a wider range of expressions following the `delete` operator, but only the above forms lead to meaningful behaviors.\n\n### Parameters\n\n- `object`\n  - : The name of an object, or an expression evaluating to an object.\n- `property`\n  - : The property to delete.\n\n### Return value\n\n`true` for all cases except when the property is an [own](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn) [non-configurable](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#configurable_attribute) property, in which case `false` is returned in non-strict mode.\n\n### Exceptions\n\n- {{jsxref(\"TypeError\")}}\n  - : Thrown in [strict mode](/en-US/docs/Web/JavaScript/Reference/Strict_mode) if the property is an own non-configurable property.\n- {{jsxref(\"ReferenceError\")}}\n  - : Thrown if `object` is [`super`](/en-US/docs/Web/JavaScript/Reference/Operators/super).",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/destructuring/index.md",
+        "full_path": "js/reference/operators/destructuring/index.md",
+        "construct": "Destructuring",
+        "category": "expressions",
+        "syntax": "```js-nolint\nconst [a, b] = array;\nconst [a, , b] = array;\nconst [a = aDefault, b] = array;\nconst [a, b, ...rest] = array;\nconst [a, , b, ...rest] = array;\nconst [a, b, ...{ pop, push }] = array;\nconst [a, b, ...[c, d]] = array;\n\nconst { a, b } = obj;\nconst { a: a1, b: b1 } = obj;\nconst { a: a1 = aDefault, b = bDefault } = obj;\nconst { a, b, ...rest } = obj;\nconst { a: a1, b: b1, ...rest } = obj;\nconst { [key]: a } = obj;\n\nlet a, b, a1, b1, c, d, rest, pop, push;\n[a, b] = array;\n[a, , b] = array;\n[a = aDefault, b] = array;\n[a, b, ...rest] = array;\n[a, , b, ...rest] = array;\n[a, b, ...{ pop, push }] = array;\n[a, b, ...[c, d]] = array;\n\n({ a, b } = obj); // parentheses are required\n({ a: a1, b: b1 } = obj);\n({ a: a1 = aDefault, b = bDefault } = obj);\n({ a, b, ...rest } = obj);\n({ a: a1, b: b1, ...rest } = obj);\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/in/index.md",
+        "full_path": "js/reference/operators/in/index.md",
+        "construct": "in",
+        "category": "expressions",
+        "syntax": "```js-nolint\nprop in object\n#prop in object\n```\n\n### Parameters\n\n- `prop`\n  - : A string or symbol representing a property name (non-symbols will be [coerced to strings](/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#string_coercion)). Can also be a [private element identifier](/en-US/docs/Web/JavaScript/Reference/Classes/Private_elements).\n- `object`\n  - : Object to check if it (or its prototype chain) contains the property with specified name (`prop`).\n\n### Exceptions\n\n- {{jsxref(\"TypeError\")}}\n  - : Thrown if `object` is not an object (i.e., a primitive).",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/grouping/index.md",
+        "full_path": "js/reference/operators/grouping/index.md",
+        "construct": "Grouping operator ( )",
+        "category": "expressions",
+        "syntax": "```js-nolint\n(expression)\n```\n\n### Parameters\n\n- `expression`\n  - : Any [expression](/en-US/docs/Web/JavaScript/Reference/Operators) to be evaluated, including [comma-joined](/en-US/docs/Web/JavaScript/Reference/Operators/Comma_operator) expressions.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/yield_star_/index.md",
+        "full_path": "js/reference/operators/yield_star_/index.md",
+        "construct": "yield*",
+        "category": "expressions",
+        "syntax": "```js-nolint\nyield* expression\n```\n\n### Parameters\n\n- `expression` {{optional_inline}}\n  - : An iterable object.\n\n### Return value\n\nReturns the value returned by that iterator when it's closed (when `done` is `true`).",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/function/index.md",
+        "full_path": "js/reference/operators/function/index.md",
+        "construct": "function expression",
+        "category": "expressions",
+        "syntax": "```js-nolint\nfunction (param0) {\n  statements\n}\nfunction (param0, param1) {\n  statements\n}\nfunction (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nfunction name(param0) {\n  statements\n}\nfunction name(param0, param1) {\n  statements\n}\nfunction name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keyword `function` to avoid ambiguity with a [`function` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/function). The `function` keyword only begins an expression when it appears in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/await/index.md",
+        "full_path": "js/reference/operators/await/index.md",
+        "construct": "await",
+        "category": "expressions",
+        "syntax": "```js-nolint\nawait expression\n```\n\n### Parameters\n\n- `expression`\n  - : A {{jsxref(\"Promise\")}}, a [thenable object](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise#thenables), or any value to wait for.\n\n### Return value\n\nThe fulfillment value of the promise or thenable object, or, if the expression is not thenable, the expression's own value.\n\n### Exceptions\n\nThrows the rejection reason if the promise or thenable object is rejected.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/async_function_star_/index.md",
+        "full_path": "js/reference/operators/async_function_star_/index.md",
+        "construct": "async function* expression",
+        "category": "expressions",
+        "syntax": "```js-nolint\nasync function* (param0) {\n  statements\n}\nasync function* (param0, param1) {\n  statements\n}\nasync function* (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nasync function* name(param0) {\n  statements\n}\nasync function* name(param0, param1) {\n  statements\n}\nasync function* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keywords `async function` to avoid ambiguity with an [`async function*` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/async_function*). The `async function` keywords only begin an expression when they appear in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/null/index.md",
+        "full_path": "js/reference/operators/null/index.md",
+        "construct": "\"null\"",
+        "category": "expressions",
+        "syntax": "```js-nolint\nnull\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/super/index.md",
+        "full_path": "js/reference/operators/super/index.md",
+        "construct": "super",
+        "category": "expressions",
+        "syntax": "```js-nolint\nsuper()\nsuper(arg1)\nsuper(arg1, arg2)\nsuper(arg1, arg2, /* \u2026, */ argN)\n\nsuper.propertyOnParent\nsuper[expression]\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/spread_syntax/index.md",
+        "full_path": "js/reference/operators/spread_syntax/index.md",
+        "construct": "Spread syntax (...)",
+        "category": "expressions",
+        "syntax": "```js-nolint\nmyFunction(a, ...iterableObj, b)\n[1, ...iterableObj, '4', 'five', 6]\n{ ...obj, key: 'value' }\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/void/index.md",
+        "full_path": "js/reference/operators/void/index.md",
+        "construct": "void operator",
+        "category": "expressions",
+        "syntax": "```js-nolint\nvoid expression\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/import.meta/index.md",
+        "full_path": "js/reference/operators/import.meta/index.md",
+        "construct": "import.meta",
+        "category": "expressions",
+        "syntax": "```js-nolint\nimport.meta\n```\n\n### Value\n\nThe `import.meta` object is created by the host environment, as an extensible [`null`-prototype](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object#null-prototype_objects) object where all properties are writable, configurable, and enumerable. The spec doesn't specify any properties to be defined on it, but hosts usually implement the following properties:\n\n- `url`\n  - : The full URL to the module, includes query parameters and/or hash (following the `?` or `#`). In browsers, this is either the URL from which the script was obtained (for external scripts), or the URL of the containing document (for inline scripts). In Node.js, this is the file path (including the `file://` protocol).\n- [`resolve`](/en-US/docs/Web/JavaScript/Reference/Operators/import.meta/resolve)\n  - : Resolves a module specifier to a URL using the current module's URL as base.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/new/index.md",
+        "full_path": "js/reference/operators/new/index.md",
+        "construct": "new",
+        "category": "expressions",
+        "syntax": "```js-nolint\nnew constructor\nnew constructor()\nnew constructor(arg1)\nnew constructor(arg1, arg2)\nnew constructor(arg1, arg2, /* \u2026, */ argN)\n```\n\n### Parameters\n\n- `constructor`\n  - : A class or function that specifies the type of the object instance. The expression can be anything with sufficient [precedence](/en-US/docs/Web/JavaScript/Reference/Operators/Operator_precedence#table), including an identifier, a [property access](/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors), or another `new` expression, but [optional chaining](/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) is not allowed.\n- `arg1`, `arg2`, \u2026, `argN`\n  - : A list of values that the `constructor` will be called with. `new Foo` is equivalent to `new Foo()`, i.e., if no argument list is specified, `Foo` is called without arguments.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/yield/index.md",
+        "full_path": "js/reference/operators/yield/index.md",
+        "construct": "yield",
+        "category": "expressions",
+        "syntax": "```js-nolint\nyield\nyield expression\n```\n\n### Parameters\n\n- `expression` {{optional_inline}}\n  - : The value to yield from the generator function via [the iterator protocol](/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#the_iterator_protocol). If omitted, `undefined` is yielded.\n\n### Return value\n\nReturns the optional value passed to the generator's `next()` method to resume its execution.\n\n> [!NOTE]\n> This means `next()` is asymmetric: it always sends a value to the currently suspended `yield`, but returns the operand of the next `yield`. The argument passed to the first `next()` call cannot be retrieved because there's no currently suspended `yield`.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/class/index.md",
+        "full_path": "js/reference/operators/class/index.md",
+        "construct": "class expression",
+        "category": "expressions",
+        "syntax": "```js-nolint\nclass {\n  // class body\n}\nclass name {\n  // class body\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keyword `class` to avoid ambiguity with a [`class` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/class). The `class` keyword only begins an expression when it appears in a context that cannot accept statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/this/index.md",
+        "full_path": "js/reference/operators/this/index.md",
+        "construct": "this",
+        "category": "expressions",
+        "syntax": "```js-nolint\nthis\n```\n\n### Value\n\nIn non\u2013strict mode, `this` is always a reference to an object. In strict mode, it can be any value. For more information on how the value is determined, see the description below.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/function_star_/index.md",
+        "full_path": "js/reference/operators/function_star_/index.md",
+        "construct": "function* expression",
+        "category": "expressions",
+        "syntax": "```js-nolint\nfunction* (param0) {\n  statements\n}\nfunction* (param0, param1) {\n  statements\n}\nfunction* (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nfunction* name(param0) {\n  statements\n}\nfunction* name(param0, param1) {\n  statements\n}\nfunction* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keyword `function` to avoid ambiguity with a [`function*` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/function*). The `function` keyword only begins an expression when it appears in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/optional_chaining/index.md",
+        "full_path": "js/reference/operators/optional_chaining/index.md",
+        "construct": "Optional chaining (?.)",
+        "category": "expressions",
+        "syntax": "```js-nolint\nobj?.prop\nobj?.[expr]\nfunc?.(args)\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/async_function/index.md",
+        "full_path": "js/reference/operators/async_function/index.md",
+        "construct": "async function expression",
+        "category": "expressions",
+        "syntax": "```js-nolint\nasync function (param0) {\n  statements\n}\nasync function (param0, param1) {\n  statements\n}\nasync function (param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n\nasync function name(param0) {\n  statements\n}\nasync function name(param0, param1) {\n  statements\n}\nasync function name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> An [expression statement](/en-US/docs/Web/JavaScript/Reference/Statements/Expression_statement) cannot begin with the keywords `async function` to avoid ambiguity with an [`async function` declaration](/en-US/docs/Web/JavaScript/Reference/Statements/async_function). The `async function` keywords only begin an expression when they appear in a context that cannot accept statements.\n\n### Parameters\n\n- `name` {{optional_inline}}\n  - : The function name. Can be omitted, in which case the function is _anonymous_. The name is only local to the function body.\n- `paramN` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/comma_operator/index.md",
+        "full_path": "js/reference/operators/comma_operator/index.md",
+        "construct": "Comma operator (,)",
+        "category": "expressions",
+        "syntax": "```js-nolint\nexpr1, expr2, expr3/* , \u2026 */\n```\n\n### Parameters\n\n- `expr1`, `expr2`, `expr3`, \u2026\n  - : One or more expressions, the last of which is returned as the value of the compound expression.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/import/index.md",
+        "full_path": "js/reference/operators/import/index.md",
+        "construct": "import()",
+        "category": "expressions",
+        "syntax": "```js-nolint\nimport(moduleName)\nimport(moduleName, options)\n```\n\nThe `import()` call is a syntax that closely resembles a function call, but `import` itself is a keyword, not a function. You cannot alias it like `const myImport = import`, which will throw a {{jsxref(\"SyntaxError\")}}.\n\n[Trailing commas](/en-US/docs/Web/JavaScript/Reference/Trailing_commas) are only allowed if the runtime also supports `options`. Check [browser compatibility](#browser_compatibility).\n\n### Parameters\n\n- `moduleName`\n  - : The module to import from. The evaluation of the specifier is host-specified, but always follows the same algorithm as static [import declarations](/en-US/docs/Web/JavaScript/Reference/Statements/import).\n- `options`\n  - : An object containing import options. The following key is recognized:\n    - `with`\n      - : The [import attributes](/en-US/docs/Web/JavaScript/Reference/Statements/import/with).\n\n### Return value\n\nReturns a promise which:\n\n- If the referenced module is loaded and evaluated successfully, fulfills to a [module namespace object](#module_namespace_object): an object containing all exports from `moduleName`.\n- If the [coercion to string](/en-US/docs/Web/JavaScript/Reference/Global_Objects/String#string_coercion) of `moduleName` throws, rejects with the thrown error.\n- If module fetching and loading fails for any reason, rejects with an implementation-defined error (Node uses a generic `Error`, while all browsers use `TypeError`). Common causes may include:\n  - In a file-system-based module system (Node.js, for example), if accessing the file system fails (permission denied, file not found, etc.).\n  - In a web-based module system (browsers, for example), if the network request fails (not connected to the Internet, CORS issue, etc.) or an HTTP error occurs (404, 500, etc.).\n- If evaluation of the referenced module throws, rejects with the thrown error.\n\n> [!NOTE]\n> `import()` never synchronously throws an error.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/new.target/index.md",
+        "full_path": "js/reference/operators/new.target/index.md",
+        "construct": "new.target",
+        "category": "expressions",
+        "syntax": "```js-nolint\nnew.target\n```\n\n### Value\n\n`new.target` is guaranteed to be a constructable function value or `undefined`.\n\n- In class constructors, it refers to the class that `new` was called upon, which may be a subclass of the current constructor, because subclasses transitively call the superclass's constructor through [`super()`](/en-US/docs/Web/JavaScript/Reference/Operators/super).\n- In ordinary functions, if the function is constructed directly with [`new`](/en-US/docs/Web/JavaScript/Reference/Operators/new), `new.target` refers to the function itself. If the function is called without `new`, `new.target` is {{jsxref(\"undefined\")}}. Functions can be used as the base class for [`extends`](/en-US/docs/Web/JavaScript/Reference/Classes/extends), in which case `new.target` may refer to the subclass.\n- If a constructor (class or function) is called via {{jsxref(\"Reflect.construct()\")}}, then `new.target` refers to the value passed as `newTarget` (which defaults to `target`).\n- In [arrow functions](/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions), `new.target` is inherited from the surrounding scope. If the arrow function is not defined within another class or function which has a `new.target` {{Glossary(\"binding\")}}, then a syntax error is thrown.\n- In [static initialization blocks](/en-US/docs/Web/JavaScript/Reference/Classes/Static_initialization_blocks), `new.target` is {{jsxref(\"undefined\")}}.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/typeof/index.md",
+        "full_path": "js/reference/operators/typeof/index.md",
+        "construct": "typeof",
+        "category": "expressions",
+        "syntax": "```js-nolint\ntypeof operand\n```\n\n### Parameters\n\n- `operand`\n  - : An expression representing the object or [primitive](/en-US/docs/Glossary/Primitive) whose type is to be returned.",
+        "has_syntax": true
+      },
+      {
+        "file": "operators/import.meta/resolve/index.md",
+        "full_path": "js/reference/operators/import.meta/resolve/index.md",
+        "construct": "import.meta.resolve()",
+        "category": "expressions",
+        "syntax": "```js-nolint\nimport.meta.resolve(moduleName)\n```\n\n### Parameters\n\n- `moduleName`\n  - : A string that specifies a potentially importable module. This may be a relative path (such as `\"./lib/helper.js\"`), a bare name (such as `\"my-module\"`), or an absolute URL (such as `\"https://example.com/lib/helper.js\"`).\n\n### Return value\n\nReturns a string corresponding to the path that would be imported if the argument were passed to [`import()`](/en-US/docs/Web/JavaScript/Reference/Operators/import).",
+        "has_syntax": true
+      }
+    ],
+    "single_statements": [
+      {
+        "file": "statements/empty/index.md",
+        "full_path": "js/reference/statements/empty/index.md",
+        "construct": "Empty statement",
+        "category": "single_statements",
+        "syntax": "```js-nolint\n;\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/label/index.md",
+        "full_path": "js/reference/statements/label/index.md",
+        "construct": "Labeled statement",
+        "category": "single_statements",
+        "syntax": "```js-nolint\nlabel:\n  statement\n```\n\n- `label`\n  - : Any JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) that is not a [reserved word](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#reserved_words).\n- `statement`\n  - : A JavaScript statement. `break` can be used within any labeled statement, and `continue` can be used within labeled looping statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/var/index.md",
+        "full_path": "js/reference/statements/var/index.md",
+        "construct": "var",
+        "category": "single_statements",
+        "syntax": "```js-nolint\nvar name1;\nvar name1 = value1;\nvar name1 = value1, name2 = value2;\nvar name1, name2 = value2;\nvar name1 = value1, name2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) or a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN` {{optional_inline}}\n  - : Initial value of the variable. It can be any legal expression. Default value is `undefined`.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/return/index.md",
+        "full_path": "js/reference/statements/return/index.md",
+        "construct": "return",
+        "category": "single_statements",
+        "syntax": "```js-nolint\nreturn;\nreturn expression;\n```\n\n- `expression` {{optional_inline}}\n  - : The expression whose value is to be returned. If omitted, `undefined` is returned.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/throw/index.md",
+        "full_path": "js/reference/statements/throw/index.md",
+        "construct": "throw",
+        "category": "single_statements",
+        "syntax": "```js-nolint\nthrow expression;\n```\n\n- `expression`\n  - : The expression to throw.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/const/index.md",
+        "full_path": "js/reference/statements/const/index.md",
+        "construct": "const",
+        "category": "single_statements",
+        "syntax": "```js-nolint\nconst name1 = value1;\nconst name1 = value1, name2 = value2;\nconst name1 = value1, name2 = value2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) or a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN`\n  - : Initial value of the variable. It can be any legal expression.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/let/index.md",
+        "full_path": "js/reference/statements/let/index.md",
+        "construct": "let",
+        "category": "single_statements",
+        "syntax": "```js-nolint\nlet name1;\nlet name1 = value1;\nlet name1 = value1, name2 = value2;\nlet name1, name2 = value2;\nlet name1 = value1, name2, /* \u2026, */ nameN = valueN;\n```\n\n### Parameters\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) or a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN` {{optional_inline}}\n  - : Initial value of the variable. It can be any legal expression. Default value is `undefined`.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/debugger/index.md",
+        "full_path": "js/reference/statements/debugger/index.md",
+        "construct": "debugger",
+        "category": "single_statements",
+        "syntax": "```js-nolint\ndebugger;\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/export/index.md",
+        "full_path": "js/reference/statements/export/index.md",
+        "construct": "export",
+        "category": "single_statements",
+        "syntax": "```js-nolint\n// Exporting declarations\nexport let name1, name2/*, \u2026 */; // also var\nexport const name1 = 1, name2 = 2/*, \u2026 */; // also var, let\nexport function functionName() { /* \u2026 */ }\nexport class ClassName { /* \u2026 */ }\nexport function* generatorFunctionName() { /* \u2026 */ }\nexport const { name1, name2: bar } = o;\nexport const [ name1, name2 ] = array;\n\n// Export list\nexport { name1, /* \u2026, */ nameN };\nexport { variable1 as name1, variable2 as name2, /* \u2026, */ nameN };\nexport { variable1 as \"string name\" };\nexport { name1 as default /*, \u2026 */ };\n\n// Default exports\nexport default expression;\nexport default function functionName() { /* \u2026 */ }\nexport default class ClassName { /* \u2026 */ }\nexport default function* generatorFunctionName() { /* \u2026 */ }\nexport default function () { /* \u2026 */ }\nexport default class { /* \u2026 */ }\nexport default function* () { /* \u2026 */ }\n\n// Aggregating modules\nexport * from \"module-name\";\nexport * as name1 from \"module-name\";\nexport { name1, /* \u2026, */ nameN } from \"module-name\";\nexport { import1 as name1, import2 as name2, /* \u2026, */ nameN } from \"module-name\";\nexport { default, /* \u2026, */ } from \"module-name\";\nexport { default as name1 } from \"module-name\";\n```\n\n- `nameN`\n  - : Identifier to be exported (so that it can be imported via {{jsxref(\"Statements/import\", \"import\")}} in another script). If you use an alias with `as`, the actual exported name can be specified as a string literal, which may not be a valid identifier.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/import/index.md",
+        "full_path": "js/reference/statements/import/index.md",
+        "construct": "import",
+        "category": "single_statements",
+        "syntax": "```js-nolint\nimport defaultExport from \"module-name\";\nimport * as name from \"module-name\";\nimport { export1 } from \"module-name\";\nimport { export1 as alias1 } from \"module-name\";\nimport { default as alias } from \"module-name\";\nimport { export1, export2 } from \"module-name\";\nimport { export1, export2 as alias2, /* \u2026 */ } from \"module-name\";\nimport { \"string name\" as alias } from \"module-name\";\nimport defaultExport, { export1, /* \u2026 */ } from \"module-name\";\nimport defaultExport, * as name from \"module-name\";\nimport \"module-name\";\n```\n\n- `defaultExport`\n  - : Name that will refer to the default export from the module. Must be a valid JavaScript identifier.\n- `module-name`\n  - : The module to import from. Only single quoted and double quoted string literals are allowed. The evaluation of the specifier is host-specified. Most hosts align with browsers and resolve the specifiers as URLs relative to the current module URL (see [`import.meta.url`](/en-US/docs/Web/JavaScript/Reference/Operators/import.meta)). Node, bundlers, and other non-browser environments often define their own features on top of this, so you should find documentation for them to understand the exact rules. The [module specifier resolution](#module_specifier_resolution) section also has more information.\n- `name`\n  - : Name of the module object that will be used as a kind of namespace when referring to the imports. Must be a valid JavaScript identifier.\n- `exportN`\n  - : Name of the exports to be imported. The name can be either an identifier or a string literal, depending on what `module-name` declares to export. If it is a string literal, it must be aliased to a valid identifier.\n- `aliasN`\n  - : Names that will refer to the named imports. Must be a valid JavaScript identifier.\n\nThe `\"module-name\"` may be followed by a set of [import attributes](/en-US/docs/Web/JavaScript/Reference/Statements/import/with), starting with the `with` keyword.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/continue/index.md",
+        "full_path": "js/reference/statements/continue/index.md",
+        "construct": "continue",
+        "category": "single_statements",
+        "syntax": "```js-nolint\ncontinue;\ncontinue label;\n```\n\n- `label` {{optional_inline}}\n  - : Identifier associated with the label of the statement.",
+        "has_syntax": true
+      }
+    ],
+    "compound_statements": [
+      {
+        "file": "statements/if...else/index.md",
+        "full_path": "js/reference/statements/if...else/index.md",
+        "construct": "if...else",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nif (condition)\n  statement1\n\n// With an else clause\nif (condition)\n  statement1\nelse\n  statement2\n```\n\n- `condition`\n  - : An expression that is considered to be either {{Glossary(\"truthy\")}} or {{Glossary(\"falsy\")}}.\n- `statement1`\n  - : Statement that is executed if _condition_ is {{Glossary(\"truthy\")}}. Can be any statement, including further nested `if` statements. To execute multiple statements, use a [block](/en-US/docs/Web/JavaScript/Reference/Statements/block) statement (`{ /* ... */ }`) to group those statements. To execute no statements, use an [empty](/en-US/docs/Web/JavaScript/Reference/Statements/Empty) statement.\n- `statement2`\n  - : Statement that is executed if `condition` is {{Glossary(\"falsy\")}} and the `else` clause exists. Can be any statement, including block statements and further nested `if` statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/do...while/index.md",
+        "full_path": "js/reference/statements/do...while/index.md",
+        "construct": "do...while",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\ndo\n  statement\nwhile (condition);\n```\n\n- `statement`\n  - : A statement that is executed at least once and re-executed as long as the condition evaluates to true. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.\n- `condition`\n  - : An expression evaluated _after_ each pass through the loop. If this condition [evaluates to true](/en-US/docs/Glossary/Truthy), `statement` is re-executed. When condition [evaluates to false](/en-US/docs/Glossary/Falsy), execution continues with the statement after the `do...while` loop.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/for...of/index.md",
+        "full_path": "js/reference/statements/for...of/index.md",
+        "construct": "for...of",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nfor (variable of iterable)\n  statement\n```\n\n- `variable`\n  - : Receives a value from the sequence on each iteration. May be either a declaration with [`const`](/en-US/docs/Web/JavaScript/Reference/Statements/const), [`let`](/en-US/docs/Web/JavaScript/Reference/Statements/let), [`var`](/en-US/docs/Web/JavaScript/Reference/Statements/var), [`using`](/en-US/docs/Web/JavaScript/Reference/Statements/using), [`await using`](/en-US/docs/Web/JavaScript/Reference/Statements/await_using), or an [assignment](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment) target (e.g., a previously declared variable, an object property, or a [destructuring pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring)). Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for...of` loop is in.\n- `iterable`\n  - : An iterable object. The source of the sequence of values on which the loop operates.\n- `statement`\n  - : A statement to be executed on every iteration. May reference `variable`. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/with/index.md",
+        "full_path": "js/reference/statements/with/index.md",
+        "construct": "with",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nwith (expression)\n  statement\n```\n\n- `expression`\n  - : Adds the given expression to the scope chain used when evaluating the statement. The parentheses around the expression are required.\n- `statement`\n  - : Any statement. To execute multiple statements, use a [block](/en-US/docs/Web/JavaScript/Reference/Statements/block) statement (`{ ... }`) to group those statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/using/index.md",
+        "full_path": "js/reference/statements/using/index.md",
+        "construct": "using",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nusing name1 = value1;\nusing name1 = value1, name2 = value2;\nusing name1 = value1, name2 = value2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) and _not_ a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN`\n  - : Initial value of the variable. It can be any legal expression but its value must be either `null`, `undefined`, or an object with a `[Symbol.dispose]()` method.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/try...catch/index.md",
+        "full_path": "js/reference/statements/try...catch/index.md",
+        "construct": "try...catch",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\ntry {\n  tryStatements\n} catch (exceptionVar) {\n  catchStatements\n} finally {\n  finallyStatements\n}\n```\n\n- `tryStatements`\n  - : The statements to be executed.\n- `catchStatements`\n  - : Statement that is executed if an exception is thrown in the `try` block.\n- `exceptionVar` {{optional_inline}}\n  - : An optional [identifier or pattern](#catch_binding) to hold the caught exception for the associated `catch` block. If the `catch` block does not use the exception's value, you can omit the `exceptionVar` and its surrounding parentheses.\n- `finallyStatements`\n  - : Statements that are executed before control flow exits the `try...catch...finally` construct. These statements execute regardless of whether an exception was thrown or caught.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/function/index.md",
+        "full_path": "js/reference/statements/function/index.md",
+        "construct": "function",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nfunction name(param0) {\n  statements\n}\nfunction name(param0, param1) {\n  statements\n}\nfunction name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n### Parameters\n\n- `name`\n  - : The function name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. Maximum number of arguments varies in different engines. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements which comprise the body of the function.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/for...in/index.md",
+        "full_path": "js/reference/statements/for...in/index.md",
+        "construct": "for...in",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nfor (variable in object)\n  statement\n```\n\n### Parameters\n\n- `variable`\n  - : Receives a string property name on each iteration. May be either a declaration with [`const`](/en-US/docs/Web/JavaScript/Reference/Statements/const), [`let`](/en-US/docs/Web/JavaScript/Reference/Statements/let), or [`var`](/en-US/docs/Web/JavaScript/Reference/Statements/var), or an [assignment](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment) target (e.g., a previously declared variable, an object property, or a [destructuring pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring)). Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for...in` loop is in.\n- `object`\n  - : Object whose non-symbol enumerable properties are iterated over.\n- `statement`\n  - : A statement to be executed on every iteration. May reference `variable`. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/async_function_star_/index.md",
+        "full_path": "js/reference/statements/async_function_star_/index.md",
+        "construct": "async function*",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nasync function* name(param0) {\n  statements\n}\nasync function* name(param0, param1) {\n  statements\n}\nasync function* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> Async generator functions do not have arrow function counterparts.\n\n> [!NOTE]\n> `function` and `*` are separate tokens, so they can be separated by [whitespace or line terminators](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space). However, there cannot be a line terminator between `async` and `function`, otherwise a semicolon is [automatically inserted](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#automatic_semicolon_insertion), causing `async` to become an identifier and the rest to become a `function*` declaration.\n\n### Parameters\n\n- `name`\n  - : The function name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements comprising the body of the function.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/expression_statement/index.md",
+        "full_path": "js/reference/statements/expression_statement/index.md",
+        "construct": "Expression statement",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nexpression;\n```\n\n- `expression`\n  - : An arbitrary [expression](/en-US/docs/Web/JavaScript/Reference/Operators) to be evaluated. There are [certain expressions](#forbidden_expressions) that may be ambiguous with other statements and are thus forbidden.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/for-await...of/index.md",
+        "full_path": "js/reference/statements/for-await...of/index.md",
+        "construct": "for await...of",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nfor await (variable of iterable)\n  statement\n```\n\n- `variable`\n  - : Receives a value from the sequence on each iteration. May be either a declaration with [`const`](/en-US/docs/Web/JavaScript/Reference/Statements/const), [`let`](/en-US/docs/Web/JavaScript/Reference/Statements/let), or [`var`](/en-US/docs/Web/JavaScript/Reference/Statements/var), or an [assignment](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment) target (e.g., a previously declared variable, an object property, or a [destructuring pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring)). Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for await...of` loop is in.\n- `iterable`\n  - : An async iterable or sync iterable. The source of the sequence of values on which the loop operates.\n- `statement`\n  - : A statement to be executed on every iteration. May reference `variable`. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/for/index.md",
+        "full_path": "js/reference/statements/for/index.md",
+        "construct": "for",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nfor (initialization; condition; afterthought)\n  statement\n```\n\n- `initialization` {{optional_inline}}\n  - : An expression (including [assignment expressions](/en-US/docs/Web/JavaScript/Reference/Operators/Assignment)) or variable declaration evaluated once before the loop begins. Typically used to initialize a counter variable. This expression may optionally declare new variables with `var` or `let` keywords. Variables declared with `var` are not local to the loop, i.e., they are in the same scope the `for` loop is in. Variables declared with `let` are local to the statement.\n\n    The result of this expression is discarded.\n\n- `condition` {{optional_inline}}\n  - : An expression to be evaluated before each loop iteration. If this expression [evaluates to true](/en-US/docs/Glossary/Truthy), `statement` is executed. If the expression [evaluates to false](/en-US/docs/Glossary/Falsy), execution exits the loop and goes to the first statement after the `for` construct.\n\n    This conditional test is optional. If omitted, the condition always evaluates to true.\n\n- `afterthought` {{optional_inline}}\n  - : An expression to be evaluated at the end of each loop iteration. This occurs before the next evaluation of `condition`. Generally used to update or increment the counter variable.\n- `statement`\n  - : A statement that is executed as long as the condition evaluates to true. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements. To execute no statement within the loop, use an [empty statement](/en-US/docs/Web/JavaScript/Reference/Statements/Empty) (`;`).",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/switch/index.md",
+        "full_path": "js/reference/statements/switch/index.md",
+        "construct": "switch",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nswitch (expression) {\n  case caseExpression1:\n    statements\n  case caseExpression2:\n    statements\n  // \u2026\n  case caseExpressionN:\n    statements\n  default:\n    statements\n}\n```\n\n- `expression`\n  - : An expression whose result is matched against each `case` clause.\n- `caseExpressionN` {{optional_inline}}\n  - : A `case` clause used to match against `expression`. If the value of `expression` matches the value of any `caseExpressionN`, execution starts from the first statement after that `case` clause until either the end of the `switch` statement or the first encountered `break`.\n- `default` {{optional_inline}}\n  - : A `default` clause; if provided, this clause is executed if the value of `expression` doesn't match any of the `case` clauses. A `switch` statement can only have one `default` clause.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/class/index.md",
+        "full_path": "js/reference/statements/class/index.md",
+        "construct": "class",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nclass name {\n  // class body\n}\nclass name extends otherName {\n  // class body\n}\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/function_star_/index.md",
+        "full_path": "js/reference/statements/function_star_/index.md",
+        "construct": "function*",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nfunction* name(param0) {\n  statements\n}\nfunction* name(param0, param1) {\n  statements\n}\nfunction* name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> Generator functions do not have arrow function counterparts.\n\n> [!NOTE]\n> `function` and `*` are separate tokens, so they can be separated by [whitespace or line terminators](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#white_space).\n\n### Parameters\n\n- `name`\n  - : The function name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements comprising the body of the function.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/break/index.md",
+        "full_path": "js/reference/statements/break/index.md",
+        "construct": "break",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nbreak;\nbreak label;\n```\n\n- `label` {{optional_inline}}\n  - : Identifier associated with the label of the statement to break to. If the `break` statement is not nested within a loop or {{jsxref(\"Statements/switch\", \"switch\")}}, then the label identifier is required.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/async_function/index.md",
+        "full_path": "js/reference/statements/async_function/index.md",
+        "construct": "async function",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nasync function name(param0) {\n  statements\n}\nasync function name(param0, param1) {\n  statements\n}\nasync function name(param0, param1, /* \u2026, */ paramN) {\n  statements\n}\n```\n\n> [!NOTE]\n> There cannot be a line terminator between `async` and `function`, otherwise a semicolon is [automatically inserted](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#automatic_semicolon_insertion), causing `async` to become an identifier and the rest to become a `function` declaration.\n\n### Parameters\n\n- `name`\n  - : The function's name.\n- `param` {{optional_inline}}\n  - : The name of a formal parameter for the function. For the parameters' syntax, see the [Functions reference](/en-US/docs/Web/JavaScript/Guide/Functions#function_parameters).\n- `statements` {{optional_inline}}\n  - : The statements comprising the body of the function. The `await`\n    mechanism may be used.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/while/index.md",
+        "full_path": "js/reference/statements/while/index.md",
+        "construct": "while",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nwhile (condition)\n  statement\n```\n\n- `condition`\n  - : An expression evaluated _before_ each pass through the loop. If this condition [evaluates to true](/en-US/docs/Glossary/Truthy), `statement` is executed. When condition [evaluates to false](/en-US/docs/Glossary/Falsy), execution continues with the statement after the `while` loop.\n- `statement`\n  - : A statement that is executed as long as the condition evaluates to true. You can use a [block statement](/en-US/docs/Web/JavaScript/Reference/Statements/block) to execute multiple statements.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/await_using/index.md",
+        "full_path": "js/reference/statements/await_using/index.md",
+        "construct": "await using",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nawait using name1 = value1;\nawait using name1 = value1, name2 = value2;\nawait using name1 = value1, name2 = value2, /* \u2026, */ nameN = valueN;\n```\n\n- `nameN`\n  - : The name of the variable to declare. Each must be a legal JavaScript [identifier](/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#identifiers) and _not_ a [destructuring binding pattern](/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring).\n- `valueN`\n  - : Initial value of the variable. It can be any legal expression but its value must be either `null`, `undefined`, or an object with a [`[Symbol.asyncDispose]()`](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/asyncDispose) or [`[Symbol.dispose]()`](/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/dispose) method.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/block/index.md",
+        "full_path": "js/reference/statements/block/index.md",
+        "construct": "Block statement",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\n{\n  StatementList\n}\n```\n\n- `StatementList`\n  - : Statements and declarations grouped within the block statement.",
+        "has_syntax": true
+      },
+      {
+        "file": "statements/import/with/index.md",
+        "full_path": "js/reference/statements/import/with/index.md",
+        "construct": "Import attributes",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nimport { names } from \"module-name\" with {};\nimport { names } from \"module-name\" with { key: \"data\" };\nimport { names } from \"module-name\" with { key: \"data\", key2: \"data2\" };\nimport { names } from \"module-name\" with { key: \"data\", key2: \"data2\", /* \u2026, */ keyN: \"dataN\" };\n\nexport { names } from \"module-name\" with {};\nexport { names } from \"module-name\" with { key: \"data\" };\nexport { names } from \"module-name\" with { key: \"data\", key2: \"data2\" };\nexport { names } from \"module-name\" with { key: \"data\", key2: \"data2\", /* \u2026, */ keyN: \"dataN\" };\n```\n\n### Parameters\n\n- `keyN`\n  - : An attribute key. Can be an identifier or a string literal. All keys must be unique and must be known to the runtime.\n- `\"dataN\"`\n  - : An attribute value. Must be a string literal.\n\n### Exceptions\n\n- {{jsxref(\"SyntaxError\")}}\n  - : An unsupported `key` was specified in a _static import_.\n\n- {{jsxref(\"TypeError\")}}\n  - : An unsupported `key` was specified in a _dynamic import_.\n\nNote that specifying an unsupported value for a supported key may also result in an exception in some cases, depending on the key.",
+        "has_syntax": true
+      },
+      {
+        "file": "classes/extends/index.md",
+        "full_path": "js/reference/classes/extends/index.md",
+        "construct": "extends",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nclass ChildClass extends ParentClass { /* \u2026 */ }\n```\n\n- `ParentClass`\n  - : An expression that evaluates to a constructor function (including a class) or `null`.",
+        "has_syntax": true
+      },
+      {
+        "file": "classes/public_class_fields/index.md",
+        "full_path": "js/reference/classes/public_class_fields/index.md",
+        "construct": "Public class fields",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nclass ClassWithField {\n  instanceField;\n  instanceFieldWithInitializer = \"instance field\";\n  static staticField;\n  static staticFieldWithInitializer = \"static field\";\n}\n```\n\nThere are some additional syntax restrictions:\n\n- The name of a static property (field or method) cannot be `prototype`.\n- The name of a class field (static or instance) cannot be `constructor`.",
+        "has_syntax": true
+      },
+      {
+        "file": "classes/static_initialization_blocks/index.md",
+        "full_path": "js/reference/classes/static_initialization_blocks/index.md",
+        "construct": "Static initialization blocks",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nclass ClassWithSIB {\n  static {\n    // \u2026\n  }\n}\n```",
+        "has_syntax": true
+      },
+      {
+        "file": "classes/static/index.md",
+        "full_path": "js/reference/classes/static/index.md",
+        "construct": "static",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nclass ClassWithStatic {\n  static staticField;\n  static staticFieldWithInitializer = value;\n  static staticMethod() {\n    // \u2026\n  }\n}\n```\n\nThere are some additional syntax restrictions:\n\n- The name of a static property (field or method) cannot be `prototype`.\n- The name of a class field (static or instance) cannot be `constructor`.",
+        "has_syntax": true
+      },
+      {
+        "file": "classes/private_elements/index.md",
+        "full_path": "js/reference/classes/private_elements/index.md",
+        "construct": "Private elements",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nclass ClassWithPrivate {\n  #privateField;\n  #privateFieldWithInitializer = 42;\n\n  #privateMethod() {\n    // \u2026\n  }\n\n  static #privateStaticField;\n  static #privateStaticFieldWithInitializer = 42;\n\n  static #privateStaticMethod() {\n    // \u2026\n  }\n}\n```\n\nThere are some additional syntax restrictions:\n\n- All private identifiers declared within a class must be unique. The namespace is shared between static and instance elements. The only exception is when the two declarations define a getter-setter pair.\n- The private identifier cannot be `#constructor`.",
+        "has_syntax": true
+      },
+      {
+        "file": "classes/constructor/index.md",
+        "full_path": "js/reference/classes/constructor/index.md",
+        "construct": "constructor",
+        "category": "compound_statements",
+        "syntax": "```js-nolint\nconstructor() { /* \u2026 */ }\nconstructor(argument0) { /* \u2026 */ }\nconstructor(argument0, argument1) { /* \u2026 */ }\nconstructor(argument0, argument1, /* \u2026, */ argumentN) { /* \u2026 */ }\n```\n\nThere are some additional syntax restrictions:\n\n- A class method called `constructor` cannot be a [getter](/en-US/docs/Web/JavaScript/Reference/Functions/get), [setter](/en-US/docs/Web/JavaScript/Reference/Functions/set), [async](/en-US/docs/Web/JavaScript/Reference/Statements/async_function), or [generator](/en-US/docs/Web/JavaScript/Reference/Statements/function*).\n- A class cannot have more than one `constructor` method.",
+        "has_syntax": true
+      }
+    ]
+  }
+}

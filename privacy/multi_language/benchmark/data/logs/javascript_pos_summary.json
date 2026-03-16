@@ -1,0 +1,10 @@
+{
+  "language": "javascript",
+  "duration": 487.71,
+  "scanned_entries": 4829,
+  "collected_files": 100,
+  "extracted_functions": 4157,
+  "accepted_functions": 1000,
+  "rejected_empty": 0,
+  "completion_status": "Success"
+}
