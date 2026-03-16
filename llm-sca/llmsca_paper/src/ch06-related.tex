@@ -11,11 +11,11 @@ A number of studies have focused on dynamic runtime inference due to its general
 
 In contrast, static techniques inspect internal model signatures and parameters without runtime inference, enabling faster and more general model signature comparisons.
 
-\todo{Yu and Wang~\cite{neuralLineage} proposes to trace full training trajectories for smaller architectures~\cite{neuralLineage} XXX
+Yu and Wang~\cite{neuralLineage} proposes to trace full training trajectories for smaller architectures~\cite{neuralLineage} XXX
 
 Yoon et al.~\cite{yoon2025intrinsicfingerprintllmscontinue} proposes to extract cross-layer statistical consistencies XXX
 
-Wang et al.~\cite{wang2025ghosttransformerdetectingmodel} utilize Singular Value Decomposition (SVD) to XXX.}
+Wang et al.~\cite{wang2025ghosttransformerdetectingmodel} utilize Singular Value Decomposition (SVD) to XXX.
 
 To further resist adversarial permutation and scaling attacks, Zeng et al.~\cite{huref} proposes to robust structural invariants and Zhang~\cite{matrix} leverages orthogonal embedding relations.
 
@@ -66,6 +66,16 @@ early studies analyzed the hierarchical progression of linguistic features acros
 
 \subsection{Software and LLM Supply Chain}
 
+
+Researchers have extensively studied the security and trust challenges in open-source software supply chains. 
+Boughton~\cite{boughton2024decomposing} propose a framework for decomposing and measuring trust in open-source software supply chains by identifying factors that influence the trustworthiness of dependencies. From an adversarial perspective, Ladisa et al.\cite{ladisa2023sok} provide a systematic overview of attack techniques targeting open-source software supply chains. Complementary to these studies, Zahan et al.~\cite{zahan2023software} evaluate security metrics and practices in open-source dependencies. Focusing on the JavaScript ecosystem, Zahan~\cite{zahan2022weak} analyze npm package metadata and propose weak-link signals to detect potential supply chain risks, while Miller~\cite{miller2025understanding} study how the npm ecosystem responds to dependency abandonment and its implications for supply chain sustainability. With the rapid growth of deep learning development, researchers have increasingly focused on the deep learning software supply chain. Tan et al.\cite{tan2022exploratory, gao2024characterizing} and Chen et al.\cite{chen2025understanding} conduct exploratory studies on the supply chains of major deep learning frameworks (e.g., PyTorch and TensorFlow) to understand their downstream dependencies, development dynamics, collaboration patterns, and ecosystem differences. From another perspective, some studies focus on faults and failures in the deep learning stack. Huang et al.\cite{huang2023demystifying} perform an empirical investigation of dependency-related bugs in the deep learning software stack. Jajal et al.\cite{jajal2024interoperability} examine interoperability issues of ONNX model converters in deep learning frameworks, highlighting the challenges of cross-framework model portability.
+
+
+Software Composition Analysis is widely leveraged to systematically identify software components, supporting tasks such as vulnerability detection~\cite{zhao2023software, jiang2024binaryai}, license analysis~\cite{german2009license}, and supply chain risk assessment~\cite{Nocera2025SoftwareCA}. The Software Bill of Materials (SBOM)~\cite{yu2024correctness, sehgal2023taxonomy, mirakhorli2024landscape} provides a structured description of the internal components of a software system and their dependency relationships. Traditional SCA techniques focus on extracting components from artifacts at different levels. For example, explicit dependencies can be parsed from build configuration files (e.g., package.json and pom.xml)~\cite{zimmermann2019small, huang2022characterizing}. Static code analysis can be used to identify calls to third-party libraries~\cite{gao2024characterizing}. Binary feature matching can detect repackaged components~\cite{yang2022modx}. With the rise of LLMs, the composition analysis has expanded beyond traditional elements to include models, datasets, frameworks, prompts, and external tools invoked during execution~\cite{wang2025large, huang2024lifting}. 
+The concept of SBOM has been extended to the AI domain, such as AI Bill of Materials (AI BOM)~\cite{aibom, bennet2025implementing} and ML Bill of Materials (ML BOM)~\cite{mlbom}. At the standardization level, CycloneDX has extended support for ML BOM, and SPDX 3.0 has also begun to discuss and support the modeling of AI-related assets~\cite{spdx}. However, achieving transparent composition analysis for LLM-based systems presents substantial technical challenges. Prior studies have found that such models may memorize training data and leak parts of the training corpus~\cite{song2019auditing, carlini2021extracting}. To infer training data membership, membership inference attacks (MIA)~\cite{shokri2017membership} have been adopted.
+Mattern et al.~\cite{mattern2023membership} propose generating contrastive samples that are semantically similar to the target sample to amplify the sample differences. Zhang et al.~\cite{zhang2024pretraining} infer membership by measuring the deviation between the word frequency distribution within a document and that of the overall corpus. 
+Shi et al.b~\cite{shi2023detecting} and Li et al.~\cite{li2025uncovering} propose the reference-free approaches based on the hypothesis that low-probability tokens tend to appear less frequently in member samples. 
+Nevertheless, Duan et al.~\cite{duan2024membership} found that the boundary between member and non-member samples is inherently fuzzy and continuous in the context of LLMs, leading to limited effectiveness. Besides, Ren et al.~\cite{ren2025demystifying} studies the evolution of neural networks by constructing a large-scale neural network bill of materials database.
 
 
 \subsection{Model Lineage Analysis}
