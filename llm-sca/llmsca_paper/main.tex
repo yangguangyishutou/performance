@@ -1,13 +1,8 @@
-\documentclass[sigconf,screen]{acmart}
-\settopmatter{printfolios=true,printccs=true,printacmref=true}
-%%
-%% \BibTeX command to typeset BibTeX logo in the docs
-\AtBeginDocument{%
-  \providecommand\BibTeX{{%
-    Bib\TeX}}}
+\documentclass[sigconf,review,anonymous,screen]{acmart}
+
     
-\settopmatter{printfolios=true,printccs=false,printacmref=false}
-\renewcommand\footnotetextcopyrightpermission[1]{}    
+% \settopmatter{printfolios=true,printccs=false,printacmref=false}
+% \renewcommand\footnotetextcopyrightpermission[1]{}    
 
 % \acmConference[ICSE 2024]{46th International Conference on Software Engineering}{April 2024}{Lisbon, Portugal}
 
@@ -95,16 +90,45 @@
 
 
 \begin{document}
-% fix overfull
-\begin{sloppypar}
 
     \title{Large Language Model Lineage Analysis: How far are we?}
 
 
-    %%
-    %% Keywords. The author(s) should pick words that accurately describe
-    %% the work being presented. Separate the keywords with commas.
-    %\keywords{datasets, neural networks, gaze detection, text tagging}
+    \begin{CCSXML}
+<ccs2012>
+ <concept>
+  <concept_id>00000000.0000000.0000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>500</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>00000000.00000000.00000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>300</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>00000000.00000000.00000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>100</concept_significance>
+ </concept>
+ <concept>
+  <concept_id>00000000.00000000.00000000</concept_id>
+  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+  <concept_significance>100</concept_significance>
+ </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+\ccsdesc[300]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+\ccsdesc{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+\ccsdesc[100]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\keywords{Do, Not, Use, This, Code, Put, the, Correct, Terms, for,
+  Your, Paper}
 
     \begin{abstract}
         \input{src/ch00-abstract}
@@ -115,8 +139,11 @@
     \input{src/ch01-introduction}
     \input{src/ch02-motivation}
     \input{src/ch03-benchmark}
-    \input{src/ch04-approach}
+    % \input{src/ch04-approach}
     \input{src/ch05-evaluation}
+    \input{src/ch05-evaluation-1}
+    \input{src/ch05-evaluation-2}
+    \input{src/ch05-evaluation-3}
     \input{src/ch06-related}
     \input{src/ch07-discussion}
     \input{src/ch08-conclusion}
@@ -124,29 +151,10 @@
     \bibliographystyle{ACM-Reference-Format}
     \bibliography{src/reference}
 
-\end{sloppypar}
 \end{document}
 \endinput
 
 
-% TODO
-% 3. Risk， mitigation图的严谨性
-% implant malicious code -> implant maliciousness into artifacts
-% code data, model ,prompt顺序
-% citation是最后一步
 
-
-
-% collect of data.
-% generate abnormal content in risk on LLM apps.
-% legal risk: unauthorized content
-% general risks: introduce performance regression.
-% general risks: terminate service
-% risk on artifacts: leak data
-
-% exploit LLM App vul 里面要介绍用llm生成unsafe 的code
-
-% Discontinue Maintenance -> Degrade Sustainability
-% add leak data
 
 
