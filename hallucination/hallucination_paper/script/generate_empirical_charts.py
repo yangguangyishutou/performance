@@ -31,16 +31,15 @@ model_names = {
 df_data['model'] = df_data['ai_name'].map(model_names)
 # For backward compatibility, use method-level errors as primary
 df_errors = df_errors_method
+# print(df_errors.columns)
 df_errors['model'] = df_errors['ai_name'].map(model_names)
 df_errors_class['model'] = df_errors_class['ai_name'].map(model_names)
 
 # Convert error counts to percentages (rate per method/file)
-error_type_cols = [
-    'SYNTAX_LANGUAGE_ERROR', 'TYPE_SYSTEM_ERROR', 'DECLARE_DEFINITION_MISMATCH',
-    'MISSING_UNDEFINED_SYMBOLS', 'INHERITANCE_VIRTUAL_ERROR', 'CONSTRUCTOR_DESTRUCTOR_ERROR',
-    'TEMPLATE_ERROR', 'ACCESS_SCOPE_ERROR', 'REDEFINITION_ERROR', 'BUILD_INCLUDE_ERROR',
-    'OTHER_ERROR'
-]
+error_type_cols = df_errors_method.columns.tolist()
+# 移除 translate_unit,ai_name,strategy,method_count
+for col in ['translate_unit', 'ai_name', 'strategy', 'method_count', 'all', "model", 'Other Errors']:
+    error_type_cols.remove(col)
 
 # Convert method-level errors to percentage of methods with error
 for col in error_type_cols:
@@ -66,7 +65,7 @@ plt.rcParams['font.size'] = 12
 # ===================================================================
 # Chart 1: Overall Success Rate by Model and Strategy (RQ1)
 # ===================================================================
-if True:
+if False:
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Group by model and strategy
@@ -107,7 +106,7 @@ if True:
 # ===================================================================
 # Generate chart for class strategy
 # File-by-file Strategy Chart
-if True:
+if False:
     fig, ax1 = plt.subplots(figsize=(10, 6))
 
     projects = ['Cookie','EnableJUnit4MigrationSupport','CircuitBreakerExecutor']
@@ -196,192 +195,206 @@ if True:
 # ===================================================================
 # 定义错误类型短标签
 error_labels = {
-    'SYNTAX_LANGUAGE_ERROR': 'Syntax',
-    'TYPE_SYSTEM_ERROR': 'Type System',
-    'DECLARE_DEFINITION_MISMATCH': 'Decl/Def Mismatch',
-    'MISSING_UNDEFINED_SYMBOLS': 'Missing Symbols',
-    'INHERITANCE_VIRTUAL_ERROR': 'Inheritance/Virtual',
-    'CONSTRUCTOR_DESTRUCTOR_ERROR': 'Constructor/Destructor',
-    'TEMPLATE_ERROR': 'Template',
-    'ACCESS_SCOPE_ERROR': 'Access Scope',
-    'REDEFINITION_ERROR': 'Redefinition',
-    'BUILD_INCLUDE_ERROR': 'Build/Include',
-    'OTHER_ERROR': 'Other'
+    "Language Syntax Violation": "Syntax",
+    "Type Error": "Type System",
+    "Declaration Mismatch": "Decl/Def Mismatch",
+    "Undefined Symbols": "Undefined Symbols",
+    "Duplicated Definitions": "Duplicated Definitions",
+    "Header File Error": "Header File Error",
 }
+color_list = ["#4A7298", "#F3C846"]
+
+# Helper function to process error data
+def process_error_data(df, error_type_cols, error_labels):
+    # Aggregate error data by strategy, averaging across models
+    error_by_config = df.groupby(['strategy'])[error_type_cols].mean().reset_index()
+
+    # Create configuration labels
+    error_by_config['config'] = error_by_config['strategy'].replace({
+        'class': 'file-by-file',
+        'method': 'method-by-method'
+    })
+
+    # Melt the data for grouped bar plot
+    error_melted = error_by_config.melt(
+        id_vars=['config'],
+        value_vars=error_type_cols,
+        var_name='error_type',
+        value_name='occurrence_rate'
+    )
+
+    # Create short error labels
+    error_melted['error_label'] = error_melted['error_type'].map(error_labels)
+
+    # Sort by error type for better visualization
+    error_order = error_melted.groupby('error_label')['occurrence_rate'].mean().sort_values(ascending=False).index
+    error_melted['error_label'] = pd.Categorical(error_melted['error_label'], categories=error_order, ordered=True)
+    
+    return error_melted, error_order
+
+# Helper function to create vertical bar chart
+def create_vertical_chart(data, error_order, y_label, output_path, color_list):
+    fig, ax = plt.subplots(figsize=(14, 7))
+
+    # Create grouped bar plot
+    sns.barplot(
+        data=data,
+        x='error_label',
+        y='occurrence_rate',
+        hue='config',
+        palette=color_list,
+        alpha=BAR_ALPHA,
+        ax=ax
+    )
+
+    ax.set_xlabel('', fontsize=12, fontweight='bold')
+    ax.set_yticks(np.arange(0, 101, 10))
+    ax.set_xticklabels(error_order, fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax.set_ylabel(y_label, fontsize=XY_LABEL_SIZE, fontweight='bold')
+    ax.legend(loc='upper right', fontsize=LEGEND_SIZE)
+    ax.grid(axis='y', alpha=0.3)
+
+    # Rotate x labels for better readability
+    plt.xticks(rotation=45, ha='right')
+
+    # Add value labels on top of bars
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%.1f%%', fontsize=VAL_LABEL_SIZE, padding=2)
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"✓ Generated: {output_path}")
+    plt.close()
+
+# Helper function to create horizontal bar chart
+def create_horizontal_chart(data, error_order, x_label, output_path, color_list):
+    fig, ax = plt.subplots(figsize=(12, 8))
+
+    # Create horizontal bar plot
+    sns.barplot(
+        data=data,
+        y='error_label',
+        x='occurrence_rate',
+        hue='config',
+        palette=color_list,
+        alpha=BAR_ALPHA,
+        ax=ax
+    )
+
+    ax.set_xlabel(x_label, fontsize=XY_LABEL_SIZE, fontweight='bold')
+    ax.set_ylabel('', fontsize=XY_LABEL_SIZE, fontweight='bold')
+    ax.set_yticklabels(error_order, fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax.set_xticks(np.arange(0, 101, 10))
+    ax.set_xticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax.legend( loc='lower right', fontsize=LEGEND_SIZE)
+    ax.grid(axis='x', alpha=0.3)
+
+    # Add value labels at the end of bars
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%.1f%%', fontsize=VAL_LABEL_SIZE, padding=3)
+
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"✓ Generated: {output_path}")
+    plt.close()
+
 if True:
+    overall_data = pd.read_csv('data/error_overall_statistics.csv')
+    overall_data['level'] = overall_data['level'].map({'class': 'intra-class', 'method': 'intra-method'})
+    
+    # Melt the data for horizontal bar chart
+    melted = overall_data.melt(
+        id_vars=['level'],
+        value_vars=['Language Syntax Violation', 'Type Error', 'Declaration Mismatch', 
+                   'Undefined Symbols', 'Duplicated Definitions', 'Header File Error'],
+        var_name='error_type',
+        value_name='count'
+    )
+    
+    # Calculate total errors for percentage
+    total_errors = melted['count'].sum()
+    melted['occurrence_rate'] = (melted['count'] / total_errors) * 100
+    
+    # Create short error labels
+    melted['error_label'] = melted['error_type'].map(error_labels)
+    
+    # Sort by error count for better visualization
+    col_sums = overall_data[['Language Syntax Violation', 'Type Error', 'Declaration Mismatch', 
+                           'Undefined Symbols', 'Duplicated Definitions', 'Header File Error']].sum()
+    sorted_error_order = col_sums.sort_values(ascending=False).index
+    error_order = [error_labels[err] for err in sorted_error_order]
+    
+    # Set error_label as categorical with correct order
+    melted['error_label'] = pd.Categorical(melted['error_label'], categories=error_order, ordered=True)
+    
+    # Create horizontal bar chart
+    fig, ax = plt.subplots(figsize=(12, 8))
 
-    """
-    竖版-method_level
-    """
-    if True:
-        # Aggregate error data by model and strategy
-        error_by_config = df_errors.groupby(['model', 'strategy'])[error_type_cols].mean().reset_index()
+    # Create grouped bar plot
+    sns.barplot(
+        data=melted,
+        y='error_label',
+        x='occurrence_rate',
+        hue='level',
+        palette=color_list,
+        alpha=BAR_ALPHA,
+        ax=ax
+    )
 
-        # Create configuration labels
-        error_by_config['config'] = error_by_config['model'] + ' (' + error_by_config['strategy'].replace({
-            'class': 'file-by-file',
-            'method': 'method-by-method'
-        }) + ')'
+    ax.set_xlabel('Percentage of Errors (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
+    ax.set_ylabel('', fontsize=XY_LABEL_SIZE, fontweight='bold')
+    # Use get_yticklabels() to maintain correct order
+    ax.tick_params(axis='y', labelsize=XY_TICK_SIZE, labelfontfamily=FONT)
+    ax.set_xticks(np.arange(0, 31, 10))
+    ax.set_xticklabels(np.arange(0, 31, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+    ax.legend(title='', loc='lower right', fontsize=LEGEND_SIZE)
+    ax.grid(axis='x', alpha=0.3)
 
-        # Melt the data for grouped bar plot
-        error_melted = error_by_config.melt(
-            id_vars=['config'],
-            value_vars=error_type_cols,
-            var_name='error_type',
-            value_name='occurrence_rate'
-        )
+    # Add value labels at the end of bars
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%.1f%%', fontsize=VAL_LABEL_SIZE, padding=3)
 
-        # Convert to percentage
-        error_melted['occurrence_rate'] = error_melted['occurrence_rate']
-
-        # Create short error labels
-        
-        error_melted['error_label'] = error_melted['error_type'].map(error_labels)
-
-        # Sort by error type for better visualization
-        error_order = error_melted.groupby('error_label')['occurrence_rate'].mean().sort_values(ascending=False).index
-        error_melted['error_label'] = pd.Categorical(error_melted['error_label'], categories=error_order, ordered=True)
-
-        fig, ax = plt.subplots(figsize=(14, 7))
-
-        # Create grouped bar plot
-        sns.barplot(
-            data=error_melted,
-            x='error_label',
-            y='occurrence_rate',
-            hue='config',
-            palette='tab10',
-            ax=ax
-        )
-
-        ax.set_xlabel('Error Type', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
-        # ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
-        ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
-        ax.grid(axis='y', alpha=0.3)
-
-        # Rotate x labels for better readability
-        plt.xticks(rotation=45, ha='right')
-
-        # Add value labels on top of bars (only for values > 5% to avoid clutter)
-        for container in ax.containers:
-            ax.bar_label(container, fmt='%.1f%%', fontsize=7, padding=2)
-
-        plt.tight_layout()
-        plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_distribution1.pdf', dpi=300, bbox_inches='tight')
-        # plt.savefig(FIGURE_DIR / 'error_analysis' / 'method_level_distribution.png', dpi=300, bbox_inches='tight')
-        print("✓ Generated: empirical/error_analysis/method_level_distribution1.pdf/png")
-
-    """
-    横版-method_level
-    """
-    if True:
-        fig, ax = plt.subplots(figsize=(12, 8))
-
-        # Create horizontal bar plot
-        sns.barplot(
-            data=error_melted,
-            y='error_label',
-            x='occurrence_rate',
-            hue='config',
-            palette='tab10',
-            ax=ax
-        )
-
-        ax.set_xlabel('Percentage of Methods with Error (%)', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
-        # ax.set_title('RQ2: Error Type Occurrence Rate by Model and Strategy (Horizontal)', fontsize=14, fontweight='bold')
-        ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
-        ax.grid(axis='x', alpha=0.3)
-
-        # Add value labels at the end of bars
-        for container in ax.containers:
-            ax.bar_label(container, fmt='%.1f%%', fontsize=7, padding=3)
-
-        plt.tight_layout()
-        plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_distribution2.pdf', dpi=300, bbox_inches='tight')
-        # plt.savefig(FIGURE_DIR / 'error_analysis' / 'method_level_distribution2.png', dpi=300, bbox_inches='tight')
-        print("✓ Generated: empirical/error_analysis/method_level_distribution2.pdf/png")
-
-    """
-    横版-class_level
-    """
-    if True:
-        error_by_config_class = df_errors_class.groupby(['model', 'strategy'])[error_type_cols].mean().reset_index()
-        error_by_config_class['config'] = error_by_config_class['model'] + ' (' + error_by_config_class['strategy'].replace({
-            'class': 'file-by-file',
-            'method': 'method-by-method'
-        }) + ')'
-
-        error_melted_class = error_by_config_class.melt(
-            id_vars=['config'],
-            value_vars=error_type_cols,
-            var_name='error_type',
-            value_name='occurrence_rate'
-        )
-
-        # Convert to percentage (already converted, but ensure)
-        error_melted_class['occurrence_rate'] = error_melted_class['occurrence_rate']
-        error_melted_class['error_label'] = error_melted_class['error_type'].map(error_labels)
-
-        # Sort by error type
-        error_order_class = error_melted_class.groupby('error_label')['occurrence_rate'].mean().sort_values(ascending=False).index
-        error_melted_class['error_label'] = pd.Categorical(error_melted_class['error_label'], categories=error_order_class, ordered=True)
-
-        fig, ax = plt.subplots(figsize=(12, 8))
-
-        sns.barplot(
-            data=error_melted_class,
-            y='error_label',
-            x='occurrence_rate',
-            hue='config',
-            palette='tab10',
-            ax=ax
-        )
-
-        ax.set_xlabel('Percentage of Files with Error (%)', fontsize=12, fontweight='bold')
-        ax.set_ylabel('Error Type', fontsize=12, fontweight='bold')
-        # ax.set_title('RQ2: Class-Level Error Type Occurrence Rate by Model and Strategy', fontsize=14, fontweight='bold')
-        ax.legend(title='Configuration', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=9)
-        ax.grid(axis='x', alpha=0.3)
-
-        # Add value labels at the end of bars
-        for container in ax.containers:
-            ax.bar_label(container, fmt='%.1f%%', fontsize=7, padding=3)
-
-        plt.tight_layout()
-        plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'class_level_distribution2.pdf', dpi=300, bbox_inches='tight')
-        # plt.savefig(FIGURE_DIR / 'error_analysis' / 'class_level_distribution1.png', dpi=300, bbox_inches='tight')
-        print("✓ Generated: empirical/error_analysis/class_level_distribution2.pdf/png")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    plt.tight_layout()
+    output_path = FIGURE_DIR / 'empirical' / 'error_analysis' / 'overall_distribution.pdf'
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    print(f"✓ Generated: {output_path}")
+    plt.close()
+    
+    # create_vertical_chart(
+    #     error_melted, 
+    #     error_order, 
+    #     'Percentage of Methods with Error (%)',
+    #     FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_distribution1.pdf',
+    #     color_list
+    # )
+    
+    # create_horizontal_chart(
+    #     error_melted, 
+    #     error_order, 
+    #     'Percentage of Methods with Error (%)',
+    #     FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_distribution2.pdf',
+    #     color_list
+    # )
+    
+    # # Class-level charts
+    # error_melted_class, error_order_class = process_error_data(df_errors_class, error_type_cols, error_labels)
+    
+    # create_vertical_chart(
+    #     error_melted_class, 
+    #     error_order_class, 
+    #     'Percentage of Files with Error (%)',
+    #     FIGURE_DIR / 'empirical' / 'error_analysis' / 'class_level_distribution1.pdf',
+    #     color_list
+    # )
+    
+    # create_horizontal_chart(
+    #     error_melted_class, 
+    #     error_order_class, 
+    #     'Percentage of Files with Error (%)',
+    #     FIGURE_DIR / 'empirical' / 'error_analysis' / 'class_level_distribution2.pdf',
+    #     color_list
+    # )
 
 # ===================================================================
 # Chart 3: Error Type Heatmap (RQ2)
@@ -465,96 +478,156 @@ if False:
     print("✓ Generated: empirical_error_heatmap_class.pdf/png")
 
 # ===================================================================
-# Chart 4: Stacked Error Distribution by Configuration (RQ2)  (class_level & method_level)
+# Chart 4: Stacked Error Distribution by Strategy (RQ2)  (class_level & method_level)
 # ===================================================================
-if True:
-    """
-    method_level
-    """
-    # Aggregate error data
-    stacked_data = df_errors.groupby(['model', 'strategy'])[error_type_cols].mean().reset_index()
-    stacked_data['config'] = stacked_data['model'] + ' (' + stacked_data['strategy'].replace({
-        'class': 'file-by-file',
-        'method': 'method-by-method'
-    }) + ')'
-
-    # Select top 8 error types for clarity and group others
-    stacked_data_plot = stacked_data.set_index('config')[error_type_cols]
-    stacked_data_plot.columns = [error_labels.get(col, col) for col in stacked_data_plot.columns]
-
-    fig, ax = plt.subplots(figsize=(12, 6))
-
-    stacked_data_plot.plot(kind='bar', stacked=True, ax=ax, colormap='tab20')
-    ax.set_xlabel('Model (Strategy)', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Percentage of Methods with Error', fontsize=12, fontweight='bold')
-    ax.set_title('RQ2: Error Type Distribution by Configuration', fontsize=14, fontweight='bold')
-    ax.legend(title='Error Type', bbox_to_anchor=(1.05, 1), loc='upper left')
-    ax.grid(axis='y', alpha=0.3)
-
-    plt.tight_layout()
-    plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_stack.pdf', dpi=300, bbox_inches='tight')
-    # plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'method_level_stack.png', dpi=300, bbox_inches='tight')
-    print("✓ Generated: empirical/error_analysis/method_level_stack.pdf/png")
-
-    """
-    class_level
-    """
-    stacked_data_class = df_errors_class.groupby(['model', 'strategy'])[error_type_cols].mean().reset_index()
-    stacked_data_class['config'] = stacked_data_class['model'] + ' (' + stacked_data_class['strategy'].replace({
-        'class': 'file-by-file',
-        'method': 'method-by-method'
-    }) + ')'
-
-    stacked_data_plot_class = stacked_data_class.set_index('config')[error_type_cols]
-    stacked_data_plot_class.columns = [error_labels.get(col, col) for col in stacked_data_plot_class.columns]
-
-    fig, ax = plt.subplots(figsize=(12, 6))
-
-    stacked_data_plot_class.plot(kind='bar', stacked=True, ax=ax, colormap='tab20')
-    ax.set_xlabel('Model (Strategy)', fontsize=12, fontweight='bold')
-    ax.set_ylabel('Percentage of Files with Error', fontsize=12, fontweight='bold')
-    ax.set_title('RQ2: Class-Level Error Type Distribution by Configuration', fontsize=14, fontweight='bold')
-    ax.legend(title='Error Type', bbox_to_anchor=(1.05, 1), loc='upper left')
-    ax.grid(axis='y', alpha=0.3)
-
-    plt.tight_layout()
-    plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'class_level_stack.pdf', dpi=300, bbox_inches='tight')
-    # plt.savefig(FIGURE_DIR / 'empirical' / 'error_analysis' / 'class_level_stack.png', dpi=300, bbox_inches='tight')
-    print("✓ Generated: empirical/error_analysis/class_level_stack.pdf/png")
+if False:
+    # Load new error stack statistics data
+    df_stack = pd.read_csv("data/error_stack_statistics.csv")
+    
+    # Define custom color scheme for error types
+    error_colors = {
+        'Syntax': '#CF7E9D',
+        'Type System': '#CBBBC1',     
+        'Decl/Def Mismatch': '#BD4146', 
+        'Undefined Symbols': '#ECC68C', 
+        'Duplicated Definitions': '#E4B7BC',
+        'Header File Error': '#F5E4C8' 
+    }
+    
+    # Define error type mappings
+    error_type_mapping = {
+        'Language Syntax Violation': 'Syntax',
+        'Type Error': 'Type System',
+        'Declaration Mismatch': 'Decl/Def Mismatch',
+        'Undefined Symbols': 'Undefined Symbols',
+        'Duplicated Definitions': 'Duplicated Definitions',
+        'Header File Error': 'Header File Error'
+    }
+    
+    # Process and create stacked charts for each strategy
+    for strategy in df_stack['strategy'].unique():
+        strategy_name = 'file-by-file' if strategy == 'class' else 'method-by-method'
+        strategy_data = df_stack[df_stack['strategy'] == strategy]
+        
+        # Create combined ai_name and level categories
+        strategy_data['ai_level'] = strategy_data['ai_name'] + ' (' + strategy_data['level'] + ')'
+        
+        # Melt for stacked chart
+        melted = strategy_data.melt(
+            id_vars=['ai_level'],
+            value_vars=['Language Syntax Violation', 'Type Error', 'Declaration Mismatch', 
+                       'Undefined Symbols', 'Duplicated Definitions', 'Header File Error'],
+            var_name='error_type',
+            value_name='rate'
+        )
+        
+        # Convert to percentage and create short labels
+        melted['rate'] = melted['rate'] * 100
+        melted['error_label'] = melted['error_type'].map(error_type_mapping)
+        
+        # Create stacked bar chart
+        fig, ax = plt.subplots(figsize=(16, 7))
+        
+        # Pivot for stacked plot
+        pivot_data = melted.pivot(index='ai_level', columns='error_label', values='rate')
+        pivot_data = pivot_data[list(error_colors.keys())]  # Ensure correct order
+        
+        pivot_data.plot(kind='bar', stacked=True, ax=ax, color=[error_colors[col] for col in pivot_data.columns])
+        
+        ax.set_xlabel('', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
+        ax.set_ylabel('Percentage of Errors (%)', fontsize=XY_LABEL_SIZE, fontweight='bold', fontfamily=FONT)
+        # Remove chart title
+        # ax.set_title(f'Error Distribution by Type - {strategy_name} Strategy', fontsize=XY_LABEL_SIZE + 2, fontweight='bold', fontfamily=FONT)
+        # Move legend to top with three columns, no title
+        ax.legend(loc='upper center', ncol=3, fontsize=LEGEND_SIZE, frameon=False)
+        ax.grid(axis='y', alpha=0.3)
+        ax.set_yticks(np.arange(0, 101, 10))
+        ax.set_yticklabels(np.arange(0, 101, 10), fontsize=XY_TICK_SIZE, fontfamily=FONT)
+        # Create two-line x-axis labels with level on first line
+        ax.set_xticklabels(
+            [label.split(' (')[1].replace(')', '').replace('class','intr-class').replace('method','intr-method') for label in pivot_data.index],
+            fontsize=XY_TICK_SIZE, 
+            fontfamily=FONT, 
+            rotation=0, 
+            ha='center'
+        )
+        
+        # Add curly braces to group by ai_name using loop
+        plt.subplots_adjust(bottom=0.2)
+        
+        # Define groups with their positions and names
+        groups = [
+            {'name': 'ChatGPT-5.1', 'start': 0, 'end': 1},
+            {'name': 'deepseek-v3.2', 'start': 2, 'end': 3},
+            {'name': 'qwen-3.5plus', 'start': 4, 'end': 5}
+        ]
+        
+        # Loop through groups to add labels and braces
+        for group in groups:
+            # Calculate center position for group label
+            center = (group['start'] + group['end']) / 2
+            # Add group name label
+            ax.text(center, -0.15, group['name'], transform=ax.get_xaxis_transform(),
+                    ha='center', va='top', fontsize=XY_TICK_SIZE + 2, fontfamily=FONT, style='italic')
+            # Add curly brace annotation
+            ax.annotate('', xy=(group['start']-0.2, -0.1), xytext=(group['end']+0.2, -0.1),
+                        xycoords=ax.get_xaxis_transform(),
+                        arrowprops=dict(arrowstyle='|-|', color='black', linewidth=1.5, shrinkA=0, shrinkB=0))
+        
+        # Add value labels
+        for p in ax.patches:
+            width, height = p.get_width(), p.get_height()
+            x, y = p.get_xy() 
+            
+            if height > 3:  # Only show labels for significant values
+                ax.text(x + width/2, 
+                        y + height/2,
+                        f'{height:.1f}',
+                        ha='center', 
+                        va='center',
+                        fontsize=VAL_LABEL_SIZE -5,
+                        fontfamily=FONT)
+        
+        plt.tight_layout()
+        output_path = FIGURE_DIR / 'empirical' / 'error_analysis' / f'stacked_error_distribution_{strategy}.pdf'
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        print(f"✓ Generated: {output_path}")
+        plt.close()
 
 # ===================================================================
 # Print Summary Statistics
 # ===================================================================
-print("\n" + "="*60)
-print("EMPIRICAL STUDY SUMMARY")
-print("="*60)
+if False:
+    print("\n" + "="*60)
+    print("EMPIRICAL STUDY SUMMARY")
+    print("="*60)
 
-print("\n--- Overall Success Rate by Model and Strategy ---")
-summary = df_data.groupby(['model', 'strategy']).agg({
-    'success_rate': ['mean', 'std'],
-    'total_cpp_count': 'sum',
-    'success_file_count': 'sum'
-}).round(2)
-print(summary)
+    print("\n--- Overall Success Rate by Model and Strategy ---")
+    summary = df_data.groupby(['model', 'strategy']).agg({
+        'success_rate': ['mean', 'std'],
+        'total_cpp_count': 'sum',
+        'success_file_count': 'sum'
+    }).round(2)
+    print(summary)
 
-print("\n--- Success Rate by Project ---")
-project_summary = df_data.groupby('translation_unit').agg({
-    'success_rate': ['mean', 'min', 'max']
-}).round(2)
-print(project_summary)
+    print("\n--- Success Rate by Project ---")
+    project_summary = df_data.groupby('translation_unit').agg({
+        'success_rate': ['mean', 'min', 'max']
+    }).round(2)
+    print(project_summary)
 
-print("\n--- Top Error Types (Method-Level) ---")
-error_summary_method = df_errors[error_type_cols].mean().sort_values(ascending=False)
-for err_type, rate in error_summary_method.head(6).items():
-    label = error_labels.get(err_type, err_type)
-    print(f"{label}: {rate:.3f}% of methods")
+    print("\n--- Top Error Types (Method-Level) ---")
+    error_summary_method = df_errors[error_type_cols].mean().sort_values(ascending=False)
+    for err_type, rate in error_summary_method.head(6).items():
+        label = error_labels.get(err_type, err_type)
+        print(f"{label}: {rate:.3f}% of methods")
 
-print("\n--- Top Error Types (Class-Level) ---")
-error_summary_class = df_errors_class[error_type_cols].mean().sort_values(ascending=False)
-for err_type, rate in error_summary_class.head(6).items():
-    label = error_labels.get(err_type, err_type)
-    print(f"{label}: {rate:.3f}% of files")
+    print("\n--- Top Error Types (Class-Level) ---")
+    error_summary_class = df_errors_class[error_type_cols].mean().sort_values(ascending=False)
+    for err_type, rate in error_summary_class.head(6).items():
+        label = error_labels.get(err_type, err_type)
+        print(f"{label}: {rate:.3f}% of files")
 
-print("\n" + "="*60)
-print("All charts generated successfully!")
-print("="*60)
+    print("\n" + "="*60)
+    print("All charts generated successfully!")
+    print("="*60)
