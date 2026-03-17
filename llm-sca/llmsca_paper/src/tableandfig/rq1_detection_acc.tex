@@ -1,14 +1,15 @@
-\begin{table}[t]
+\begin{table*}[t]
     \caption{Lineage Detection Accuracy (\%) w.r.t. Different Measurement Metrics, Direction Methods, and Graph Algorithms (RQ1)}
     \label{tab:rq1-comprehensive}
     \centering
     \footnotesize
     \setlength{\tabcolsep}{3pt}
-    \begin{tabular}{@{}p{2.2cm}c*{6}{c}@{}}
+        \begin{tabular}{m{3cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}}
         \toprule
-        \multirow{2}{*}{\textbf{Graph Algorithm}} & \multirow{2}{*}{\textbf{Dir.}} & \multicolumn{6}{c}{\textbf{Measurement Metric}} \\
+         & \multirow{2}{*}{\textbf{Dir.}} & \multicolumn{6}{c}{\textbf{Macro-Accuracy}} & \multicolumn{6}{c}{\textbf{Micro-Accuracy}} \\
         \cmidrule(lr){3-8}
-        & & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} \\
+         \cmidrule(lr){9-14}
+        Measurement Metric & & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} \\
         \midrule
         \multirow{2}{*}{+ MoTHer} 
             & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
@@ -27,4 +28,4 @@
             & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
         \bottomrule
     \end{tabular}%
-\end{table}
+\end{table*}
