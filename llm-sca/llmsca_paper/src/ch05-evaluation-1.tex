@@ -1,37 +1,6 @@
-
-
 \section{RQ1: Measurement Evaluation}
 
-\begin{table}[t]
-    \caption{Lineage Detection Accuracy (\%) w.r.t. Different Measurement Metrics, Direction Methods, and Graph Algorithms (RQ1)}
-    \label{tab:rq1-comprehensive}
-    \centering
-    \footnotesize
-    \setlength{\tabcolsep}{3pt}
-    \begin{tabular}{@{}p{2.2cm}c*{6}{c}@{}}
-        \toprule
-        \multirow{2}{*}{\textbf{Graph Algorithm}} & \multirow{2}{*}{\textbf{Dir.}} & \multicolumn{6}{c}{\textbf{Measurement Metric}} \\
-        \cmidrule(lr){3-8}
-        & & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} \\
-        \midrule
-        \multirow{2}{*}{+ MoTHer} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-        \midrule
-        \multirow{2}{*}{+ Hard-Constraint} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-        \midrule
-        \multirow{2}{*}{+ Undirected-Mst} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-        \midrule
-        \multirow{2}{*}{+ atlas\_snake\_fan} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-        \bottomrule
-    \end{tabular}%
-\end{table}
+\input{src/tableandfig/rq1_detection_acc}
 
 Summary: L2+timestamp+xxgraph algorithm performs best.
 
