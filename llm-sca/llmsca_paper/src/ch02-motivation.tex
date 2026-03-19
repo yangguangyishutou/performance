@@ -128,4 +128,11 @@ As the problem of model traceability gains prominence, various methods have been
 
 \cite{horwitz2025we}
 
+To empirically demonstrate the unreliability of self-reported model lineage, we conducted an investigation on 279 popular open-source models, consisting of 248 alleged parent-child model pairs. Crucially, all of these pairs were explicitly documented on Hugging Face as having a standard fine-tuning relationship. By scrutinizing their Model Cards~\cite{Jiang2023AnES} and linked external resources, as well as directly inquiring with the developers, we found that the self-reported lineage information is highly error-prone and inconsistent. Specifically, our analysis revealed 29 mischaracterized relationships among the collected pairs, the distribution of which is illustrated in Figure~\ref{fig:motivation-pie}. Notably, 48.3\% (14 pairs) of these anomalies were merely unmodified model copies rather than actual functional derivations. Another 44.8\% (13 pairs) were inaccurately documented as standard fine-tuning, whereas they actually involved alternative transformations such as quantization, format conversion, parameter ablation, or model merging. Furthermore, we identified instances (6.9\%, 2 pairs) where the declared base model was fundamentally incorrect. Such documentation failures expose the severe inadequacy of manual reporting. Consequently, automated model fingerprinting is urgently needed to establish trustworthy lineages.
 
+\begin{figure}[!t]
+    \centering
+    \includegraphics[width=0.3\textwidth]{fig/hf_error_pie.pdf}
+    \caption{Distribution of error types in self-reported model lineages among the 29 mischaracterized parent-child pairs identified in our empirical study.}
+    \label{fig:motivation-pie}
+\end{figure}
