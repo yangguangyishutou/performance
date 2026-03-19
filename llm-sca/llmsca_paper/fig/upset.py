@@ -55,6 +55,10 @@ accuracies = [accuracy_dict.get(combo, 0) for combo in all_combinations]
 # 3. 构建 UpSetPlot 所需的布尔值多重索引 (Boolean MultiIndex) 数据格式
 # UpSetPlot 的核心要求是：每一列代表一个模块(True/False)，最后加上我们要展示的指标(Accuracy)
 data_rows = []
+min_accuracy = min(accuracies) if accuracies else 0
+# 根据最小准确率，自动计算一个更接近最小值的 y 轴起点
+# 这里按 5 的步长向下取整，例如 68 -> 65，既减少空白又不过于拥挤
+y_min = max(0, (min_accuracy // 5) * 5)
 for i, combo in enumerate(all_combinations):
     # 如果该模块在当前组合中，则为 True，否则为 False
     row = {layer: (layer in combo) for layer in layers}
@@ -80,15 +84,18 @@ upset = UpSet(df_indexed['Accuracy'],
               sort_by='cardinality', 
               facecolor='#4c72b0', # 柱子和点的颜色
               element_size=40, # 柱子和点的尺寸
-              totals_plot_elements=0 
+              totals_plot_elements=0,
+              with_lines=False
               )
 
 # 渲染图形
 upset.plot()
 
-# 添加标题和轴标签
-plt.suptitle('Ablation Study: Impact of Q/K/V/O/MLP on Accuracy', fontsize=16, y=1.05)
 plt.ylabel('Accuracy (%)')
+
+# 调整纵坐标范围，从计算得到的 y_min 开始，以减少冗余空白
+current_ylim = plt.ylim()
+plt.ylim(y_min, current_ylim[1])
 
 plt.savefig('fig/rq2_upset.pdf', bbox_inches='tight', format='pdf')
 print("UpSet Plot 已成功保存为 rq2_upset.pdf")

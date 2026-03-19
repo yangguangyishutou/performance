@@ -30,7 +30,7 @@ def plot_family_boxplot(family_name: str, metric_values: np.ndarray, metric_name
     # Create boxplot
     bp = ax.boxplot(
         [metric_values],
-        labels=[family_name],
+        # labels=[family_name],
         patch_artist=True,
         widths=0.6,
         showmeans=True,  # Show mean as a diamond
@@ -46,14 +46,17 @@ def plot_family_boxplot(family_name: str, metric_values: np.ndarray, metric_name
         plt.setp(bp[element], color='black', linewidth=1.2)
     
     # Set labels
-    ax.set_ylabel(metric_display_name, fontsize=9)
-    ax.set_xlabel('Model Family', fontsize=9)
-    ax.tick_params(axis='both', labelsize=8)
+    # ax.set_ylabel(metric_display_name, fontsize=9)
+    # ax.set_xlabel('Model Family', fontsize=9)
+    ax.tick_params(axis='both', labelsize=14)
     
+    ax.set_xticklabels([])
+
     # Set y-axis limits with some padding
-    y_min = np.min(metric_values) * 0.95
-    y_max = np.max(metric_values) * 1.05
-    ax.set_ylim(y_min, y_max)
+    # y_min = np.min(metric_values) * 0.95
+    # y_max = np.max(metric_values) * 1.05
+    # ax.set_ylim(y_min, y_max)
+    ax.set_ylim(0, 1)
     
     # Add grid for better readability
     ax.grid(True, alpha=0.3, axis='y', linestyle='--')
@@ -122,6 +125,46 @@ def main():
         },
         "sparse_rel": {
             "display_name": "Sparse Rel.",
+            "data": {
+                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
+                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
+                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
+                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
+                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
+            }
+        },
+        "ghostspec_mse": {
+            "display_name": "GhostSpec MSE",
+            "data": {
+                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
+                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
+                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
+                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
+                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
+            }
+        },
+        "intrinsic_fingerprint": {
+            "display_name": "PDF",
+            "data": {
+                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
+                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
+                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
+                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
+                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
+            }
+        },
+        "matrix_homology": {
+            "display_name": "Matrix",
+            "data": {
+                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
+                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
+                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
+                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
+                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
+            }
+        },
+        "huref": {
+            "display_name": "HuRef",
             "data": {
                 "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
                 "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),

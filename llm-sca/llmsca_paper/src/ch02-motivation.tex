@@ -49,13 +49,13 @@ In the most common scenario, lineage information exists but is locked within fre
 A more precarious situation arises when provenance information is not even located within the Hugging Face platform, but is instead hyperlinked to an external, third-party source.
 
 \begin{tcolorbox}[
-    title={\textbf{Case Study 3: \texttt{pfnet/plamo-2.1-2b-cpt}}},
-    colback=gray!5!white, % 盒子背景色
-    colframe=gray!75!black, % 边框颜色
-    fonttitle=\bfseries, % 标题字体加粗
-    sharp corners % 使用直角，更具现代感
-]
-The model's homepage lacks a model tree, and its model card merely states that the model was derived by reducing the parameter size from an 8B-parameter model, without explicitly specifying the base model used for this operation. However, the model card provides links to three technical blogs for reference. By following these external links, we can infer that the mentioned 8B-parameter model is \texttt{plano-2-8b}.
+        title={\textbf{Case Study 3: \texttt{pfnet/plamo-2.1-2b-cpt}}},
+        colback=gray!5!white, % 盒子背景色
+        colframe=gray!75!black, % 边框颜色
+        fonttitle=\bfseries, % 标题字体加粗
+        sharp corners % 使用直角，更具现代感
+    ]
+    The model's homepage lacks a model tree, and its model card merely states that the model was derived by reducing the parameter size from an 8B-parameter model, without explicitly specifying the base model used for this operation. However, the model card provides links to three technical blogs for reference. By following these external links, we can infer that the mentioned 8B-parameter model is \texttt{plano-2-8b}.
 
 \end{tcolorbox}
 
@@ -82,34 +82,43 @@ These documented failures, which range from information concealed in prose to it
 
 
 % 目的在于说明，现在的方法，他方法设计上偏重某个方面，从而其泛化性需要被质疑
+As the problem of model traceability gains prominence, various methods have been proposed to detect relationships between LLMs (summarized in Table~\ref{tab:evolution_comparison}). However, these approaches typically over-optimize for specific operational scenarios, severely limiting their generalizability when constructing comprehensive lineage trees in the wild. First, the majority of techniques (e.g., REEF~\cite{zhang2024reef}, MDIR~\cite{zhang2025matrix}, HuRef~\cite{zeng2024huref}) treat provenance as a symmetrical, pair-wise similarity problem (Type ``P'') rather than a directional graph, failing to identify which model is the parent and which is the child (Dir. ``$\times$''). Second, they suffer from strict evaluation biases: dynamic methods rely on specific test prompts that are vulnerable to output homogeneity~\cite{wu2025tensorguard,wu2025llm,oyama2025mapping,zhang2024reef,yax2024phylolm}, while static weight-based methods often require rigid architectural alignment~\cite{zhang2025matrix,zeng2024huref,yoon2025intrinsic}. Consequently, while highly accurate for standard fine-tuning (FT), most methods fail to generalize across the complex, combinatorial operations actually prevalent, such as model merging (M), quantization (Q), Distillation (D) and pruning (P). Although a few recent works like Mother~\cite{horwitz2024unsupervised} and Model Atlas~\cite{horwitz2025we} attempt directional lineage tracing, they still suffer in real-world scenarios due to limited evolution support and fragile directional inference: Mother is strictly confined to basic fine-tuning, while Model Atlas relies on intra-architecture weight distances that completely fail to capture cross-architecture evolutions (e.g., distillation) or subtle alignments (e.g., RLHF). This highlights the urgent need for a more generalized, operation-agnostic framework for automated genealogy construction.
+
+
 
 % motivation：相关工作的真实效果如何，我们还不够清楚。
-
 \begin{table}[!t]
-\centering
-\small
-\setlength{\extrarowheight}{0pt}
-\begin{tabular}{m{2cm}m{1cm}m{1cm}m{1cm}} 
-\toprule
-Name & Year & Published At & \\ 
-\midrule
-TensorGuard~\cite{wu2025tensorguard} & 2025 \\
-LLM DNA~\cite{wu2025llm} & 2025 &\\
-Model Map~\cite{oyama2025mapping} 2025&  \\
-~\cite{zhang2024reef} &2024&  \\
- ~\cite{zhang2025matrix} &2025\\
- \cite{yax2024phylolm} & 2024 &\\
- Mother~\cite{horwitz2024unsupervised}& 2024 \\
- Model Atlas~\cite{horwitz2025we} & 2025\\
- \cite{yu2024neural} & 2024 \\
-%
-\bottomrule
-\end{tabular}
-\caption{Literature on LLM Lineage Analysis}
-\label{tab:literature}
+    \centering
+    \footnotesize
+    \setlength{\tabcolsep}{3pt} % 适当放宽列间距，因为列数减少了
+    \begin{tabular}{l ccc c c p{1.7cm}}
+        \toprule
+        \textbf{Name} & \textbf{Year} & \textbf{Acc.} & \textbf{Analy.} & \textbf{Type} & \textbf{Dir.} & \textbf{Evolution Support} \\
+        \midrule
+        TensorGuard~\cite{wu2025tensorguard}  & 2025 & W & D & P & $\times$ & FT, PT \\
+        LLM DNA~\cite{wu2025llm}              & 2026 & B & D & L & $\times$   & FT, PT, D \\
+        Model Map~\cite{oyama2025mapping}     & 2025 & W & D & L & \checkmark & FT, M, Q, D \\
+        REEF~\cite{zhang2024reef}             & 2025 & W & D & P & $\times$   & FT, M, P, D \\
+        MDIR~\cite{zhang2025matrix}           & 2025 & W & S & P & $\times$ & FT, P, UC \\
+        PhyloLM~\cite{yax2024phylolm}         & 2025 & B & D & L & $\times$ & FT, Q \\
+        Mother~\cite{horwitz2024unsupervised} & 2025 & W & S & L & \checkmark   & FT, PT \\
+        Model Atlas~\cite{horwitz2025we}      & 2025 & W & S & L & \checkmark   & FT, M, Q, D \\
+        Neural Lineage~\cite{yu2024neural}    & 2024 & W & S, D & P & $\times$ & FT \\
+        HuRef~\cite{zeng2024huref}            & 2024 & W & S & P & $\times$ & FT, PT \\
+        SeedPrints~\cite{tong2025seedprints}  & 2026 & W & D & P & $\times$   & FT, M, PT, Q, D \\
+        PDF~\cite{yoon2025intrinsic}          & 2025 & W & S & P & $\times$   & FT, UC \\
+        \bottomrule
+    \end{tabular}
+    \vspace{2pt}
+    \caption{
+        \textbf{Acc.}(ess): \textbf{B}lack/\textbf{W}hite-box; 
+        \textbf{Analy.}(sis): \textbf{S}tatic, \textbf{D}ynamic; 
+        \textbf{Type}: \textbf{P}air-wise, \textbf{L}ineage-tree; 
+        \textbf{Dir.}: Directional inference; 
+        \textbf{Evolution}: \textbf{FT}: Fine-tuning, \textbf{M}: Merging, \textbf{PT}: PEFT, \textbf{Q}: Quantization, \textbf{P}: Pruning, \textbf{UC}: Upcycling, \textbf{D}: Distillation.
+    }
+    \label{tab:evolution_comparison}
 \end{table}
-
-
 
 \subsection{A Preliminary Investigation on Hugging Face Model Card}
 

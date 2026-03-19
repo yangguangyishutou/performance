@@ -24,10 +24,26 @@ We design experiments to explore the following research questions.
 % accuracy = precision, recall
 % 一摸一样的tree/总的tree的比例？
 % TODO accuracy包括了 precision 和recall，是不是要分开？
-\textbf{Accuracy.} Micro-accuracy, Macro-accuracy. 
+\textbf{Accuracy.} To comprehensively evaluate the structural recovery of model lineages, we measure performance at both the edge level and the tree level. Let $\mathcal{T}$ denote the set of all model family trees in our dataset. We define the following two metrics:
 
-\textbf{Layers.} LLM.
+\begin{itemize}[leftmargin=*]
+    \item \textit{Micro-accuracy}: This metric evaluates the local edge prediction performance. It is defined as the total number of correctly predicted directed edges divided by the total number of ground-truth edges across all evaluated model graphs:
+    $$Micro\text{-}acc = \frac{\sum_{T \in \mathcal{T}} |E_{correct}^{(T)}|}{\sum_{T \in \mathcal{T}} |E_{total}^{(T)}|}$$
+    \item \textit{Macro-accuracy}: This metric evaluates the global topology reconstruction. It is defined as the ratio of successfully recovered model family trees (where the entire lineage topology and edge directions are perfectly matched) to the total number of model families:
+    $$Macro\text{-}acc = \frac{|\{T \in \mathcal{T} \mid T_{recovered} = T_{true}\}|}{|\mathcal{T}|}$$
+\end{itemize}
 
+\textbf{Layers.} To address RQ2, we systematically isolate the core structural components within Transformer-based Large Language Models (LLMs). Specifically, we dissect the Multi-Head Attention mechanism and the Feed-Forward Network (FFN). The attention mechanism involves projection weight matrices for the Query ($W_Q$), Key ($W_K$), Value ($W_V$), and Output ($W_O$):
+$$Attention(Q,K,V) = softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+Furthermore, we evaluate the contribution of the FFN, which typically consists of Multi-Layer Perceptron (MLP) dense layers:
+$$FFN(x) = \sigma(x W_1 + b_1) W_2 + b_2$$
+where $\sigma$ represents a non-linear activation function. This granular breakdown enables us to systematically evaluate the fingerprinting capacity of various layer combinations and quantify their respective impacts on the effectiveness of lineage detection.
 
-\textbf{Graph Algorithms.} XX 
+\textbf{Graph Algorithms.} In our experiments, we evaluate and compare several graph construction algorithms to reconstruct the model lineage topology from the computed pairwise distance and directional matrices:
 
+\begin{itemize}[leftmargin=*]
+    \item \textit{MoTher}: Following Horwitz et al.~\cite{horwitz2024unsupervised}, we formulate the base lineage recovery task as finding a minimum directed spanning tree (MDST). We employ the Chu-Liu-Edmonds algorithm~\cite{chu1965shortest, edmonds1967optimum} to achieve this optimal cycle-free directed routing.
+    \item \textit{Atlas Greedy DAG}: To account for complex, non-tree structures, we evaluate the Model Atlas framework~\cite{horwitz2025we}. This approach constructs a Directed Acyclic Graph (DAG) via a greedy algorithm, leveraging real-world structural priors such as temporal upload dynamics to determine edge directionality and explicitly accommodating multi-parent merged models.
+    \item \textit{Strict-Directional MDST}: We introduce a heavily constrained variant of the MDST. By setting the penalty for reverse edges (i.e., edges that violate the inferred directionality constraints) to infinity ($\infty$), we strictly force the algorithm to adhere to the predicted parent-child hierarchical flow.
+    \item \textit{Undirected-MST}: We also implement a decoupled baseline. In the first stage, we construct a minimum spanning tree (MST) on the undirected graph using solely the distance matrix to determine topological connectivity. In the second stage, we subsequently assign directions to these established edges based on the independent directional information.
+\end{itemize}

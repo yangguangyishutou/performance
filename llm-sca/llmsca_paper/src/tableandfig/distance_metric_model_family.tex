@@ -1,220 +1,288 @@
 % Graph: L2 distance distribution with regard to Model families
 % Distance metric distributions across different model families
+
 \begin{figure*}[!t]
     \centering
-    % L2 Distance
-    \begin{subfigure}{0.5\textwidth}
+    % Qwen
+    \begin{subfigure}{\textwidth}
         \centering
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_qwen_l2_boxplot.pdf}
-            \caption*{Qwen}
+            \caption*{L2}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_llama_l2_boxplot.pdf}
-            \caption*{LLaMA}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_granite_l2_boxplot.pdf}
-            \caption*{Granite}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_mistral_l2_boxplot.pdf}
-            \caption*{Mistral}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_others_l2_boxplot.pdf}
-            \caption*{Others}
-        \end{subfigure}
-        \caption{L2 Distance}
-        \label{fig:rq1-l2-boxplots}
-    \end{subfigure}%
-    % Cosine Similarity
-    \begin{subfigure}{0.5\textwidth}
-        \centering
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_qwen_cos_boxplot.pdf}
-            \caption*{Qwen}
+            \caption*{Cos}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_llama_cos_boxplot.pdf}
-            \caption*{LLaMA}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_granite_cos_boxplot.pdf}
-            \caption*{Granite}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_mistral_cos_boxplot.pdf}
-            \caption*{Mistral}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_others_cos_boxplot.pdf}
-            \caption*{Others}
-        \end{subfigure}%
-        \caption{Cosine Similarity}
-        \label{fig:rq1-cos-boxplots}
-    \end{subfigure}
-    % \vspace{0.3cm}
-    % Abs Mean
-    \begin{subfigure}{0.49\textwidth}
-        \centering
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_qwen_abs_mean_boxplot.pdf}
-            \caption*{Qwen}
+            \caption*{Abs Mean}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_llama_abs_mean_boxplot.pdf}
-            \caption*{LLaMA}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_granite_abs_mean_boxplot.pdf}
-            \caption*{Granite}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_mistral_abs_mean_boxplot.pdf}
-            \caption*{Mistral}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_others_abs_mean_boxplot.pdf}
-            \caption*{Others}
-        \end{subfigure}%
-        \caption{Abs Mean}
-        \label{fig:rq1-abs-mean-boxplots}
-    \end{subfigure}
-    % Abs Max
-    \begin{subfigure}{0.49\textwidth}
-        \centering
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_qwen_abs_max_boxplot.pdf}
-            \caption*{Qwen}
+            \caption*{Abs Max}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_llama_abs_max_boxplot.pdf}
-            \caption*{LLaMA}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_granite_abs_max_boxplot.pdf}
-            \caption*{Granite}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_mistral_abs_max_boxplot.pdf}
-            \caption*{Mistral}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_others_abs_max_boxplot.pdf}
-            \caption*{Others}%
-        \end{subfigure}
-        \caption{Abs Max}
-        \label{fig:rq1-abs-max-boxplots}
-    \end{subfigure}
-    % \vspace{0.3cm}
-    % Sparse Abs.
-    \begin{subfigure}{0.49\textwidth}
-        \centering
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_qwen_sparse_abs_boxplot.pdf}
-            \caption*{Qwen}
+            \caption*{Sparse Abs}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_llama_sparse_abs_boxplot.pdf}
-            \caption*{LLaMA}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_granite_sparse_abs_boxplot.pdf}
-            \caption*{Granite}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_mistral_sparse_abs_boxplot.pdf}
-            \caption*{Mistral}
-        \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
-            \centering
-            \includegraphics[width=\textwidth]{fig/rq1_others_sparse_abs_boxplot.pdf}
-            \caption*{Others}
-        \end{subfigure}
-        \caption{Sparse Abs.}
-        \label{fig:rq1-sparse-abs-boxplots}
-    \end{subfigure}
-    % \vspace{0.3cm}
-    % Sparse Rel.
-    \begin{subfigure}{0.49\textwidth}
-        \centering
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_qwen_sparse_rel_boxplot.pdf}
-            \caption*{Qwen}
+            \caption*{Sparse Rel}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_intrinsic_fingerprint_boxplot.pdf}
+            \caption*{PDF}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_ghostspec_mse_boxplot.pdf}
+            \caption*{Ghost}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_matrix_homology_boxplot.pdf}
+            \caption*{Matrix}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_qwen_huref_boxplot.pdf}
+            \caption*{HuRef}
+        \end{subfigure}%
+        \caption*{Qwen}
+    \end{subfigure}
+
+    % LLaMA
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_l2_boxplot.pdf}
+            \caption*{L2}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_cos_boxplot.pdf}
+            \caption*{Cos}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_abs_mean_boxplot.pdf}
+            \caption*{Abs Mean}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_abs_max_boxplot.pdf}
+            \caption*{Abs Max}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_sparse_abs_boxplot.pdf}
+            \caption*{Sparse Abs}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_llama_sparse_rel_boxplot.pdf}
-            \caption*{LLaMA}
+            \caption*{Sparse Rel}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_intrinsic_fingerprint_boxplot.pdf}
+            \caption*{PDF}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_ghostspec_mse_boxplot.pdf}
+            \caption*{Ghost}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_matrix_homology_boxplot.pdf}
+            \caption*{Matrix}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_llama_huref_boxplot.pdf}
+            \caption*{HuRef}
+        \end{subfigure}
+        \caption*{LLaMA}
+    \end{subfigure}
+
+    % Granite
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_l2_boxplot.pdf}
+            \caption*{L2}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_cos_boxplot.pdf}
+            \caption*{Cos}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_abs_mean_boxplot.pdf}
+            \caption*{Abs Mean}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_abs_max_boxplot.pdf}
+            \caption*{Abs Max}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_sparse_abs_boxplot.pdf}
+            \caption*{Sparse Abs}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_granite_sparse_rel_boxplot.pdf}
-            \caption*{Granite}
+            \caption*{Sparse Rel}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_intrinsic_fingerprint_boxplot.pdf}
+            \caption*{PDF}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_ghostspec_mse_boxplot.pdf}
+            \caption*{Ghost}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_matrix_homology_boxplot.pdf}
+            \caption*{Matrix}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_granite_huref_boxplot.pdf}
+            \caption*{HuRef}
+        \end{subfigure}
+        \caption*{Granite}
+    \end{subfigure}
+
+    % Mistral
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_l2_boxplot.pdf}
+            \caption*{L2}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_cos_boxplot.pdf}
+            \caption*{Cos}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_abs_mean_boxplot.pdf}
+            \caption*{Abs Mean}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_abs_max_boxplot.pdf}
+            \caption*{Abs Max}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_sparse_abs_boxplot.pdf}
+            \caption*{Sparse Abs}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_mistral_sparse_rel_boxplot.pdf}
-            \caption*{Mistral}
+            \caption*{Sparse Rel}
         \end{subfigure}%
-        \hfill
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_intrinsic_fingerprint_boxplot.pdf}
+            \caption*{PDF}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_ghostspec_mse_boxplot.pdf}
+            \caption*{Ghost}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_matrix_homology_boxplot.pdf}
+            \caption*{Matrix}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_mistral_huref_boxplot.pdf}
+            \caption*{HuRef}
+        \end{subfigure}
+        \caption*{Mistral}
+    \end{subfigure}
+
+    % Others
+    \begin{subfigure}{\textwidth}
+        \centering
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_l2_boxplot.pdf}
+            \caption*{L2}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_cos_boxplot.pdf}
+            \caption*{Cos}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_abs_mean_boxplot.pdf}
+            \caption*{Abs Mean}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_abs_max_boxplot.pdf}
+            \caption*{Abs Max}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_sparse_abs_boxplot.pdf}
+            \caption*{Sparse Abs}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
             \centering
             \includegraphics[width=\textwidth]{fig/rq1_others_sparse_rel_boxplot.pdf}
-            \caption*{Others}
+            \caption*{Sparse Rel}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_intrinsic_fingerprint_boxplot.pdf}
+            \caption*{PDF}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_ghostspec_mse_boxplot.pdf}
+            \caption*{Ghost}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_matrix_homology_boxplot.pdf}
+            \caption*{Matrix}
+        \end{subfigure}%
+        \begin{subfigure}{0.095\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{fig/rq1_others_huref_boxplot.pdf}
+            \caption*{HuRef}
         \end{subfigure}
-        \caption{Sparse Rel.}
-        \label{fig:rq1-sparse-rel-boxplots}
+        \caption*{Others}
     \end{subfigure}
-    \caption{Distance metric distributions across different model families (RQ1).}
+
+    \caption{Distance metric distributions for different model families (RQ1).}
     \label{fig:rq1-all-metrics-boxplots}
 \end{figure*}

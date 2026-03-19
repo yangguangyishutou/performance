@@ -3,29 +3,30 @@
     \label{tab:rq1-comprehensive}
     \centering
     \footnotesize
-    \setlength{\tabcolsep}{3pt}
-        \begin{tabular}{m{3cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}m{1cm}}
+    \setlength{\tabcolsep}{1.5pt}
+    \resizebox{0.95\textwidth}{!}{
+        \begin{tabular}{m{2.5cm}m{0.5cm}*{20}{m{0.7cm}}}
         \toprule
-         & \multirow{2}{*}{\textbf{Dir.}} & \multicolumn{6}{c}{\textbf{Macro-Accuracy}} & \multicolumn{6}{c}{\textbf{Micro-Accuracy}} \\
-        \cmidrule(lr){3-8}
-         \cmidrule(lr){9-14}
-        Measurement Metric & & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} \\
+         & \multirow{2}{*}{\textbf{Dir.}} & \multicolumn{10}{c}{\textbf{Macro-Accuracy}} & \multicolumn{10}{c}{\textbf{Micro-Accuracy}} \\
+        \cmidrule(lr){3-12}
+         \cmidrule(lr){13-22}
+        \textbf{Distances} & & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} & \textbf{PDF} & \textbf{Ghost} & \textbf{Matrix} & \textbf{HuRef} & \textbf{L2} & \textbf{Cos.} & \textbf{AM} & \textbf{AMx} & \textbf{SA} & \textbf{SR} & \textbf{PDF} & \textbf{Ghost} & \textbf{Matrix} & \textbf{HuRef} \\
         \midrule
-        \multirow{2}{*}{+ MoTHer} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \multirow{2}{*}{MoTHer} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
         \midrule
-        \multirow{2}{*}{+ Hard-Constraint} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \multirow{2}{*}{Strict-Directional MDST} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
         \midrule
-        \multirow{2}{*}{+ Undirected-Mst} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \multirow{2}{*}{Undirected-MST} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
         \midrule
-        \multirow{2}{*}{+ atlas\_snake\_fan} 
-            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
-            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+        \multirow{2}{*}{Atlas Greedy DAG} 
+            & K & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
+            & T & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} & \todo{...} \\
         \bottomrule
-    \end{tabular}%
+    \end{tabular}}
 \end{table*}
