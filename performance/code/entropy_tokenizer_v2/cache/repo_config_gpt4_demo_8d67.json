@@ -1,0 +1,706 @@
+{
+  "selected_skeletons": [
+    {
+      "skeleton": "with {0}({1}, {2}, encoding={3}) as {4}:",
+      "frequency": 2,
+      "fixed_tokens": 9,
+      "num_slots": 5,
+      "savings_per_instance": 8,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 14
+    },
+    {
+      "skeleton": "{0} = {1}.get({2}, {3})",
+      "frequency": 2,
+      "fixed_tokens": 6,
+      "num_slots": 4,
+      "savings_per_instance": 5,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 8
+    },
+    {
+      "skeleton": "{0} = {1}.path.join({2}, f'{{3}}{4}')",
+      "frequency": 1,
+      "fixed_tokens": 10,
+      "num_slots": 5,
+      "savings_per_instance": 9,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 7
+    },
+    {
+      "skeleton": "for {0} in {1}.listdir({2}.input_dir):",
+      "frequency": 1,
+      "fixed_tokens": 10,
+      "num_slots": 3,
+      "savings_per_instance": 9,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 7
+    },
+    {
+      "skeleton": "{0}.makedirs({1}.output_dir, exist_ok=True)",
+      "frequency": 1,
+      "fixed_tokens": 9,
+      "num_slots": 2,
+      "savings_per_instance": 8,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 6
+    },
+    {
+      "skeleton": "{0} = {1}.path.join({2}.input_dir, {3})",
+      "frequency": 1,
+      "fixed_tokens": 9,
+      "num_slots": 4,
+      "savings_per_instance": 8,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 6
+    },
+    {
+      "skeleton": "def {0}({1}: {3}[{4}], {2}: {5}={6}) -> {7}:",
+      "frequency": 1,
+      "fixed_tokens": 8,
+      "num_slots": 8,
+      "savings_per_instance": 7,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 5
+    },
+    {
+      "skeleton": "def {0}({1}, {2}: {4}, {3}: {5}):",
+      "frequency": 1,
+      "fixed_tokens": 7,
+      "num_slots": 6,
+      "savings_per_instance": 6,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 4
+    },
+    {
+      "skeleton": "{0} = {1}({2}, {3}.output_dir)",
+      "frequency": 1,
+      "fixed_tokens": 7,
+      "num_slots": 4,
+      "savings_per_instance": 6,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 4
+    },
+    {
+      "skeleton": "{0}.dump({1}, {2}, indent={3})",
+      "frequency": 1,
+      "fixed_tokens": 7,
+      "num_slots": 4,
+      "savings_per_instance": 6,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 4
+    },
+    {
+      "skeleton": "def {0}({1}: {2}) -> {3}[{4}]:",
+      "frequency": 1,
+      "fixed_tokens": 6,
+      "num_slots": 5,
+      "savings_per_instance": 5,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 3
+    },
+    {
+      "skeleton": "if not {0}.path.exists({1}):",
+      "frequency": 1,
+      "fixed_tokens": 6,
+      "num_slots": 2,
+      "savings_per_instance": 5,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 3
+    },
+    {
+      "skeleton": "return {0}.errors == 0",
+      "frequency": 1,
+      "fixed_tokens": 6,
+      "num_slots": 1,
+      "savings_per_instance": 5,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 3
+    },
+    {
+      "skeleton": "if not {0}.endswith({1}):",
+      "frequency": 1,
+      "fixed_tokens": 6,
+      "num_slots": 2,
+      "savings_per_instance": 5,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 3
+    },
+    {
+      "skeleton": "{0} = {1}.get({2}, [])",
+      "frequency": 1,
+      "fixed_tokens": 6,
+      "num_slots": 3,
+      "savings_per_instance": 5,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 3
+    },
+    {
+      "skeleton": "{0}.processed = 0",
+      "frequency": 1,
+      "fixed_tokens": 5,
+      "num_slots": 1,
+      "savings_per_instance": 4,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 2
+    },
+    {
+      "skeleton": "if {0} is None:",
+      "frequency": 1,
+      "fixed_tokens": 5,
+      "num_slots": 1,
+      "savings_per_instance": 4,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 2
+    },
+    {
+      "skeleton": "{0}(f'{1}{{2}}{3}{{4}}')",
+      "frequency": 1,
+      "fixed_tokens": 5,
+      "num_slots": 5,
+      "savings_per_instance": 4,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 2
+    },
+    {
+      "skeleton": "from {0} import {1}, {2}",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 3,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    },
+    {
+      "skeleton": "for {0} in {1}:",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 2,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    },
+    {
+      "skeleton": "def {0}({1}) -> {2}:",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 3,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    },
+    {
+      "skeleton": "{0}(f'{1}{{2}}')",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 3,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    },
+    {
+      "skeleton": "{0} = {1}.load({2})",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 3,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    },
+    {
+      "skeleton": "{0}.errors = 0",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 1,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    },
+    {
+      "skeleton": "except {1} as {0}:",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 2,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    },
+    {
+      "skeleton": "{0}.errors += 1",
+      "frequency": 1,
+      "fixed_tokens": 4,
+      "num_slots": 1,
+      "savings_per_instance": 3,
+      "codebook_cost": 2,
+      "mdl_net_benefit": 1
+    }
+  ],
+  "replacement_map": {
+    "\"\"\"Load a JSON file and return its contents as a dictionary.\"\"\"": "<STR>",
+    "\"\"\"Run the processing pipeline.\"\"\"": "<STR>",
+    "load_json_file": "<VAR>",
+    "input_dir": "<ATTR>",
+    "\"\"\"Handles batch processing of data records.\"\"\"": "<STR>",
+    "\"\"\"\n    Process a list of records and write results to output_dir.\n    Returns the number of records successfully processed.\n    \"\"\"": "<STR>",
+    "output_dir": "<ATTR>",
+    "\"utf-8\"": "<STR>",
+    "DEFAULT_OUTPUT_DIR": "<VAR>",
+    "\"\"\"Utility functions for processing data files.\"\"\"": "<STR>"
+  },
+  "scores_summary": [
+    {
+      "word": "\"\"\"\n    Process a list of records and write results to output_dir.\n    Returns the number of records successfully processed.\n    \"\"\"",
+      "category": "string",
+      "score": 3.4698,
+      "delta_T": 24.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 25.0
+    },
+    {
+      "word": "\"\"\"Load a JSON file and return its contents as a dictionary.\"\"\"",
+      "category": "string",
+      "score": 1.7349,
+      "delta_T": 12.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 13.0
+    },
+    {
+      "word": "output_dir",
+      "category": "attribute",
+      "score": 1.7034,
+      "delta_T": 7.0,
+      "self_info": 4.0995,
+      "freq": 7,
+      "spt": 2.0
+    },
+    {
+      "word": "\"utf-8\"",
+      "category": "string",
+      "score": 1.3521,
+      "delta_T": 8.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 5.0
+    },
+    {
+      "word": "input_dir",
+      "category": "attribute",
+      "score": 1.0881,
+      "delta_T": 5.0,
+      "self_info": 4.585,
+      "freq": 5,
+      "spt": 2.0
+    },
+    {
+      "word": "\"\"\"Utility functions for processing data files.\"\"\"",
+      "category": "string",
+      "score": 1.012,
+      "delta_T": 7.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 8.0
+    },
+    {
+      "word": "\"\"\"Handles batch processing of data records.\"\"\"",
+      "category": "string",
+      "score": 1.012,
+      "delta_T": 7.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 8.0
+    },
+    {
+      "word": "\"\"\"Run the processing pipeline.\"\"\"",
+      "category": "string",
+      "score": 0.7229,
+      "delta_T": 5.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 6.0
+    },
+    {
+      "word": "DEFAULT_OUTPUT_DIR",
+      "category": "variable",
+      "score": 0.676,
+      "delta_T": 4.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 3.0
+    },
+    {
+      "word": "load_json_file",
+      "category": "variable",
+      "score": 0.676,
+      "delta_T": 4.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 3.0
+    },
+    {
+      "word": "success_count",
+      "category": "variable",
+      "score": 0.5626,
+      "delta_T": 3.0,
+      "self_info": 5.3219,
+      "freq": 3,
+      "spt": 2.0
+    },
+    {
+      "word": "output_path",
+      "category": "variable",
+      "score": 0.5626,
+      "delta_T": 3.0,
+      "self_info": 5.3219,
+      "freq": 3,
+      "spt": 2.0
+    },
+    {
+      "word": "\"/tmp/output\"",
+      "category": "string",
+      "score": 0.4337,
+      "delta_T": 3.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 4.0
+    },
+    {
+      "word": "file_handle",
+      "category": "variable",
+      "score": 0.338,
+      "delta_T": 2.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 2.0
+    },
+    {
+      "word": "process_records",
+      "category": "variable",
+      "score": 0.338,
+      "delta_T": 2.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 2.0
+    },
+    {
+      "word": "record_id",
+      "category": "variable",
+      "score": 0.338,
+      "delta_T": 2.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 2.0
+    },
+    {
+      "word": "record_name",
+      "category": "variable",
+      "score": 0.338,
+      "delta_T": 2.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 2.0
+    },
+    {
+      "word": "out_file",
+      "category": "variable",
+      "score": 0.338,
+      "delta_T": 2.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 2.0
+    },
+    {
+      "word": "error_obj",
+      "category": "variable",
+      "score": 0.338,
+      "delta_T": 2.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 2.0
+    },
+    {
+      "word": "\"r\"",
+      "category": "string",
+      "score": 0.2891,
+      "delta_T": 2.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 3.0
+    },
+    {
+      "word": "\"unknown\"",
+      "category": "string",
+      "score": 0.2891,
+      "delta_T": 2.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 3.0
+    },
+    {
+      "word": "\".json\"",
+      "category": "string",
+      "score": 0.2891,
+      "delta_T": 2.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 3.0
+    },
+    {
+      "word": "\"records\"",
+      "category": "string",
+      "score": 0.2891,
+      "delta_T": 2.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 3.0
+    },
+    {
+      "word": "DataProcessor",
+      "category": "variable",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "makedirs",
+      "category": "attribute",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "exist_ok",
+      "category": "variable",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "listdir",
+      "category": "attribute",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "endswith",
+      "category": "attribute",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "\"id\"",
+      "category": "string",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "\"name\"",
+      "category": "string",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "\"w\"",
+      "category": "string",
+      "score": 0.1446,
+      "delta_T": 1.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 2.0
+    },
+    {
+      "word": "os",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 4.3219,
+      "freq": 6,
+      "spt": 1.0
+    },
+    {
+      "word": "json",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.3219,
+      "freq": 3,
+      "spt": 1.0
+    },
+    {
+      "word": "typing",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 1.0
+    },
+    {
+      "word": "Optional",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 1.0
+    },
+    {
+      "word": "List",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 1.0
+    },
+    {
+      "word": "filepath",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 4.3219,
+      "freq": 6,
+      "spt": 1.0
+    },
+    {
+      "word": "path",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.3219,
+      "freq": 3,
+      "spt": 1.0
+    },
+    {
+      "word": "exists",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 1.0
+    },
+    {
+      "word": "encoding",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 1.0
+    },
+    {
+      "word": "data",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 4.585,
+      "freq": 5,
+      "spt": 1.0
+    },
+    {
+      "word": "load",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 1.0
+    },
+    {
+      "word": "records",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 4.9069,
+      "freq": 4,
+      "spt": 1.0
+    },
+    {
+      "word": "record",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 4.9069,
+      "freq": 4,
+      "spt": 1.0
+    },
+    {
+      "word": "get",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.3219,
+      "freq": 3,
+      "spt": 1.0
+    },
+    {
+      "word": "join",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 1.0
+    },
+    {
+      "word": "dump",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 1.0
+    },
+    {
+      "word": "indent",
+      "category": "variable",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 6.9069,
+      "freq": 1,
+      "spt": 1.0
+    },
+    {
+      "word": "processed",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.9069,
+      "freq": 2,
+      "spt": 1.0
+    },
+    {
+      "word": "errors",
+      "category": "attribute",
+      "score": 0.0,
+      "delta_T": 0.0,
+      "self_info": 5.3219,
+      "freq": 3,
+      "spt": 1.0
+    }
+  ],
+  "n_sources": 1,
+  "N_baseline_tokens": 463,
+  "V0": 100277,
+  "tokenizer_key": "gpt4"
+}

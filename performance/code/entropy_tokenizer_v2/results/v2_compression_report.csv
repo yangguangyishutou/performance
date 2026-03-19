@@ -1,0 +1,2 @@
+tokenizer_key,n_files,baseline_tokens,syntax_tokens,cleaning_tokens,final_tokens,syntax_saved,cleaning_saved,replacement_saved,total_saved,reduction_pct,syntax_pct,cleaning_pct,replacement_pct,baseline_bpb,final_bpb,baseline_entropy,V0,k_star_syntax,n_replacement_words
+gpt4,301,521319,521382,477856,411270,-63,43526,66586,110049,21.109724,-0.012085,8.349207,12.772602,3.945794,3.112848,10.831070,100277,56,6136

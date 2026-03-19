@@ -233,3 +233,12 @@ license/fig/xyf_run_copy.sh
 *.ipynb_checkpoints
 
 privacy/paper_min-k/python_dataset/
+
+# Python runtime/cache artifacts
+**/__pycache__/
+*.py[cod]
+
+# Local virtual environments
+*.venv/
+.venv/
+.venv311/

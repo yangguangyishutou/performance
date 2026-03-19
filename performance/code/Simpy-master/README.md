@@ -10,7 +10,6 @@ It consists of the following artifacts:
 ```
 tree-sitter               0.20.2
 ```
-
 ##  SimPy Grammar
 The grammar specification is in the file `spy_grammar/grammar.js`. You can refer to the [tree-sitter](https://tree-sitter.github.io/tree-sitter/creating-parsers#grammar-rules) documentation for the grammar specification.
 
