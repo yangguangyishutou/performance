@@ -1,0 +1,50 @@
+{
+  "construct": "import.meta.resolve()",
+  "language": "javascript",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "import",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "import 关键字后必须跟点号"
+    },
+    {
+      "conditional": "import .",
+      "consequent": "meta",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 meta 标识符"
+    },
+    {
+      "conditional": "import . meta",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "import.meta 后必须跟点号"
+    },
+    {
+      "conditional": "import . meta .",
+      "consequent": "resolve",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 resolve 标识符"
+    },
+    {
+      "conditional": "import . meta . resolve",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "resolve 标识符后必须跟左括号"
+    },
+    {
+      "conditional": "import . meta . resolve (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过模块名表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:52.571464"
+}

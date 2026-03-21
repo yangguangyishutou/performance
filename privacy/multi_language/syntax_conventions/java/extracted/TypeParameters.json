@@ -1,0 +1,22 @@
+{
+  "construct": "TypeParameters",
+  "language": "java",
+  "syntax_node": "<",
+  "constraints": [
+    {
+      "conditional": "<",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "左尖括号 '<' 后必须跟类型参数标识符"
+    },
+    {
+      "conditional": "< [IDENT]",
+      "consequent": ">",
+      "skip": "TypeParameterList",
+      "required": true,
+      "note": "类型参数列表后必须跟右尖括号 '>'"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:45.192286"
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "extends",
+  "language": "javascript",
+  "syntax_node": "extends",
+  "constraints": [
+    {
+      "conditional": "extends",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "extends 关键字后必须跟父类标识符"
+    },
+    {
+      "conditional": "extends [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "父类名称后必须跟左大括号"
+    },
+    {
+      "conditional": "extends",
+      "consequent": "null",
+      "skip": "",
+      "required": true,
+      "note": "extends 关键字后可跟 null"
+    },
+    {
+      "conditional": "extends null",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "extends null 后必须跟左大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:27:47.260541"
+}

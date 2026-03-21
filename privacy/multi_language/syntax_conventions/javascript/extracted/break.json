@@ -1,0 +1,29 @@
+{
+  "construct": "break",
+  "language": "javascript",
+  "syntax_node": "break",
+  "constraints": [
+    {
+      "conditional": "break",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "break 后可直接跟分号"
+    },
+    {
+      "conditional": "break",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": false,
+      "note": "break 后可跟标签标识符"
+    },
+    {
+      "conditional": "break [IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "break 标签后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:57.376714"
+}

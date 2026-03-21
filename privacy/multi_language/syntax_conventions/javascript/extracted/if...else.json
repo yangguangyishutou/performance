@@ -1,0 +1,71 @@
+{
+  "construct": "if...else",
+  "language": "javascript",
+  "syntax_node": "if",
+  "constraints": [
+    {
+      "conditional": "if",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "if 后必须跟左括号"
+    },
+    {
+      "conditional": "if (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号"
+    },
+    {
+      "conditional": "if ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "if ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始"
+    },
+    {
+      "conditional": "if () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "if () {}",
+      "consequent": "else",
+      "skip": "",
+      "required": false,
+      "note": "if 语句块后可选择性跟随 else"
+    },
+    {
+      "conditional": "else",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "else 后必须跟左大括号"
+    },
+    {
+      "conditional": "else",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "else 后必须跟语句起始"
+    },
+    {
+      "conditional": "else {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "else 左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:07.909885"
+}

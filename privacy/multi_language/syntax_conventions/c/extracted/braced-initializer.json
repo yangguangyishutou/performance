@@ -1,0 +1,36 @@
+{
+  "construct": "braced-initializer",
+  "language": "c",
+  "syntax_node": "{",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}, <expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（空初始化列表）或初始化列表起始"
+    },
+    {
+      "conditional": "{ }",
+      "consequent": "",
+      "skip": "",
+      "required": false,
+      "note": "空初始化列表完成"
+    },
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "initializer-list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过初始化列表）"
+    },
+    {
+      "conditional": "{ }",
+      "consequent": ",",
+      "skip": "initializer-list",
+      "required": false,
+      "note": "初始化列表后可选择性跟随逗号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:58.035718"
+}

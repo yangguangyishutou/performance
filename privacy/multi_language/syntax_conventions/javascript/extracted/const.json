@@ -1,0 +1,120 @@
+{
+  "construct": "const",
+  "language": "javascript",
+  "syntax_node": "const",
+  "constraints": [
+    {
+      "conditional": "const",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "const 关键字后必须跟标识符"
+    },
+    {
+      "conditional": "const",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "const 关键字后可跟左中括号（解构）"
+    },
+    {
+      "conditional": "const",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "const 关键字后可跟左大括号（解构）"
+    },
+    {
+      "conditional": "const [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "const 标识符后必须跟赋值号"
+    },
+    {
+      "conditional": "const [",
+      "consequent": "]",
+      "skip": "pattern",
+      "required": true,
+      "note": "const 左中括号后必须跟右中括号"
+    },
+    {
+      "conditional": "const []",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "const 数组解构后必须跟赋值号"
+    },
+    {
+      "conditional": "const {",
+      "consequent": "}",
+      "skip": "pattern",
+      "required": true,
+      "note": "const 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "const {}",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "const 对象解构后必须跟赋值号"
+    },
+    {
+      "conditional": "const [IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "const 赋值号后必须跟表达式起始"
+    },
+    {
+      "conditional": "const [] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "const 解构赋值号后必须跟表达式起始"
+    },
+    {
+      "conditional": "const {} =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "const 解构赋值号后必须跟表达式起始"
+    },
+    {
+      "conditional": "const [IDENT] = <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "const 声明表达式后必须跟分号"
+    },
+    {
+      "conditional": "const [IDENT] = <expression_start>",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "const 声明表达式后可跟逗号（多变量声明）"
+    },
+    {
+      "conditional": "const [IDENT] = <expression_start>,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "const 逗号后必须跟标识符"
+    },
+    {
+      "conditional": "const [IDENT] = <expression_start>,",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "const 逗号后可跟左中括号（解构）"
+    },
+    {
+      "conditional": "const [IDENT] = <expression_start>,",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "const 逗号后可跟左大括号（解构）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:41.041863"
+}

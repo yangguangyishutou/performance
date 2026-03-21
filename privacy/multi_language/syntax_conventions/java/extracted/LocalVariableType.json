@@ -1,0 +1,22 @@
+{
+  "construct": "LocalVariableType",
+  "language": "java",
+  "syntax_node": "var, <type_start>",
+  "constraints": [
+    {
+      "conditional": "var",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'var' 关键字后必须跟变量名标识符"
+    },
+    {
+      "conditional": "<type_start>",
+      "consequent": "[IDENT]",
+      "skip": "UnannType",
+      "required": true,
+      "note": "类型起始后必须跟变量名标识符（中间跳过 UnannType 解析）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.266351"
+}

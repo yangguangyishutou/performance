@@ -1,0 +1,29 @@
+{
+  "construct": "InterfacePermits",
+  "language": "java",
+  "syntax_node": "permits",
+  "constraints": [
+    {
+      "conditional": "permits",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'permits' 关键字后必须跟类型名"
+    },
+    {
+      "conditional": "permits [IDENT]",
+      "consequent": ",, ;, {",
+      "skip": "",
+      "required": false,
+      "note": "类型名后可跟逗号（更多类型）、分号或左大括号（取决于上下文）"
+    },
+    {
+      "conditional": "permits [IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟另一个类型名"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:09:43.080244"
+}

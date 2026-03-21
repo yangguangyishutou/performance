@@ -1,0 +1,22 @@
+{
+  "construct": "LocalClassOrInterfaceDeclaration",
+  "language": "java",
+  "syntax_node": "class, interface",
+  "constraints": [
+    {
+      "conditional": "class",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'class' 关键字后必须跟类名标识符"
+    },
+    {
+      "conditional": "interface",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'interface' 关键字后必须跟接口名标识符"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.265805"
+}

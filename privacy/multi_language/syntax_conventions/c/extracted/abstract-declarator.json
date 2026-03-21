@@ -1,0 +1,29 @@
+{
+  "construct": "abstract-declarator",
+  "language": "c",
+  "syntax_node": "abstract_declarator",
+  "constraints": [
+    {
+      "conditional": "*",
+      "consequent": "[IDENT], (, [, *",
+      "skip": "",
+      "required": false,
+      "note": "指针符号后可以跟标识符、左括号、左方括号或另一个指针符号"
+    },
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "abstract_declarator",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过抽象声明符）"
+    },
+    {
+      "conditional": "()",
+      "consequent": "[, (",
+      "skip": "",
+      "required": false,
+      "note": "括号形式的抽象声明符后可以跟左方括号或左括号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:47.382924"
+}

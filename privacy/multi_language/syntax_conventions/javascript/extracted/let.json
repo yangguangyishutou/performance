@@ -1,0 +1,162 @@
+{
+  "construct": "let",
+  "language": "javascript",
+  "syntax_node": "let",
+  "constraints": [
+    {
+      "conditional": "let",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "let 关键字后必须跟标识符"
+    },
+    {
+      "conditional": "let",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "let 关键字后可跟左中括号（解构）"
+    },
+    {
+      "conditional": "let",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "let 关键字后可跟左大括号（解构）"
+    },
+    {
+      "conditional": "let [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "let 标识符后可跟赋值号"
+    },
+    {
+      "conditional": "let [IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "let 标识符后可跟分号（无初始化）"
+    },
+    {
+      "conditional": "let [IDENT]",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "let 标识符后可跟逗号（多变量声明）"
+    },
+    {
+      "conditional": "let [",
+      "consequent": "]",
+      "skip": "pattern",
+      "required": true,
+      "note": "let 左中括号后必须跟右中括号"
+    },
+    {
+      "conditional": "let []",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "let 数组解构后可跟赋值号"
+    },
+    {
+      "conditional": "let []",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "let 数组解构后可跟分号"
+    },
+    {
+      "conditional": "let []",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "let 数组解构后可跟逗号"
+    },
+    {
+      "conditional": "let {",
+      "consequent": "}",
+      "skip": "pattern",
+      "required": true,
+      "note": "let 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "let {}",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "let 对象解构后可跟赋值号"
+    },
+    {
+      "conditional": "let {}",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "let 对象解构后可跟分号"
+    },
+    {
+      "conditional": "let {}",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "let 对象解构后可跟逗号"
+    },
+    {
+      "conditional": "let [IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "let 赋值号后必须跟表达式起始"
+    },
+    {
+      "conditional": "let [] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "let 解构赋值号后必须跟表达式起始"
+    },
+    {
+      "conditional": "let {} =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "let 解构赋值号后必须跟表达式起始"
+    },
+    {
+      "conditional": "let [IDENT] = <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "let 声明表达式后必须跟分号"
+    },
+    {
+      "conditional": "let [IDENT] = <expression_start>",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "let 声明表达式后可跟逗号（多变量声明）"
+    },
+    {
+      "conditional": "let [IDENT] = <expression_start>,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "let 逗号后必须跟标识符"
+    },
+    {
+      "conditional": "let [IDENT] = <expression_start>,",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "let 逗号后可跟左中括号（解构）"
+    },
+    {
+      "conditional": "let [IDENT] = <expression_start>,",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "let 逗号后可跟左大括号（解构）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:41.044659"
+}

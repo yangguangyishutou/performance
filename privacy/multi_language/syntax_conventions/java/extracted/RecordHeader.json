@@ -1,0 +1,15 @@
+{
+  "construct": "RecordHeader",
+  "language": "java",
+  "syntax_node": "(",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "record_component_list",
+      "required": true,
+      "note": "记录头 '(' 后必须跟 ')'（中间跳过记录组件列表）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:09:02.940750"
+}

@@ -1,0 +1,22 @@
+{
+  "construct": "member-declarator-list",
+  "language": "c",
+  "syntax_node": "member-declarator-list",
+  "constraints": [
+    {
+      "conditional": "member-declarator",
+      "consequent": ",",
+      "skip": "",
+      "required": false,
+      "note": "成员声明符后可选择性跟随逗号以继续列表"
+    },
+    {
+      "conditional": "member-declarator ,",
+      "consequent": "member-declarator",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟随另一个成员声明符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:50.040366"
+}

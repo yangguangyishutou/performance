@@ -1,0 +1,22 @@
+{
+  "construct": "ImportDeclaration",
+  "language": "java",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "import",
+      "skip": "",
+      "required": true,
+      "note": "导入声明必须以 'import' 关键字开始"
+    },
+    {
+      "conditional": "import",
+      "consequent": "[IDENT], static",
+      "skip": "",
+      "required": true,
+      "note": "'import' 后必须跟类型名或 'static' 关键字"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:09.799708"
+}

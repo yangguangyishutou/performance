@@ -1,0 +1,36 @@
+{
+  "construct": "SwitchExpression",
+  "language": "java",
+  "syntax_node": "switch",
+  "constraints": [
+    {
+      "conditional": "switch",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "switch 表达式：'switch' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "switch (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "switch 表达式：左括号后必须跟右括号（中间跳过表达式）"
+    },
+    {
+      "conditional": "switch ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "switch 表达式：右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "switch () {",
+      "consequent": "}",
+      "skip": "SwitchBlock",
+      "required": true,
+      "note": "switch 表达式：左大括号后必须跟右大括号（中间跳过 SwitchBlock）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:01:44.681893"
+}

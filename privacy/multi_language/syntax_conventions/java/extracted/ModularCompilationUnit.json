@@ -1,0 +1,15 @@
+{
+  "construct": "ModularCompilationUnit",
+  "language": "java",
+  "syntax_node": "CompilationUnit",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "import, module",
+      "skip": "",
+      "required": false,
+      "note": "模块化编译单元可以以 'import' 或 'module' 开始"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:09.798640"
+}

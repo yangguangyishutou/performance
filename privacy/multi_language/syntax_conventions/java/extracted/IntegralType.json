@@ -1,0 +1,7 @@
+{
+  "construct": "IntegralType",
+  "language": "java",
+  "syntax_node": "IntegralType",
+  "constraints": [],
+  "extracted_at": "2026-03-18T12:01:44.683176"
+}

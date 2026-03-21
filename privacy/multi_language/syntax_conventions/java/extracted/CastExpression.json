@@ -1,0 +1,43 @@
+{
+  "construct": "CastExpression",
+  "language": "java",
+  "syntax_node": "(",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": "PrimitiveType, ReferenceType",
+      "skip": "",
+      "required": true,
+      "note": "强制转换表达式：左括号后必须跟基本类型或引用类型"
+    },
+    {
+      "conditional": "( PrimitiveType",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "基本类型转换：类型名后必须跟右括号"
+    },
+    {
+      "conditional": "( PrimitiveType )",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "基本类型转换：右括号后必须跟一元表达式"
+    },
+    {
+      "conditional": "( ReferenceType",
+      "consequent": ")",
+      "skip": "AdditionalBound",
+      "required": true,
+      "note": "引用类型转换：类型名后必须跟右括号（中间可跳过附加边界）"
+    },
+    {
+      "conditional": "( ReferenceType )",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "引用类型转换：右括号后必须跟一元表达式（非加减）或 Lambda 表达式"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:01:44.681585"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "ArgumentList",
+  "language": "java",
+  "syntax_node": ",",
+  "constraints": [
+    {
+      "conditional": ",",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:50.495593"
+}

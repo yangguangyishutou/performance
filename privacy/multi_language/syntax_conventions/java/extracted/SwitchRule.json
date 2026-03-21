@@ -1,0 +1,50 @@
+{
+  "construct": "SwitchRule",
+  "language": "java",
+  "syntax_node": "switch",
+  "constraints": [
+    {
+      "conditional": "SwitchLabel",
+      "consequent": "->",
+      "skip": "",
+      "required": true,
+      "note": "SwitchLabel 后必须跟箭头 '->'"
+    },
+    {
+      "conditional": "SwitchLabel ->",
+      "consequent": "<expression_start>, {, throw",
+      "skip": "",
+      "required": true,
+      "note": "箭头 '->' 后必须跟表达式起始或左大括号 '{' 或 'throw' 关键字"
+    },
+    {
+      "conditional": "SwitchLabel -> <expression_start>",
+      "consequent": ";",
+      "skip": "Expression",
+      "required": true,
+      "note": "表达式后必须跟分号 ';'"
+    },
+    {
+      "conditional": "SwitchLabel -> {",
+      "consequent": "}",
+      "skip": "Block",
+      "required": true,
+      "note": "左大括号 '{' 后必须跟右大括号 '}'（中间跳过 Block）"
+    },
+    {
+      "conditional": "SwitchLabel -> throw",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'throw' 关键字后必须跟表达式起始"
+    },
+    {
+      "conditional": "SwitchLabel -> throw <expression_start>",
+      "consequent": ";",
+      "skip": "Expression",
+      "required": true,
+      "note": "throw 表达式后必须跟分号 ';'"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:55:59.683557"
+}

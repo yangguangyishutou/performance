@@ -1,0 +1,15 @@
+{
+  "construct": "attribute-list",
+  "language": "c",
+  "syntax_node": "attribute",
+  "constraints": [
+    {
+      "conditional": ",",
+      "consequent": "[IDENT], ]]",
+      "skip": "",
+      "required": false,
+      "note": "逗号后可选择性跟随属性标识符或双右方括号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:06.927586"
+}

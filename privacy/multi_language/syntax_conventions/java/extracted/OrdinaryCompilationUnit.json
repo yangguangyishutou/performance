@@ -1,0 +1,15 @@
+{
+  "construct": "OrdinaryCompilationUnit",
+  "language": "java",
+  "syntax_node": "CompilationUnit",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "package, import, <statement_start>",
+      "skip": "",
+      "required": false,
+      "note": "普通编译单元可以以 'package'、'import' 或顶层类/接口声明开始"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:09.798300"
+}

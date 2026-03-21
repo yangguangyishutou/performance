@@ -1,0 +1,15 @@
+{
+  "construct": "AnnotationInterfaceBody",
+  "language": "java",
+  "syntax_node": "{",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "AnnotationInterfaceMemberDeclaration",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过注解接口成员声明）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:10.963374"
+}

@@ -1,0 +1,92 @@
+{
+  "construct": "for...in",
+  "language": "javascript",
+  "syntax_node": "for",
+  "constraints": [
+    {
+      "conditional": "for",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "for 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "const",
+      "skip": "",
+      "required": true,
+      "note": "for 左括号后可跟 const 关键字"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "let",
+      "skip": "",
+      "required": true,
+      "note": "for 左括号后可跟 let 关键字"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "var",
+      "skip": "",
+      "required": true,
+      "note": "for 左括号后可跟 var 关键字"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "for 左括号后可跟变量标识符"
+    },
+    {
+      "conditional": "for ( const",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "for ( const 后必须跟标识符"
+    },
+    {
+      "conditional": "for ( const [IDENT]",
+      "consequent": "in",
+      "skip": "",
+      "required": true,
+      "note": "for ( const 标识符后必须跟 in 关键字"
+    },
+    {
+      "conditional": "for ( const [IDENT] in",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "for ( const 标识符 in 后必须跟表达式起始（对象）"
+    },
+    {
+      "conditional": "for ( const [IDENT] in <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "for ( const 标识符 in 表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( const [IDENT] in <expression_start> )",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "for 右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "for ( const [IDENT] in <expression_start> )",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "for 右括号后必须跟语句起始"
+    },
+    {
+      "conditional": "for ( const [IDENT] in <expression_start> ) {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "for 左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:41.043618"
+}

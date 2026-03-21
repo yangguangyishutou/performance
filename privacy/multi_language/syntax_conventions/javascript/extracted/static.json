@@ -1,0 +1,85 @@
+{
+  "construct": "static",
+  "language": "javascript",
+  "syntax_node": "static",
+  "constraints": [
+    {
+      "conditional": "static",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "static 关键字后必须跟标识符（字段名）"
+    },
+    {
+      "conditional": "static",
+      "consequent": "async",
+      "skip": "",
+      "required": true,
+      "note": "static 关键字后可跟 async（用于异步方法）"
+    },
+    {
+      "conditional": "static",
+      "consequent": "*",
+      "skip": "",
+      "required": true,
+      "note": "static 关键字后可跟星号（用于生成器方法）"
+    },
+    {
+      "conditional": "static",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "static 关键字后可跟左大括号（用于静态初始化块）"
+    },
+    {
+      "conditional": "static async",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "static async 后必须跟方法名标识符"
+    },
+    {
+      "conditional": "static *",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "static * 后必须跟生成器方法名标识符"
+    },
+    {
+      "conditional": "static [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "static 字段名后可跟左括号（用于方法定义）"
+    },
+    {
+      "conditional": "static [IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "static 字段名后可跟分号"
+    },
+    {
+      "conditional": "static [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "static 字段名后可跟等号（用于初始化）"
+    },
+    {
+      "conditional": "static async [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "static async 方法名后必须跟左括号"
+    },
+    {
+      "conditional": "static * [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "static * 生成器方法名后必须跟左括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:27:47.261170"
+}

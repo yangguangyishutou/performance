@@ -1,0 +1,15 @@
+{
+  "construct": "attribute-declaration",
+  "language": "c",
+  "syntax_node": "attribute-declaration",
+  "constraints": [
+    {
+      "conditional": "attribute-specifier-sequence",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "属性说明符序列后必须跟随分号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:34.353714"
+}

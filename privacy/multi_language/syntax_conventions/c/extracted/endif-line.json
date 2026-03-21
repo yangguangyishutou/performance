@@ -1,0 +1,15 @@
+{
+  "construct": "endif-line",
+  "language": "c",
+  "syntax_node": "#",
+  "constraints": [
+    {
+      "conditional": "#",
+      "consequent": "endif",
+      "skip": "",
+      "required": true,
+      "note": "预处理指令 # 后必须跟 endif 关键字"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:10.043792"
+}

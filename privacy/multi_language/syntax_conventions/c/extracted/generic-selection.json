@@ -1,0 +1,29 @@
+{
+  "construct": "generic-selection",
+  "language": "c",
+  "syntax_node": "_Generic",
+  "constraints": [
+    {
+      "conditional": "_Generic",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "_Generic 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "_Generic (",
+      "consequent": ",",
+      "skip": "assignment-expression",
+      "required": true,
+      "note": "左括号后必须跟逗号（中间跳过赋值表达式）"
+    },
+    {
+      "conditional": "_Generic ( ,",
+      "consequent": ")",
+      "skip": "generic-assoc-list",
+      "required": true,
+      "note": "逗号后必须跟右括号（中间跳过泛型关联列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:44:55.063877"
+}

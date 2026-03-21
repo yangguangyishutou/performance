@@ -1,0 +1,22 @@
+{
+  "construct": "identifier-list",
+  "language": "c",
+  "syntax_node": "[IDENT]",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ",",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可选择性跟随逗号"
+    },
+    {
+      "conditional": "[IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟随标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:31.423309"
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "VariableInitializer",
+  "language": "java",
+  "syntax_node": "VariableInitializer",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "<expression_start>, {",
+      "skip": "",
+      "required": true,
+      "note": "变量初始化器必须以表达式起始或左大括号开始"
+    },
+    {
+      "conditional": "{",
+      "consequent": "}, <expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "数组初始化器左大括号后必须跟右大括号或表达式起始"
+    },
+    {
+      "conditional": "{ <expression_start>",
+      "consequent": "}, ,",
+      "skip": "",
+      "required": true,
+      "note": "数组初始化器第一个元素后必须跟逗号继续或右大括号结束"
+    },
+    {
+      "conditional": "{ <expression_start> ,",
+      "consequent": "<expression_start>, }",
+      "skip": "",
+      "required": true,
+      "note": "数组初始化器逗号后必须跟下一个表达式起始或右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:06:10.334581"
+}

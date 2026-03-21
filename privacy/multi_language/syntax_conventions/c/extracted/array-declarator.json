@@ -1,0 +1,57 @@
+{
+  "construct": "array-declarator",
+  "language": "c",
+  "syntax_node": "[",
+  "constraints": [
+    {
+      "conditional": "[",
+      "consequent": "], static, const, volatile, restrict, _Atomic, *",
+      "skip": "",
+      "required": true,
+      "note": "数组左方括号后必须跟右方括号（空数组）、static 关键字、类型限定符或星号"
+    },
+    {
+      "conditional": "[ static",
+      "consequent": "const, volatile, restrict, _Atomic, <expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "static 后必须跟类型限定符或表达式起始"
+    },
+    {
+      "conditional": "[ const",
+      "consequent": "static, <expression_start>, ]",
+      "skip": "",
+      "required": true,
+      "note": "const 后可跟 static、表达式起始或右方括号"
+    },
+    {
+      "conditional": "[ volatile",
+      "consequent": "static, <expression_start>, ]",
+      "skip": "",
+      "required": true,
+      "note": "volatile 后可跟 static、表达式起始或右方括号"
+    },
+    {
+      "conditional": "[ restrict",
+      "consequent": "static, <expression_start>, ]",
+      "skip": "",
+      "required": true,
+      "note": "restrict 后可跟 static、表达式起始或右方括号"
+    },
+    {
+      "conditional": "[ _Atomic",
+      "consequent": "static, <expression_start>, ]",
+      "skip": "",
+      "required": true,
+      "note": "_Atomic 后可跟 static、表达式起始或右方括号"
+    },
+    {
+      "conditional": "[ *",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "星号（VLA 未指定大小）后必须跟右方括号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:24.956996"
+}

@@ -1,0 +1,7 @@
+{
+  "construct": "member-declaration-list",
+  "language": "c",
+  "syntax_node": "member-declaration",
+  "constraints": [],
+  "extracted_at": "2026-03-17T18:45:41.954633"
+}

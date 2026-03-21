@@ -1,0 +1,113 @@
+{
+  "construct": "control-line",
+  "language": "c",
+  "syntax_node": "#",
+  "constraints": [
+    {
+      "conditional": "#",
+      "consequent": "include, embed, define, undef, line, error, warning, pragma",
+      "skip": "",
+      "required": false,
+      "note": "预处理指令 # 后可选择性跟随指令关键字或直接换行"
+    },
+    {
+      "conditional": "# include",
+      "consequent": "<expression_start>",
+      "skip": "pp-tokens",
+      "required": true,
+      "note": "include 指令后必须跟 pp-tokens（如 <file.h> 或 'file.h'）"
+    },
+    {
+      "conditional": "# embed",
+      "consequent": "<expression_start>",
+      "skip": "pp-tokens",
+      "required": true,
+      "note": "embed 指令后必须跟 pp-tokens"
+    },
+    {
+      "conditional": "# define",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "define 指令后必须跟标识符"
+    },
+    {
+      "conditional": "# define [IDENT]",
+      "consequent": "(, <expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "define 标识符后可选择性跟左括号（函数式宏）或直接跟替换列表"
+    },
+    {
+      "conditional": "# define [IDENT] (",
+      "consequent": "), ...",
+      "skip": "identifier-list",
+      "required": true,
+      "note": "define 函数式宏左括号后必须跟右括号或可变参数 ..."
+    },
+    {
+      "conditional": "# define [IDENT] ( ...",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "可变参数 ... 后必须跟右括号"
+    },
+    {
+      "conditional": "# define [IDENT] (",
+      "consequent": ",",
+      "skip": "identifier",
+      "required": false,
+      "note": "参数列表中标识符后可选择性跟逗号分隔下一个参数"
+    },
+    {
+      "conditional": "# define [IDENT] ( [IDENT] ,",
+      "consequent": "..., [IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟可变参数 ... 或下一个参数标识符"
+    },
+    {
+      "conditional": "# define [IDENT] )",
+      "consequent": "<expression_start>",
+      "skip": "replacement-list",
+      "required": false,
+      "note": "define 右括号后可选择性跟替换列表"
+    },
+    {
+      "conditional": "# undef",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "undef 指令后必须跟标识符"
+    },
+    {
+      "conditional": "# line",
+      "consequent": "<expression_start>",
+      "skip": "pp-tokens",
+      "required": true,
+      "note": "line 指令后必须跟 pp-tokens"
+    },
+    {
+      "conditional": "# error",
+      "consequent": "<expression_start>",
+      "skip": "pp-tokens",
+      "required": false,
+      "note": "error 指令后可选择性跟 pp-tokens"
+    },
+    {
+      "conditional": "# warning",
+      "consequent": "<expression_start>",
+      "skip": "pp-tokens",
+      "required": false,
+      "note": "warning 指令后可选择性跟 pp-tokens"
+    },
+    {
+      "conditional": "# pragma",
+      "consequent": "<expression_start>",
+      "skip": "pp-tokens",
+      "required": false,
+      "note": "pragma 指令后可选择性跟 pp-tokens"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:25.768444"
+}

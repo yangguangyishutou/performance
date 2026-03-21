@@ -1,0 +1,7 @@
+{
+  "construct": "StatementExpression",
+  "language": "java",
+  "syntax_node": "Expression",
+  "constraints": [],
+  "extracted_at": "2026-03-18T11:54:52.250275"
+}

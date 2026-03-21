@@ -1,0 +1,22 @@
+{
+  "construct": "ArrayCreationExpressionWithoutInitializer",
+  "language": "java",
+  "syntax_node": "new",
+  "constraints": [
+    {
+      "conditional": "new PrimitiveType, new ClassOrInterfaceType",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "类型后必须跟左方括号开始维度表达式"
+    },
+    {
+      "conditional": "new PrimitiveType [, new ClassOrInterfaceType [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "左方括号后必须跟右方括号（中间跳过表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:50.494620"
+}

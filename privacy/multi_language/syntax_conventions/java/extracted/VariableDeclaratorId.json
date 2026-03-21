@@ -1,0 +1,29 @@
+{
+  "construct": "VariableDeclaratorId",
+  "language": "java",
+  "syntax_node": "VariableDeclarator",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "[, =, ;, ,",
+      "skip": "",
+      "required": true,
+      "note": "标识符后可以跟方括号定义数组维度，或等号/分号/逗号"
+    },
+    {
+      "conditional": "[IDENT] [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "左方括号后必须跟右方括号（中间跳过维度表达式）"
+    },
+    {
+      "conditional": "[IDENT] []",
+      "consequent": "[, =, ;, ,",
+      "skip": "",
+      "required": true,
+      "note": "一对空方括号后可以继续另一对方括号，或跟等号/分号/逗号"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:06:10.334277"
+}

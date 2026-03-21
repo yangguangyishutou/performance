@@ -1,0 +1,14 @@
+{
+  "language": "java",
+  "total_sections": 8,
+  "sections": [
+    "§4_Types_Values_Variables",
+    "§6_Names",
+    "§7_Packages_and_Modules",
+    "§8_Classes",
+    "§9_Interfaces",
+    "§10_Arrays",
+    "§14_Statements_and_Patterns",
+    "§15_Expressions"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "typeof-specifier",
+  "language": "c",
+  "syntax_node": "typeof",
+  "constraints": [
+    {
+      "conditional": "typeof",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "typeof 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "typeof (",
+      "consequent": ")",
+      "skip": "typeof-specifier-argument",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过 typeof 参数）"
+    },
+    {
+      "conditional": "typeof_unqual",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "typeof_unqual 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "typeof_unqual (",
+      "consequent": ")",
+      "skip": "typeof-specifier-argument",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过 typeof 参数）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:10.521847"
+}

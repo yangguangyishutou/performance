@@ -1,0 +1,15 @@
+{
+  "construct": "pp-parameter-clause",
+  "language": "c",
+  "syntax_node": "(",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "pp-balanced-token-sequence",
+      "required": true,
+      "note": "预处理器参数子句的左括号后必须跟右括号（中间可选平衡 token 序列）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:39.003174"
+}

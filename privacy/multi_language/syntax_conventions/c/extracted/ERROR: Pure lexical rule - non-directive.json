@@ -1,0 +1,8 @@
+{
+  "construct": "ERROR: Pure lexical rule - non-directive",
+  "language": "c",
+  "syntax_node": "SKIP",
+  "constraints": [],
+  "reason": "non-directive 是纯 lexical 规则，只定义 pp-tokens 后跟换行，没有括号或关键字序列",
+  "extracted_at": "2026-03-17T18:48:25.769731"
+}

@@ -1,0 +1,22 @@
+{
+  "construct": "Rest parameters",
+  "language": "javascript",
+  "syntax_node": "...",
+  "constraints": [
+    {
+      "conditional": "...",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "Rest 参数语法 ... 后必须跟标识符名称"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "Rest 参数必须是最后一个参数，其后必须跟随右括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:25:54.257848"
+}

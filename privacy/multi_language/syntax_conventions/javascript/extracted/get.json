@@ -1,0 +1,85 @@
+{
+  "construct": "get",
+  "language": "javascript",
+  "syntax_node": "getter",
+  "constraints": [
+    {
+      "conditional": "get",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "get 关键字后必须跟属性名标识符"
+    },
+    {
+      "conditional": "get",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "get 关键字后可跟左方括号以开始计算属性名"
+    },
+    {
+      "conditional": "get [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "计算属性名左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "get []",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "计算属性名后必须跟左括号"
+    },
+    {
+      "conditional": "get [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "属性名标识符后必须跟左括号"
+    },
+    {
+      "conditional": "get [IDENT] (",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "getter 左括号后必须跟右括号（无参数）"
+    },
+    {
+      "conditional": "get [] (",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "getter 左括号后必须跟右括号（无参数）"
+    },
+    {
+      "conditional": "get [IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "getter 右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "get [] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "getter 右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "get [IDENT] () {",
+      "consequent": "}",
+      "skip": "function_body",
+      "required": true,
+      "note": "getter 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "get [] () {",
+      "consequent": "}",
+      "skip": "function_body",
+      "required": true,
+      "note": "getter 左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:25:54.258373"
+}

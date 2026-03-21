@@ -1,0 +1,7 @@
+{
+  "construct": "struct-or-union",
+  "language": "c",
+  "syntax_node": "struct-or-union",
+  "constraints": [],
+  "extracted_at": "2026-03-17T18:45:41.954336"
+}

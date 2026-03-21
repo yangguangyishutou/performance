@@ -1,0 +1,113 @@
+{
+  "construct": "Template literals (Template strings)",
+  "language": "javascript",
+  "syntax_node": "template_literal",
+  "constraints": [
+    {
+      "conditional": "`",
+      "consequent": "}",
+      "skip": "template_string",
+      "required": true,
+      "note": "反引号后可跟字符串内容或插值结束符"
+    },
+    {
+      "conditional": "`",
+      "consequent": "${",
+      "skip": "template_string",
+      "required": true,
+      "note": "反引号后可跟插值起始序列"
+    },
+    {
+      "conditional": "`",
+      "consequent": "`",
+      "skip": "template_string",
+      "required": true,
+      "note": "反引号后可跟反引号结束符"
+    },
+    {
+      "conditional": "` ${",
+      "consequent": "}",
+      "skip": "expression",
+      "required": true,
+      "note": "插值起始后必须跟右大括号"
+    },
+    {
+      "conditional": "` ${}",
+      "consequent": "}",
+      "skip": "template_string",
+      "required": true,
+      "note": "插值结束后可跟字符串内容"
+    },
+    {
+      "conditional": "` ${}",
+      "consequent": "${",
+      "skip": "template_string",
+      "required": true,
+      "note": "插值结束后可跟新的插值起始序列"
+    },
+    {
+      "conditional": "` ${}",
+      "consequent": "`",
+      "skip": "template_string",
+      "required": true,
+      "note": "插值结束后可跟反引号结束符"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "`",
+      "skip": "",
+      "required": true,
+      "note": "标签函数标识符后必须跟反引号"
+    },
+    {
+      "conditional": "[IDENT] `",
+      "consequent": "}",
+      "skip": "template_string",
+      "required": true,
+      "note": "标签模板反引号后可跟字符串内容"
+    },
+    {
+      "conditional": "[IDENT] `",
+      "consequent": "${",
+      "skip": "template_string",
+      "required": true,
+      "note": "标签模板反引号后可跟插值起始序列"
+    },
+    {
+      "conditional": "[IDENT] `",
+      "consequent": "`",
+      "skip": "template_string",
+      "required": true,
+      "note": "标签模板反引号后可跟反引号结束符"
+    },
+    {
+      "conditional": "[IDENT] ` ${",
+      "consequent": "}",
+      "skip": "expression",
+      "required": true,
+      "note": "标签模板插值起始后必须跟右大括号"
+    },
+    {
+      "conditional": "[IDENT] ` ${}",
+      "consequent": "}",
+      "skip": "template_string",
+      "required": true,
+      "note": "标签模板插值结束后可跟字符串内容"
+    },
+    {
+      "conditional": "[IDENT] ` ${}",
+      "consequent": "${",
+      "skip": "template_string",
+      "required": true,
+      "note": "标签模板插值结束后可跟新的插值起始序列"
+    },
+    {
+      "conditional": "[IDENT] ` ${}",
+      "consequent": "`",
+      "skip": "template_string",
+      "required": true,
+      "note": "标签模板插值结束后可跟反引号结束符"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:25:54.256484"
+}

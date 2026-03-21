@@ -1,0 +1,155 @@
+{
+  "construct": "Object initializer",
+  "language": "javascript",
+  "syntax_node": "object_expression",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "properties",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过属性列表）"
+    },
+    {
+      "conditional": "{",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后可跟属性标识符"
+    },
+    {
+      "conditional": "{",
+      "consequent": "[NUMBER]",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后可跟数字字面量属性名"
+    },
+    {
+      "conditional": "{",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后可跟字符串字面量属性名"
+    },
+    {
+      "conditional": "{",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后可跟左中括号（计算属性名）"
+    },
+    {
+      "conditional": "{ [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "计算属性名左中括号后必须跟右中括号"
+    },
+    {
+      "conditional": "{ []",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "计算属性名右中括号后必须跟冒号"
+    },
+    {
+      "conditional": "{ [IDENT]",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "标识符属性名后可跟冒号"
+    },
+    {
+      "conditional": "{ [IDENT] :",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "属性冒号后必须跟表达式起始"
+    },
+    {
+      "conditional": "{ [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "标识符属性名后可跟左括号（方法定义）"
+    },
+    {
+      "conditional": "{ [IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "{ [IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "方法参数括号后必须跟左大括号"
+    },
+    {
+      "conditional": "{ [IDENT] () {",
+      "consequent": "}",
+      "skip": "function_body",
+      "required": true,
+      "note": "方法体左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "{ get [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "get 访问器标识符后必须跟左括号"
+    },
+    {
+      "conditional": "{ get [IDENT] (",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "get 访问器左括号后必须跟右括号"
+    },
+    {
+      "conditional": "{ get [IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "get 访问器括号后必须跟左大括号"
+    },
+    {
+      "conditional": "{ set [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "set 访问器标识符后必须跟左括号"
+    },
+    {
+      "conditional": "{ set [IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "set 访问器左括号后必须跟右括号"
+    },
+    {
+      "conditional": "{ set [IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "set 访问器括号后必须跟左大括号"
+    },
+    {
+      "conditional": "{",
+      "consequent": "...",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后可跟扩展运算符"
+    },
+    {
+      "conditional": "{ ...",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "扩展运算符后必须跟标识符"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:03.887474"
+}

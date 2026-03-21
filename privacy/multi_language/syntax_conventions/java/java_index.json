@@ -1,0 +1,987 @@
+{
+  "language": "java",
+  "total_constructs": 245,
+  "constructs_with_syntax": 245,
+  "index": {
+    "ArrayInitializer": {
+      "syntax": "ArrayInitializer:\n{ [VariableInitializerList] [,] }",
+      "has_syntax": true
+    },
+    "VariableInitializerList": {
+      "syntax": "VariableInitializerList:\nVariableInitializer {, VariableInitializer}",
+      "has_syntax": true
+    },
+    "Block": {
+      "syntax": "Block:\n{ [BlockStatements] }",
+      "has_syntax": true
+    },
+    "BlockStatements": {
+      "syntax": "BlockStatements:\nBlockStatement {BlockStatement}",
+      "has_syntax": true
+    },
+    "BlockStatement": {
+      "syntax": "BlockStatement:\nLocalClassOrInterfaceDeclaration\n     LocalVariableDeclarationStatement\n     Statement",
+      "has_syntax": true
+    },
+    "LocalClassOrInterfaceDeclaration": {
+      "syntax": "LocalClassOrInterfaceDeclaration:\nClassDeclaration\n     NormalInterfaceDeclaration",
+      "has_syntax": true
+    },
+    "LocalVariableDeclarationStatement": {
+      "syntax": "LocalVariableDeclarationStatement:\nLocalVariableDeclaration ;",
+      "has_syntax": true
+    },
+    "LocalVariableDeclaration": {
+      "syntax": "LocalVariableDeclaration:\n{VariableModifier} LocalVariableType VariableDeclaratorList",
+      "has_syntax": true
+    },
+    "LocalVariableType": {
+      "syntax": "LocalVariableType:\nUnannType\n     var",
+      "has_syntax": true
+    },
+    "Statement": {
+      "syntax": "Statement:\nStatementWithoutTrailingSubstatement\n     LabeledStatement\n     IfThenStatement\n     IfThenElseStatement\n     WhileStatement\n     ForStatement",
+      "has_syntax": true
+    },
+    "StatementNoShortIf": {
+      "syntax": "StatementNoShortIf:\nStatementWithoutTrailingSubstatement\n     LabeledStatementNoShortIf\n     IfThenElseStatementNoShortIf\n     WhileStatementNoShortIf\n     ForStatementNoShortIf",
+      "has_syntax": true
+    },
+    "StatementWithoutTrailingSubstatement": {
+      "syntax": "StatementWithoutTrailingSubstatement:\nBlock\n        EmptyStatement\n        ExpressionStatement\n        AssertStatement\n        SwitchStatement\n        DoStatement\n        BreakStatement\n        ContinueStatement\n        ReturnStatement\n        SynchronizedStatement\n        ThrowStatement\n        TryStatement\n        YieldStatement",
+      "has_syntax": true
+    },
+    "EmptyStatement": {
+      "syntax": "EmptyStatement:\n;",
+      "has_syntax": true
+    },
+    "LabeledStatement": {
+      "syntax": "LabeledStatement:\nIdentifier : Statement",
+      "has_syntax": true
+    },
+    "LabeledStatementNoShortIf": {
+      "syntax": "LabeledStatementNoShortIf:\nIdentifier : StatementNoShortIf",
+      "has_syntax": true
+    },
+    "ExpressionStatement": {
+      "syntax": "ExpressionStatement:\nStatementExpression ;",
+      "has_syntax": true
+    },
+    "StatementExpression": {
+      "syntax": "StatementExpression:\nAssignment\n        PreIncrementExpression\n        PreDecrementExpression\n        PostIncrementExpression\n        PostDecrementExpression\n        MethodInvocation\n        ClassInstanceCreationExpression",
+      "has_syntax": true
+    },
+    "IfThenStatement": {
+      "syntax": "IfThenStatement:\nif ( Expression ) Statement",
+      "has_syntax": true
+    },
+    "IfThenElseStatement": {
+      "syntax": "IfThenElseStatement:\nif ( Expression ) StatementNoShortIf else Statement",
+      "has_syntax": true
+    },
+    "IfThenElseStatementNoShortIf": {
+      "syntax": "IfThenElseStatementNoShortIf:\nif ( Expression ) StatementNoShortIf else StatementNoShortIf",
+      "has_syntax": true
+    },
+    "AssertStatement": {
+      "syntax": "AssertStatement:\nassert Expression ;\n     assert Expression : Expression ;",
+      "has_syntax": true
+    },
+    "SwitchStatement": {
+      "syntax": "SwitchStatement:\nswitch ( Expression ) SwitchBlock",
+      "has_syntax": true
+    },
+    "SwitchBlock": {
+      "syntax": "SwitchBlock:\n{ SwitchRule {SwitchRule} }\n     { {SwitchBlockStatementGroup} {SwitchLabel :} }",
+      "has_syntax": true
+    },
+    "SwitchRule": {
+      "syntax": "SwitchRule:\nSwitchLabel -> Expression ;\n     SwitchLabel -> Block\n     SwitchLabel -> ThrowStatement",
+      "has_syntax": true
+    },
+    "SwitchBlockStatementGroup": {
+      "syntax": "SwitchBlockStatementGroup:\nSwitchLabel : {SwitchLabel :} BlockStatements",
+      "has_syntax": true
+    },
+    "SwitchLabel": {
+      "syntax": "SwitchLabel:\ncase CaseConstant {, CaseConstant}\n     case null [, default]\n     case CasePattern {, CasePattern} [Guard]\n     default",
+      "has_syntax": true
+    },
+    "CaseConstant": {
+      "syntax": "CaseConstant:\nConditionalExpression",
+      "has_syntax": true
+    },
+    "CasePattern": {
+      "syntax": "CasePattern:\nPattern",
+      "has_syntax": true
+    },
+    "Guard": {
+      "syntax": "Guard:\nwhen Expression",
+      "has_syntax": true
+    },
+    "WhileStatement": {
+      "syntax": "WhileStatement:\nwhile ( Expression ) Statement",
+      "has_syntax": true
+    },
+    "WhileStatementNoShortIf": {
+      "syntax": "WhileStatementNoShortIf:\nwhile ( Expression ) StatementNoShortIf",
+      "has_syntax": true
+    },
+    "DoStatement": {
+      "syntax": "DoStatement:\ndo Statement while ( Expression ) ;",
+      "has_syntax": true
+    },
+    "ForStatement": {
+      "syntax": "ForStatement:\nBasicForStatement\n        EnhancedForStatement",
+      "has_syntax": true
+    },
+    "ForStatementNoShortIf": {
+      "syntax": "ForStatementNoShortIf:\nBasicForStatementNoShortIf\n        EnhancedForStatementNoShortIf",
+      "has_syntax": true
+    },
+    "BasicForStatement": {
+      "syntax": "BasicForStatement:\nfor ( [ForInit] ; [Expression] ; [ForUpdate] ) Statement",
+      "has_syntax": true
+    },
+    "BasicForStatementNoShortIf": {
+      "syntax": "BasicForStatementNoShortIf:\nfor ( [ForInit] ; [Expression] ; [ForUpdate] ) StatementNoShortIf",
+      "has_syntax": true
+    },
+    "ForInit": {
+      "syntax": "ForInit:\nStatementExpressionList\n        LocalVariableDeclaration",
+      "has_syntax": true
+    },
+    "ForUpdate": {
+      "syntax": "ForUpdate:\nStatementExpressionList",
+      "has_syntax": true
+    },
+    "StatementExpressionList": {
+      "syntax": "StatementExpressionList:\nStatementExpression {, StatementExpression}",
+      "has_syntax": true
+    },
+    "EnhancedForStatement": {
+      "syntax": "EnhancedForStatement:\nfor ( LocalVariableDeclaration : Expression )\n          Statement",
+      "has_syntax": true
+    },
+    "EnhancedForStatementNoShortIf": {
+      "syntax": "EnhancedForStatementNoShortIf:\nfor ( LocalVariableDeclaration : Expression )\n          StatementNoShortIf",
+      "has_syntax": true
+    },
+    "BreakStatement": {
+      "syntax": "BreakStatement:\nbreak [Identifier] ;",
+      "has_syntax": true
+    },
+    "YieldStatement": {
+      "syntax": "YieldStatement:\nyield Expression ;",
+      "has_syntax": true
+    },
+    "ContinueStatement": {
+      "syntax": "ContinueStatement:\ncontinue [Identifier] ;",
+      "has_syntax": true
+    },
+    "ReturnStatement": {
+      "syntax": "ReturnStatement:\nreturn [Expression] ;",
+      "has_syntax": true
+    },
+    "ThrowStatement": {
+      "syntax": "ThrowStatement:\nthrow Expression ;",
+      "has_syntax": true
+    },
+    "SynchronizedStatement": {
+      "syntax": "SynchronizedStatement:\nsynchronized ( Expression ) Block",
+      "has_syntax": true
+    },
+    "TryStatement": {
+      "syntax": "TryStatement:\ntry Block Catches\n     try Block [Catches] Finally\n     TryWithResourcesStatement",
+      "has_syntax": true
+    },
+    "Catches": {
+      "syntax": "Catches:\nCatchClause {CatchClause}",
+      "has_syntax": true
+    },
+    "CatchClause": {
+      "syntax": "CatchClause:\ncatch ( CatchFormalParameter ) Block",
+      "has_syntax": true
+    },
+    "CatchFormalParameter": {
+      "syntax": "CatchFormalParameter:\n{VariableModifier} CatchType VariableDeclaratorId",
+      "has_syntax": true
+    },
+    "CatchType": {
+      "syntax": "CatchType:\nUnannClassType {| ClassType}",
+      "has_syntax": true
+    },
+    "Finally": {
+      "syntax": "Finally:\nfinally Block",
+      "has_syntax": true
+    },
+    "TryWithResourcesStatement": {
+      "syntax": "TryWithResourcesStatement:\ntry ResourceSpecification Block [Catches] [Finally]",
+      "has_syntax": true
+    },
+    "ResourceSpecification": {
+      "syntax": "ResourceSpecification:\n( ResourceList [;] )",
+      "has_syntax": true
+    },
+    "ResourceList": {
+      "syntax": "ResourceList:\nResource {; Resource}",
+      "has_syntax": true
+    },
+    "Resource": {
+      "syntax": "Resource:\nLocalVariableDeclaration\n        VariableAccess",
+      "has_syntax": true
+    },
+    "VariableAccess": {
+      "syntax": "VariableAccess:\nExpressionName\n        FieldAccess",
+      "has_syntax": true
+    },
+    "Pattern": {
+      "syntax": "Pattern:\nTypePattern\n        RecordPattern",
+      "has_syntax": true
+    },
+    "TypePattern": {
+      "syntax": "TypePattern:\nLocalVariableDeclaration",
+      "has_syntax": true
+    },
+    "RecordPattern": {
+      "syntax": "RecordPattern:\nReferenceType ( [ComponentPatternList] )",
+      "has_syntax": true
+    },
+    "ComponentPatternList": {
+      "syntax": "ComponentPatternList:\nComponentPattern {, ComponentPattern }",
+      "has_syntax": true
+    },
+    "ComponentPattern": {
+      "syntax": "ComponentPattern:\nPattern\n       MatchAllPattern",
+      "has_syntax": true
+    },
+    "MatchAllPattern": {
+      "syntax": "MatchAllPattern:\n_",
+      "has_syntax": true
+    },
+    "Primary": {
+      "syntax": "Primary:\nPrimaryNoNewArray\n     ArrayCreationExpression",
+      "has_syntax": true
+    },
+    "PrimaryNoNewArray": {
+      "syntax": "PrimaryNoNewArray:\nLiteral\n     ClassLiteral\n     this\n     TypeName . this\n     ( Expression )\n     ClassInstanceCreationExpression\n     FieldAccess\n     ArrayAccess\n     MethodInvocation\n     MethodReference",
+      "has_syntax": true
+    },
+    "ClassLiteral": {
+      "syntax": "ClassLiteral:\nTypeName {[ ]} . class\n     NumericType {[ ]} . class\n     boolean {[ ]} . class\n     void . class",
+      "has_syntax": true
+    },
+    "ClassInstanceCreationExpression": {
+      "syntax": "ClassInstanceCreationExpression:\nUnqualifiedClassInstanceCreationExpression\n     ExpressionName . UnqualifiedClassInstanceCreationExpression\n     Primary . UnqualifiedClassInstanceCreationExpression",
+      "has_syntax": true
+    },
+    "UnqualifiedClassInstanceCreationExpression": {
+      "syntax": "UnqualifiedClassInstanceCreationExpression:\nnew [TypeArguments]\n       ClassOrInterfaceTypeToInstantiate ( [ArgumentList] ) [ClassBody]",
+      "has_syntax": true
+    },
+    "ClassOrInterfaceTypeToInstantiate": {
+      "syntax": "ClassOrInterfaceTypeToInstantiate:\n{Annotation} Identifier {. {Annotation} Identifier}\n        [TypeArgumentsOrDiamond]",
+      "has_syntax": true
+    },
+    "TypeArgumentsOrDiamond": {
+      "syntax": "TypeArgumentsOrDiamond:\nTypeArguments\n     <>",
+      "has_syntax": true
+    },
+    "ArrayCreationExpression": {
+      "syntax": "ArrayCreationExpression:\nArrayCreationExpressionWithoutInitializer\n        ArrayCreationExpressionWithInitializer",
+      "has_syntax": true
+    },
+    "ArrayCreationExpressionWithoutInitializer": {
+      "syntax": "ArrayCreationExpressionWithoutInitializer:\nnew PrimitiveType DimExprs [Dims]\n        new ClassOrInterfaceType DimExprs [Dims]",
+      "has_syntax": true
+    },
+    "ArrayCreationExpressionWithInitializer": {
+      "syntax": "ArrayCreationExpressionWithInitializer:\nnew PrimitiveType Dims ArrayInitializer\n        new ClassOrInterfaceType Dims ArrayInitializer",
+      "has_syntax": true
+    },
+    "DimExprs": {
+      "syntax": "DimExprs:\nDimExpr {DimExpr}",
+      "has_syntax": true
+    },
+    "DimExpr": {
+      "syntax": "DimExpr:\n{Annotation} [ Expression ]",
+      "has_syntax": true
+    },
+    "ArrayAccess": {
+      "syntax": "ArrayAccess:\nExpressionName [ Expression ]\n        PrimaryNoNewArray [ Expression ]\n        ArrayCreationExpressionWithInitializer [ Expression ]",
+      "has_syntax": true
+    },
+    "FieldAccess": {
+      "syntax": "FieldAccess:\nPrimary . Identifier\n     super . Identifier\n     TypeName . super . Identifier",
+      "has_syntax": true
+    },
+    "MethodInvocation": {
+      "syntax": "MethodInvocation:\nMethodName ( [ArgumentList] )\n    TypeName . [TypeArguments] Identifier ( [ArgumentList] )\n    ExpressionName . [TypeArguments] Identifier ( [ArgumentList] )\n    Primary . [TypeArguments] Identifier ( [ArgumentList] )\n    super . [TypeArguments] Identifier ( [ArgumentList] )\n    TypeName . super . [TypeArguments] Identifier ( [ArgumentList] )",
+      "has_syntax": true
+    },
+    "ArgumentList": {
+      "syntax": "ArgumentList:\nExpression {, Expression}",
+      "has_syntax": true
+    },
+    "MethodReference": {
+      "syntax": "MethodReference:\nExpressionName :: [TypeArguments] Identifier\n    Primary :: [TypeArguments] Identifier\n    ReferenceType :: [TypeArguments] Identifier\n    super :: [TypeArguments] Identifier\n    TypeName . super :: [TypeArguments] Identifier\n    ClassType :: [TypeArguments] new\n    ArrayType :: new",
+      "has_syntax": true
+    },
+    "Expression": {
+      "syntax": "Expression:\nLambdaExpression\n        AssignmentExpression",
+      "has_syntax": true
+    },
+    "LambdaExpression": {
+      "syntax": "LambdaExpression:\nLambdaParameters -> LambdaBody",
+      "has_syntax": true
+    },
+    "LambdaParameters": {
+      "syntax": "LambdaParameters:\n( [LambdaParameterList] )\n        ConciseLambdaParameter",
+      "has_syntax": true
+    },
+    "LambdaParameterList": {
+      "syntax": "LambdaParameterList:\nNormalLambdaParameter {, NormalLambdaParameter}\n        ConciseLambdaParameter {, ConciseLambdaParameter}",
+      "has_syntax": true
+    },
+    "NormalLambdaParameter": {
+      "syntax": "NormalLambdaParameter:\n{VariableModifier} LambdaParameterType VariableDeclaratorId\n       VariableArityParameter",
+      "has_syntax": true
+    },
+    "LambdaParameterType": {
+      "syntax": "LambdaParameterType:\nUnannType\n        var",
+      "has_syntax": true
+    },
+    "ConciseLambdaParameter": {
+      "syntax": "ConciseLambdaParameter:\nIdentifier\n        _",
+      "has_syntax": true
+    },
+    "LambdaBody": {
+      "syntax": "LambdaBody:\nExpression\n        Block",
+      "has_syntax": true
+    },
+    "AssignmentExpression": {
+      "syntax": "AssignmentExpression:\nConditionalExpression\n     Assignment",
+      "has_syntax": true
+    },
+    "Assignment": {
+      "syntax": "Assignment:\nLeftHandSide AssignmentOperator Expression",
+      "has_syntax": true
+    },
+    "LeftHandSide": {
+      "syntax": "LeftHandSide:\nExpressionName\n     FieldAccess\n     ArrayAccess",
+      "has_syntax": true
+    },
+    "AssignmentOperator": {
+      "syntax": "AssignmentOperator:\n(one of)\n     =   *=   /=   %=   +=   -=   <<=   >>=   >>>=   &=   ^=   |=",
+      "has_syntax": true
+    },
+    "ConditionalExpression": {
+      "syntax": "ConditionalExpression:\nConditionalOrExpression\n    ConditionalOrExpression ? Expression : ConditionalExpression\n    ConditionalOrExpression ? Expression : LambdaExpression",
+      "has_syntax": true
+    },
+    "ConditionalOrExpression": {
+      "syntax": "ConditionalOrExpression:\nConditionalAndExpression\n    ConditionalOrExpression || ConditionalAndExpression",
+      "has_syntax": true
+    },
+    "ConditionalAndExpression": {
+      "syntax": "ConditionalAndExpression:\nInclusiveOrExpression\n    ConditionalAndExpression && InclusiveOrExpression",
+      "has_syntax": true
+    },
+    "InclusiveOrExpression": {
+      "syntax": "InclusiveOrExpression:\nExclusiveOrExpression\n     InclusiveOrExpression | ExclusiveOrExpression",
+      "has_syntax": true
+    },
+    "ExclusiveOrExpression": {
+      "syntax": "ExclusiveOrExpression:\nAndExpression\n     ExclusiveOrExpression ^ AndExpression",
+      "has_syntax": true
+    },
+    "AndExpression": {
+      "syntax": "AndExpression:\nEqualityExpression\n     AndExpression & EqualityExpression",
+      "has_syntax": true
+    },
+    "EqualityExpression": {
+      "syntax": "EqualityExpression:\nRelationalExpression\n        EqualityExpression == RelationalExpression\n        EqualityExpression != RelationalExpression",
+      "has_syntax": true
+    },
+    "RelationalExpression": {
+      "syntax": "RelationalExpression:\nShiftExpression\n        RelationalExpression < ShiftExpression\n        RelationalExpression > ShiftExpression\n        RelationalExpression <= ShiftExpression\n        RelationalExpression >= ShiftExpression\n        InstanceofExpression",
+      "has_syntax": true
+    },
+    "InstanceofExpression": {
+      "syntax": "InstanceofExpression:\nRelationalExpression instanceof ReferenceType\n        RelationalExpression instanceof Pattern",
+      "has_syntax": true
+    },
+    "ShiftExpression": {
+      "syntax": "ShiftExpression:\nAdditiveExpression\n        ShiftExpression << AdditiveExpression\n        ShiftExpression >> AdditiveExpression\n        ShiftExpression >>> AdditiveExpression",
+      "has_syntax": true
+    },
+    "AdditiveExpression": {
+      "syntax": "AdditiveExpression:\nMultiplicativeExpression\n        AdditiveExpression + MultiplicativeExpression\n        AdditiveExpression - MultiplicativeExpression",
+      "has_syntax": true
+    },
+    "MultiplicativeExpression": {
+      "syntax": "MultiplicativeExpression:\nUnaryExpression\n       MultiplicativeExpression * UnaryExpression\n       MultiplicativeExpression / UnaryExpression\n       MultiplicativeExpression % UnaryExpression",
+      "has_syntax": true
+    },
+    "UnaryExpression": {
+      "syntax": "UnaryExpression:\nPreIncrementExpression\n       PreDecrementExpression\n       + UnaryExpression\n       - UnaryExpression\n       UnaryExpressionNotPlusMinus",
+      "has_syntax": true
+    },
+    "PreIncrementExpression": {
+      "syntax": "PreIncrementExpression:\n++ UnaryExpression",
+      "has_syntax": true
+    },
+    "PreDecrementExpression": {
+      "syntax": "PreDecrementExpression:\n-- UnaryExpression",
+      "has_syntax": true
+    },
+    "UnaryExpressionNotPlusMinus": {
+      "syntax": "UnaryExpressionNotPlusMinus:\nPostfixExpression\n    ~ UnaryExpression\n    ! UnaryExpression\n    CastExpression\n    SwitchExpression",
+      "has_syntax": true
+    },
+    "PostfixExpression": {
+      "syntax": "PostfixExpression:\nPrimary\n     ExpressionName\n     PostIncrementExpression\n     PostDecrementExpression",
+      "has_syntax": true
+    },
+    "PostIncrementExpression": {
+      "syntax": "PostIncrementExpression:\nPostfixExpression ++",
+      "has_syntax": true
+    },
+    "PostDecrementExpression": {
+      "syntax": "PostDecrementExpression:\nPostfixExpression --",
+      "has_syntax": true
+    },
+    "CastExpression": {
+      "syntax": "CastExpression:\n( PrimitiveType ) UnaryExpression\n    ( ReferenceType {AdditionalBound} ) UnaryExpressionNotPlusMinus\n    ( ReferenceType {AdditionalBound} ) LambdaExpression",
+      "has_syntax": true
+    },
+    "SwitchExpression": {
+      "syntax": "SwitchExpression:\nswitch ( Expression ) SwitchBlock",
+      "has_syntax": true
+    },
+    "Type": {
+      "syntax": "Type:\nPrimitiveType\n           ReferenceType",
+      "has_syntax": true
+    },
+    "PrimitiveType": {
+      "syntax": "PrimitiveType:\n{Annotation} NumericType\n           {Annotation} boolean",
+      "has_syntax": true
+    },
+    "NumericType": {
+      "syntax": "NumericType:\nIntegralType\n          FloatingPointType",
+      "has_syntax": true
+    },
+    "IntegralType": {
+      "syntax": "IntegralType:\n(one of)\n           byte short int long char",
+      "has_syntax": true
+    },
+    "FloatingPointType": {
+      "syntax": "FloatingPointType:\n(one of)\n           float double",
+      "has_syntax": true
+    },
+    "ReferenceType": {
+      "syntax": "ReferenceType:\nClassOrInterfaceType\n           TypeVariable\n           ArrayType",
+      "has_syntax": true
+    },
+    "ClassOrInterfaceType": {
+      "syntax": "ClassOrInterfaceType:\nClassType\n           InterfaceType",
+      "has_syntax": true
+    },
+    "ClassType": {
+      "syntax": "ClassType:\n{Annotation} TypeIdentifier [TypeArguments]\n     PackageName . {Annotation} TypeIdentifier [TypeArguments]\n     ClassOrInterfaceType . {Annotation} TypeIdentifier [TypeArguments]",
+      "has_syntax": true
+    },
+    "InterfaceType": {
+      "syntax": "InterfaceType:\nClassType",
+      "has_syntax": true
+    },
+    "TypeVariable": {
+      "syntax": "TypeVariable:\n{Annotation} TypeIdentifier",
+      "has_syntax": true
+    },
+    "ArrayType": {
+      "syntax": "ArrayType:\nPrimitiveType Dims\n     ClassOrInterfaceType Dims\n     TypeVariable Dims",
+      "has_syntax": true
+    },
+    "Dims": {
+      "syntax": "Dims:\n{Annotation} [ ] {{Annotation} [ ]}",
+      "has_syntax": true
+    },
+    "TypeParameter": {
+      "syntax": "TypeParameter:\n{TypeParameterModifier} TypeIdentifier [TypeBound]",
+      "has_syntax": true
+    },
+    "TypeParameterModifier": {
+      "syntax": "TypeParameterModifier:\nAnnotation",
+      "has_syntax": true
+    },
+    "TypeBound": {
+      "syntax": "TypeBound:\nextends TypeVariable\n     extends ClassOrInterfaceType {AdditionalBound}",
+      "has_syntax": true
+    },
+    "AdditionalBound": {
+      "syntax": "AdditionalBound:\n& InterfaceType",
+      "has_syntax": true
+    },
+    "TypeArguments": {
+      "syntax": "TypeArguments:\n< TypeArgumentList >",
+      "has_syntax": true
+    },
+    "TypeArgumentList": {
+      "syntax": "TypeArgumentList:\nTypeArgument {, TypeArgument}",
+      "has_syntax": true
+    },
+    "TypeArgument": {
+      "syntax": "TypeArgument:\nReferenceType\n     Wildcard",
+      "has_syntax": true
+    },
+    "Wildcard": {
+      "syntax": "Wildcard:\n{Annotation} ? [WildcardBounds]",
+      "has_syntax": true
+    },
+    "WildcardBounds": {
+      "syntax": "WildcardBounds:\nextends ReferenceType\n          super ReferenceType",
+      "has_syntax": true
+    },
+    "ModuleName": {
+      "syntax": "ModuleName:\nIdentifier\n          ModuleName . Identifier",
+      "has_syntax": true
+    },
+    "PackageName": {
+      "syntax": "PackageName:\nIdentifier\n           PackageName . Identifier",
+      "has_syntax": true
+    },
+    "TypeName": {
+      "syntax": "TypeName:\nTypeIdentifier\n           PackageOrTypeName . TypeIdentifier",
+      "has_syntax": true
+    },
+    "ExpressionName": {
+      "syntax": "ExpressionName:\nIdentifier\n           AmbiguousName . Identifier",
+      "has_syntax": true
+    },
+    "MethodName": {
+      "syntax": "MethodName:\nUnqualifiedMethodIdentifier",
+      "has_syntax": true
+    },
+    "PackageOrTypeName": {
+      "syntax": "PackageOrTypeName:\nIdentifier\n           PackageOrTypeName . Identifier",
+      "has_syntax": true
+    },
+    "AmbiguousName": {
+      "syntax": "AmbiguousName:\nIdentifier\n          AmbiguousName . Identifier",
+      "has_syntax": true
+    },
+    "CompilationUnit": {
+      "syntax": "CompilationUnit:\nOrdinaryCompilationUnit\n    ModularCompilationUnit",
+      "has_syntax": true
+    },
+    "OrdinaryCompilationUnit": {
+      "syntax": "OrdinaryCompilationUnit:\n[PackageDeclaration] {ImportDeclaration}\n       {TopLevelClassOrInterfaceDeclaration}",
+      "has_syntax": true
+    },
+    "ModularCompilationUnit": {
+      "syntax": "ModularCompilationUnit:\n{ImportDeclaration} ModuleDeclaration",
+      "has_syntax": true
+    },
+    "PackageDeclaration": {
+      "syntax": "PackageDeclaration:\n{PackageModifier} package Identifier {. Identifier} ;",
+      "has_syntax": true
+    },
+    "PackageModifier": {
+      "syntax": "PackageModifier:\nAnnotation",
+      "has_syntax": true
+    },
+    "ImportDeclaration": {
+      "syntax": "ImportDeclaration:\nSingleTypeImportDeclaration\n     TypeImportOnDemandDeclaration\n     SingleStaticImportDeclaration\n     StaticImportOnDemandDeclaration",
+      "has_syntax": true
+    },
+    "SingleTypeImportDeclaration": {
+      "syntax": "SingleTypeImportDeclaration:\nimport TypeName ;",
+      "has_syntax": true
+    },
+    "TypeImportOnDemandDeclaration": {
+      "syntax": "TypeImportOnDemandDeclaration:\nimport PackageOrTypeName . * ;",
+      "has_syntax": true
+    },
+    "SingleStaticImportDeclaration": {
+      "syntax": "SingleStaticImportDeclaration:\nimport static TypeName . Identifier ;",
+      "has_syntax": true
+    },
+    "StaticImportOnDemandDeclaration": {
+      "syntax": "StaticImportOnDemandDeclaration:\nimport static TypeName . * ;",
+      "has_syntax": true
+    },
+    "TopLevelClassOrInterfaceDeclaration": {
+      "syntax": "TopLevelClassOrInterfaceDeclaration:\nClassDeclaration\n     InterfaceDeclaration\n     ;",
+      "has_syntax": true
+    },
+    "ModuleDeclaration": {
+      "syntax": "ModuleDeclaration:\n{Annotation} [open] module Identifier {. Identifier}\n         { {ModuleDirective} }",
+      "has_syntax": true
+    },
+    "ModuleDirective": {
+      "syntax": "ModuleDirective:\nrequires {RequiresModifier} ModuleName ;\n       exports PackageName [to ModuleName {, ModuleName}] ;\n       opens PackageName [to ModuleName {, ModuleName}] ;\n       uses TypeName ;\n       provides TypeName with TypeName {, TypeName} ;",
+      "has_syntax": true
+    },
+    "RequiresModifier": {
+      "syntax": "RequiresModifier:\n(one of)\n        transitive static",
+      "has_syntax": true
+    },
+    "ClassDeclaration": {
+      "syntax": "ClassDeclaration:\nNormalClassDeclaration\n     EnumDeclaration\n     RecordDeclaration",
+      "has_syntax": true
+    },
+    "NormalClassDeclaration": {
+      "syntax": "NormalClassDeclaration:\n{ClassModifier} class TypeIdentifier [TypeParameters]\n       [ClassExtends] [ClassImplements] [ClassPermits] ClassBody",
+      "has_syntax": true
+    },
+    "ClassModifier": {
+      "syntax": "ClassModifier:\n(one of)\n     Annotation public protected private\n     abstract static final sealed non-sealed strictfp",
+      "has_syntax": true
+    },
+    "TypeParameters": {
+      "syntax": "TypeParameters:\n< TypeParameterList >",
+      "has_syntax": true
+    },
+    "TypeParameterList": {
+      "syntax": "TypeParameterList:\nTypeParameter {, TypeParameter}",
+      "has_syntax": true
+    },
+    "ClassExtends": {
+      "syntax": "ClassExtends:\nextends ClassType",
+      "has_syntax": true
+    },
+    "ClassImplements": {
+      "syntax": "ClassImplements:\nimplements InterfaceTypeList",
+      "has_syntax": true
+    },
+    "InterfaceTypeList": {
+      "syntax": "InterfaceTypeList:\nInterfaceType {, InterfaceType}",
+      "has_syntax": true
+    },
+    "ClassPermits": {
+      "syntax": "ClassPermits:\npermits TypeName {, TypeName}",
+      "has_syntax": true
+    },
+    "ClassBody": {
+      "syntax": "ClassBody:\n{ {ClassBodyDeclaration} }",
+      "has_syntax": true
+    },
+    "ClassBodyDeclaration": {
+      "syntax": "ClassBodyDeclaration:\nClassMemberDeclaration\n     InstanceInitializer\n     StaticInitializer\n     ConstructorDeclaration",
+      "has_syntax": true
+    },
+    "ClassMemberDeclaration": {
+      "syntax": "ClassMemberDeclaration:\nFieldDeclaration\n        MethodDeclaration\n        ClassDeclaration\n        InterfaceDeclaration\n        ;",
+      "has_syntax": true
+    },
+    "FieldDeclaration": {
+      "syntax": "FieldDeclaration:\n{FieldModifier} UnannType VariableDeclaratorList ;",
+      "has_syntax": true
+    },
+    "FieldModifier": {
+      "syntax": "FieldModifier:\n(one of)\n        Annotation public protected private\n        static final transient volatile",
+      "has_syntax": true
+    },
+    "VariableDeclaratorList": {
+      "syntax": "VariableDeclaratorList:\nVariableDeclarator {, VariableDeclarator}",
+      "has_syntax": true
+    },
+    "VariableDeclarator": {
+      "syntax": "VariableDeclarator:\nVariableDeclaratorId [= VariableInitializer]",
+      "has_syntax": true
+    },
+    "VariableDeclaratorId": {
+      "syntax": "VariableDeclaratorId:\nIdentifier [Dims]\n        _",
+      "has_syntax": true
+    },
+    "VariableInitializer": {
+      "syntax": "VariableInitializer:\nExpression\n        ArrayInitializer",
+      "has_syntax": true
+    },
+    "UnannType": {
+      "syntax": "UnannType:\nUnannPrimitiveType\n    UnannReferenceType",
+      "has_syntax": true
+    },
+    "UnannPrimitiveType": {
+      "syntax": "UnannPrimitiveType:\nNumericType\n     boolean",
+      "has_syntax": true
+    },
+    "UnannReferenceType": {
+      "syntax": "UnannReferenceType:\nUnannClassOrInterfaceType\n    UnannTypeVariable\n    UnannArrayType",
+      "has_syntax": true
+    },
+    "UnannClassOrInterfaceType": {
+      "syntax": "UnannClassOrInterfaceType:\nUnannClassType\n    UnannInterfaceType",
+      "has_syntax": true
+    },
+    "UnannClassType": {
+      "syntax": "UnannClassType:\nTypeIdentifier [TypeArguments]\n    PackageName . {Annotation} TypeIdentifier [TypeArguments]\n    UnannClassOrInterfaceType . {Annotation} TypeIdentifier\n       [TypeArguments]",
+      "has_syntax": true
+    },
+    "UnannInterfaceType": {
+      "syntax": "UnannInterfaceType:\nUnannClassType",
+      "has_syntax": true
+    },
+    "UnannTypeVariable": {
+      "syntax": "UnannTypeVariable:\nTypeIdentifier",
+      "has_syntax": true
+    },
+    "UnannArrayType": {
+      "syntax": "UnannArrayType:\nUnannPrimitiveType Dims\n    UnannClassOrInterfaceType Dims\n    UnannTypeVariable Dims",
+      "has_syntax": true
+    },
+    "MethodDeclaration": {
+      "syntax": "MethodDeclaration:\n{MethodModifier} MethodHeader MethodBody",
+      "has_syntax": true
+    },
+    "MethodModifier": {
+      "syntax": "MethodModifier:\n(one of)\n       Annotation public protected private\n        abstract static final synchronized native strictfp",
+      "has_syntax": true
+    },
+    "MethodHeader": {
+      "syntax": "MethodHeader:\nResult MethodDeclarator [Throws]\n       TypeParameters {Annotation} Result MethodDeclarator [Throws]",
+      "has_syntax": true
+    },
+    "Result": {
+      "syntax": "Result:\nUnannType\n        void",
+      "has_syntax": true
+    },
+    "MethodDeclarator": {
+      "syntax": "MethodDeclarator:\nIdentifier ( [ReceiverParameter ,] [FormalParameterList] ) [Dims]",
+      "has_syntax": true
+    },
+    "ReceiverParameter": {
+      "syntax": "ReceiverParameter:\n{Annotation} UnannType [Identifier .] this",
+      "has_syntax": true
+    },
+    "FormalParameterList": {
+      "syntax": "FormalParameterList:\nFormalParameter {, FormalParameter}",
+      "has_syntax": true
+    },
+    "FormalParameter": {
+      "syntax": "FormalParameter:\n{VariableModifier} UnannType VariableDeclaratorId\n        VariableArityParameter",
+      "has_syntax": true
+    },
+    "VariableArityParameter": {
+      "syntax": "VariableArityParameter:\n{VariableModifier} UnannType {Annotation} ... Identifier",
+      "has_syntax": true
+    },
+    "VariableModifier": {
+      "syntax": "VariableModifier:\nAnnotation\n        final",
+      "has_syntax": true
+    },
+    "Throws": {
+      "syntax": "Throws:\nthrows ExceptionTypeList",
+      "has_syntax": true
+    },
+    "ExceptionTypeList": {
+      "syntax": "ExceptionTypeList:\nExceptionType {, ExceptionType}",
+      "has_syntax": true
+    },
+    "ExceptionType": {
+      "syntax": "ExceptionType:\nClassType\n     TypeVariable",
+      "has_syntax": true
+    },
+    "MethodBody": {
+      "syntax": "MethodBody:\nBlock\n     ;",
+      "has_syntax": true
+    },
+    "InstanceInitializer": {
+      "syntax": "InstanceInitializer:\nBlock",
+      "has_syntax": true
+    },
+    "StaticInitializer": {
+      "syntax": "StaticInitializer:\nstatic Block",
+      "has_syntax": true
+    },
+    "ConstructorDeclaration": {
+      "syntax": "ConstructorDeclaration:\n{ConstructorModifier} ConstructorDeclarator [Throws] ConstructorBody",
+      "has_syntax": true
+    },
+    "ConstructorModifier": {
+      "syntax": "ConstructorModifier:\n(one of)\n    Annotation public protected private",
+      "has_syntax": true
+    },
+    "ConstructorDeclarator": {
+      "syntax": "ConstructorDeclarator:\n[TypeParameters] SimpleTypeName\n       ( [ReceiverParameter ,] [FormalParameterList] )",
+      "has_syntax": true
+    },
+    "SimpleTypeName": {
+      "syntax": "SimpleTypeName:\nTypeIdentifier",
+      "has_syntax": true
+    },
+    "ConstructorBody": {
+      "syntax": "ConstructorBody:\n{ [ExplicitConstructorInvocation] [BlockStatements] }",
+      "has_syntax": true
+    },
+    "ExplicitConstructorInvocation": {
+      "syntax": "ExplicitConstructorInvocation:\n[TypeArguments] this ( [ArgumentList] ) ;\n     [TypeArguments] super ( [ArgumentList] ) ;\n     ExpressionName . [TypeArguments] super ( [ArgumentList] ) ;\n     Primary . [TypeArguments] super ( [ArgumentList] ) ;",
+      "has_syntax": true
+    },
+    "EnumDeclaration": {
+      "syntax": "EnumDeclaration:\n{ClassModifier} enum TypeIdentifier [ClassImplements] EnumBody",
+      "has_syntax": true
+    },
+    "EnumBody": {
+      "syntax": "EnumBody:\n{ [EnumConstantList] [,] [EnumBodyDeclarations] }",
+      "has_syntax": true
+    },
+    "EnumConstantList": {
+      "syntax": "EnumConstantList:\nEnumConstant {, EnumConstant}",
+      "has_syntax": true
+    },
+    "EnumConstant": {
+      "syntax": "EnumConstant:\n{EnumConstantModifier} Identifier [( [ArgumentList] )] [ClassBody]",
+      "has_syntax": true
+    },
+    "EnumConstantModifier": {
+      "syntax": "EnumConstantModifier:\nAnnotation",
+      "has_syntax": true
+    },
+    "EnumBodyDeclarations": {
+      "syntax": "EnumBodyDeclarations:\n; {ClassBodyDeclaration}",
+      "has_syntax": true
+    },
+    "RecordDeclaration": {
+      "syntax": "RecordDeclaration:\n{ClassModifier} record TypeIdentifier [TypeParameters] RecordHeader\n       [ClassImplements] RecordBody",
+      "has_syntax": true
+    },
+    "RecordHeader": {
+      "syntax": "RecordHeader:\n( [RecordComponentList] )",
+      "has_syntax": true
+    },
+    "RecordComponentList": {
+      "syntax": "RecordComponentList:\nRecordComponent {, RecordComponent}",
+      "has_syntax": true
+    },
+    "RecordComponent": {
+      "syntax": "RecordComponent:\n{RecordComponentModifier} UnannType Identifier\n     VariableArityRecordComponent",
+      "has_syntax": true
+    },
+    "VariableArityRecordComponent": {
+      "syntax": "VariableArityRecordComponent:\n{RecordComponentModifier} UnannType {Annotation} ... Identifier",
+      "has_syntax": true
+    },
+    "RecordComponentModifier": {
+      "syntax": "RecordComponentModifier:\nAnnotation",
+      "has_syntax": true
+    },
+    "RecordBody": {
+      "syntax": "RecordBody:\n{ {RecordBodyDeclaration} }",
+      "has_syntax": true
+    },
+    "RecordBodyDeclaration": {
+      "syntax": "RecordBodyDeclaration:\nClassBodyDeclaration\n     CompactConstructorDeclaration",
+      "has_syntax": true
+    },
+    "CompactConstructorDeclaration": {
+      "syntax": "CompactConstructorDeclaration:\n{ConstructorModifier} SimpleTypeName ConstructorBody",
+      "has_syntax": true
+    },
+    "InterfaceDeclaration": {
+      "syntax": "InterfaceDeclaration:\nNormalInterfaceDeclaration\n           AnnotationInterfaceDeclaration",
+      "has_syntax": true
+    },
+    "NormalInterfaceDeclaration": {
+      "syntax": "NormalInterfaceDeclaration:\n{InterfaceModifier} interface TypeIdentifier [TypeParameters]\n             [InterfaceExtends] [InterfacePermits] InterfaceBody",
+      "has_syntax": true
+    },
+    "InterfaceModifier": {
+      "syntax": "InterfaceModifier:\n(one of)\n           Annotation public protected private\n           abstract static sealed non-sealed strictfp",
+      "has_syntax": true
+    },
+    "InterfaceExtends": {
+      "syntax": "InterfaceExtends:\nextends InterfaceTypeList",
+      "has_syntax": true
+    },
+    "InterfacePermits": {
+      "syntax": "InterfacePermits:\npermits TypeName {, TypeName}",
+      "has_syntax": true
+    },
+    "InterfaceBody": {
+      "syntax": "InterfaceBody:\n{ {InterfaceMemberDeclaration} }",
+      "has_syntax": true
+    },
+    "InterfaceMemberDeclaration": {
+      "syntax": "InterfaceMemberDeclaration:\nConstantDeclaration\n           InterfaceMethodDeclaration\n           ClassDeclaration\n           InterfaceDeclaration\n           ;",
+      "has_syntax": true
+    },
+    "ConstantDeclaration": {
+      "syntax": "ConstantDeclaration:\n{ConstantModifier} UnannType VariableDeclaratorList ;",
+      "has_syntax": true
+    },
+    "ConstantModifier": {
+      "syntax": "ConstantModifier:\n(one of)\n          Annotation public\n           static final",
+      "has_syntax": true
+    },
+    "InterfaceMethodDeclaration": {
+      "syntax": "InterfaceMethodDeclaration:\n{InterfaceMethodModifier} MethodHeader MethodBody",
+      "has_syntax": true
+    },
+    "InterfaceMethodModifier": {
+      "syntax": "InterfaceMethodModifier:\n(one of)\n     Annotation public private\n     abstract default static strictfp",
+      "has_syntax": true
+    },
+    "AnnotationInterfaceDeclaration": {
+      "syntax": "AnnotationInterfaceDeclaration:\n{InterfaceModifier} @ interface TypeIdentifier AnnotationInterfaceBody",
+      "has_syntax": true
+    },
+    "AnnotationInterfaceBody": {
+      "syntax": "AnnotationInterfaceBody:\n{ {AnnotationInterfaceMemberDeclaration} }",
+      "has_syntax": true
+    },
+    "AnnotationInterfaceMemberDeclaration": {
+      "syntax": "AnnotationInterfaceMemberDeclaration:\nAnnotationInterfaceElementDeclaration\n     ConstantDeclaration\n     ClassDeclaration\n     InterfaceDeclaration\n     ;",
+      "has_syntax": true
+    },
+    "AnnotationInterfaceElementDeclaration": {
+      "syntax": "AnnotationInterfaceElementDeclaration:\n{AnnotationInterfaceElementModifier} UnannType Identifier ( ) [Dims]\n       [DefaultValue] ;",
+      "has_syntax": true
+    },
+    "AnnotationInterfaceElementModifier": {
+      "syntax": "AnnotationInterfaceElementModifier:\n(one of)\n     Annotation public\n     abstract",
+      "has_syntax": true
+    },
+    "DefaultValue": {
+      "syntax": "DefaultValue:\ndefault ElementValue",
+      "has_syntax": true
+    },
+    "Annotation": {
+      "syntax": "Annotation:\nNormalAnnotation\n           MarkerAnnotation\n           SingleElementAnnotation",
+      "has_syntax": true
+    },
+    "NormalAnnotation": {
+      "syntax": "NormalAnnotation:\n@ TypeName ( [ElementValuePairList] )",
+      "has_syntax": true
+    },
+    "ElementValuePairList": {
+      "syntax": "ElementValuePairList:\nElementValuePair {, ElementValuePair}",
+      "has_syntax": true
+    },
+    "ElementValuePair": {
+      "syntax": "ElementValuePair:\nIdentifier = ElementValue",
+      "has_syntax": true
+    },
+    "ElementValue": {
+      "syntax": "ElementValue:\nConditionalExpression\n           ElementValueArrayInitializer\n           Annotation",
+      "has_syntax": true
+    },
+    "ElementValueArrayInitializer": {
+      "syntax": "ElementValueArrayInitializer:\n{ [ElementValueList] [,] }",
+      "has_syntax": true
+    },
+    "ElementValueList": {
+      "syntax": "ElementValueList:\nElementValue {, ElementValue}",
+      "has_syntax": true
+    },
+    "MarkerAnnotation": {
+      "syntax": "MarkerAnnotation:\n@ TypeName",
+      "has_syntax": true
+    },
+    "SingleElementAnnotation": {
+      "syntax": "SingleElementAnnotation:\n@ TypeName ( ElementValue )",
+      "has_syntax": true
+    }
+  }
+}

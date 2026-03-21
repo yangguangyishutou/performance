@@ -1,0 +1,70 @@
+Productions from §7 (Packages and Modules)
+
+   CompilationUnit:
+    OrdinaryCompilationUnit
+    ModularCompilationUnit
+
+   OrdinaryCompilationUnit:
+    [PackageDeclaration] {ImportDeclaration}
+       {TopLevelClassOrInterfaceDeclaration}
+
+   ModularCompilationUnit:
+    {ImportDeclaration} ModuleDeclaration
+
+   PackageDeclaration:
+     {PackageModifier} package Identifier {. Identifier} ;
+
+   PackageModifier:
+     Annotation
+
+   ImportDeclaration:
+     SingleTypeImportDeclaration
+     TypeImportOnDemandDeclaration
+     SingleStaticImportDeclaration
+     StaticImportOnDemandDeclaration
+
+   SingleTypeImportDeclaration:
+     import TypeName ;
+
+   TypeImportOnDemandDeclaration:
+     import PackageOrTypeName . * ;
+
+   SingleStaticImportDeclaration:
+     import static TypeName . Identifier ;
+
+   StaticImportOnDemandDeclaration:
+     import static TypeName . * ;
+
+   TopLevelClassOrInterfaceDeclaration:
+     ClassDeclaration
+     InterfaceDeclaration
+     ;
+
+
+
+
+                                                             829
+                                                              SYNTAX
+
+
+      ModuleDeclaration:
+       {Annotation} [open] module Identifier {. Identifier}
+         { {ModuleDirective} }
+
+      ModuleDirective:
+       requires {RequiresModifier} ModuleName ;
+       exports PackageName [to ModuleName {, ModuleName}] ;
+       opens PackageName [to ModuleName {, ModuleName}] ;
+       uses TypeName ;
+       provides TypeName with TypeName {, TypeName} ;
+
+      RequiresModifier:
+        (one of)
+        transitive static
+
+
+
+
+830
+SYNTAX
+

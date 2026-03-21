@@ -1,0 +1,15 @@
+{
+  "construct": "type-name",
+  "language": "c",
+  "syntax_node": "specifier-qualifier-list",
+  "constraints": [
+    {
+      "conditional": "specifier-qualifier-list",
+      "consequent": "abstract-declarator, <type_end>",
+      "skip": "",
+      "required": false,
+      "note": "说明符限定符列表后可选择性跟随抽象声明符或结束"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:33.694550"
+}

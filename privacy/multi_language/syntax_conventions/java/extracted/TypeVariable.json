@@ -1,0 +1,15 @@
+{
+  "construct": "TypeVariable",
+  "language": "java",
+  "syntax_node": "TypeVariable",
+  "constraints": [
+    {
+      "conditional": "TypeVariable",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'TypeVariable' 起始后必须跟类型标识符"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:02:31.516496"
+}

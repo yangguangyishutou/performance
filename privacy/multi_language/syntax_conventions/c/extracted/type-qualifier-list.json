@@ -1,0 +1,15 @@
+{
+  "construct": "type-qualifier-list",
+  "language": "c",
+  "syntax_node": "type-qualifier",
+  "constraints": [
+    {
+      "conditional": "type-qualifier",
+      "consequent": "type-qualifier, <statement_end>",
+      "skip": "",
+      "required": false,
+      "note": "类型限定符后可以跟另一个类型限定符（形成列表）或结束"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:33.693232"
+}

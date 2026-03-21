@@ -1,0 +1,22 @@
+{
+  "construct": "StaticInitializer",
+  "language": "java",
+  "syntax_node": "static",
+  "constraints": [
+    {
+      "conditional": "static",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "'static' 关键字后必须跟左大括号"
+    },
+    {
+      "conditional": "static {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "静态初始化器左大括号后必须跟右大括号（中间跳过语句块）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:40.004599"
+}

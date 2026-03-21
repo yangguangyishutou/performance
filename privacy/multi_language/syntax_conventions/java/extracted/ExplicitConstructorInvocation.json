@@ -1,0 +1,64 @@
+{
+  "construct": "ExplicitConstructorInvocation",
+  "language": "java",
+  "syntax_node": "super",
+  "constraints": [
+    {
+      "conditional": "[TypeArguments]",
+      "consequent": "this, super, [IDENT] . super, <expression_start> . super",
+      "skip": "",
+      "required": false,
+      "note": "可选的类型参数后必须跟 'this'、'super' 或带点号的 'super' 调用"
+    },
+    {
+      "conditional": "this",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'this' 后必须跟左括号"
+    },
+    {
+      "conditional": "super",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'super' 后必须跟左括号"
+    },
+    {
+      "conditional": "[IDENT] . super",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "ExpressionName 点号 super 后必须跟左括号"
+    },
+    {
+      "conditional": "<expression_start> . super",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "Primary 表达式点号 super 后必须跟左括号"
+    },
+    {
+      "conditional": "this (",
+      "consequent": ")",
+      "skip": "arguments",
+      "required": true,
+      "note": "'this' 左括号后必须跟右括号（中间跳过可选的参数列表）"
+    },
+    {
+      "conditional": "super (",
+      "consequent": ")",
+      "skip": "arguments",
+      "required": true,
+      "note": "'super' 左括号后必须跟右括号（中间跳过可选的参数列表）"
+    },
+    {
+      "conditional": ")",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.268649"
+}

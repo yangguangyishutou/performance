@@ -1,0 +1,386 @@
+{
+  "construct": "for...of",
+  "language": "javascript",
+  "syntax_node": "for",
+  "constraints": [
+    {
+      "conditional": "for",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "for 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "const",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟 const 声明"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "let",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟 let 声明"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "var",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟 var 声明"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "using",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟 using 声明"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "await",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟 await using 声明的一部分"
+    },
+    {
+      "conditional": "for ( await",
+      "consequent": "using",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 using 关键字"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟变量标识符"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟解构赋值左大括号"
+    },
+    {
+      "conditional": "for ( const",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "const 后必须跟标识符"
+    },
+    {
+      "conditional": "for ( let",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "let 后必须跟标识符"
+    },
+    {
+      "conditional": "for ( var",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "var 后必须跟标识符"
+    },
+    {
+      "conditional": "for ( using",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "using 后必须跟标识符"
+    },
+    {
+      "conditional": "for ( await using",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "await using 后必须跟标识符"
+    },
+    {
+      "conditional": "for ( [IDENT]",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "变量后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( const [IDENT]",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "const 变量后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( let [IDENT]",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "let 变量后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( var [IDENT]",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "var 变量后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( using [IDENT]",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "using 变量后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( await using [IDENT]",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "await using 变量后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( {",
+      "consequent": "}",
+      "skip": "pattern",
+      "required": true,
+      "note": "解构左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "for ( {}",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "解构模式后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( const {}",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "const 解构后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( let {}",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "let 解构后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( var {}",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "var 解构后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( using {}",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "using 解构后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( await using {}",
+      "consequent": "of",
+      "skip": "",
+      "required": true,
+      "note": "await using 解构后必须跟 of 关键字"
+    },
+    {
+      "conditional": "for ( [IDENT] of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( const [IDENT] of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( let [IDENT] of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( var [IDENT] of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( using [IDENT] of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( await using [IDENT] of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( {} of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( const {} of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( let {} of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( var {} of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( using {} of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( await using {} of",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "of 后必须跟可迭代对象表达式"
+    },
+    {
+      "conditional": "for ( [IDENT] of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( const [IDENT] of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( let [IDENT] of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( var [IDENT] of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( using [IDENT] of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( await using [IDENT] of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( {} of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( const {} of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( let {} of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( var {} of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( using {} of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( await using {} of <expression_start>",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "for ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始"
+    },
+    {
+      "conditional": "for () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:22.367460"
+}

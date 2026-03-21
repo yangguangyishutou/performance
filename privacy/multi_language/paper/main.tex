@@ -1,0 +1,93 @@
+%% ACM Conference Paper Template
+%% Based on ACM Master Article Template
+%% https://www.acm.org/publications/proceedings-template
+
+\documentclass[sigconf,review,anonymous]{acmart}
+
+%% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{tcolorbox}
+
+%% Listing style
+\lstset{
+  basicstyle={\footnotesize\ttfamily},
+  numbers=left,
+  numberstyle=\footnotesize,
+  xleftmargin=2em,
+  aboveskip=0pt,
+  belowskip=0pt,
+  showstringspaces=false,
+  tabsize=2,
+  breaklines=true
+}
+
+%% Custom commands
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\tool}{\textsc{ToolName}\xspace}
+\newcommand{\ie}{\textit{i.e.,}\xspace}
+\newcommand{\eg}{\textit{e.g.,}\xspace}
+\newcommand{\etal}{\textit{et al.}\xspace}
+
+%% ACM metadata
+\acmConference[ACM '26]{ACM Conference}{Month Year}{City, Country}
+\acmYear{2026}
+\acmISBN{}
+\acmDOI{}
+
+\begin{document}
+
+\title{Paper Title}
+
+\author{Author One}
+\affiliation{%
+  \institution{Institution}
+  \city{City}
+  \country{Country}
+}
+\email{author1@example.com}
+
+\author{Author Two}
+\affiliation{%
+  \institution{Institution}
+  \city{City}
+  \country{Country}
+}
+\email{author2@example.com}
+
+\renewcommand{\shortauthors}{Author et al.}
+
+\input{src/ch00-abstract}
+
+\keywords{keyword1, keyword2, keyword3}
+
+\maketitle
+
+\input{src/ch01-introduction}
+\input{src/ch02-motivation}
+\input{src/ch03-methodology}
+\input{src/ch04-benchmark}
+\input{src/ch05-experiments}
+\input{src/ch06-case-study}
+\input{src/ch07-related-work}
+\input{src/ch08-conclusion}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{src/reference}
+
+\end{document}

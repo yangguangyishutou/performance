@@ -1,0 +1,36 @@
+{
+  "construct": "constructor",
+  "language": "javascript",
+  "syntax_node": "constructor",
+  "constraints": [
+    {
+      "conditional": "constructor",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "constructor 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "constructor (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过参数列表）"
+    },
+    {
+      "conditional": "constructor ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "constructor () {",
+      "consequent": "}",
+      "skip": "function_body",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过函数体）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:03.886307"
+}

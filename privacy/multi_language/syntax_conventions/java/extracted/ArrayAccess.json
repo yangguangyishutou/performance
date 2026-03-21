@@ -1,0 +1,15 @@
+{
+  "construct": "ArrayAccess",
+  "language": "java",
+  "syntax_node": "[",
+  "constraints": [
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "左方括号后必须跟右方括号（中间跳过索引表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:50.495217"
+}

@@ -1,0 +1,22 @@
+{
+  "construct": "enumerator",
+  "language": "c",
+  "syntax_node": "enumerator",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "=",
+      "skip": "attribute-specifier-sequence",
+      "required": false,
+      "note": "枚举常量标识符后可选跟属性序列，然后可选跟等号进行赋值"
+    },
+    {
+      "conditional": "[IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "等号后必须跟常量表达式"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:03.915693"
+}

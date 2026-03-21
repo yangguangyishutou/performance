@@ -1,0 +1,22 @@
+{
+  "construct": "ConstructorBody",
+  "language": "java",
+  "syntax_node": "constructor",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "构造函数体必须以左大括号开始"
+    },
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "body",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过可选的显式构造函数调用和块语句）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.268449"
+}

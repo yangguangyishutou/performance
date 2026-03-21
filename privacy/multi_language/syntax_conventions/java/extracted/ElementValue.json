@@ -1,0 +1,15 @@
+{
+  "construct": "ElementValue",
+  "language": "java",
+  "syntax_node": "expression",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "<expression_start>, {, @",
+      "skip": "",
+      "required": true,
+      "note": "ElementValue 必须是 ConditionalExpression、ElementValueArrayInitializer 或 Annotation 的起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:40.550429"
+}

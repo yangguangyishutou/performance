@@ -1,0 +1,43 @@
+{
+  "construct": "Wildcard",
+  "language": "java",
+  "syntax_node": "?",
+  "constraints": [
+    {
+      "conditional": "?",
+      "consequent": "extends, super, ,, >",
+      "skip": "",
+      "required": false,
+      "note": "通配符 '?' 后可选择性跟随 'extends'、'super' 限定，或直接结束（遇到 ',' 或 '>'）"
+    },
+    {
+      "conditional": "? extends",
+      "consequent": "ReferenceType",
+      "skip": "",
+      "required": true,
+      "note": "'extends' 后必须跟引用类型"
+    },
+    {
+      "conditional": "? super",
+      "consequent": "ReferenceType",
+      "skip": "",
+      "required": true,
+      "note": "'super' 后必须跟引用类型"
+    },
+    {
+      "conditional": "? extends ReferenceType",
+      "consequent": ",, >",
+      "skip": "",
+      "required": true,
+      "note": "上界限定后必须跟 ',' 或 '>' 结束"
+    },
+    {
+      "conditional": "? super ReferenceType",
+      "consequent": ",, >",
+      "skip": "",
+      "required": true,
+      "note": "下界限定后必须跟 ',' 或 '>' 结束"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:03:12.272741"
+}

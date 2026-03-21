@@ -1,0 +1,7 @@
+{
+  "construct": "typedef-name",
+  "language": "c",
+  "syntax_node": "typedef_name",
+  "constraints": [],
+  "extracted_at": "2026-03-17T18:46:47.384449"
+}

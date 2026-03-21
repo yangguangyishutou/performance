@@ -1,0 +1,29 @@
+{
+  "construct": "enumerator-list",
+  "language": "c",
+  "syntax_node": "enumerator",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ",, =",
+      "skip": "attribute-specifier-sequence",
+      "required": false,
+      "note": "枚举常量标识符后可选跟属性序列，然后可选跟逗号（继续列表）或等号（赋值）"
+    },
+    {
+      "conditional": "[IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个枚举常量标识符"
+    },
+    {
+      "conditional": "[IDENT] =",
+      "consequent": ",",
+      "skip": "constant-expression",
+      "required": false,
+      "note": "等号后跟常量表达式，然后可选跟逗号（继续列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:03.915313"
+}

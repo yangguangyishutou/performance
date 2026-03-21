@@ -1,0 +1,22 @@
+{
+  "construct": "MarkerAnnotation",
+  "language": "java",
+  "syntax_node": "@",
+  "constraints": [
+    {
+      "conditional": "@",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "注解符号 '@' 后必须跟类型名称标识符"
+    },
+    {
+      "conditional": "@ [IDENT]",
+      "consequent": "",
+      "skip": "",
+      "required": false,
+      "note": "MarkerAnnotation 结束（无括号）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:40.552006"
+}

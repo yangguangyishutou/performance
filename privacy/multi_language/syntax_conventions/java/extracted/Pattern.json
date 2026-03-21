@@ -1,0 +1,15 @@
+{
+  "construct": "Pattern",
+  "language": "java",
+  "syntax_node": "pattern",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "TypePattern, RecordPattern",
+      "skip": "",
+      "required": true,
+      "note": "模式必须是类型模式或记录模式"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.069435"
+}

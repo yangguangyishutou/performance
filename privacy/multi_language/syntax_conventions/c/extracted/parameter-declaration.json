@@ -1,0 +1,15 @@
+{
+  "construct": "parameter-declaration",
+  "language": "c",
+  "syntax_node": "declaration-specifiers",
+  "constraints": [
+    {
+      "conditional": "declaration-specifiers",
+      "consequent": "declarator, abstract-declarator, <parameter_end>",
+      "skip": "",
+      "required": false,
+      "note": "声明说明符后可以跟声明符、抽象声明符或结束（对于抽象声明符可选的情况）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:33.694370"
+}

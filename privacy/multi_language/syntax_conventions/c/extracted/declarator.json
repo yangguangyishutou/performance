@@ -1,0 +1,15 @@
+{
+  "construct": "declarator",
+  "language": "c",
+  "syntax_node": "declarator",
+  "constraints": [
+    {
+      "conditional": "*",
+      "consequent": "[IDENT], (",
+      "skip": "",
+      "required": true,
+      "note": "指针符号后必须跟标识符或左括号（开始 direct-declarator）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:24.955506"
+}

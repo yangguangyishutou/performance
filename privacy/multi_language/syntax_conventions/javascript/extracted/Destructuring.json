@@ -1,0 +1,134 @@
+{
+  "construct": "Destructuring",
+  "language": "javascript",
+  "syntax_node": "destructuring",
+  "constraints": [
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "array_pattern",
+      "required": true,
+      "note": "左方括号后必须跟右方括号（中间包含数组解构模式）"
+    },
+    {
+      "conditional": "[]",
+      "consequent": "=",
+      "skip": "",
+      "required": false,
+      "note": "数组解构模式后可跟随赋值运算符"
+    },
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "object_pattern",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间包含对象解构模式）"
+    },
+    {
+      "conditional": "{}",
+      "consequent": "=",
+      "skip": "",
+      "required": false,
+      "note": "对象解构模式后可跟随赋值运算符"
+    },
+    {
+      "conditional": "...",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "Rest 元素语法 ... 后必须跟标识符名称"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "Rest 元素必须是数组解构的最后一个元素，其后必须跟随右方括号"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": "}",
+      "skip": "",
+      "required": true,
+      "note": "Rest 元素必须是对象解构的最后一个元素，其后必须跟随右大括号"
+    },
+    {
+      "conditional": "...",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "Rest 元素语法 ... 后可跟左大括号（用于解构到对象模式）"
+    },
+    {
+      "conditional": "...",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "Rest 元素语法 ... 后可跟左方括号（用于解构到数组模式）"
+    },
+    {
+      "conditional": "[",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "数组解构模式中必须包含标识符"
+    },
+    {
+      "conditional": "{",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "对象解构模式中必须包含属性名标识符"
+    },
+    {
+      "conditional": "{ [IDENT]",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "对象解构属性名后可跟冒号（用于重命名）"
+    },
+    {
+      "conditional": "{ [IDENT] :",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "对象解构重命名冒号后必须跟新的标识符名称"
+    },
+    {
+      "conditional": "{ [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "对象解构计算属性名左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "{ []",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "对象解构计算属性名后必须跟冒号"
+    },
+    {
+      "conditional": "{ [] :",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "对象解构计算属性名冒号后必须跟目标标识符"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": false,
+      "note": "解构参数或属性后可跟默认值赋值符号"
+    },
+    {
+      "conditional": "[IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "默认值赋值符号后必须跟表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:20.300107"
+}

@@ -1,0 +1,29 @@
+{
+  "construct": "PackageName",
+  "language": "java",
+  "syntax_node": "Identifier",
+  "constraints": [
+    {
+      "conditional": "Identifier",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可选择性跟随 '.' 以构成限定包名"
+    },
+    {
+      "conditional": "Identifier .",
+      "consequent": "Identifier",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟另一个标识符"
+    },
+    {
+      "conditional": "Identifier . Identifier",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "限定包名后可继续跟随 '.' 以进一步限定"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:03:12.273155"
+}

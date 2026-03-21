@@ -1,0 +1,15 @@
+{
+  "construct": "block-item",
+  "language": "c",
+  "syntax_node": "block-item",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "<declaration_start>, <statement_start>, [IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "block-item 必须以声明起始、语句起始或标签标识符开始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:46.580965"
+}

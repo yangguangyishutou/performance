@@ -1,0 +1,29 @@
+{
+  "construct": "TryStatement",
+  "language": "java",
+  "syntax_node": "try",
+  "constraints": [
+    {
+      "conditional": "try",
+      "consequent": "Block",
+      "skip": "",
+      "required": true,
+      "note": "'try' 关键字后必须跟代码块"
+    },
+    {
+      "conditional": "try Block",
+      "consequent": "Catches, Finally",
+      "skip": "",
+      "required": true,
+      "note": "'try' 块后必须跟 'catch' 子句或 'finally' 块"
+    },
+    {
+      "conditional": "try Block Catches",
+      "consequent": "Finally",
+      "skip": "",
+      "required": false,
+      "note": "'catch' 子句后可选择性跟随 'finally' 块"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:57:41.810263"
+}

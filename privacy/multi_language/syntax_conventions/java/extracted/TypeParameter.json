@@ -1,0 +1,22 @@
+{
+  "construct": "TypeParameter",
+  "language": "java",
+  "syntax_node": "TypeParameter",
+  "constraints": [
+    {
+      "conditional": "TypeParameter",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'TypeParameter' 起始后必须跟类型标识符"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "extends",
+      "skip": "",
+      "required": false,
+      "note": "类型标识符后可选择性跟随 'extends' 关键字引入类型边界"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:02:31.517188"
+}

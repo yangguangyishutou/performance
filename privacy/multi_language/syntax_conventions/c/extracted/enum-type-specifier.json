@@ -1,0 +1,15 @@
+{
+  "construct": "enum-type-specifier",
+  "language": "c",
+  "syntax_node": ":",
+  "constraints": [
+    {
+      "conditional": ":",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "冒号后必须跟类型说明符限定符列表"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:03.916050"
+}

@@ -1,0 +1,43 @@
+{
+  "construct": "Optional chaining (?.)",
+  "language": "javascript",
+  "syntax_node": "optional_chaining",
+  "constraints": [
+    {
+      "conditional": "?.",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "可选链操作符后可跟属性标识符"
+    },
+    {
+      "conditional": "?.",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "可选链操作符后可跟左中括号"
+    },
+    {
+      "conditional": "?.",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "可选链操作符后可跟左括号"
+    },
+    {
+      "conditional": "?.[",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "可选链左中括号后必须跟右中括号"
+    },
+    {
+      "conditional": "?.(",
+      "consequent": ")",
+      "skip": "arguments",
+      "required": true,
+      "note": "可选链左括号后必须跟右括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:48.834274"
+}

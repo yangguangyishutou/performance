@@ -1,0 +1,78 @@
+{
+  "construct": "SwitchLabel",
+  "language": "java",
+  "syntax_node": "switch",
+  "constraints": [
+    {
+      "conditional": "case",
+      "consequent": "<expression_start>, null, CasePattern",
+      "skip": "",
+      "required": true,
+      "note": "'case' 关键字后必须跟表达式起始或 'null' 或 CasePattern"
+    },
+    {
+      "conditional": "case <expression_start>",
+      "consequent": ",, ->, :",
+      "skip": "CaseConstant",
+      "required": true,
+      "note": "CaseConstant 后必须跟逗号 ',' 或箭头 '->' 或冒号 ':'"
+    },
+    {
+      "conditional": "case <expression_start> ,",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "逗号 ',' 后必须跟另一个表达式起始作为 CaseConstant"
+    },
+    {
+      "conditional": "case null",
+      "consequent": ",, ->, :",
+      "skip": "",
+      "required": true,
+      "note": "'null' 后必须跟逗号 ',' 或箭头 '->' 或冒号 ':'"
+    },
+    {
+      "conditional": "case null ,",
+      "consequent": "default",
+      "skip": "",
+      "required": true,
+      "note": "逗号 ',' 后必须跟 'default' 关键字"
+    },
+    {
+      "conditional": "case CasePattern",
+      "consequent": ",, ->, :, when",
+      "skip": "",
+      "required": true,
+      "note": "CasePattern 后必须跟逗号 ',' 或箭头 '->' 或冒号 ':' 或 'when' 关键字"
+    },
+    {
+      "conditional": "case CasePattern ,",
+      "consequent": "CasePattern",
+      "skip": "",
+      "required": true,
+      "note": "逗号 ',' 后必须跟另一个 CasePattern"
+    },
+    {
+      "conditional": "case CasePattern when",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'when' 关键字后必须跟表达式起始作为 Guard"
+    },
+    {
+      "conditional": "case CasePattern when <expression_start>",
+      "consequent": ",, ->, :",
+      "skip": "Expression",
+      "required": true,
+      "note": "Guard 表达式后必须跟逗号 ',' 或箭头 '->' 或冒号 ':'"
+    },
+    {
+      "conditional": "default",
+      "consequent": "->, :",
+      "skip": "",
+      "required": true,
+      "note": "'default' 关键字后必须跟箭头 '->' 或冒号 ':'"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:55:59.684014"
+}

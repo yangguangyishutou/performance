@@ -1,0 +1,85 @@
+{
+  "construct": "do...while",
+  "language": "javascript",
+  "syntax_node": "do",
+  "constraints": [
+    {
+      "conditional": "do",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "do 后必须跟左大括号"
+    },
+    {
+      "conditional": "do",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "do 后必须跟语句起始"
+    },
+    {
+      "conditional": "do {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "do 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "do {}",
+      "consequent": "while",
+      "skip": "",
+      "required": true,
+      "note": "do 语句块后必须跟 while"
+    },
+    {
+      "conditional": "do <statement_start>",
+      "consequent": "while",
+      "skip": "",
+      "required": true,
+      "note": "do 语句后必须跟 while"
+    },
+    {
+      "conditional": "do {} while",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "while 后必须跟左括号"
+    },
+    {
+      "conditional": "do <statement_start> while",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "while 后必须跟左括号"
+    },
+    {
+      "conditional": "do {} while (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "while 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "do <statement_start> while (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "while 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "do {} while ()",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "while 右括号后必须跟分号"
+    },
+    {
+      "conditional": "do <statement_start> while ()",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "while 右括号后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:07.910067"
+}

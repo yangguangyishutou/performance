@@ -1,0 +1,57 @@
+{
+  "construct": "async function*",
+  "language": "javascript",
+  "syntax_node": "function",
+  "constraints": [
+    {
+      "conditional": "async",
+      "consequent": "function",
+      "skip": "",
+      "required": true,
+      "note": "async 关键字后必须跟 function 关键字"
+    },
+    {
+      "conditional": "async function",
+      "consequent": "*",
+      "skip": "",
+      "required": true,
+      "note": "async function 后必须跟星号"
+    },
+    {
+      "conditional": "async function *",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "async function * 后必须跟函数名标识符"
+    },
+    {
+      "conditional": "async function * [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "async function * 标识符后必须跟左括号"
+    },
+    {
+      "conditional": "async function * [IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "async function * 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async function * [IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "async function * 括号后必须跟左大括号"
+    },
+    {
+      "conditional": "async function * [IDENT] () {",
+      "consequent": "}",
+      "skip": "function_body",
+      "required": true,
+      "note": "async function * 左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:41.044169"
+}

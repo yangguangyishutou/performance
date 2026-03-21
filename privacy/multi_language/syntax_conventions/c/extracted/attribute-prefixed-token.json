@@ -1,0 +1,22 @@
+{
+  "construct": "attribute-prefixed-token",
+  "language": "c",
+  "syntax_node": "attribute-prefixed-token",
+  "constraints": [
+    {
+      "conditional": "attribute-prefix",
+      "consequent": "::",
+      "skip": "",
+      "required": true,
+      "note": "attribute-prefix 后必须跟双冒号 '::'"
+    },
+    {
+      "conditional": "attribute-prefix ::",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "双冒号后必须跟标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:12.874253"
+}

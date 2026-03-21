@@ -1,0 +1,29 @@
+{
+  "construct": "NormalClassDeclaration",
+  "language": "java",
+  "syntax_node": "class",
+  "constraints": [
+    {
+      "conditional": "class",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'class' 关键字后必须跟类型标识符"
+    },
+    {
+      "conditional": "class [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "类名后必须跟左大括号 '{' 开始类体"
+    },
+    {
+      "conditional": "class [IDENT] {",
+      "consequent": "}",
+      "skip": "ClassBody",
+      "required": true,
+      "note": "左大括号后必须跟右大括号 '}'（中间跳过类体内容）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:45.192090"
+}

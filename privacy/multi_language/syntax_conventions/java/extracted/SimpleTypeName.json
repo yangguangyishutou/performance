@@ -1,0 +1,15 @@
+{
+  "construct": "SimpleTypeName",
+  "language": "java",
+  "syntax_node": "type",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "SimpleTypeName 必须是一个类型标识符"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.268133"
+}

@@ -1,0 +1,50 @@
+{
+  "construct": "ConstructorDeclaration",
+  "language": "java",
+  "syntax_node": "ConstructorDeclaration",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "构造函数声明以构造函数名（标识符）开始"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "构造函数名后必须跟左括号"
+    },
+    {
+      "conditional": "[IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过参数列表）"
+    },
+    {
+      "conditional": "[IDENT] ()",
+      "consequent": "throws, {",
+      "skip": "",
+      "required": false,
+      "note": "参数列表后可选择性跟随 'throws' 子句或直接进入构造函数体"
+    },
+    {
+      "conditional": "throws",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'throws' 关键字后必须跟异常类型列表的起始"
+    },
+    {
+      "conditional": "[IDENT] () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "构造函数体左大括号后必须跟右大括号（中间跳过语句块）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:40.004749"
+}

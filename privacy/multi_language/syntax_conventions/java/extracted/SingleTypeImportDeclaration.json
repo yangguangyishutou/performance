@@ -1,0 +1,43 @@
+{
+  "construct": "SingleTypeImportDeclaration",
+  "language": "java",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "import",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'import' 后必须跟类型名标识符"
+    },
+    {
+      "conditional": "import [IDENT]",
+      "consequent": "., ;",
+      "skip": "",
+      "required": true,
+      "note": "类型名标识符后必须跟点号（继续限定）或分号（结束）"
+    },
+    {
+      "conditional": "import [IDENT] .",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "类型名点号后必须跟标识符"
+    },
+    {
+      "conditional": "import [IDENT] . [IDENT]",
+      "consequent": "., ;",
+      "skip": "",
+      "required": true,
+      "note": "限定类型名后必须跟点号（继续限定）或分号（结束）"
+    },
+    {
+      "conditional": "import [IDENT] ;",
+      "consequent": "",
+      "skip": "",
+      "required": false,
+      "note": "单类型导入声明以分号结束"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:09.799881"
+}

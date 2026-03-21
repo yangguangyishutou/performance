@@ -1,0 +1,15 @@
+{
+  "construct": "TypePattern",
+  "language": "java",
+  "syntax_node": "pattern",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "LocalVariableDeclaration",
+      "skip": "",
+      "required": true,
+      "note": "类型模式必须是局部变量声明"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.070472"
+}

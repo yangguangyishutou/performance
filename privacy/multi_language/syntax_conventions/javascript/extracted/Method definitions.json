@@ -1,0 +1,176 @@
+{
+  "construct": "Method definitions",
+  "language": "javascript",
+  "syntax_node": "method",
+  "constraints": [
+    {
+      "conditional": "*",
+      "consequent": "[PROPERTY]",
+      "skip": "",
+      "required": true,
+      "note": "Generator 星号后必须跟属性名"
+    },
+    {
+      "conditional": "*",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "Generator 星号后可跟计算属性左括号"
+    },
+    {
+      "conditional": "async",
+      "consequent": "[PROPERTY]",
+      "skip": "",
+      "required": true,
+      "note": "async 关键字后必须跟属性名"
+    },
+    {
+      "conditional": "async",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "async 关键字后可跟计算属性左括号"
+    },
+    {
+      "conditional": "async *",
+      "consequent": "[PROPERTY]",
+      "skip": "",
+      "required": true,
+      "note": "async generator 星号后必须跟属性名"
+    },
+    {
+      "conditional": "async *",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "async generator 星号后可跟计算属性左括号"
+    },
+    {
+      "conditional": "[PROPERTY]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "方法名后必须跟左括号"
+    },
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "计算属性左括号后必须跟右括号"
+    },
+    {
+      "conditional": "* [PROPERTY]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "Generator 方法名后必须跟左括号"
+    },
+    {
+      "conditional": "* [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "Generator 计算属性左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async [PROPERTY]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "async 方法名后必须跟左括号"
+    },
+    {
+      "conditional": "async [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "async 计算属性左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async * [PROPERTY]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "async generator 方法名后必须跟左括号"
+    },
+    {
+      "conditional": "async * [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "async generator 计算属性左括号后必须跟右括号"
+    },
+    {
+      "conditional": "[PROPERTY] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "* [PROPERTY] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "Generator 方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async [PROPERTY] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "async 方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async * [PROPERTY] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "async generator 方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "[] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "计算属性方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "* [] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "Generator 计算属性方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async [] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "async 计算属性方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async * [] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "async generator 计算属性方法左括号后必须跟右括号"
+    },
+    {
+      "conditional": "[PROPERTY] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "方法参数后必须跟左大括号"
+    },
+    {
+      "conditional": "[PROPERTY] ({",
+      "consequent": "}",
+      "skip": "function_body",
+      "required": true,
+      "note": "方法左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:07.909016"
+}

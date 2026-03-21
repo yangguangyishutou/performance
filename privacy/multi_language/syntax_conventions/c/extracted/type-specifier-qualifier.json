@@ -1,0 +1,7 @@
+{
+  "construct": "type-specifier-qualifier",
+  "language": "c",
+  "syntax_node": "type-specifier-qualifier",
+  "constraints": [],
+  "extracted_at": "2026-03-17T18:45:50.040199"
+}

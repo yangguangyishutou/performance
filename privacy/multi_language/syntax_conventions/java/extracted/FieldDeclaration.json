@@ -1,0 +1,15 @@
+{
+  "construct": "FieldDeclaration",
+  "language": "java",
+  "syntax_node": "[IDENT]",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ";",
+      "skip": "variable_declarator_list",
+      "required": true,
+      "note": "字段声明类型标识符后必须跟分号（中间跳过变量声明符列表）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:05:22.033243"
+}

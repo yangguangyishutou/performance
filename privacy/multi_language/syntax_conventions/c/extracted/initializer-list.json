@@ -1,0 +1,15 @@
+{
+  "construct": "initializer-list",
+  "language": "c",
+  "syntax_node": "initializer-list",
+  "constraints": [
+    {
+      "conditional": ",",
+      "consequent": "[, <expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "初始化列表中的逗号后必须跟左方括号（designation）或表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:58.036372"
+}

@@ -1,0 +1,43 @@
+{
+  "construct": "delete",
+  "language": "javascript",
+  "syntax_node": "delete",
+  "constraints": [
+    {
+      "conditional": "delete",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "delete 关键字后必须跟对象标识符"
+    },
+    {
+      "conditional": "delete [IDENT]",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "delete 对象标识符后可跟点号"
+    },
+    {
+      "conditional": "delete [IDENT].",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "delete 点号后必须跟属性标识符"
+    },
+    {
+      "conditional": "delete [IDENT]",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "delete 对象标识符后可跟左中括号"
+    },
+    {
+      "conditional": "delete [IDENT] [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "delete 左中括号后必须跟右中括号（中间跳过表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:03.887851"
+}

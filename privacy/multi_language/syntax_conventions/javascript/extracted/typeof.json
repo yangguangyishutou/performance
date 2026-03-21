@@ -1,0 +1,29 @@
+{
+  "construct": "typeof",
+  "language": "javascript",
+  "syntax_node": "typeof",
+  "constraints": [
+    {
+      "conditional": "typeof",
+      "consequent": "(",
+      "skip": "",
+      "required": false,
+      "note": "typeof 关键字后可选择性跟随左括号"
+    },
+    {
+      "conditional": "typeof",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "typeof 关键字后必须跟表达式起始"
+    },
+    {
+      "conditional": "typeof (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "typeof 左括号后必须跟右括号（中间跳过表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:52.571218"
+}

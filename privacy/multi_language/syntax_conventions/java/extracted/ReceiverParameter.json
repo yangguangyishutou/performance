@@ -1,0 +1,36 @@
+{
+  "construct": "ReceiverParameter",
+  "language": "java",
+  "syntax_node": "this",
+  "constraints": [
+    {
+      "conditional": "{Annotation} UnannType",
+      "consequent": "[IDENT], this",
+      "skip": "",
+      "required": false,
+      "note": "类型后可选择性跟随标识符或直接跟 'this'"
+    },
+    {
+      "conditional": "{Annotation} UnannType [IDENT]",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "标识符后必须跟点号"
+    },
+    {
+      "conditional": "{Annotation} UnannType [IDENT] .",
+      "consequent": "this",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 'this' 关键字"
+    },
+    {
+      "conditional": "{Annotation} UnannType this",
+      "consequent": "",
+      "skip": "",
+      "required": true,
+      "note": "'this' 后接收器参数结束"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:08.574850"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "compound-statement",
+  "language": "c",
+  "syntax_node": "{",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "block_item_list",
+      "required": true,
+      "note": "复合语句的左大括号后必须跟右大括号（中间跳过块项列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:27.844482"
+}

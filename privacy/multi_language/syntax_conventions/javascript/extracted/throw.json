@@ -1,0 +1,22 @@
+{
+  "construct": "throw",
+  "language": "javascript",
+  "syntax_node": "throw",
+  "constraints": [
+    {
+      "conditional": "throw",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "throw 后必须跟表达式起始"
+    },
+    {
+      "conditional": "throw <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "throw 表达式后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:29.991368"
+}

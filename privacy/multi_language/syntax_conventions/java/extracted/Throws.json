@@ -1,0 +1,15 @@
+{
+  "construct": "Throws",
+  "language": "java",
+  "syntax_node": "throws",
+  "constraints": [
+    {
+      "conditional": "throws",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'throws' 关键字后必须跟异常类型列表的起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:40.003791"
+}

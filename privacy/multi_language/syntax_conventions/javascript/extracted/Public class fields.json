@@ -1,0 +1,78 @@
+{
+  "construct": "Public class fields",
+  "language": "javascript",
+  "syntax_node": "field_definition",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "字段名后可跟分号"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "字段名后可跟等号进行初始化"
+    },
+    {
+      "conditional": "[IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "等号后必须跟表达式起始"
+    },
+    {
+      "conditional": "[IDENT] = <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "初始化表达式后可跟分号"
+    },
+    {
+      "conditional": "[IDENT] = <expression_start>",
+      "consequent": "}",
+      "skip": "",
+      "required": true,
+      "note": "初始化表达式后可直接跟右大括号"
+    },
+    {
+      "conditional": "static [IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "静态字段名后可跟分号"
+    },
+    {
+      "conditional": "static [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "静态字段名后可跟等号进行初始化"
+    },
+    {
+      "conditional": "static [IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "静态字段等号后必须跟表达式起始"
+    },
+    {
+      "conditional": "static [IDENT] = <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "静态字段初始化表达式后可跟分号"
+    },
+    {
+      "conditional": "static [IDENT] = <expression_start>",
+      "consequent": "}",
+      "skip": "",
+      "required": true,
+      "note": "静态字段初始化表达式后可直接跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:27:47.260929"
+}

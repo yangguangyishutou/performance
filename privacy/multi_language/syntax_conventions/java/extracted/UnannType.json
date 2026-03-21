@@ -1,0 +1,15 @@
+{
+  "construct": "UnannType",
+  "language": "java",
+  "syntax_node": "Type",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "<primitive_type_start>, <reference_type_start>",
+      "skip": "",
+      "required": true,
+      "note": "未注解类型必须以原始类型起始或引用类型起始开始"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:06:10.334832"
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "EnumBody",
+  "language": "java",
+  "syntax_node": "enum",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "枚举体必须以左大括号开始"
+    },
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "enum_constants",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过可选的枚举常量列表和可选的逗号）"
+    },
+    {
+      "conditional": "{ [EnumConstantList]",
+      "consequent": ",, }",
+      "skip": "",
+      "required": false,
+      "note": "枚举常量列表后可跟可选的逗号或直接右大括号"
+    },
+    {
+      "conditional": "{ [EnumConstantList] ,",
+      "consequent": "}",
+      "skip": "declarations",
+      "required": false,
+      "note": "逗号后可跟可选的枚举体声明或直接右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.269051"
+}

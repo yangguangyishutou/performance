@@ -1,0 +1,15 @@
+{
+  "construct": "member-declarator",
+  "language": "c",
+  "syntax_node": "member-declarator",
+  "constraints": [
+    {
+      "conditional": ":",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "位域冒号后必须跟随常量表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:50.040969"
+}

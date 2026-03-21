@@ -1,0 +1,22 @@
+{
+  "construct": "PackageModifier",
+  "language": "java",
+  "syntax_node": "Annotation",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "@",
+      "skip": "",
+      "required": true,
+      "note": "包修饰符必须以 '@' 开始"
+    },
+    {
+      "conditional": "@",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'@' 后必须跟注解标识符"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:09.799444"
+}

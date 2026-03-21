@@ -1,0 +1,22 @@
+{
+  "construct": "MethodDeclaration",
+  "language": "java",
+  "syntax_node": "MethodHeader",
+  "constraints": [
+    {
+      "conditional": "{MethodModifier} MethodHeader",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "MethodHeader 后必须跟左大括号开始方法体"
+    },
+    {
+      "conditional": "{MethodModifier} MethodHeader {",
+      "consequent": "}",
+      "skip": "MethodBody",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过方法体）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:08.572479"
+}

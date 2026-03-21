@@ -1,0 +1,29 @@
+{
+  "construct": "AmbiguousName",
+  "language": "java",
+  "syntax_node": "Identifier",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可选择性跟随点号以继续限定名称"
+    },
+    {
+      "conditional": "[IDENT] .",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟标识符"
+    },
+    {
+      "conditional": "[IDENT] . [IDENT]",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "限定名称后可选择性跟随点号以继续限定"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:09.797589"
+}

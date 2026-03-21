@@ -1,0 +1,22 @@
+{
+  "construct": "designator",
+  "language": "c",
+  "syntax_node": "[",
+  "constraints": [
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "constant-expression",
+      "required": true,
+      "note": "左方括号后必须跟右方括号（中间跳过常量表达式）"
+    },
+    {
+      "conditional": ".",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "点运算符后必须跟标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:06.926027"
+}

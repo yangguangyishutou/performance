@@ -1,0 +1,43 @@
+{
+  "construct": "new",
+  "language": "javascript",
+  "syntax_node": "new",
+  "constraints": [
+    {
+      "conditional": "new",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "new 关键字后必须跟表达式起始（构造函数）"
+    },
+    {
+      "conditional": "new <expression_start>",
+      "consequent": "(",
+      "skip": "",
+      "required": false,
+      "note": "构造函数后可跟左括号"
+    },
+    {
+      "conditional": "new <expression_start> (",
+      "consequent": ")",
+      "skip": "arguments",
+      "required": true,
+      "note": "左括号后必须跟右括号"
+    },
+    {
+      "conditional": "new <expression_start> ()",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "new 表达式后可跟属性访问点号"
+    },
+    {
+      "conditional": "new <expression_start> ()",
+      "consequent": "?",
+      "skip": "",
+      "required": false,
+      "note": "new 表达式后可跟可选链问号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:44.274911"
+}

@@ -1,0 +1,22 @@
+{
+  "construct": "AdditionalBound",
+  "language": "java",
+  "syntax_node": "AdditionalBound",
+  "constraints": [
+    {
+      "conditional": "AdditionalBound",
+      "consequent": "&",
+      "skip": "",
+      "required": true,
+      "note": "'AdditionalBound' 起始后必须跟 '&' 符号"
+    },
+    {
+      "conditional": "&",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'&' 后必须跟一个表达式起始（即 'InterfaceType' 的起始）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:02:31.517786"
+}

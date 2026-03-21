@@ -1,0 +1,15 @@
+{
+  "construct": "in",
+  "language": "javascript",
+  "syntax_node": "in",
+  "constraints": [
+    {
+      "conditional": "in",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "in 运算符后必须跟表达式（对象）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:20.301017"
+}

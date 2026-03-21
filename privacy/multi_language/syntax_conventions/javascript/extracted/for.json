@@ -1,0 +1,57 @@
+{
+  "construct": "for",
+  "language": "javascript",
+  "syntax_node": "for",
+  "constraints": [
+    {
+      "conditional": "for",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'for' 后必须跟左括号"
+    },
+    {
+      "conditional": "for (",
+      "consequent": ";",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟分号（跳过初始化表达式）"
+    },
+    {
+      "conditional": "for (;",
+      "consequent": ";",
+      "skip": "expression",
+      "required": true,
+      "note": "第一个分号后必须跟分号（跳过条件表达式）"
+    },
+    {
+      "conditional": "for (;;",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "第二个分号后必须跟右括号（跳过更新表达式）"
+    },
+    {
+      "conditional": "for ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "for ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始"
+    },
+    {
+      "conditional": "for () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:47.219342"
+}

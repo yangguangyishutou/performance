@@ -1,0 +1,14 @@
+      Productions from §10 (Arrays)
+
+         ArrayInitializer:
+           { [VariableInitializerList] [,] }
+
+         VariableInitializerList:
+           VariableInitializer {, VariableInitializer}
+
+
+
+
+840
+SYNTAX
+

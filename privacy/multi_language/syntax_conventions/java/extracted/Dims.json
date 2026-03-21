@@ -1,0 +1,29 @@
+{
+  "construct": "Dims",
+  "language": "java",
+  "syntax_node": "Dims",
+  "constraints": [
+    {
+      "conditional": "Dims",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "'Dims' 起始后必须跟左方括号"
+    },
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "]",
+      "consequent": "[",
+      "skip": "",
+      "required": false,
+      "note": "右方括号后可选择性跟随另一个维度对 '[' ']'"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:02:31.516974"
+}

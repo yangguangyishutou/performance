@@ -1,0 +1,22 @@
+{
+  "construct": "ArrayType",
+  "language": "java",
+  "syntax_node": "ArrayType",
+  "constraints": [
+    {
+      "conditional": "ArrayType",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'ArrayType' 起始后必须跟一个表达式起始（如 'PrimitiveType', 'ClassOrInterfaceType' 或 'TypeVariable'）"
+    },
+    {
+      "conditional": "<expression_start>",
+      "consequent": "Dims",
+      "skip": "",
+      "required": true,
+      "note": "基础类型后必须跟维度 'Dims'"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:02:31.516679"
+}

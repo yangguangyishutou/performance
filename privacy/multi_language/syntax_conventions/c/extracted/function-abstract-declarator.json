@@ -1,0 +1,22 @@
+{
+  "construct": "function-abstract-declarator",
+  "language": "c",
+  "syntax_node": "function_abstract_declarator",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "parameter_type_list",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过参数类型列表）"
+    },
+    {
+      "conditional": "()",
+      "consequent": "[, (",
+      "skip": "",
+      "required": false,
+      "note": "右括号后可以跟左方括号或另一个左括号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:47.384256"
+}

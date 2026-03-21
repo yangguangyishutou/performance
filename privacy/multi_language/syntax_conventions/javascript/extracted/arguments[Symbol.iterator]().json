@@ -1,0 +1,36 @@
+{
+  "construct": "arguments[Symbol.iterator]()",
+  "language": "javascript",
+  "syntax_node": "arguments",
+  "constraints": [
+    {
+      "conditional": "arguments",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "arguments 对象后必须跟左方括号"
+    },
+    {
+      "conditional": "arguments [",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "arguments []",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "方括号后必须跟左括号"
+    },
+    {
+      "conditional": "arguments [] (",
+      "consequent": ")",
+      "skip": "arguments",
+      "required": true,
+      "note": "左括号后必须跟右括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:07.909696"
+}

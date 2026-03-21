@@ -1,0 +1,15 @@
+{
+  "construct": "MethodInvocation",
+  "language": "java",
+  "syntax_node": "(",
+  "constraints": [
+    {
+      "conditional": "MethodName (, TypeName . [TypeArguments] Identifier (, ExpressionName . [TypeArguments] Identifier (, Primary . [TypeArguments] Identifier (, super . [TypeArguments] Identifier (, TypeName . super . [TypeArguments] Identifier (",
+      "consequent": ")",
+      "skip": "argument_list",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过可选的参数列表）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:50.495462"
+}

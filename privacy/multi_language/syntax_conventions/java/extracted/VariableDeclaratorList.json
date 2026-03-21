@@ -1,0 +1,29 @@
+{
+  "construct": "VariableDeclaratorList",
+  "language": "java",
+  "syntax_node": "VariableDeclarator",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ",, =",
+      "skip": "",
+      "required": true,
+      "note": "变量声明符标识符后必须跟逗号继续声明或等号进行初始化"
+    },
+    {
+      "conditional": "[IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "等号后必须跟表达式起始"
+    },
+    {
+      "conditional": "[IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个变量声明符标识符"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:06:10.333069"
+}

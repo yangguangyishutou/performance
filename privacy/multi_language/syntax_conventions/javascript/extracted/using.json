@@ -1,0 +1,50 @@
+{
+  "construct": "using",
+  "language": "javascript",
+  "syntax_node": "using",
+  "constraints": [
+    {
+      "conditional": "using",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "using 关键字后必须跟标识符"
+    },
+    {
+      "conditional": "using [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "标识符后必须跟赋值号"
+    },
+    {
+      "conditional": "using [IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "赋值号后必须跟表达式"
+    },
+    {
+      "conditional": "using [IDENT] = <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟分号"
+    },
+    {
+      "conditional": "using [IDENT] = <expression_start> ;",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": false,
+      "note": "分号后可跟下一个标识符（多重声明）"
+    },
+    {
+      "conditional": "using [IDENT] = <expression_start> ; [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "后续标识符后必须跟赋值号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:22.369312"
+}

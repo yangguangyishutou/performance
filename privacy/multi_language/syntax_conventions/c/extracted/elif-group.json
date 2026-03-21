@@ -1,0 +1,36 @@
+{
+  "construct": "elif-group",
+  "language": "c",
+  "syntax_node": "#",
+  "constraints": [
+    {
+      "conditional": "#",
+      "consequent": "elif, elifdef, elifndef",
+      "skip": "",
+      "required": true,
+      "note": "预处理指令 # 后必须跟 elif、elifdef 或 elifndef 关键字"
+    },
+    {
+      "conditional": "# elif",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "# elif 后必须跟常量表达式的起始"
+    },
+    {
+      "conditional": "# elifdef",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "# elifdef 后必须跟标识符"
+    },
+    {
+      "conditional": "# elifndef",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "# elifndef 后必须跟标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:10.043280"
+}

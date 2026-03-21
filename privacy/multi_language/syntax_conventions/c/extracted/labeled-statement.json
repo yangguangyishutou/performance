@@ -1,0 +1,29 @@
+{
+  "construct": "labeled-statement",
+  "language": "c",
+  "syntax_node": "label",
+  "constraints": [
+    {
+      "conditional": "[IDENT] :",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "标签冒号后必须跟语句起始"
+    },
+    {
+      "conditional": "case :",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "case 标签冒号后必须跟语句起始"
+    },
+    {
+      "conditional": "default :",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "default 标签冒号后必须跟语句起始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:27.844227"
+}

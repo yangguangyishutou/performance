@@ -1,0 +1,15 @@
+{
+  "construct": "ExceptionTypeList",
+  "language": "java",
+  "syntax_node": "ExceptionType",
+  "constraints": [
+    {
+      "conditional": "<expression_start>",
+      "consequent": ",, <expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "异常类型后可选择性跟随逗号和另一个异常类型"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:40.003972"
+}

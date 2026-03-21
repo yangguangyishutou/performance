@@ -1,0 +1,22 @@
+{
+  "construct": "alignment-specifier",
+  "language": "c",
+  "syntax_node": "alignas",
+  "constraints": [
+    {
+      "conditional": "alignas",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "alignas 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "alignas (",
+      "consequent": ")",
+      "skip": "type-name, constant-expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过类型名或常量表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:10.523798"
+}

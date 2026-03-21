@@ -1,0 +1,8 @@
+{
+  "construct": "ShiftExpression",
+  "language": "java",
+  "syntax_node": "",
+  "constraints": [],
+  "note": "构造为二元移位运算符（<<, >>, >>>），其后可跟任何表达式，无法提取强制的特定 token 约束。",
+  "extracted_at": "2026-03-18T12:01:16.490983"
+}

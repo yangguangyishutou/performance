@@ -1,0 +1,15 @@
+{
+  "construct": "VariableArityParameter",
+  "language": "java",
+  "syntax_node": "...",
+  "constraints": [
+    {
+      "conditional": "...",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "可变参数语法 '...' 后必须跟标识符名称"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:40.003010"
+}

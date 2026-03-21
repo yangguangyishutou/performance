@@ -1,0 +1,22 @@
+{
+  "construct": "pp-prefixed-parameter",
+  "language": "c",
+  "syntax_node": "identifier",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "::",
+      "skip": "",
+      "required": true,
+      "note": "预处理器前缀参数的第一个标识符后必须跟双冒号"
+    },
+    {
+      "conditional": "[IDENT] ::",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "双冒号后必须跟第二个标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:39.002877"
+}

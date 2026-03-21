@@ -1,0 +1,50 @@
+{
+  "construct": "jump-statement",
+  "language": "c",
+  "syntax_node": "goto, continue, break, return",
+  "constraints": [
+    {
+      "conditional": "goto",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "goto 关键字后必须跟标识符"
+    },
+    {
+      "conditional": "goto [IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "goto 标识符后必须跟分号"
+    },
+    {
+      "conditional": "continue",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "continue 关键字后必须跟分号"
+    },
+    {
+      "conditional": "break",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "break 关键字后必须跟分号"
+    },
+    {
+      "conditional": "return",
+      "consequent": ";, <expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "return 关键字后必须跟分号或表达式起始"
+    },
+    {
+      "conditional": "return <expression_start>",
+      "consequent": ";",
+      "skip": "expression",
+      "required": true,
+      "note": "return 表达式后必须跟分号（中间跳过表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:01.258271"
+}

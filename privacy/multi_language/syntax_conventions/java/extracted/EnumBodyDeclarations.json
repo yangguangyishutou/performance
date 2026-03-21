@@ -1,0 +1,22 @@
+{
+  "construct": "EnumBodyDeclarations",
+  "language": "java",
+  "syntax_node": "enum",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "枚举体声明必须以分号开始"
+    },
+    {
+      "conditional": ";",
+      "consequent": "<class_body_declaration>",
+      "skip": "",
+      "required": true,
+      "note": "分号后必须跟类体声明"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.270415"
+}

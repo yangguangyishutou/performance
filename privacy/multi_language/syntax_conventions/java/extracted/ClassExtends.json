@@ -1,0 +1,15 @@
+{
+  "construct": "ClassExtends",
+  "language": "java",
+  "syntax_node": "extends",
+  "constraints": [
+    {
+      "conditional": "extends",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'extends' 关键字后必须跟父类类型标识符"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:05:22.032372"
+}

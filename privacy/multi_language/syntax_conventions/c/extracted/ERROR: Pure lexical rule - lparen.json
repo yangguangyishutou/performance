@@ -1,0 +1,8 @@
+{
+  "construct": "ERROR: Pure lexical rule - lparen",
+  "language": "c",
+  "syntax_node": "SKIP",
+  "constraints": [],
+  "reason": "lparen 是纯 lexical 规则，只定义左括号字符的词法约束（不能有前导空格），没有语法结构",
+  "extracted_at": "2026-03-17T18:48:25.769986"
+}

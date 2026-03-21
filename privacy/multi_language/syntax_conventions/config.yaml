@@ -1,0 +1,17 @@
+# LLM 服务配置
+# 修改 active 切换使用的服务
+
+active: deepseek  # 可选: anthropic, deepseek
+
+services:
+  anthropic:
+    backend: anthropic
+    base_url: "https://codeflow.asia"
+    model: "claude-sonnet-4-6"
+    api_key_env: "ANTHROPIC_API_KEY"
+
+  deepseek:
+    backend: openai
+    base_url: "https://api.deepseek.com"
+    model: "deepseek-chat"
+    api_key_env: "DEEPSEEK_API_KEY"

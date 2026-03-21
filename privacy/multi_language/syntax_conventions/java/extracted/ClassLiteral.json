@@ -1,0 +1,106 @@
+{
+  "construct": "ClassLiteral",
+  "language": "java",
+  "syntax_node": "TypeName",
+  "constraints": [
+    {
+      "conditional": "TypeName",
+      "consequent": "[, .",
+      "skip": "",
+      "required": false,
+      "note": "'TypeName' 后可选择性跟随方括号（数组维度）或点号"
+    },
+    {
+      "conditional": "TypeName [",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "TypeName []",
+      "consequent": "[, .",
+      "skip": "",
+      "required": false,
+      "note": "一对 '[]' 后可选择性跟随更多 '[]' 或点号"
+    },
+    {
+      "conditional": "TypeName .",
+      "consequent": "class",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 'class' 关键字"
+    },
+    {
+      "conditional": "NumericType",
+      "consequent": "[, .",
+      "skip": "",
+      "required": false,
+      "note": "'NumericType' 后可选择性跟随方括号（数组维度）或点号"
+    },
+    {
+      "conditional": "NumericType [",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "NumericType []",
+      "consequent": "[, .",
+      "skip": "",
+      "required": false,
+      "note": "一对 '[]' 后可选择性跟随更多 '[]' 或点号"
+    },
+    {
+      "conditional": "NumericType .",
+      "consequent": "class",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 'class' 关键字"
+    },
+    {
+      "conditional": "boolean",
+      "consequent": "[, .",
+      "skip": "",
+      "required": false,
+      "note": "'boolean' 后可选择性跟随方括号（数组维度）或点号"
+    },
+    {
+      "conditional": "boolean [",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "boolean []",
+      "consequent": "[, .",
+      "skip": "",
+      "required": false,
+      "note": "一对 '[]' 后可选择性跟随更多 '[]' 或点号"
+    },
+    {
+      "conditional": "boolean .",
+      "consequent": "class",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 'class' 关键字"
+    },
+    {
+      "conditional": "void",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "'void' 后必须跟点号"
+    },
+    {
+      "conditional": "void .",
+      "consequent": "class",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 'class' 关键字"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:17.543813"
+}

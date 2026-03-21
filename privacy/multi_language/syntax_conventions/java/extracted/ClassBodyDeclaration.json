@@ -1,0 +1,7 @@
+{
+  "construct": "ClassBodyDeclaration",
+  "language": "java",
+  "syntax_node": "<statement_start>",
+  "constraints": [],
+  "extracted_at": "2026-03-18T12:05:22.033044"
+}

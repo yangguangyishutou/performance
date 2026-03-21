@@ -1,0 +1,2254 @@
+{
+  "language": "c",
+  "total_constructs": 85,
+  "total_constraints": 236,
+  "constructs": [
+    {
+      "construct": "designator",
+      "language": "c",
+      "syntax_node": "[",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "constant-expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过常量表达式）"
+        },
+        {
+          "conditional": ".",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点运算符后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "declaration-specifiers",
+      "language": "c",
+      "syntax_node": "declaration-specifiers",
+      "constraints": [
+        {
+          "conditional": "declaration-specifier",
+          "consequent": "attribute-specifier-sequence, declaration-specifier",
+          "skip": "",
+          "required": false,
+          "note": "声明说明符后可选跟随属性说明符序列或另一个声明说明符"
+        }
+      ]
+    },
+    {
+      "construct": "primary-block",
+      "language": "c",
+      "syntax_node": "block",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "compound_statement",
+          "required": true,
+          "note": "复合语句的左大括号后必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "block-item",
+      "language": "c",
+      "syntax_node": "block-item",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "<declaration_start>, <statement_start>, [IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "block-item 必须以声明起始、语句起始或标签标识符开始"
+        }
+      ]
+    },
+    {
+      "construct": "pp-parameter-clause",
+      "language": "c",
+      "syntax_node": "(",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "pp-balanced-token-sequence",
+          "required": true,
+          "note": "预处理器参数子句的左括号后必须跟右括号（中间可选平衡 token 序列）"
+        }
+      ]
+    },
+    {
+      "construct": "enum-specifier",
+      "language": "c",
+      "syntax_node": "enum",
+      "constraints": [
+        {
+          "conditional": "enum",
+          "consequent": "[IDENT], {",
+          "skip": "attribute-specifier-sequence",
+          "required": true,
+          "note": "enum 关键字后可选跟属性序列，然后必须跟标识符或左大括号"
+        },
+        {
+          "conditional": "enum [IDENT]",
+          "consequent": ":",
+          "skip": "",
+          "required": false,
+          "note": "enum 标识符后可选跟冒号（用于指定枚举类型）"
+        },
+        {
+          "conditional": "enum [IDENT] :",
+          "consequent": "{",
+          "skip": "specifier-qualifier-list",
+          "required": true,
+          "note": "冒号后必须跟类型说明符列表，然后跟左大括号"
+        },
+        {
+          "conditional": "enum {",
+          "consequent": "}",
+          "skip": "enumerator-list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过枚举器列表）"
+        },
+        {
+          "conditional": "enum [IDENT] {",
+          "consequent": "}",
+          "skip": "enumerator-list",
+          "required": true,
+          "note": "带标识符的 enum 左大括号后必须跟右大括号（中间跳过枚举器列表）"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-declaration",
+      "language": "c",
+      "syntax_node": "attribute-declaration",
+      "constraints": [
+        {
+          "conditional": "attribute-specifier-sequence",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "属性说明符序列后必须跟随分号"
+        }
+      ]
+    },
+    {
+      "construct": "else-group",
+      "language": "c",
+      "syntax_node": "#",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "else",
+          "skip": "",
+          "required": true,
+          "note": "预处理指令 # 后必须跟 else 关键字"
+        }
+      ]
+    },
+    {
+      "construct": "function-abstract-declarator",
+      "language": "c",
+      "syntax_node": "function_abstract_declarator",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "parameter_type_list",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过参数类型列表）"
+        },
+        {
+          "conditional": "()",
+          "consequent": "[, (",
+          "skip": "",
+          "required": false,
+          "note": "右括号后可以跟左方括号或另一个左括号"
+        }
+      ]
+    },
+    {
+      "construct": "standard-pragma",
+      "language": "c",
+      "syntax_node": "#",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "pragma",
+          "skip": "",
+          "required": true,
+          "note": "# 后必须跟 pragma 关键字"
+        },
+        {
+          "conditional": "# pragma",
+          "consequent": "STDC",
+          "skip": "",
+          "required": true,
+          "note": "pragma 后必须跟 STDC 关键字"
+        },
+        {
+          "conditional": "# pragma STDC",
+          "consequent": "FP_CONTRACT, FENV_ACCESS, FENV_DEC_ROUND, FENV_ROUND, CX_LIMITED_RANGE",
+          "skip": "",
+          "required": true,
+          "note": "STDC 后必须跟标准 pragma 指令之一"
+        },
+        {
+          "conditional": "# pragma STDC FP_CONTRACT",
+          "consequent": "ON, OFF, DEFAULT",
+          "skip": "",
+          "required": true,
+          "note": "FP_CONTRACT 后必须跟开关值"
+        },
+        {
+          "conditional": "# pragma STDC FENV_ACCESS",
+          "consequent": "ON, OFF, DEFAULT",
+          "skip": "",
+          "required": true,
+          "note": "FENV_ACCESS 后必须跟开关值"
+        },
+        {
+          "conditional": "# pragma STDC FENV_DEC_ROUND",
+          "consequent": "dec-direction",
+          "skip": "",
+          "required": true,
+          "note": "FENV_DEC_ROUND 后必须跟十进制舍入方向"
+        },
+        {
+          "conditional": "# pragma STDC FENV_ROUND",
+          "consequent": "direction",
+          "skip": "",
+          "required": true,
+          "note": "FENV_ROUND 后必须跟舍入方向"
+        },
+        {
+          "conditional": "# pragma STDC CX_LIMITED_RANGE",
+          "consequent": "ON, OFF, DEFAULT",
+          "skip": "",
+          "required": true,
+          "note": "CX_LIMITED_RANGE 后必须跟开关值"
+        }
+      ]
+    },
+    {
+      "construct": "labeled-statement",
+      "language": "c",
+      "syntax_node": "label",
+      "constraints": [
+        {
+          "conditional": "[IDENT] :",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "标签冒号后必须跟语句起始"
+        },
+        {
+          "conditional": "case :",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "case 标签冒号后必须跟语句起始"
+        },
+        {
+          "conditional": "default :",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "default 标签冒号后必须跟语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "selection-statement",
+      "language": "c",
+      "syntax_node": "if",
+      "constraints": [
+        {
+          "conditional": "if",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "if 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "if (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+        },
+        {
+          "conditional": "if ()",
+          "consequent": "{, <statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+        },
+        {
+          "conditional": "if () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+        },
+        {
+          "conditional": "if () {}",
+          "consequent": "else",
+          "skip": "",
+          "required": false,
+          "note": "if 语句块的右大括号后可选择性跟随 else"
+        },
+        {
+          "conditional": "else",
+          "consequent": "{, <statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "else 后必须跟左大括号或语句起始（secondary-block）"
+        },
+        {
+          "conditional": "else {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "else 左大括号后必须跟右大括号（中间跳过语句块）"
+        },
+        {
+          "conditional": "switch",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "switch 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "switch (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过表达式）"
+        },
+        {
+          "conditional": "switch ()",
+          "consequent": "{, <statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+        },
+        {
+          "conditional": "switch () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "control-line",
+      "language": "c",
+      "syntax_node": "#",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "include, embed, define, undef, line, error, warning, pragma",
+          "skip": "",
+          "required": false,
+          "note": "预处理指令 # 后可选择性跟随指令关键字或直接换行"
+        },
+        {
+          "conditional": "# include",
+          "consequent": "<expression_start>",
+          "skip": "pp-tokens",
+          "required": true,
+          "note": "include 指令后必须跟 pp-tokens（如 <file.h> 或 'file.h'）"
+        },
+        {
+          "conditional": "# embed",
+          "consequent": "<expression_start>",
+          "skip": "pp-tokens",
+          "required": true,
+          "note": "embed 指令后必须跟 pp-tokens"
+        },
+        {
+          "conditional": "# define",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "define 指令后必须跟标识符"
+        },
+        {
+          "conditional": "# define [IDENT]",
+          "consequent": "(, <expression_start>",
+          "skip": "",
+          "required": false,
+          "note": "define 标识符后可选择性跟左括号（函数式宏）或直接跟替换列表"
+        },
+        {
+          "conditional": "# define [IDENT] (",
+          "consequent": "), ...",
+          "skip": "identifier-list",
+          "required": true,
+          "note": "define 函数式宏左括号后必须跟右括号或可变参数 ..."
+        },
+        {
+          "conditional": "# define [IDENT] ( ...",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "可变参数 ... 后必须跟右括号"
+        },
+        {
+          "conditional": "# define [IDENT] (",
+          "consequent": ",",
+          "skip": "identifier",
+          "required": false,
+          "note": "参数列表中标识符后可选择性跟逗号分隔下一个参数"
+        },
+        {
+          "conditional": "# define [IDENT] ( [IDENT] ,",
+          "consequent": "..., [IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟可变参数 ... 或下一个参数标识符"
+        },
+        {
+          "conditional": "# define [IDENT] )",
+          "consequent": "<expression_start>",
+          "skip": "replacement-list",
+          "required": false,
+          "note": "define 右括号后可选择性跟替换列表"
+        },
+        {
+          "conditional": "# undef",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "undef 指令后必须跟标识符"
+        },
+        {
+          "conditional": "# line",
+          "consequent": "<expression_start>",
+          "skip": "pp-tokens",
+          "required": true,
+          "note": "line 指令后必须跟 pp-tokens"
+        },
+        {
+          "conditional": "# error",
+          "consequent": "<expression_start>",
+          "skip": "pp-tokens",
+          "required": false,
+          "note": "error 指令后可选择性跟 pp-tokens"
+        },
+        {
+          "conditional": "# warning",
+          "consequent": "<expression_start>",
+          "skip": "pp-tokens",
+          "required": false,
+          "note": "warning 指令后可选择性跟 pp-tokens"
+        },
+        {
+          "conditional": "# pragma",
+          "consequent": "<expression_start>",
+          "skip": "pp-tokens",
+          "required": false,
+          "note": "pragma 指令后可选择性跟 pp-tokens"
+        }
+      ]
+    },
+    {
+      "construct": "pp-parameter",
+      "language": "c",
+      "syntax_node": "pp-parameter-name",
+      "constraints": [
+        {
+          "conditional": "pp-parameter-name",
+          "consequent": "pp-parameter-clause",
+          "skip": "",
+          "required": false,
+          "note": "预处理参数名后可选择性跟随参数子句"
+        }
+      ]
+    },
+    {
+      "construct": "if-group",
+      "language": "c",
+      "syntax_node": "#",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "if, ifdef, ifndef",
+          "skip": "",
+          "required": true,
+          "note": "预处理指令 # 后必须跟 if、ifdef 或 ifndef 关键字"
+        },
+        {
+          "conditional": "# if",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "# if 后必须跟常量表达式的起始"
+        },
+        {
+          "conditional": "# ifdef",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "# ifdef 后必须跟标识符"
+        },
+        {
+          "conditional": "# ifndef",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "# ifndef 后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "argument-expression-list",
+      "language": "c",
+      "syntax_node": "argument-expression-list",
+      "constraints": [
+        {
+          "conditional": ",",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "参数列表中的逗号后必须跟随赋值表达式的起始"
+        }
+      ]
+    },
+    {
+      "construct": "conditional-expression",
+      "language": "c",
+      "syntax_node": "?",
+      "constraints": [
+        {
+          "conditional": "?",
+          "consequent": ":",
+          "skip": "expression",
+          "required": true,
+          "note": "三元运算符的问号和冒号必须配对，中间跳过表达式"
+        }
+      ]
+    },
+    {
+      "construct": "struct-or-union-specifier",
+      "language": "c",
+      "syntax_node": "struct-or-union",
+      "constraints": [
+        {
+          "conditional": "struct, union",
+          "consequent": "{, [IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "struct 或 union 关键字后必须跟左大括号或标识符"
+        },
+        {
+          "conditional": "struct {, union {",
+          "consequent": "}",
+          "skip": "member-declaration-list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过成员声明列表）"
+        },
+        {
+          "conditional": "struct [IDENT], union [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随左大括号（定义结构体）"
+        },
+        {
+          "conditional": "struct [IDENT] {, union [IDENT] {",
+          "consequent": "}",
+          "skip": "member-declaration-list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过成员声明列表）"
+        }
+      ]
+    },
+    {
+      "construct": "member-declarator",
+      "language": "c",
+      "syntax_node": "member-declarator",
+      "constraints": [
+        {
+          "conditional": ":",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "位域冒号后必须跟随常量表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "alignment-specifier",
+      "language": "c",
+      "syntax_node": "alignas",
+      "constraints": [
+        {
+          "conditional": "alignas",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "alignas 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "alignas (",
+          "consequent": ")",
+          "skip": "type-name, constant-expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过类型名或常量表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "attribute",
+      "language": "c",
+      "syntax_node": "attribute",
+      "constraints": [
+        {
+          "conditional": "attribute-token",
+          "consequent": "attribute-argument-clause",
+          "skip": "",
+          "required": false,
+          "note": "attribute-token 后可选择性跟随 attribute-argument-clause"
+        }
+      ]
+    },
+    {
+      "construct": "generic-selection",
+      "language": "c",
+      "syntax_node": "_Generic",
+      "constraints": [
+        {
+          "conditional": "_Generic",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "_Generic 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "_Generic (",
+          "consequent": ",",
+          "skip": "assignment-expression",
+          "required": true,
+          "note": "左括号后必须跟逗号（中间跳过赋值表达式）"
+        },
+        {
+          "conditional": "_Generic ( ,",
+          "consequent": ")",
+          "skip": "generic-assoc-list",
+          "required": true,
+          "note": "逗号后必须跟右括号（中间跳过泛型关联列表）"
+        }
+      ]
+    },
+    {
+      "construct": "postfix-expression",
+      "language": "c",
+      "syntax_node": "postfix-expression",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过表达式）"
+        },
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "argument-expression-list",
+          "required": true,
+          "note": "函数调用左括号后必须跟右括号（中间跳过参数列表）"
+        },
+        {
+          "conditional": ".",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "成员访问运算符 . 后必须跟标识符"
+        },
+        {
+          "conditional": "->",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "指针成员访问运算符 -> 后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "abstract-declarator",
+      "language": "c",
+      "syntax_node": "abstract_declarator",
+      "constraints": [
+        {
+          "conditional": "*",
+          "consequent": "[IDENT], (, [, *",
+          "skip": "",
+          "required": false,
+          "note": "指针符号后可以跟标识符、左括号、左方括号或另一个指针符号"
+        },
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "abstract_declarator",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过抽象声明符）"
+        },
+        {
+          "conditional": "()",
+          "consequent": "[, (",
+          "skip": "",
+          "required": false,
+          "note": "括号形式的抽象声明符后可以跟左方括号或左括号"
+        }
+      ]
+    },
+    {
+      "construct": "member-declaration",
+      "language": "c",
+      "syntax_node": "member-declaration",
+      "constraints": [
+        {
+          "conditional": "member-declaration",
+          "consequent": ";",
+          "skip": "specifier-qualifier-list, member-declarator-list",
+          "required": true,
+          "note": "成员声明必须以分号结束（跳过说明符限定符列表和成员声明符列表）"
+        }
+      ]
+    },
+    {
+      "construct": "direct-declarator",
+      "language": "c",
+      "syntax_node": "declarator",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "declarator",
+          "required": true,
+          "note": "括号形式的 declarator，左括号后必须跟右括号（中间跳过 declarator）"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "[, (, __attribute__",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选跟数组声明符左方括号、函数声明符左括号或属性说明符"
+        }
+      ]
+    },
+    {
+      "construct": "initializer-list",
+      "language": "c",
+      "syntax_node": "initializer-list",
+      "constraints": [
+        {
+          "conditional": ",",
+          "consequent": "[, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "初始化列表中的逗号后必须跟左方括号（designation）或表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "direct-abstract-declarator",
+      "language": "c",
+      "syntax_node": "direct_abstract_declarator",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "abstract_declarator",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过抽象声明符）"
+        },
+        {
+          "conditional": "()",
+          "consequent": "[, (",
+          "skip": "",
+          "required": false,
+          "note": "括号形式后可以跟左方括号（数组）或左括号（函数）"
+        },
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "array_declarator_content",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过数组声明符内容）"
+        },
+        {
+          "conditional": "[]",
+          "consequent": "__attribute__, [, (",
+          "skip": "",
+          "required": false,
+          "note": "右方括号后可以跟属性说明符、另一个左方括号或左括号"
+        }
+      ]
+    },
+    {
+      "construct": "type-qualifier-list",
+      "language": "c",
+      "syntax_node": "type-qualifier",
+      "constraints": [
+        {
+          "conditional": "type-qualifier",
+          "consequent": "type-qualifier, <statement_end>",
+          "skip": "",
+          "required": false,
+          "note": "类型限定符后可以跟另一个类型限定符（形成列表）或结束"
+        }
+      ]
+    },
+    {
+      "construct": "enum-type-specifier",
+      "language": "c",
+      "syntax_node": ":",
+      "constraints": [
+        {
+          "conditional": ":",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟类型说明符限定符列表"
+        }
+      ]
+    },
+    {
+      "construct": "embed-parameter-sequence",
+      "language": "c",
+      "syntax_node": "embed-parameter-sequence",
+      "constraints": [
+        {
+          "conditional": "pp-parameter",
+          "consequent": "pp-parameter, <end>",
+          "skip": "",
+          "required": false,
+          "note": "第一个预处理参数后可以跟另一个预处理参数或结束"
+        },
+        {
+          "conditional": "embed-parameter-sequence",
+          "consequent": "pp-parameter",
+          "skip": "",
+          "required": true,
+          "note": "嵌入参数序列后必须跟预处理参数"
+        }
+      ]
+    },
+    {
+      "construct": "pp-prefixed-parameter",
+      "language": "c",
+      "syntax_node": "identifier",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "::",
+          "skip": "",
+          "required": true,
+          "note": "预处理器前缀参数的第一个标识符后必须跟双冒号"
+        },
+        {
+          "conditional": "[IDENT] ::",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "双冒号后必须跟第二个标识符"
+        }
+      ]
+    },
+    {
+      "construct": "parameter-list",
+      "language": "c",
+      "syntax_node": "parameter-declaration",
+      "constraints": [
+        {
+          "conditional": "parameter-declaration",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "参数声明后可选择性跟随逗号（用于多个参数）"
+        },
+        {
+          "conditional": "parameter-declaration ,",
+          "consequent": "parameter-declaration",
+          "skip": "",
+          "required": true,
+          "note": "参数声明后的逗号必须跟随另一个参数声明"
+        }
+      ]
+    },
+    {
+      "construct": "enumerator",
+      "language": "c",
+      "syntax_node": "enumerator",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "=",
+          "skip": "attribute-specifier-sequence",
+          "required": false,
+          "note": "枚举常量标识符后可选跟属性序列，然后可选跟等号进行赋值"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "等号后必须跟常量表达式"
+        }
+      ]
+    },
+    {
+      "construct": "declaration",
+      "language": "c",
+      "syntax_node": ";",
+      "constraints": [
+        {
+          "conditional": "static_assert",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "static_assert 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "static_assert (",
+          "consequent": ")",
+          "skip": "constant_expression",
+          "required": true,
+          "note": "static_assert 左括号后必须跟右括号（中间跳过常量表达式）"
+        },
+        {
+          "conditional": "static_assert ()",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "static_assert 右括号后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "identifier-list",
+      "language": "c",
+      "syntax_node": "[IDENT]",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随逗号"
+        },
+        {
+          "conditional": "[IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟随标识符"
+        }
+      ]
+    },
+    {
+      "construct": "static_assert-declaration",
+      "language": "c",
+      "syntax_node": "static_assert",
+      "constraints": [
+        {
+          "conditional": "static_assert",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "static_assert 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "static_assert (",
+          "consequent": ",, )",
+          "skip": "constant-expression",
+          "required": true,
+          "note": "左括号后必须跟逗号或右括号（中间跳过常量表达式）"
+        },
+        {
+          "conditional": "static_assert ( ,",
+          "consequent": ")",
+          "skip": "string-literal",
+          "required": true,
+          "note": "逗号后必须跟右括号（中间跳过字符串字面量）"
+        },
+        {
+          "conditional": "static_assert ( )",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟分号"
+        },
+        {
+          "conditional": "static_assert ( , )",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-specifier-sequence",
+      "language": "c",
+      "syntax_node": "[[",
+      "constraints": [
+        {
+          "conditional": "[[",
+          "consequent": "]]",
+          "skip": "attribute-list",
+          "required": true,
+          "note": "双左方括号后必须跟双右方括号（中间跳过属性列表）"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-list",
+      "language": "c",
+      "syntax_node": "attribute",
+      "constraints": [
+        {
+          "conditional": ",",
+          "consequent": "[IDENT], ]]",
+          "skip": "",
+          "required": false,
+          "note": "逗号后可选择性跟随属性标识符或双右方括号"
+        }
+      ]
+    },
+    {
+      "construct": "endif-line",
+      "language": "c",
+      "syntax_node": "#",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "endif",
+          "skip": "",
+          "required": true,
+          "note": "预处理指令 # 后必须跟 endif 关键字"
+        }
+      ]
+    },
+    {
+      "construct": "init-declarator-list",
+      "language": "c",
+      "syntax_node": "init-declarator-list",
+      "constraints": [
+        {
+          "conditional": "init-declarator",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "初始化声明符后可选跟随逗号以继续列表"
+        },
+        {
+          "conditional": "init-declarator ,",
+          "consequent": "init-declarator",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟随另一个初始化声明符"
+        }
+      ]
+    },
+    {
+      "construct": "typeof-specifier",
+      "language": "c",
+      "syntax_node": "typeof",
+      "constraints": [
+        {
+          "conditional": "typeof",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "typeof 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "typeof (",
+          "consequent": ")",
+          "skip": "typeof-specifier-argument",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过 typeof 参数）"
+        },
+        {
+          "conditional": "typeof_unqual",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "typeof_unqual 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "typeof_unqual (",
+          "consequent": ")",
+          "skip": "typeof-specifier-argument",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过 typeof 参数）"
+        }
+      ]
+    },
+    {
+      "construct": "expression",
+      "language": "c",
+      "syntax_node": ",",
+      "constraints": [
+        {
+          "conditional": ",",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "逗号运算符后必须跟表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "array-abstract-declarator",
+      "language": "c",
+      "syntax_node": "array_abstract_declarator",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "], static, const, volatile, restrict, _Atomic, *",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号、static 关键字、类型限定符或星号"
+        },
+        {
+          "conditional": "[ static",
+          "consequent": "const, volatile, restrict, _Atomic, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "static 后必须跟类型限定符或赋值表达式起始"
+        },
+        {
+          "conditional": "[ const",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "const 后可以跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ volatile",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "volatile 后可以跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ restrict",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "restrict 后可以跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ _Atomic",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "_Atomic 后可以跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ *",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "星号后必须跟右方括号（变长数组）"
+        },
+        {
+          "conditional": "[]",
+          "consequent": "[, (",
+          "skip": "",
+          "required": false,
+          "note": "右方括号后可以跟另一个左方括号或左括号"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-argument-clause",
+      "language": "c",
+      "syntax_node": "(",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "balanced-token-sequence",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间可选跳过平衡 token 序列）"
+        }
+      ]
+    },
+    {
+      "construct": "parameter-type-list",
+      "language": "c",
+      "syntax_node": "parameter-list",
+      "constraints": [
+        {
+          "conditional": "parameter-list",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "参数列表后可选择性跟随逗号（用于可变参数）"
+        },
+        {
+          "conditional": "parameter-list ,",
+          "consequent": "...",
+          "skip": "",
+          "required": true,
+          "note": "参数列表后的逗号必须跟随省略号（可变参数标记）"
+        }
+      ]
+    },
+    {
+      "construct": "generic-assoc-list",
+      "language": "c",
+      "syntax_node": "generic-association",
+      "constraints": [
+        {
+          "conditional": ",",
+          "consequent": "<generic-association-start>",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟泛型关联起始（type-name 或 default）"
+        }
+      ]
+    },
+    {
+      "construct": "compound-literal",
+      "language": "c",
+      "syntax_node": "compound-literal",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "storage-class-specifiers, type-name",
+          "required": true,
+          "note": "复合字面量的左括号后必须跟右括号（中间跳过可选的存储类说明符和类型名）"
+        },
+        {
+          "conditional": "()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "复合字面量的右括号后必须跟左大括号开始初始化器"
+        },
+        {
+          "conditional": "() {",
+          "consequent": "}",
+          "skip": "initializer-list",
+          "required": true,
+          "note": "复合字面量的左大括号后必须跟右大括号（中间跳过初始化器列表）"
+        }
+      ]
+    },
+    {
+      "construct": "designator-list",
+      "language": "c",
+      "syntax_node": "designator",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "数组 designator 左方括号后必须跟右方括号（中间跳过常量表达式）"
+        },
+        {
+          "conditional": ".",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "成员 designator 点号后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "primary-expression",
+      "language": "c",
+      "syntax_node": "primary-expression",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "array-declarator",
+      "language": "c",
+      "syntax_node": "[",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "], static, const, volatile, restrict, _Atomic, *",
+          "skip": "",
+          "required": true,
+          "note": "数组左方括号后必须跟右方括号（空数组）、static 关键字、类型限定符或星号"
+        },
+        {
+          "conditional": "[ static",
+          "consequent": "const, volatile, restrict, _Atomic, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "static 后必须跟类型限定符或表达式起始"
+        },
+        {
+          "conditional": "[ const",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "const 后可跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ volatile",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "volatile 后可跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ restrict",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "restrict 后可跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ _Atomic",
+          "consequent": "static, <expression_start>, ]",
+          "skip": "",
+          "required": true,
+          "note": "_Atomic 后可跟 static、表达式起始或右方括号"
+        },
+        {
+          "conditional": "[ *",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "星号（VLA 未指定大小）后必须跟右方括号"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-prefix",
+      "language": "c",
+      "syntax_node": "attribute-prefix",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "",
+          "skip": "",
+          "required": true,
+          "note": "attribute-prefix 必须是一个标识符"
+        }
+      ]
+    },
+    {
+      "construct": "function-declarator",
+      "language": "c",
+      "syntax_node": "(",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "parameter_type_list",
+          "required": true,
+          "note": "函数声明符左括号后必须跟右括号（中间跳过参数类型列表）"
+        }
+      ]
+    },
+    {
+      "construct": "unary-expression",
+      "language": "c",
+      "syntax_node": "unary-expression",
+      "constraints": [
+        {
+          "conditional": "++",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "前缀递增运算符后必须跟一元表达式的起始"
+        },
+        {
+          "conditional": "--",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "前缀递减运算符后必须跟一元表达式的起始"
+        },
+        {
+          "conditional": "sizeof",
+          "consequent": "(, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "sizeof 关键字后必须跟左括号或一元表达式的起始"
+        },
+        {
+          "conditional": "sizeof (",
+          "consequent": ")",
+          "skip": "type-name",
+          "required": true,
+          "note": "sizeof 左括号后必须跟右括号（中间跳过类型名）"
+        },
+        {
+          "conditional": "alignof",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "alignof 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "alignof (",
+          "consequent": ")",
+          "skip": "type-name",
+          "required": true,
+          "note": "alignof 左括号后必须跟右括号（中间跳过类型名）"
+        }
+      ]
+    },
+    {
+      "construct": "pp-balanced-token",
+      "language": "c",
+      "syntax_node": "(, [, {",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "pp-balanced-token-sequence",
+          "required": true,
+          "note": "平衡 token 中的左圆括号后必须跟右圆括号（中间可选平衡 token 序列）"
+        },
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "pp-balanced-token-sequence",
+          "required": true,
+          "note": "平衡 token 中的左方括号后必须跟右方括号（中间可选平衡 token 序列）"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "pp-balanced-token-sequence",
+          "required": true,
+          "note": "平衡 token 中的左大括号后必须跟右大括号（中间可选平衡 token 序列）"
+        }
+      ]
+    },
+    {
+      "construct": "compound-statement",
+      "language": "c",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "block_item_list",
+          "required": true,
+          "note": "复合语句的左大括号后必须跟右大括号（中间跳过块项列表）"
+        }
+      ]
+    },
+    {
+      "construct": "elif-groups",
+      "language": "c",
+      "syntax_node": "elif-group",
+      "constraints": [
+        {
+          "conditional": "elif-group",
+          "consequent": "elif-group, <end>",
+          "skip": "",
+          "required": false,
+          "note": "elif-group 后可选择性跟随另一个 elif-group 或结束"
+        }
+      ]
+    },
+    {
+      "construct": "member-declarator-list",
+      "language": "c",
+      "syntax_node": "member-declarator-list",
+      "constraints": [
+        {
+          "conditional": "member-declarator",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "成员声明符后可选择性跟随逗号以继续列表"
+        },
+        {
+          "conditional": "member-declarator ,",
+          "consequent": "member-declarator",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟随另一个成员声明符"
+        }
+      ]
+    },
+    {
+      "construct": "type-specifier",
+      "language": "c",
+      "syntax_node": "type-specifier",
+      "constraints": [
+        {
+          "conditional": "_BitInt",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "_BitInt 后必须跟左括号"
+        },
+        {
+          "conditional": "_BitInt (",
+          "consequent": ")",
+          "skip": "constant-expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过常量表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "expression-statement",
+      "language": "c",
+      "syntax_node": "expression-statement",
+      "constraints": [
+        {
+          "conditional": ";",
+          "consequent": "<statement_start>, }",
+          "skip": "",
+          "required": false,
+          "note": "表达式语句的分号后可以跟下一个语句或块结束"
+        }
+      ]
+    },
+    {
+      "construct": "group-part",
+      "language": "c",
+      "syntax_node": "group-part",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "if, ifdef, ifndef, elif, else, endif, include, define, undef, line, error, pragma",
+          "skip": "",
+          "required": true,
+          "note": "# 符号后必须跟预处理指令关键字或 non-directive"
+        }
+      ]
+    },
+    {
+      "construct": "designation",
+      "language": "c",
+      "syntax_node": "designation",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "designator-list",
+          "required": true,
+          "note": "designator-list 后必须跟等号"
+        },
+        {
+          "conditional": "]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "designator-list 结束后必须跟等号"
+        }
+      ]
+    },
+    {
+      "construct": "iteration-statement",
+      "language": "c",
+      "syntax_node": "while",
+      "constraints": [
+        {
+          "conditional": "while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "while 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "while (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+        },
+        {
+          "conditional": "while ()",
+          "consequent": "{, <statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+        },
+        {
+          "conditional": "while () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+        },
+        {
+          "conditional": "do",
+          "consequent": "{, <statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "do 关键字后必须跟左大括号或语句起始（secondary-block）"
+        },
+        {
+          "conditional": "do {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+        },
+        {
+          "conditional": "do {}",
+          "consequent": "while",
+          "skip": "",
+          "required": true,
+          "note": "do 语句块的右大括号后必须跟 while"
+        },
+        {
+          "conditional": "do {} while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "while 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "do {} while (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+        },
+        {
+          "conditional": "do {} while ()",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "do-while 语句的右括号后必须跟分号"
+        },
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "for 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": ";",
+          "skip": "expression, declaration",
+          "required": true,
+          "note": "左括号后必须跟第一个分号（中间可跳过初始化表达式或声明）"
+        },
+        {
+          "conditional": "for ( ;",
+          "consequent": ";",
+          "skip": "expression",
+          "required": true,
+          "note": "第一个分号后必须跟第二个分号（中间可跳过条件表达式）"
+        },
+        {
+          "conditional": "for ( ; ;",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "第二个分号后必须跟右括号（中间可跳过迭代表达式）"
+        },
+        {
+          "conditional": "for ( ; ; )",
+          "consequent": "{, <statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+        },
+        {
+          "conditional": "for ( ; ; ) {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "balanced-token",
+      "language": "c",
+      "syntax_node": "(",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "balanced-token-sequence",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间可选跳过平衡 token 序列）"
+        },
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "balanced-token-sequence",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间可选跳过平衡 token 序列）"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "balanced-token-sequence",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间可选跳过平衡 token 序列）"
+        }
+      ]
+    },
+    {
+      "construct": "declarator",
+      "language": "c",
+      "syntax_node": "declarator",
+      "constraints": [
+        {
+          "conditional": "*",
+          "consequent": "[IDENT], (",
+          "skip": "",
+          "required": true,
+          "note": "指针符号后必须跟标识符或左括号（开始 direct-declarator）"
+        }
+      ]
+    },
+    {
+      "construct": "standard-attribute",
+      "language": "c",
+      "syntax_node": "standard-attribute",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "",
+          "skip": "",
+          "required": true,
+          "note": "standard-attribute 必须是一个标识符"
+        }
+      ]
+    },
+    {
+      "construct": "elif-group",
+      "language": "c",
+      "syntax_node": "#",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "elif, elifdef, elifndef",
+          "skip": "",
+          "required": true,
+          "note": "预处理指令 # 后必须跟 elif、elifdef 或 elifndef 关键字"
+        },
+        {
+          "conditional": "# elif",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "# elif 后必须跟常量表达式的起始"
+        },
+        {
+          "conditional": "# elifdef",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "# elifdef 后必须跟标识符"
+        },
+        {
+          "conditional": "# elifndef",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "# elifndef 后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "group",
+      "language": "c",
+      "syntax_node": "group",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "#, <group_part_start>",
+          "skip": "",
+          "required": true,
+          "note": "预处理组必须以预处理指令或组部分起始"
+        },
+        {
+          "conditional": "<group_part_end>",
+          "consequent": "#, <group_part_start>",
+          "skip": "",
+          "required": false,
+          "note": "组部分结束后可选地跟随另一个组部分"
+        }
+      ]
+    },
+    {
+      "construct": "type-name",
+      "language": "c",
+      "syntax_node": "specifier-qualifier-list",
+      "constraints": [
+        {
+          "conditional": "specifier-qualifier-list",
+          "consequent": "abstract-declarator, <type_end>",
+          "skip": "",
+          "required": false,
+          "note": "说明符限定符列表后可选择性跟随抽象声明符或结束"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-prefixed-token",
+      "language": "c",
+      "syntax_node": "attribute-prefixed-token",
+      "constraints": [
+        {
+          "conditional": "attribute-prefix",
+          "consequent": "::",
+          "skip": "",
+          "required": true,
+          "note": "attribute-prefix 后必须跟双冒号 '::'"
+        },
+        {
+          "conditional": "attribute-prefix ::",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "双冒号后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "enumerator-list",
+      "language": "c",
+      "syntax_node": "enumerator",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ",, =",
+          "skip": "attribute-specifier-sequence",
+          "required": false,
+          "note": "枚举常量标识符后可选跟属性序列，然后可选跟逗号（继续列表）或等号（赋值）"
+        },
+        {
+          "conditional": "[IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个枚举常量标识符"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": ",",
+          "skip": "constant-expression",
+          "required": false,
+          "note": "等号后跟常量表达式，然后可选跟逗号（继续列表）"
+        }
+      ]
+    },
+    {
+      "construct": "atomic-type-specifier",
+      "language": "c",
+      "syntax_node": "_Atomic",
+      "constraints": [
+        {
+          "conditional": "_Atomic",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "_Atomic 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "_Atomic (",
+          "consequent": ")",
+          "skip": "type-name",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过类型名）"
+        }
+      ]
+    },
+    {
+      "construct": "init-declarator",
+      "language": "c",
+      "syntax_node": "init-declarator",
+      "constraints": [
+        {
+          "conditional": "declarator",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "声明符后可选跟随等号进行初始化"
+        },
+        {
+          "conditional": "declarator =",
+          "consequent": "<expression_start>",
+          "skip": "initializer",
+          "required": true,
+          "note": "等号后必须跟随初始化器表达式"
+        }
+      ]
+    },
+    {
+      "construct": "label",
+      "language": "c",
+      "syntax_node": "label",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "标签标识符后必须跟冒号"
+        },
+        {
+          "conditional": "case",
+          "consequent": ":",
+          "skip": "constant_expression",
+          "required": true,
+          "note": "case 关键字后必须跟冒号（中间跳过常量表达式）"
+        },
+        {
+          "conditional": "default",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "default 关键字后必须跟冒号"
+        }
+      ]
+    },
+    {
+      "construct": "pointer",
+      "language": "c",
+      "syntax_node": "*",
+      "constraints": [
+        {
+          "conditional": "*",
+          "consequent": "const, volatile, restrict, _Atomic, *, [IDENT], (, __attribute__",
+          "skip": "",
+          "required": false,
+          "note": "指针符号后可选跟类型限定符、另一个指针符号、标识符、左括号或属性说明符"
+        },
+        {
+          "conditional": "* const",
+          "consequent": "volatile, restrict, _Atomic, *, [IDENT], (, __attribute__",
+          "skip": "",
+          "required": false,
+          "note": "const 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+        },
+        {
+          "conditional": "* volatile",
+          "consequent": "const, restrict, _Atomic, *, [IDENT], (, __attribute__",
+          "skip": "",
+          "required": false,
+          "note": "volatile 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+        },
+        {
+          "conditional": "* restrict",
+          "consequent": "const, volatile, _Atomic, *, [IDENT], (, __attribute__",
+          "skip": "",
+          "required": false,
+          "note": "restrict 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+        },
+        {
+          "conditional": "* _Atomic",
+          "consequent": "const, volatile, restrict, *, [IDENT], (, __attribute__",
+          "skip": "",
+          "required": false,
+          "note": "_Atomic 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+        }
+      ]
+    },
+    {
+      "construct": "cast-expression",
+      "language": "c",
+      "syntax_node": "cast-expression",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "type-name",
+          "required": true,
+          "note": "类型转换的左括号后必须跟右括号（中间跳过类型名）"
+        },
+        {
+          "conditional": "()",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "类型转换的右括号后必须跟转换表达式的起始"
+        }
+      ]
+    },
+    {
+      "construct": "jump-statement",
+      "language": "c",
+      "syntax_node": "goto, continue, break, return",
+      "constraints": [
+        {
+          "conditional": "goto",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "goto 关键字后必须跟标识符"
+        },
+        {
+          "conditional": "goto [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "goto 标识符后必须跟分号"
+        },
+        {
+          "conditional": "continue",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "continue 关键字后必须跟分号"
+        },
+        {
+          "conditional": "break",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "break 关键字后必须跟分号"
+        },
+        {
+          "conditional": "return",
+          "consequent": ";, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "return 关键字后必须跟分号或表达式起始"
+        },
+        {
+          "conditional": "return <expression_start>",
+          "consequent": ";",
+          "skip": "expression",
+          "required": true,
+          "note": "return 表达式后必须跟分号（中间跳过表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "braced-initializer",
+      "language": "c",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（空初始化列表）或初始化列表起始"
+        },
+        {
+          "conditional": "{ }",
+          "consequent": "",
+          "skip": "",
+          "required": false,
+          "note": "空初始化列表完成"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "initializer-list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过初始化列表）"
+        },
+        {
+          "conditional": "{ }",
+          "consequent": ",",
+          "skip": "initializer-list",
+          "required": false,
+          "note": "初始化列表后可选择性跟随逗号"
+        }
+      ]
+    },
+    {
+      "construct": "if-section",
+      "language": "c",
+      "syntax_node": "if-section",
+      "constraints": [
+        {
+          "conditional": "#if, #ifdef, #ifndef",
+          "consequent": "<expression_start>, [IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "if-group 指令后必须跟条件表达式或标识符"
+        },
+        {
+          "conditional": "#if <expression_start>",
+          "consequent": "\n",
+          "skip": "expression",
+          "required": true,
+          "note": "if 条件表达式后必须跟换行符（中间跳过表达式）"
+        },
+        {
+          "conditional": "#ifdef [IDENT], #ifndef [IDENT]",
+          "consequent": "\n",
+          "skip": "",
+          "required": true,
+          "note": "ifdef/ifndef 标识符后必须跟换行符"
+        },
+        {
+          "conditional": "#if\n, #ifdef\n, #ifndef\n",
+          "consequent": "#elif, #else, #endif",
+          "skip": "group",
+          "required": true,
+          "note": "if-group 后必须跟 elif、else 或 endif（中间跳过组内容）"
+        },
+        {
+          "conditional": "#elif",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "elif 指令后必须跟条件表达式"
+        },
+        {
+          "conditional": "#elif <expression_start>",
+          "consequent": "\n",
+          "skip": "expression",
+          "required": true,
+          "note": "elif 条件表达式后必须跟换行符（中间跳过表达式）"
+        },
+        {
+          "conditional": "#elif\n",
+          "consequent": "#elif, #else, #endif",
+          "skip": "group",
+          "required": true,
+          "note": "elif-group 后必须跟另一个 elif、else 或 endif（中间跳过组内容）"
+        },
+        {
+          "conditional": "#else",
+          "consequent": "\n",
+          "skip": "",
+          "required": true,
+          "note": "else 指令后必须跟换行符"
+        },
+        {
+          "conditional": "#else\n",
+          "consequent": "#endif",
+          "skip": "group",
+          "required": true,
+          "note": "else-group 后必须跟 endif（中间跳过组内容）"
+        },
+        {
+          "conditional": "#endif",
+          "consequent": "\n",
+          "skip": "",
+          "required": true,
+          "note": "endif 指令后必须跟换行符"
+        }
+      ]
+    },
+    {
+      "construct": "generic-association",
+      "language": "c",
+      "syntax_node": "generic-association",
+      "constraints": [
+        {
+          "conditional": ":",
+          "consequent": "<expression-start>",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟赋值表达式起始"
+        },
+        {
+          "conditional": "default",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "default 关键字后必须跟冒号"
+        },
+        {
+          "conditional": "default :",
+          "consequent": "<expression-start>",
+          "skip": "",
+          "required": true,
+          "note": "default 冒号后必须跟赋值表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "parameter-declaration",
+      "language": "c",
+      "syntax_node": "declaration-specifiers",
+      "constraints": [
+        {
+          "conditional": "declaration-specifiers",
+          "consequent": "declarator, abstract-declarator, <parameter_end>",
+          "skip": "",
+          "required": false,
+          "note": "声明说明符后可以跟声明符、抽象声明符或结束（对于抽象声明符可选的情况）"
+        }
+      ]
+    },
+    {
+      "construct": "preprocessing-file",
+      "language": "c",
+      "syntax_node": "preprocessing-file",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "#, <group_start>",
+          "skip": "group",
+          "required": false,
+          "note": "预处理文件可选地包含预处理组（以 # 或组起始标记开始）"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-token",
+      "language": "c",
+      "syntax_node": "attribute-token",
+      "constraints": [
+        {
+          "conditional": "standard-attribute, attribute-prefixed-token",
+          "consequent": "",
+          "skip": "",
+          "required": true,
+          "note": "attribute-token 必须是 standard-attribute 或 attribute-prefixed-token 之一"
+        }
+      ]
+    },
+    {
+      "construct": "attribute-specifier",
+      "language": "c",
+      "syntax_node": "[[",
+      "constraints": [
+        {
+          "conditional": "[[",
+          "consequent": "]]",
+          "skip": "attribute-list",
+          "required": true,
+          "note": "双左方括号后必须跟双右方括号（中间跳过属性列表）"
+        }
+      ]
+    },
+    {
+      "construct": "pp-tokens",
+      "language": "c",
+      "syntax_node": "preprocessing-token",
+      "constraints": [
+        {
+          "conditional": "preprocessing-token",
+          "consequent": "preprocessing-token",
+          "skip": "",
+          "required": false,
+          "note": "预处理 token 后可选择性跟随另一个预处理 token"
+        }
+      ]
+    }
+  ]
+}

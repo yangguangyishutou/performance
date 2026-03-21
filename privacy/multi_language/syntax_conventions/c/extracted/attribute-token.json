@@ -1,0 +1,15 @@
+{
+  "construct": "attribute-token",
+  "language": "c",
+  "syntax_node": "attribute-token",
+  "constraints": [
+    {
+      "conditional": "standard-attribute, attribute-prefixed-token",
+      "consequent": "",
+      "skip": "",
+      "required": true,
+      "note": "attribute-token 必须是 standard-attribute 或 attribute-prefixed-token 之一"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:12.873545"
+}

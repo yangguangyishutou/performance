@@ -1,0 +1,29 @@
+{
+  "construct": "AnnotationInterfaceElementDeclaration",
+  "language": "java",
+  "syntax_node": "",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "标识符后必须跟左括号"
+    },
+    {
+      "conditional": "[IDENT] (",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "左括号后必须跟右括号（无参数）"
+    },
+    {
+      "conditional": "[IDENT] ()",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "空括号后必须跟分号结束声明"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:10.964165"
+}

@@ -1,0 +1,499 @@
+{
+  "language": "c",
+  "total_constructs": 123,
+  "constructs_with_syntax": 123,
+  "index": {
+    "primary-expression": {
+      "syntax": "(primary-expression):\nidentifier\n                    constant\n                    string-literal\n                    ( expression )\n                    generic-selection",
+      "has_syntax": true
+    },
+    "generic-selection": {
+      "syntax": "(generic-selection):\n_Generic ( assignment-expression , generic-assoc-list )",
+      "has_syntax": true
+    },
+    "generic-assoc-list": {
+      "syntax": "(generic-assoc-list):\ngeneric-association\n                     generic-assoc-list , generic-association\n\n                                 © ISO/IEC 2024 — All rights reserved\n                                                   465\n\fBS ISO/IEC 9899:2024                          ISO/IEC 9899:2024(en)\n                                                  ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "generic-association": {
+      "syntax": "(generic-association):\ntype-name : assignment-expression\n                           default : assignment-expression",
+      "has_syntax": true
+    },
+    "postfix-expression": {
+      "syntax": "(postfix-expression):\nprimary-expression\n                            postfix-expression [ expression ]\n                            postfix-expression ( argument-expression-listopt )\n                            postfix-expression . identifier\n                            postfix-expression -> identifier\n                            postfix-expression ++\n                            postfix-expression --\n                            compound-literal",
+      "has_syntax": true
+    },
+    "argument-expression-list": {
+      "syntax": "(argument-expression-list):\nassignment-expression\n                          argument-expression-list , assignment-expression",
+      "has_syntax": true
+    },
+    "compound-literal": {
+      "syntax": "(compound-literal):\n( storage-class-specifiersopt type-name ) braced-initializer",
+      "has_syntax": true
+    },
+    "storage-class-specifiers": {
+      "syntax": "(storage-class-specifiers):\nstorage-class-specifier\n                           storage-class-specifiers storage-class-specifier",
+      "has_syntax": true
+    },
+    "unary-expression": {
+      "syntax": "(unary-expression):\npostfix-expression\n                          ++ unary-expression\n                          -- unary-expression\n                          unary-operator cast-expression\n                          sizeof unary-expression\n                          sizeof ( type-name )\n                          alignof ( type-name )",
+      "has_syntax": true
+    },
+    "cast-expression": {
+      "syntax": "(cast-expression):\nunary-expression\n                            ( type-name ) cast-expression",
+      "has_syntax": true
+    },
+    "multiplicative-expression": {
+      "syntax": "(multiplicative-expression):\ncast-expression\n                           multiplicative-expression * cast-expression\n                           multiplicative-expression / cast-expression\n                           multiplicative-expression % cast-expression",
+      "has_syntax": true
+    },
+    "additive-expression": {
+      "syntax": "(additive-expression):\nmultiplicative-expression\n                           additive-expression + multiplicative-expression\n                           additive-expression - multiplicative-expression",
+      "has_syntax": true
+    },
+    "shift-expression": {
+      "syntax": "(shift-expression):\nadditive-expression\n                            shift-expression << additive-expression\n                            shift-expression >> additive-expression",
+      "has_syntax": true
+    },
+    "relational-expression": {
+      "syntax": "(relational-expression):\nshift-expression\n                            relational-expression < shift-expression\n                            relational-expression > shift-expression\n                            relational-expression <= shift-expression\n                            relational-expression >= shift-expression\n\n                                         © ISO/IEC 2024 — All rights reserved\n                                                            466\n\f                                        ISO/IEC 9899:2024(en)                                 BS ISO/IEC 9899:2024\n\n                                            ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "equality-expression": {
+      "syntax": "(equality-expression):\nrelational-expression\n                     equality-expression == relational-expression\n                     equality-expression != relational-expression",
+      "has_syntax": true
+    },
+    "AND-expression": {
+      "syntax": "(AND-expression):\nequality-expression\n                  AND-expression & equality-expression",
+      "has_syntax": true
+    },
+    "exclusive-OR-expression": {
+      "syntax": "(exclusive-OR-expression):\nAND-expression\n                    exclusive-OR-expression ^ AND-expression",
+      "has_syntax": true
+    },
+    "inclusive-OR-expression": {
+      "syntax": "(inclusive-OR-expression):\nexclusive-OR-expression\n                    inclusive-OR-expression | exclusive-OR-expression",
+      "has_syntax": true
+    },
+    "logical-AND-expression": {
+      "syntax": "(logical-AND-expression):\ninclusive-OR-expression\n                    logical-AND-expression && inclusive-OR-expression",
+      "has_syntax": true
+    },
+    "logical-OR-expression": {
+      "syntax": "(logical-OR-expression):\nlogical-AND-expression\n                    logical-OR-expression || logical-AND-expression",
+      "has_syntax": true
+    },
+    "conditional-expression": {
+      "syntax": "(conditional-expression):\nlogical-OR-expression\n                     logical-OR-expression ? expression : conditional-expression",
+      "has_syntax": true
+    },
+    "assignment-expression": {
+      "syntax": "(assignment-expression):\nconditional-expression\n                    unary-expression assignment-operator assignment-expression",
+      "has_syntax": true
+    },
+    "expression": {
+      "syntax": "(expression):\nassignment-expression\n                       expression , assignment-expression",
+      "has_syntax": true
+    },
+    "constant-expression": {
+      "syntax": "(constant-expression):\nconditional-expression",
+      "has_syntax": true
+    },
+    "declaration": {
+      "syntax": "(declaration):\ndeclaration-specifiers init-declarator-listopt ;\n                       attribute-specifier-sequence declaration-specifiers init-declarator-list ;\n                       static_assert-declaration\n                       attribute-declaration",
+      "has_syntax": true
+    },
+    "declaration-specifiers": {
+      "syntax": "(declaration-specifiers):\ndeclaration-specifier attribute-specifier-sequenceopt\n                     declaration-specifier declaration-specifiers",
+      "has_syntax": true
+    },
+    "declaration-specifier": {
+      "syntax": "(declaration-specifier):\nstorage-class-specifier\n                     type-specifier-qualifier\n                     function-specifier",
+      "has_syntax": true
+    },
+    "init-declarator-list": {
+      "syntax": "(init-declarator-list):\ninit-declarator\n                      init-declarator-list , init-declarator\n\n                                     © ISO/IEC 2024 — All rights reserved\n                                                       467\n\fBS ISO/IEC 9899:2024                           ISO/IEC 9899:2024(en)\n                                                  ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "init-declarator": {
+      "syntax": "(init-declarator):\ndeclarator\n                            declarator = initializer",
+      "has_syntax": true
+    },
+    "attribute-declaration": {
+      "syntax": "(attribute-declaration):\nattribute-specifier-sequence ;",
+      "has_syntax": true
+    },
+    "storage-class-specifier": {
+      "syntax": "(storage-class-specifier):\nauto\n                            constexpr\n                            extern\n                            register\n                            static\n                            thread_local\n                            typedef",
+      "has_syntax": true
+    },
+    "type-specifier": {
+      "syntax": "(type-specifier):\nvoid\n                            char\n                            short\n                            int\n                            long\n                            float\n                            double\n                            signed\n                            unsigned\n                            _BitInt ( constant-expression )\n                            bool\n                            _Complex\n                            _Decimal32\n                            _Decimal64\n                            _Decimal128\n                            atomic-type-specifier\n                            struct-or-union-specifier\n                            enum-specifier\n                            typedef-name\n                            typeof-specifier",
+      "has_syntax": true
+    },
+    "struct-or-union-specifier": {
+      "syntax": "(struct-or-union-specifier):\nstruct-or-union attribute-specifier-sequenceopt identifieropt { member-declaration-list }\n                           struct-or-union attribute-specifier-sequenceopt identifier",
+      "has_syntax": true
+    },
+    "struct-or-union": {
+      "syntax": "(struct-or-union):\nstruct\n                            union",
+      "has_syntax": true
+    },
+    "member-declaration-list": {
+      "syntax": "(member-declaration-list):\nmember-declaration\n                          member-declaration-list member-declaration",
+      "has_syntax": true
+    },
+    "member-declaration": {
+      "syntax": "(member-declaration):\nattribute-specifier-sequenceopt specifier-qualifier-list member-declarator-listopt ;\n                          static_assert-declaration",
+      "has_syntax": true
+    },
+    "specifier-qualifier-list": {
+      "syntax": "(specifier-qualifier-list):\ntype-specifier-qualifier attribute-specifier-sequenceopt\n                            type-specifier-qualifier specifier-qualifier-list",
+      "has_syntax": true
+    },
+    "type-specifier-qualifier": {
+      "syntax": "(type-specifier-qualifier):\ntype-specifier\n                            type-qualifier\n                            alignment-specifier\n\n                                         © ISO/IEC 2024 — All rights reserved\n                                                             468\n\f                                        ISO/IEC 9899:2024(en)                               BS ISO/IEC 9899:2024\n\n                                            ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "member-declarator-list": {
+      "syntax": "(member-declarator-list):\nmember-declarator\n                    member-declarator-list , member-declarator",
+      "has_syntax": true
+    },
+    "member-declarator": {
+      "syntax": "(member-declarator):\ndeclarator\n                    declaratoropt : constant-expression",
+      "has_syntax": true
+    },
+    "enum-specifier": {
+      "syntax": "(enum-specifier):\nenum attribute-specifier-sequenceopt identifieropt enum-type-specifieropt\n                                           { enumerator-list }\n                        enum attribute-specifier-sequenceopt identifieropt enum-type-specifieropt\n                                           { enumerator-list , }\n                        enum identifier enum-type-specifieropt",
+      "has_syntax": true
+    },
+    "enumerator-list": {
+      "syntax": "(enumerator-list):\nenumerator\n                    enumerator-list , enumerator",
+      "has_syntax": true
+    },
+    "enumerator": {
+      "syntax": "(enumerator):\nenumeration-constant attribute-specifier-sequenceopt\n                    enumeration-constant attribute-specifier-sequenceopt = constant-expression",
+      "has_syntax": true
+    },
+    "enum-type-specifier": {
+      "syntax": "(enum-type-specifier):\n: specifier-qualifier-list",
+      "has_syntax": true
+    },
+    "atomic-type-specifier": {
+      "syntax": "(atomic-type-specifier):\n_Atomic ( type-name )",
+      "has_syntax": true
+    },
+    "typeof-specifier": {
+      "syntax": "(typeof-specifier):\ntypeof ( typeof-specifier-argument )\n                        typeof_unqual ( typeof-specifier-argument )",
+      "has_syntax": true
+    },
+    "typeof-specifier-argument": {
+      "syntax": "(typeof-specifier-argument):\nexpression\n                      type-name",
+      "has_syntax": true
+    },
+    "type-qualifier": {
+      "syntax": "(type-qualifier):\nconst\n                        restrict\n                        volatile\n                        _Atomic",
+      "has_syntax": true
+    },
+    "function-specifier": {
+      "syntax": "(function-specifier):\ninline\n                        _Noreturn",
+      "has_syntax": true
+    },
+    "alignment-specifier": {
+      "syntax": "(alignment-specifier):\nalignas ( type-name )\n                        alignas ( constant-expression )",
+      "has_syntax": true
+    },
+    "declarator": {
+      "syntax": "(declarator):\npointeropt direct-declarator",
+      "has_syntax": true
+    },
+    "direct-declarator": {
+      "syntax": "(direct-declarator):\nidentifier attribute-specifier-sequenceopt\n                      ( declarator )\n                      array-declarator attribute-specifier-sequenceopt\n                      function-declarator attribute-specifier-sequenceopt",
+      "has_syntax": true
+    },
+    "array-declarator": {
+      "syntax": "(array-declarator):\ndirect-declarator [ type-qualifier-listopt assignment-expressionopt ]\n                     direct-declarator [ static type-qualifier-listopt assignment-expression ]\n                     direct-declarator [ type-qualifier-list static assignment-expression ]\n                     direct-declarator [ type-qualifier-listopt * ]\n\n                                   © ISO/IEC 2024 — All rights reserved\n                                                       469\n\fBS ISO/IEC 9899:2024                             ISO/IEC 9899:2024(en)\n                                                       ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "function-declarator": {
+      "syntax": "(function-declarator):\ndirect-declarator ( parameter-type-listopt )",
+      "has_syntax": true
+    },
+    "pointer": {
+      "syntax": "(pointer):\n* attribute-specifier-sequenceopt type-qualifier-listopt\n                              * attribute-specifier-sequenceopt type-qualifier-listopt pointer",
+      "has_syntax": true
+    },
+    "type-qualifier-list": {
+      "syntax": "(type-qualifier-list):\ntype-qualifier\n                            type-qualifier-list type-qualifier",
+      "has_syntax": true
+    },
+    "parameter-type-list": {
+      "syntax": "(parameter-type-list):\nparameter-list\n                           parameter-list , ...\n                              ...",
+      "has_syntax": true
+    },
+    "parameter-list": {
+      "syntax": "(parameter-list):\nparameter-declaration\n                           parameter-list , parameter-declaration",
+      "has_syntax": true
+    },
+    "parameter-declaration": {
+      "syntax": "(parameter-declaration):\nattribute-specifier-sequenceopt declaration-specifiers declarator\n                           attribute-specifier-sequenceopt declaration-specifiers abstract-declaratoropt",
+      "has_syntax": true
+    },
+    "type-name": {
+      "syntax": "(type-name):\nspecifier-qualifier-list abstract-declaratoropt",
+      "has_syntax": true
+    },
+    "abstract-declarator": {
+      "syntax": "(abstract-declarator):\npointer\n                            pointeropt direct-abstract-declarator",
+      "has_syntax": true
+    },
+    "direct-abstract-declarator": {
+      "syntax": "(direct-abstract-declarator):\n( abstract-declarator )\n                            array-abstract-declarator attribute-specifier-sequenceopt\n                            function-abstract-declarator attribute-specifier-sequenceopt",
+      "has_syntax": true
+    },
+    "array-abstract-declarator": {
+      "syntax": "(array-abstract-declarator):\ndirect-abstract-declaratoropt [ type-qualifier-listopt assignment-expressionopt ]\n                           direct-abstract-declaratoropt [ static type-qualifier-listopt assignment-expression ]\n                           direct-abstract-declaratoropt [ type-qualifier-list static assignment-expression ]\n                           direct-abstract-declaratoropt [ * ]",
+      "has_syntax": true
+    },
+    "function-abstract-declarator": {
+      "syntax": "(function-abstract-declarator):\ndirect-abstract-declaratoropt ( parameter-type-listopt )",
+      "has_syntax": true
+    },
+    "typedef-name": {
+      "syntax": "(typedef-name):\nidentifier",
+      "has_syntax": true
+    },
+    "braced-initializer": {
+      "syntax": "(braced-initializer):\n{ }\n                              { initializer-list }\n                              { initializer-list , }",
+      "has_syntax": true
+    },
+    "initializer": {
+      "syntax": "(initializer):\nassignment-expression\n                              braced-initializer",
+      "has_syntax": true
+    },
+    "initializer-list": {
+      "syntax": "(initializer-list):\ndesignationopt initializer\n                             initializer-list , designationopt initializer",
+      "has_syntax": true
+    },
+    "designation": {
+      "syntax": "(designation):\ndesignator-list =",
+      "has_syntax": true
+    },
+    "designator-list": {
+      "syntax": "(designator-list):\ndesignator\n                           designator-list designator\n\n                                           © ISO/IEC 2024 — All rights reserved\n                                                                470\n\f                                       ISO/IEC 9899:2024(en)                       BS ISO/IEC 9899:2024\n\n                                           ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "designator": {
+      "syntax": "(designator):\n[ constant-expression ]\n                        . identifier",
+      "has_syntax": true
+    },
+    "static_assert-declaration": {
+      "syntax": "(static_assert-declaration):\nstatic_assert ( constant-expression , string-literal ) ;\n                        static_assert ( constant-expression ) ;",
+      "has_syntax": true
+    },
+    "attribute-specifier-sequence": {
+      "syntax": "(attribute-specifier-sequence):\nattribute-specifier-sequenceopt attribute-specifier",
+      "has_syntax": true
+    },
+    "attribute-specifier": {
+      "syntax": "(attribute-specifier):\n[ [ attribute-list ] ]",
+      "has_syntax": true
+    },
+    "attribute-list": {
+      "syntax": "(attribute-list):\nattributeopt\n                      attribute-list , attributeopt",
+      "has_syntax": true
+    },
+    "attribute": {
+      "syntax": "(attribute):\nattribute-token attribute-argument-clauseopt",
+      "has_syntax": true
+    },
+    "attribute-token": {
+      "syntax": "(attribute-token):\nstandard-attribute\n                      attribute-prefixed-token",
+      "has_syntax": true
+    },
+    "standard-attribute": {
+      "syntax": "(standard-attribute):\nidentifier",
+      "has_syntax": true
+    },
+    "attribute-prefixed-token": {
+      "syntax": "(attribute-prefixed-token):\nattribute-prefix :: identifier",
+      "has_syntax": true
+    },
+    "attribute-prefix": {
+      "syntax": "(attribute-prefix):\nidentifier",
+      "has_syntax": true
+    },
+    "attribute-argument-clause": {
+      "syntax": "(attribute-argument-clause):\n( balanced-token-sequenceopt )",
+      "has_syntax": true
+    },
+    "balanced-token-sequence": {
+      "syntax": "(balanced-token-sequence):\nbalanced-token\n                     balanced-token-sequence balanced-token",
+      "has_syntax": true
+    },
+    "balanced-token": {
+      "syntax": "(balanced-token):\n( balanced-token-sequenceopt )\n                     [ balanced-token-sequenceopt ]\n                     { balanced-token-sequenceopt }\n                    any token other than a parenthesis, a bracket, or a brace",
+      "has_syntax": true
+    },
+    "statement": {
+      "syntax": "(statement):\nlabeled-statement\n                        unlabeled-statement",
+      "has_syntax": true
+    },
+    "unlabeled-statement": {
+      "syntax": "(unlabeled-statement):\nexpression-statement\n                     attribute-specifier-sequenceopt primary-block\n                     attribute-specifier-sequenceopt jump-statement",
+      "has_syntax": true
+    },
+    "primary-block": {
+      "syntax": "(primary-block):\ncompound-statement\n                    selection-statement\n                    iteration-statement",
+      "has_syntax": true
+    },
+    "secondary-block": {
+      "syntax": "(secondary-block):\nstatement\n\n                                   © ISO/IEC 2024 — All rights reserved\n                                                       471\n\fBS ISO/IEC 9899:2024                           ISO/IEC 9899:2024(en)\n                                                  ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "label": {
+      "syntax": "(label):\nattribute-specifier-sequenceopt identifier :\n                            attribute-specifier-sequenceopt case constant-expression :\n                            attribute-specifier-sequenceopt default :",
+      "has_syntax": true
+    },
+    "labeled-statement": {
+      "syntax": "(labeled-statement):\nlabel statement",
+      "has_syntax": true
+    },
+    "compound-statement": {
+      "syntax": "(compound-statement):\n{ block-item-listopt }",
+      "has_syntax": true
+    },
+    "block-item-list": {
+      "syntax": "(block-item-list):\nblock-item\n                            block-item-list block-item",
+      "has_syntax": true
+    },
+    "block-item": {
+      "syntax": "(block-item):\ndeclaration\n                            unlabeled-statement\n                            label",
+      "has_syntax": true
+    },
+    "expression-statement": {
+      "syntax": "(expression-statement):\nexpressionopt ;\n                           attribute-specifier-sequence expression ;",
+      "has_syntax": true
+    },
+    "selection-statement": {
+      "syntax": "(selection-statement):\nif ( expression ) secondary-block\n                            if ( expression ) secondary-block else secondary-block\n                            switch ( expression ) secondary-block",
+      "has_syntax": true
+    },
+    "iteration-statement": {
+      "syntax": "(iteration-statement):\nwhile ( expression ) secondary-block\n                            do secondary-block while ( expression ) ;\n                            for ( expressionopt ; expressionopt ; expressionopt ) secondary-block\n                            for ( declaration expressionopt ; expressionopt ) secondary-block",
+      "has_syntax": true
+    },
+    "jump-statement": {
+      "syntax": "(jump-statement):\ngoto identifier ;\n                            continue ;\n                            break ;\n                            return expressionopt ;",
+      "has_syntax": true
+    },
+    "preprocessing-file": {
+      "syntax": "(preprocessing-file):\ngroupopt",
+      "has_syntax": true
+    },
+    "group": {
+      "syntax": "(group):\ngroup-part\n                            group group-part\n\n                                        © ISO/IEC 2024 — All rights reserved\n                                                           472\n\f                                          ISO/IEC 9899:2024(en)                         BS ISO/IEC 9899:2024\n\n                                            ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "group-part": {
+      "syntax": "(group-part):\nif-section\n                        control-line\n                        text-line\n                        # non-directive",
+      "has_syntax": true
+    },
+    "if-section": {
+      "syntax": "(if-section):\nif-group elif-groupsopt else-groupopt endif-line",
+      "has_syntax": true
+    },
+    "if-group": {
+      "syntax": "(if-group):\n# if constant-expression new-line groupopt\n                        # ifdef identifier new-line groupopt\n                        # ifndef identifier new-line groupopt",
+      "has_syntax": true
+    },
+    "elif-groups": {
+      "syntax": "(elif-groups):\nelif-group\n                        elif-groups elif-group",
+      "has_syntax": true
+    },
+    "elif-group": {
+      "syntax": "(elif-group):\n# elif constant-expression new-line groupopt\n                        # elifdef identifier new-line groupopt\n                        # elifndef identifier new-line groupopt",
+      "has_syntax": true
+    },
+    "else-group": {
+      "syntax": "(else-group):\n# else new-line groupopt",
+      "has_syntax": true
+    },
+    "endif-line": {
+      "syntax": "(endif-line):\n# endif new-line",
+      "has_syntax": true
+    },
+    "control-line": {
+      "syntax": "(control-line):\n# include pp-tokens new-line\n                        # embed pp-tokens new-line\n                        # define identifier replacement-list new-line\n                        # define identifier lparen identifier-listopt ) replacement-list new-line\n                        # define identifier lparen ... ) replacement-list new-line\n                        # define identifier lparen identifier-list , ... ) replacement-list new-line\n                        # undef identifier new-line\n                        # line pp-tokens new-line\n                        # error pp-tokensopt new-line\n                        # warning pp-tokensopt new-line\n                        # pragma pp-tokensopt new-line\n                        # new-line",
+      "has_syntax": true
+    },
+    "text-line": {
+      "syntax": "(text-line):\npp-tokensopt new-line",
+      "has_syntax": true
+    },
+    "non-directive": {
+      "syntax": "(non-directive):\npp-tokens new-line",
+      "has_syntax": true
+    },
+    "lparen": {
+      "syntax": "(lparen):\na ( character not immediately preceded by white space",
+      "has_syntax": true
+    },
+    "replacement-list": {
+      "syntax": "(replacement-list):\npp-tokensopt",
+      "has_syntax": true
+    },
+    "pp-tokens": {
+      "syntax": "(pp-tokens):\npreprocessing-token\n                        pp-tokens preprocessing-token",
+      "has_syntax": true
+    },
+    "new-line": {
+      "syntax": "(new-line):\nthe new-line character",
+      "has_syntax": true
+    },
+    "identifier-list": {
+      "syntax": "(identifier-list):\nidentifier\n                       identifier-list , identifier\n\n                                   © ISO/IEC 2024 — All rights reserved\n                                                        473\n\fBS ISO/IEC 9899:2024                         ISO/IEC 9899:2024(en)\n                                                ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    },
+    "pp-parameter": {
+      "syntax": "(pp-parameter):\npp-parameter-name pp-parameter-clauseopt",
+      "has_syntax": true
+    },
+    "pp-parameter-name": {
+      "syntax": "(pp-parameter-name):\npp-standard-parameter\n                          pp-prefixed-parameter",
+      "has_syntax": true
+    },
+    "pp-standard-parameter": {
+      "syntax": "(pp-standard-parameter):\nidentifier",
+      "has_syntax": true
+    },
+    "pp-prefixed-parameter": {
+      "syntax": "(pp-prefixed-parameter):\nidentifier :: identifier",
+      "has_syntax": true
+    },
+    "pp-parameter-clause": {
+      "syntax": "(pp-parameter-clause):\n( pp-balanced-token-sequenceopt )",
+      "has_syntax": true
+    },
+    "pp-balanced-token-sequence": {
+      "syntax": "(pp-balanced-token-sequence):\npp-balanced-token\n                          pp-balanced-token-sequence pp-balanced-token",
+      "has_syntax": true
+    },
+    "pp-balanced-token": {
+      "syntax": "(pp-balanced-token):\n( pp-balanced-token-sequenceopt )\n                           [ pp-balanced-token-sequenceopt ]\n                           { pp-balanced-token-sequenceopt }\n                          any pp-token other than a parenthesis, a bracket, or a brace",
+      "has_syntax": true
+    },
+    "embed-parameter-sequence": {
+      "syntax": "(embed-parameter-sequence):\npp-parameter\n                         embed-parameter-sequence pp-parameter\n       defined-macro-expression:\n                             defined identifier\n                             defined ( identifier )\n       h-preprocessing-token:\n                          any preprocessing-token other than >\n       h-pp-tokens:\n                           h-preprocessing-token\n                           h-pp-tokens h-preprocessing-token\n       header-name-tokens:\n                           string-literal\n                           < h-pp-tokens >\n       has-include-expression:\n                           __has_include ( header-name )\n                           __has_include ( header-name-tokens )\n       has-embed-expression:\n                           __has_embed ( header-name embed-parameter-sequenceopt )\n                           __has_embed ( header-name-tokens pp-balanced-token-sequenceopt )\n       has-c-attribute-express:\n                           __has_c_attribute ( pp-tokens )\n\n       va-opt-replacement:\n                             __VA_OPT__ ( pp-tokensopt )",
+      "has_syntax": true
+    },
+    "standard-pragma": {
+      "syntax": "(standard-pragma):\n# pragma STDC FP_CONTRACT on-off-switch\n                             # pragma STDC FENV_ACCESS on-off-switch\n                             # pragma STDC FENV_DEC_ROUND dec-direction\n                             # pragma STDC FENV_ROUND direction\n                             # pragma STDC CX_LIMITED_RANGE on-off-switch",
+      "has_syntax": true
+    },
+    "on-off-switch": {
+      "syntax": "(on-off-switch):\none of\n                          ON       OFF     DEFAULT\n\n\n                                         © ISO/IEC 2024 — All rights reserved\n                                                         474\n\f                                    ISO/IEC 9899:2024(en)                       BS ISO/IEC 9899:2024\n\n                                        ISO/IEC 9899:2024 (en)",
+      "has_syntax": true
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "InterfaceBody",
+  "language": "java",
+  "syntax_node": "{",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "interface_member_declarations",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过接口成员声明）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:09:43.080346"
+}

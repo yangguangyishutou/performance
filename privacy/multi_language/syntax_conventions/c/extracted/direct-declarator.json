@@ -1,0 +1,22 @@
+{
+  "construct": "direct-declarator",
+  "language": "c",
+  "syntax_node": "declarator",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "declarator",
+      "required": true,
+      "note": "括号形式的 declarator，左括号后必须跟右括号（中间跳过 declarator）"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "[, (, __attribute__",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可选跟数组声明符左方括号、函数声明符左括号或属性说明符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:24.956569"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "pp-parameter",
+  "language": "c",
+  "syntax_node": "pp-parameter-name",
+  "constraints": [
+    {
+      "conditional": "pp-parameter-name",
+      "consequent": "pp-parameter-clause",
+      "skip": "",
+      "required": false,
+      "note": "预处理参数名后可选择性跟随参数子句"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:31.423403"
+}

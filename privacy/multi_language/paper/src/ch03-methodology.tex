@@ -1,0 +1,42 @@
+% !TeX root = ../main.tex
+
+\section{Methodology}\label{sec:methodology}
+
+\subsection{Preliminary}
+
+\todo{Define membership inference attack (MIA) for code LLMs. Define syntax conventions.}
+
+\begin{figure*}[!t]
+    \centering
+    \includegraphics[width=0.98\textwidth]{fig/overview.pdf}
+    \caption{Overview of \tool}
+    \label{fig:overview}
+\end{figure*}
+
+\subsection{Multi-Language Syntax Conventions}
+
+\todo{Describe how syntax conventions are collected for each target language (C, Java, JavaScript).}
+\todo{Categorize conventions: data model, expressions, simple statements, compound statements.}
+
+\begin{itemize}
+    \item \textit{Data Model:} \todo{...}
+    \item \textit{Expressions:} \todo{...}
+    \item \textit{Simple Statements:} \todo{...}
+    \item \textit{Compound Statements:} \todo{...}
+\end{itemize}
+
+\subsection{Syntax-Pruned MIA}
+
+\todo{Phase 1: Token preprocessing.}
+
+\todo{Phase 2: Syntax-convention-based token pruning.}
+
+\begin{equation}
+\ell : \mathcal{X} \rightarrow \{0,1\}
+\end{equation}
+
+\todo{Phase 3: Member probability calculation.}
+
+\begin{equation}
+\text{SPP}(x)=\frac{1}{|\mathcal{X}_{1}|}\sum_{i \in \mathcal{X}_{1}} -\log p(x_i)
+\end{equation}

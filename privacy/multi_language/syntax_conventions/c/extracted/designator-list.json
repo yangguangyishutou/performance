@@ -1,0 +1,22 @@
+{
+  "construct": "designator-list",
+  "language": "c",
+  "syntax_node": "designator",
+  "constraints": [
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "数组 designator 左方括号后必须跟右方括号（中间跳过常量表达式）"
+    },
+    {
+      "conditional": ".",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "成员 designator 点号后必须跟标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:58.036791"
+}

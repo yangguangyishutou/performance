@@ -1,0 +1,43 @@
+{
+  "construct": "pointer",
+  "language": "c",
+  "syntax_node": "*",
+  "constraints": [
+    {
+      "conditional": "*",
+      "consequent": "const, volatile, restrict, _Atomic, *, [IDENT], (, __attribute__",
+      "skip": "",
+      "required": false,
+      "note": "指针符号后可选跟类型限定符、另一个指针符号、标识符、左括号或属性说明符"
+    },
+    {
+      "conditional": "* const",
+      "consequent": "volatile, restrict, _Atomic, *, [IDENT], (, __attribute__",
+      "skip": "",
+      "required": false,
+      "note": "const 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+    },
+    {
+      "conditional": "* volatile",
+      "consequent": "const, restrict, _Atomic, *, [IDENT], (, __attribute__",
+      "skip": "",
+      "required": false,
+      "note": "volatile 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+    },
+    {
+      "conditional": "* restrict",
+      "consequent": "const, volatile, _Atomic, *, [IDENT], (, __attribute__",
+      "skip": "",
+      "required": false,
+      "note": "restrict 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+    },
+    {
+      "conditional": "* _Atomic",
+      "consequent": "const, volatile, restrict, *, [IDENT], (, __attribute__",
+      "skip": "",
+      "required": false,
+      "note": "_Atomic 限定符后可选跟其他限定符、指针符号、标识符、左括号或属性说明符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:24.957870"
+}

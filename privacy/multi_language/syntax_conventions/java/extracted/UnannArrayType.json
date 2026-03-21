@@ -1,0 +1,43 @@
+{
+  "construct": "UnannArrayType",
+  "language": "java",
+  "syntax_node": "Dims",
+  "constraints": [
+    {
+      "conditional": "UnannPrimitiveType",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "UnannPrimitiveType 后必须跟左方括号开始数组维度"
+    },
+    {
+      "conditional": "UnannClassOrInterfaceType",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "UnannClassOrInterfaceType 后必须跟左方括号开始数组维度"
+    },
+    {
+      "conditional": "UnannTypeVariable",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "UnannTypeVariable 后必须跟左方括号开始数组维度"
+    },
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "左方括号后必须跟右方括号完成一个维度"
+    },
+    {
+      "conditional": "[]",
+      "consequent": "[",
+      "skip": "",
+      "required": false,
+      "note": "一个维度后可选择性跟随另一个左方括号开始更多维度"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:08.572275"
+}

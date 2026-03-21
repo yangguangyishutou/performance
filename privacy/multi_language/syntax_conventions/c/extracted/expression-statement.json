@@ -1,0 +1,22 @@
+{
+  "construct": "expression-statement",
+  "language": "c",
+  "syntax_node": "expression-statement",
+  "constraints": [
+    {
+      "conditional": "<expression>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟分号"
+    },
+    {
+      "conditional": ";",
+      "consequent": "<statement_start>, }",
+      "skip": "",
+      "required": false,
+      "note": "表达式语句的分号后可以跟下一个语句或块结束"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:46.581295"
+}

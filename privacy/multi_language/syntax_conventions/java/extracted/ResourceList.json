@@ -1,0 +1,22 @@
+{
+  "construct": "ResourceList",
+  "language": "java",
+  "syntax_node": "try",
+  "constraints": [
+    {
+      "conditional": "Resource",
+      "consequent": ";",
+      "skip": "",
+      "required": false,
+      "note": "一个资源后可选择性跟随分号以引入更多资源"
+    },
+    {
+      "conditional": "Resource ;",
+      "consequent": "Resource",
+      "skip": "",
+      "required": true,
+      "note": "分号后必须跟另一个资源"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.065626"
+}

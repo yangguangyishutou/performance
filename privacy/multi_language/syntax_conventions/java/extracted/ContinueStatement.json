@@ -1,0 +1,22 @@
+{
+  "construct": "ContinueStatement",
+  "language": "java",
+  "syntax_node": "continue",
+  "constraints": [
+    {
+      "conditional": "continue",
+      "consequent": "[IDENT], ;",
+      "skip": "",
+      "required": true,
+      "note": "'continue' 关键字后必须跟标识符或分号"
+    },
+    {
+      "conditional": "continue [IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "标识符后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:57:41.808619"
+}

@@ -1,0 +1,22 @@
+{
+  "construct": "TypeName",
+  "language": "java",
+  "syntax_node": "TypeIdentifier",
+  "constraints": [
+    {
+      "conditional": "TypeIdentifier",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "类型标识符后可选择性跟随 '.' 以构成限定类型名"
+    },
+    {
+      "conditional": "PackageOrTypeName .",
+      "consequent": "TypeIdentifier",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟类型标识符"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:03:12.273282"
+}

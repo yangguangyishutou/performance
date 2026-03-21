@@ -1,0 +1,15 @@
+{
+  "construct": "primary-block",
+  "language": "c",
+  "syntax_node": "block",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "compound_statement",
+      "required": true,
+      "note": "复合语句的左大括号后必须跟右大括号（中间跳过语句块）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:27.842559"
+}

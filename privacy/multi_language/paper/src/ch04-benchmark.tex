@@ -1,0 +1,46 @@
+% !TeX root = ../main.tex
+
+\section{Benchmark Construction}\label{sec:benchmark}
+
+\todo{Explain why existing benchmarks (WikiMIA, MIMIR) are insufficient for multi-language code MIA.}
+
+\textbf{Members.} \todo{Describe member collection: source dataset, languages, sampling strategy.}
+
+\textbf{Non-members.} \todo{Describe non-member collection: post-cutoff GitHub repos, verification process.}
+
+\begin{table}[!t]
+    \centering
+    \footnotesize
+    \caption{Benchmark Statistics}\label{tab:benchmark}
+    \begin{tabular}{llrrr}
+    \toprule
+    \textbf{Language} & \textbf{Label} & \textbf{Files} & \textbf{Func.} & \textbf{Avg. LOC} \\
+    \midrule
+    \multirow{2}{*}{C}          & Members     & - & \todo{N} & \todo{X} \\
+                                & Non-members & \todo{N} & \todo{N} & \todo{X} \\
+    \midrule
+    \multirow{2}{*}{Java}       & Members     & - & \todo{N} & \todo{X} \\
+                                & Non-members & \todo{N} & \todo{N} & \todo{X} \\
+    \midrule
+    \multirow{2}{*}{JavaScript} & Members     & - & \todo{N} & \todo{X} \\
+                                & Non-members & \todo{N} & \todo{N} & \todo{X} \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[!t]
+    \centering
+    \footnotesize
+    \caption{Syntax Convention Token Counts per Language}\label{tab:syntax-stats}
+    \begin{tabular}{lrrrr}
+    \toprule
+    \textbf{Language} & \textbf{Data Model} & \textbf{Expr.} & \textbf{Stmt.} & \textbf{Ratio} \\
+    \midrule
+    C          & \todo{X} & \todo{X} & \todo{X} & \todo{X\%} \\
+    Java       & \todo{X} & \todo{X} & \todo{X} & \todo{X\%} \\
+    JavaScript & \todo{X} & \todo{X} & \todo{X} & \todo{X\%} \\
+    \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Ratio Settings.} \todo{Evaluate under 1:1, 1:5, and 5:1 member-to-non-member ratios.}

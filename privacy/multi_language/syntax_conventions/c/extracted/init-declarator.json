@@ -1,0 +1,22 @@
+{
+  "construct": "init-declarator",
+  "language": "c",
+  "syntax_node": "init-declarator",
+  "constraints": [
+    {
+      "conditional": "declarator",
+      "consequent": "=",
+      "skip": "",
+      "required": false,
+      "note": "声明符后可选跟随等号进行初始化"
+    },
+    {
+      "conditional": "declarator =",
+      "consequent": "<expression_start>",
+      "skip": "initializer",
+      "required": true,
+      "note": "等号后必须跟随初始化器表达式"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:34.353558"
+}

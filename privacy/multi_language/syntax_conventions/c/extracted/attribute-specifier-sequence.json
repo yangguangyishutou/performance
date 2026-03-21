@@ -1,0 +1,15 @@
+{
+  "construct": "attribute-specifier-sequence",
+  "language": "c",
+  "syntax_node": "[[",
+  "constraints": [
+    {
+      "conditional": "[[",
+      "consequent": "]]",
+      "skip": "attribute-list",
+      "required": true,
+      "note": "双左方括号后必须跟双右方括号（中间跳过属性列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:06.927214"
+}

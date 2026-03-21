@@ -1,0 +1,116 @@
+      Productions from §9 (Interfaces)
+
+         InterfaceDeclaration:
+           NormalInterfaceDeclaration
+           AnnotationInterfaceDeclaration
+
+         NormalInterfaceDeclaration:
+          {InterfaceModifier} interface TypeIdentifier [TypeParameters]
+             [InterfaceExtends] [InterfacePermits] InterfaceBody
+
+         InterfaceModifier:
+           (one of)
+           Annotation public protected private
+           abstract static sealed non-sealed strictfp
+
+         InterfaceExtends:
+           extends InterfaceTypeList
+
+         InterfacePermits:
+           permits TypeName {, TypeName}
+
+         InterfaceBody:
+           { {InterfaceMemberDeclaration} }
+
+         InterfaceMemberDeclaration:
+           ConstantDeclaration
+           InterfaceMethodDeclaration
+           ClassDeclaration
+           InterfaceDeclaration
+           ;
+
+         ConstantDeclaration:
+          {ConstantModifier} UnannType VariableDeclaratorList ;
+
+         ConstantModifier:
+          (one of)
+          Annotation public
+           static final
+
+
+
+
+838
+SYNTAX
+
+
+   InterfaceMethodDeclaration:
+     {InterfaceMethodModifier} MethodHeader MethodBody
+
+   InterfaceMethodModifier:
+     (one of)
+     Annotation public private
+     abstract default static strictfp
+
+   AnnotationInterfaceDeclaration:
+     {InterfaceModifier} @ interface TypeIdentifier AnnotationInterfaceBody
+
+   AnnotationInterfaceBody:
+     { {AnnotationInterfaceMemberDeclaration} }
+
+   AnnotationInterfaceMemberDeclaration:
+     AnnotationInterfaceElementDeclaration
+     ConstantDeclaration
+     ClassDeclaration
+     InterfaceDeclaration
+     ;
+
+   AnnotationInterfaceElementDeclaration:
+     {AnnotationInterfaceElementModifier} UnannType Identifier ( ) [Dims]
+       [DefaultValue] ;
+
+   AnnotationInterfaceElementModifier:
+     (one of)
+     Annotation public
+     abstract
+
+   DefaultValue:
+    default ElementValue
+
+
+
+
+                                                                              839
+                                                         SYNTAX
+
+
+         Annotation:
+           NormalAnnotation
+           MarkerAnnotation
+           SingleElementAnnotation
+
+         NormalAnnotation:
+          @ TypeName ( [ElementValuePairList] )
+
+         ElementValuePairList:
+           ElementValuePair {, ElementValuePair}
+
+         ElementValuePair:
+           Identifier = ElementValue
+
+         ElementValue:
+           ConditionalExpression
+           ElementValueArrayInitializer
+           Annotation
+
+         ElementValueArrayInitializer:
+           { [ElementValueList] [,] }
+
+         ElementValueList:
+           ElementValue {, ElementValue}
+
+         MarkerAnnotation:
+          @ TypeName
+
+         SingleElementAnnotation:
+           @ TypeName ( ElementValue )

@@ -1,0 +1,22 @@
+{
+  "construct": "group",
+  "language": "c",
+  "syntax_node": "group",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "#, <group_part_start>",
+      "skip": "",
+      "required": true,
+      "note": "预处理组必须以预处理指令或组部分起始"
+    },
+    {
+      "conditional": "<group_part_end>",
+      "consequent": "#, <group_part_start>",
+      "skip": "",
+      "required": false,
+      "note": "组部分结束后可选地跟随另一个组部分"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:01.259060"
+}

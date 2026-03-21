@@ -1,0 +1,43 @@
+{
+  "construct": "with",
+  "language": "javascript",
+  "syntax_node": "with",
+  "constraints": [
+    {
+      "conditional": "with",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "with 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "with (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号"
+    },
+    {
+      "conditional": "with ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "with ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始"
+    },
+    {
+      "conditional": "with () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:22.368816"
+}

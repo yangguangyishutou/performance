@@ -1,0 +1,22 @@
+{
+  "construct": "parameter-list",
+  "language": "c",
+  "syntax_node": "parameter-declaration",
+  "constraints": [
+    {
+      "conditional": "parameter-declaration",
+      "consequent": ",",
+      "skip": "",
+      "required": false,
+      "note": "参数声明后可选择性跟随逗号（用于多个参数）"
+    },
+    {
+      "conditional": "parameter-declaration ,",
+      "consequent": "parameter-declaration",
+      "skip": "",
+      "required": true,
+      "note": "参数声明后的逗号必须跟随另一个参数声明"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:33.694163"
+}

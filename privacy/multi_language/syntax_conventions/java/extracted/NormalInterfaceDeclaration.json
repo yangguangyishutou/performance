@@ -1,0 +1,85 @@
+{
+  "construct": "NormalInterfaceDeclaration",
+  "language": "java",
+  "syntax_node": "interface",
+  "constraints": [
+    {
+      "conditional": "interface",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'interface' 关键字后必须跟类型标识符"
+    },
+    {
+      "conditional": "interface [IDENT]",
+      "consequent": "{, extends, permits, <",
+      "skip": "",
+      "required": true,
+      "note": "接口名后可跟左大括号、'extends'、'permits' 或类型参数起始 '<'"
+    },
+    {
+      "conditional": "interface [IDENT] <",
+      "consequent": ">",
+      "skip": "type_parameters",
+      "required": true,
+      "note": "类型参数起始 '<' 后必须跟结束 '>'（中间跳过类型参数列表）"
+    },
+    {
+      "conditional": "interface [IDENT] >",
+      "consequent": "{, extends, permits",
+      "skip": "",
+      "required": true,
+      "note": "类型参数结束后可跟左大括号、'extends' 或 'permits'"
+    },
+    {
+      "conditional": "interface [IDENT] extends",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'extends' 关键字后必须跟接口类型名"
+    },
+    {
+      "conditional": "interface [IDENT] extends [IDENT]",
+      "consequent": "{, ,",
+      "skip": "",
+      "required": true,
+      "note": "接口类型名后可跟左大括号或逗号（用于更多接口）"
+    },
+    {
+      "conditional": "interface [IDENT] extends [IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟另一个接口类型名"
+    },
+    {
+      "conditional": "interface [IDENT] permits",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'permits' 关键字后必须跟类型名"
+    },
+    {
+      "conditional": "interface [IDENT] permits [IDENT]",
+      "consequent": "{, ,",
+      "skip": "",
+      "required": true,
+      "note": "类型名后可跟左大括号或逗号（用于更多类型）"
+    },
+    {
+      "conditional": "interface [IDENT] permits [IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟另一个类型名"
+    },
+    {
+      "conditional": "interface [IDENT] {",
+      "consequent": "}",
+      "skip": "interface_body",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过接口体成员）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:09:43.079413"
+}

@@ -1,0 +1,85 @@
+{
+  "construct": "selection-statement",
+  "language": "c",
+  "syntax_node": "if",
+  "constraints": [
+    {
+      "conditional": "if",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "if 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "if (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+    },
+    {
+      "conditional": "if ()",
+      "consequent": "{, <statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+    },
+    {
+      "conditional": "if () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+    },
+    {
+      "conditional": "if () {}",
+      "consequent": "else",
+      "skip": "",
+      "required": false,
+      "note": "if 语句块的右大括号后可选择性跟随 else"
+    },
+    {
+      "conditional": "else",
+      "consequent": "{, <statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "else 后必须跟左大括号或语句起始（secondary-block）"
+    },
+    {
+      "conditional": "else {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "else 左大括号后必须跟右大括号（中间跳过语句块）"
+    },
+    {
+      "conditional": "switch",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "switch 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "switch (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过表达式）"
+    },
+    {
+      "conditional": "switch ()",
+      "consequent": "{, <statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+    },
+    {
+      "conditional": "switch () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:46.581530"
+}
