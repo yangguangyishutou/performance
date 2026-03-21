@@ -1,45 +1,45 @@
 \section{Benchmark}
 
+
 % 数据是如何构建的
 \subsection{Construction}
 
-The construction of our benchmark involves a systematic pipeline that collects and validates open-source large language models on Hugging Face. This process is divided into two core components: automated model crawling and filtering, and strict verification of direct fine-tuning parent-child relationships. Every step follows explicit, evidence-based rules without arbitrary assumptions or decisions.
+The construction of our benchmark involves a systematic pipeline that traces model derivations from base models to their descendants on Hugging Face. This process is divided into five key steps:
 
-\paragraph{Component 1: Model Crawling and Filtering}
-We develop a dedicated Python crawler to automatically collect model metadata from Hugging Face. Using the official API, we extract comprehensive information including model name, author, download count, model card content, base model, architecture, and derivation descriptions. All collected raw data is structured and saved in standardized JSON files for unified management and subsequent processing.
+\paragraph{Step 1: Obtaining Base Model List}
+We begin by collecting a list of popular base models for the \texttt{text-generation} task from Hugging Face. Utilizing the \texttt{HfApi} provided by \texttt{huggingface\_hub}, we retrieve the top 50 non-gated models sorted by the number of likes. The model identifiers are stored in a file named \texttt{base\_models.txt}, where each line corresponds to one base model ID. This step is implemented via \textbf{Script 1}.
 
-To ensure the credibility and reliability of experimental models, we perform quantitative filtering on the crawled dataset. The core filtering criterion is the **download count** of each model, which serves as an objective metric to evaluate practical adoption and trustworthiness. Only models exceeding the pre-defined download threshold are retained for downstream experiments, eliminating low-quality, rarely-used, or untested models. This component ensures our benchmark consists of representative and practically meaningful models.
+\paragraph{Step 2: Building the Model Derivation Tree}
+Based on \texttt{base\_models.txt}, we recursively crawl derivative models to construct a “model forest”. For each base model, we explore its derivatives up to four levels deep, covering four derivation types: \texttt{finetune}, \texttt{adapter}, \texttt{quantized}, and \texttt{merge}. For each derivation type, a maximum of six sibling nodes are considered. Every node in the tree records metadata such as model name, crawl timestamp, depth level, and its child nodes. The resulting forest structure is serialized into \texttt{model\_forest.json}. This step is implemented via \textbf{Script 2}.
 
-\paragraph{Component 2: Direct Fine-Tuning Relationship Verification}
-A critical goal of our benchmark is to identify valid parent-child pairs where the child model is **directly fine-tuned from the parent model**. To avoid erroneous relationships from automated model trees, we design a strict three-step verification pipeline:
-
-First, we examine the official model card of each child model. If the model card explicitly states that the model is "directly fine-tuned from a specific base model", we mark the parent-child relationship as valid.
-
-Second, for models without clear annotations in the model card, we directly contact the original developers via email to confirm the authentic derivation source.
-
-Finally, we classify all candidate pairs into three categories based on verification results:
+\paragraph{Step 3: Constructing Model Pairs}
+From the model forest, we extract two categories of model pairs: adjacent parent-child pairs and non-adjacent ancestor-descendant pairs. By performing a Breadth-First Search (BFS) traversal on each tree, we generate:
 \begin{itemize}
-    \item \textbf{Confirmed Valid}: Explicitly labeled or author-confirmed direct fine-tuning pairs → retained.
-    \item \textbf{Confirmed Invalid}: Explicitly denied by authors → excluded.
-    \item \textbf{Unconfirmed}: No response from developers → marked as uncertain and excluded.
+    \item \textbf{Adjacent Pairs}: Direct parent-child model pairs.
+    \item \textbf{Non-Adjacent Pairs}: All ancestor-descendant pairs where the ancestor is not the immediate parent.
 \end{itemize}
+These pairs are recorded in \texttt{adjacent\_pairs.jsonl} and \texttt{non\_adjacent\_pairs.jsonl}, respectively. This step is implemented via \textbf{Script 3}.
 
-Notably, we \textbf{never rely solely on model tree relationships} for judgment, as they may provide incomplete or misleading structural links instead of genuine fine-tuning processes. This manual+authoritative validation ensures the ground-truth quality of parent-child relationships in our benchmark.
+\paragraph{Step 4: Single-Threaded Model Validation}
+To ensure data quality, we validate the structural correctness of all adjacent model pairs. For each model, we inspect its file tree on Hugging Face, checking for the presence of critical files such as \texttt{config.json}, \texttt{adapter\_config.json}, and various parameter files (e.g., \texttt{.bin}, \texttt{.pt}, \texttt{.safetensors}, etc.). We verify whether the claimed derivation type aligns with the actual file structure and whether the parent model is valid. The results are compiled into a comprehensive validation report named \texttt{model\_validation\_report.json}. This step is implemented via \textbf{Script 4}.
+
+\paragraph{Step 5: Filtering Erroneous Model Pairs}
+Based on the validation report, we remove all erroneous model pairs from the dataset. Models flagged with any inconsistencies or missing critical files are excluded. The cleaned set of adjacent model pairs is saved in \texttt{adjacent\_pairs\_without\_error.json}. This step is implemented via \textbf{Script 5}.
 
 \subsection{Characteristics}
 
-Our benchmark exhibits several notable characteristics that reflect its diversity, reliability, and authenticity for LLM genealogy analysis:
+Our benchmark exhibits several notable characteristics that reflect its diversity and representativeness of the Hugging Face model ecosystem:
 
 \begin{itemize}
-    \item \textbf{Credible Model Sources}: Models are selected based on objective download counts, ensuring all experimental samples are widely used, representative, and trustworthy in real-world applications.
+    \item \textbf{Variety of Derivation Types}: The dataset covers four major derivation types—\texttt{finetune}, \texttt{adapter}, \texttt{quantized}, and \texttt{merge}—capturing a wide range of model transformation patterns.
     
-    \item \textbf{Genuine Fine-Tuning Relationships}: Unlike automated crawling pipelines, our benchmark uses model card annotations and developer confirmation as dual validation, eliminating false parent-child pairs from model trees.
+    \item \textbf{Hierarchical Depth}: With a recursive crawling depth of up to four levels, the benchmark contains both shallow and deep derivation chains, enabling analysis of both immediate and long-range model inheritance.
     
-    \item{Strict Non-Arbitrary Rules}: Every filtering and validation step follows pre-defined, evidence-based criteria. No relationships are inferred or assumed without explicit support, ensuring full reproducibility.
+    \item \textbf{Scale and Coverage}: Starting from 50 popular base models, the recursive traversal results in a substantial model forest, ensuring coverage of highly influential models as well as their derivative variants.
     
-    \item \textbf{High Data Quality}: Through multi-step verification and error exclusion, the benchmark provides high-integrity parent-child model pairs for model derivation analysis.
+    \item \textbf{Data Cleanliness}: Through rigorous validation and error filtering, the dataset ensures high structural integrity, making it suitable for tasks that require reliable model lineage information.
     
-    \item \textbf{Real-World Relevance}: The benchmark reflects authentic community-driven fine-tuning practices, making it suitable for research on model inheritance, composition, and genealogy.
+    \item \textbf{Real-World Relevance}: The benchmark reflects actual user-driven derivation patterns on Hugging Face, providing insights into community practices such as model fine-tuning trends, adapter usage, and quantization adoption.
 \end{itemize}
 
 % show the statistics of the benchmark
@@ -66,7 +66,7 @@ Our benchmark exhibits several notable characteristics that reflect its diversit
         Max fine-tuning depth & 2 \\
         \bottomrule
     \end{tabular}
-\end{table}
+\end{table}  
 
 
 \subsection{Statistics} 
