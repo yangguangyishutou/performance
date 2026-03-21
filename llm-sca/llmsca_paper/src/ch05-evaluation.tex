@@ -15,7 +15,15 @@ We design experiments to explore the following research questions.
 
 % \subsection{Setup}
 
-\textbf{Measurement Metrics.} We select common measurement metrics that are used in static white-box fingerprinting. Static white-box fingerprinting captures intrinsic weight characteristics, including statistical distributions~\cite{yoon2025intrinsic} (e.g., $L_2$ distances of model tensors~\cite{horwitz2024unsupervised}), directionally invariant terms~\cite{zeng2024huref}, SVD-based spectral signatures~\cite{wang2025ghost}, and matrix-driven homology proofs~\cite{zhang2025matrix}.
+\textbf{Measurement Metrics.} We select common measurement metrics that are used in static white-box fingerprinting. Static white-box fingerprinting captures intrinsic weight characteristics, including statistical distributions~\cite{yoon2025intrinsic} (e.g., $L_2$ distances of model tensors~\cite{horwitz2024unsupervised}), directionally invariant terms~\cite{zeng2024huref}, SVD-based spectral signatures~\cite{wang2025ghost}, and matrix-driven homology proofs~\cite{zhang2025matrix}. In addition to these established measures from prior work, we explore complementary discrepancy signals over flattened weight vectors $a,b\in\mathbb{R}^n$:
+$$d_{\mathrm{mean\_abs}}(a,b) = \frac{1}{n} \sum_{i=1}^{n} |a_i - b_i|$$
+$$d_{\max\_abs}(a,b) = \max_{1 \leq i \leq n} |a_i - b_i|$$
+$$d_{\cos}(a,b) = 1 - \mathrm{cos\text{-}sim}(a,b)$$
+We further include two \emph{sparse update rates} that report the fraction of coordinates whose change exceeds a threshold. Let $\Delta_i=|a_i-b_i|$ for $i=1,\ldots,n$. The absolute sparse update rate is
+$$\mathrm{SUR}_{\mathrm{abs}}(a,b) = \frac{1}{n} \sum_{i=1}^{n} \mathbf{1}\bigl(\Delta_i > \tau_{\mathrm{abs}}\bigr)$$
+with default threshold $\tau_{\mathrm{abs}}=10^{-2}$. For the relative rate, define $r_i = |a_i-b_i| / \max\bigl(|a_i|,|b_i|,\epsilon\bigr)$ and
+$$\mathrm{SUR}_{\mathrm{rel}}(a,b) = \frac{1}{n} \sum_{i=1}^{n} \mathbf{1}\bigl(r_i > \tau_{\mathrm{rel}}\bigr)$$
+with defaults $\tau_{\mathrm{rel}}=10^{-2}$ and $\epsilon=10^{-12}$. Here $\mathbf{1}(\cdot)$ denotes the indicator function: it equals $1$ when the condition holds and $0$ otherwise.
 
 % 定义好/不好。
 % TODO Metric除了 边的accuracy百分比，也可以是能否生成

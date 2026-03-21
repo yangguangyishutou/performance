@@ -1,190 +1,178 @@
-import os
+import json
+from collections import defaultdict
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-FIG_DIR = os.path.dirname(__file__)
+FIG_DIR = Path(__file__).resolve().parent
+DISTANCES_DIR = FIG_DIR.parent / "data" / "distances"
+FAMILY_ORDER = ["Qwen", "LLaMA", "Granite", "Mistral", "Others"]
+
+DISPLAY_NAME_MAP = {
+    "l2": "L2 Distance",
+    "cosine": "Cosine Distance",
+    "mean_abs": "Mean Abs.",
+    "max_abs": "Max Abs.",
+    "sparse_update_rate_abs": "Sparse Abs.",
+    "sparse_update_rate_relative": "Sparse Rel.",
+    "ghostspec_mse": "GhostSpec MSE",
+    "intrinsic_fingerprint": "PDF",
+}
 
 
-def savefig(name: str):
+def savefig(name: str) -> None:
     """Save figure as PDF into the fig directory with tight layout."""
-    path = os.path.join(FIG_DIR, name)
+    path = FIG_DIR / name
     plt.tight_layout()
-    plt.savefig(path, format="pdf", bbox_inches='tight')
+    plt.savefig(path, format="pdf", bbox_inches="tight")
     print(f"Saved {path}")
 
 
-def plot_family_boxplot(family_name: str, metric_values: np.ndarray, metric_name: str, metric_display_name: str, output_filename: str):
+def infer_model_family(model_name: str) -> str:
+    """Infer model family from model name."""
+    low = model_name.lower()
+    if "qwen" in low:
+        return "Qwen"
+    if "llama" in low:
+        return "LLaMA"
+    if "granite" in low:
+        return "Granite"
+    if "mistral" in low or "mixtral" in low:
+        return "Mistral"
+    return "Others"
+
+
+def extract_upper_triangle_values(dist_matrix: dict) -> list[float]:
+    """Extract upper-triangle (i<j) values from distance matrix."""
+    keys = list(dist_matrix.keys())
+    values: list[float] = []
+    for i, row_key in enumerate(keys):
+        row = dist_matrix.get(row_key, {})
+        for j in range(i + 1, len(keys)):
+            col_key = keys[j]
+            val = row.get(col_key)
+            if isinstance(val, (int, float)) and np.isfinite(val):
+                values.append(float(val))
+    return values
+
+
+def collect_metrics_by_family() -> dict[str, dict[str, np.ndarray]]:
     """
-    Plot boxplot showing distance metric distribution for a specific model family.
-    
-    Args:
-        family_name: Name of the model family (e.g., "Qwen", "LLaMA")
-        metric_values: Array of distance metric values for models in this family
-        metric_name: Short name of the metric (e.g., "l2", "cos")
-        metric_display_name: Display name for the metric (e.g., "L2 Distance", "Cosine Similarity")
-        output_filename: Output PDF filename
+    Collect distance values from all JSON files and group by:
+    method -> model_family -> np.ndarray(values)
     """
+    if not DISTANCES_DIR.exists():
+        raise FileNotFoundError(f"Distance directory not found: {DISTANCES_DIR}")
+
+    grouped: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
+    json_files = sorted(DISTANCES_DIR.glob("*.json"))
+    if not json_files:
+        raise FileNotFoundError(f"No JSON files found in {DISTANCES_DIR}")
+
+    for path in json_files:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        method = data.get("method")
+        dist_matrix = data.get("dist_matrix", {})
+        model_names_map = data.get("model_names_map", {})
+        root_model_name = model_names_map.get("0-X-X", "")
+
+        if not isinstance(method, str) or not isinstance(dist_matrix, dict):
+            continue
+
+        family = infer_model_family(root_model_name)
+        values = extract_upper_triangle_values(dist_matrix)
+        grouped[method][family].extend(values)
+
+    output: dict[str, dict[str, np.ndarray]] = {}
+    for method, family_values in grouped.items():
+        output[method] = {
+            family: np.array(vals, dtype=float)
+            for family, vals in family_values.items()
+            if vals
+        }
+    return output
+
+
+def plot_family_boxplot(
+    family_name: str,
+    metric_values: np.ndarray,
+    metric_name: str,
+    metric_display_name: str,
+    output_filename: str,
+    y_limits: tuple[float, float],
+) -> None:
+    """Plot one family-one metric boxplot."""
     fig, ax = plt.subplots(figsize=(2.5, 3.0))
-    
-    # Create boxplot
+
     bp = ax.boxplot(
         [metric_values],
-        # labels=[family_name],
         patch_artist=True,
         widths=0.6,
-        showmeans=True,  # Show mean as a diamond
+        showmeans=True,
         meanline=False,
     )
-    
-    # Customize boxplot colors
-    for patch in bp['boxes']:
-        patch.set_facecolor('#4C72B0')
-        patch.set_alpha(0.7)
-    
-    for element in ['whiskers', 'fliers', 'means', 'medians', 'caps']:
-        plt.setp(bp[element], color='black', linewidth=1.2)
-    
-    # Set labels
-    # ax.set_ylabel(metric_display_name, fontsize=9)
-    # ax.set_xlabel('Model Family', fontsize=9)
-    ax.tick_params(axis='both', labelsize=14)
-    
-    ax.set_xticklabels([])
 
-    # Set y-axis limits with some padding
-    # y_min = np.min(metric_values) * 0.95
-    # y_max = np.max(metric_values) * 1.05
-    # ax.set_ylim(y_min, y_max)
-    ax.set_ylim(0, 1)
-    
-    # Add grid for better readability
-    ax.grid(True, alpha=0.3, axis='y', linestyle='--')
-    
+    for patch in bp["boxes"]:
+        patch.set_facecolor("#4C72B0")
+        patch.set_alpha(0.7)
+
+    for element in ["whiskers", "fliers", "means", "medians", "caps"]:
+        plt.setp(bp[element], color="black", linewidth=1.2)
+
+    ax.tick_params(axis="both", labelsize=14)
+    ax.set_xticklabels([])
+    ax.grid(True, alpha=0.3, axis="y", linestyle="--")
+    ax.set_ylim(y_limits[0], y_limits[1])
+    ax.set_title(family_name, fontsize=10)
+
     savefig(output_filename)
     plt.close(fig)
 
 
-def main():
-    """Generate boxplots for all model families and all distance metrics."""
-    # Hard-coded distance metric data for each model family
-    # Format: metric_name -> {family_name -> array of values}
-    # TODO: Replace with your real experimental data
-    
-    # Define all distance metrics
-    metrics = {
-        "l2": {
-            "display_name": "L2 Distance",
-            "data": {
-                "Qwen": np.array([0.12, 0.15, 0.18, 0.14, 0.16, 0.13, 0.17, 0.15, 0.19, 0.14]),
-                "LLaMA": np.array([0.22, 0.25, 0.28, 0.24, 0.26, 0.23, 0.27, 0.25, 0.29, 0.24, 0.21, 0.26]),
-                "Granite": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.20, 0.23, 0.19]),
-                "Mistral": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.18, 0.21, 0.17, 0.19, 0.16, 0.20]),
-                "Others": np.array([0.25, 0.28, 0.30, 0.27, 0.29, 0.26, 0.31, 0.28, 0.32, 0.27, 0.29, 0.30, 0.28]),
-            }
-        },
-        "cos": {
-            "display_name": "Cosine Similarity",
-            "data": {
-                "Qwen": np.array([0.85, 0.87, 0.89, 0.86, 0.88, 0.85, 0.90, 0.86, 0.91, 0.87]),
-                "LLaMA": np.array([0.75, 0.77, 0.79, 0.76, 0.78, 0.75, 0.80, 0.76, 0.81, 0.77, 0.74, 0.78]),
-                "Granite": np.array([0.80, 0.82, 0.84, 0.81, 0.83, 0.82, 0.85, 0.81]),
-                "Mistral": np.array([0.82, 0.84, 0.86, 0.83, 0.85, 0.84, 0.87, 0.83, 0.85, 0.82, 0.86]),
-                "Others": np.array([0.70, 0.72, 0.74, 0.71, 0.73, 0.70, 0.75, 0.72, 0.76, 0.71, 0.73, 0.74, 0.72]),
-            }
-        },
-        "abs_mean": {
-            "display_name": "Abs Mean",
-            "data": {
-                "Qwen": np.array([0.10, 0.12, 0.14, 0.11, 0.13, 0.10, 0.15, 0.12, 0.16, 0.11]),
-                "LLaMA": np.array([0.20, 0.22, 0.24, 0.21, 0.23, 0.20, 0.25, 0.22, 0.26, 0.21, 0.19, 0.23]),
-                "Granite": np.array([0.15, 0.17, 0.19, 0.16, 0.18, 0.17, 0.20, 0.16]),
-                "Mistral": np.array([0.13, 0.15, 0.17, 0.14, 0.16, 0.15, 0.18, 0.14, 0.16, 0.13, 0.17]),
-                "Others": np.array([0.22, 0.24, 0.26, 0.23, 0.25, 0.22, 0.27, 0.24, 0.28, 0.23, 0.25, 0.26, 0.24]),
-            }
-        },
-        "abs_max": {
-            "display_name": "Abs Max",
-            "data": {
-                "Qwen": np.array([0.25, 0.27, 0.29, 0.26, 0.28, 0.25, 0.30, 0.27, 0.31, 0.26]),
-                "LLaMA": np.array([0.35, 0.37, 0.39, 0.36, 0.38, 0.35, 0.40, 0.37, 0.41, 0.36, 0.34, 0.38]),
-                "Granite": np.array([0.30, 0.32, 0.34, 0.31, 0.33, 0.32, 0.35, 0.31]),
-                "Mistral": np.array([0.28, 0.30, 0.32, 0.29, 0.31, 0.30, 0.33, 0.29, 0.31, 0.28, 0.32]),
-                "Others": np.array([0.40, 0.42, 0.44, 0.41, 0.43, 0.40, 0.45, 0.42, 0.46, 0.41, 0.43, 0.44, 0.42]),
-            }
-        },
-        "sparse_abs": {
-            "display_name": "Sparse Abs.",
-            "data": {
-                "Qwen": np.array([0.08, 0.10, 0.12, 0.09, 0.11, 0.08, 0.13, 0.10, 0.14, 0.09]),
-                "LLaMA": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.17, 0.21]),
-                "Granite": np.array([0.13, 0.15, 0.17, 0.14, 0.16, 0.15, 0.18, 0.14]),
-                "Mistral": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12, 0.14, 0.11, 0.15]),
-                "Others": np.array([0.20, 0.22, 0.24, 0.21, 0.23, 0.20, 0.25, 0.22, 0.26, 0.21, 0.23, 0.24, 0.22]),
-            }
-        },
-        "sparse_rel": {
-            "display_name": "Sparse Rel.",
-            "data": {
-                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
-                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
-                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
-                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
-                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
-            }
-        },
-        "ghostspec_mse": {
-            "display_name": "GhostSpec MSE",
-            "data": {
-                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
-                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
-                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
-                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
-                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
-            }
-        },
-        "intrinsic_fingerprint": {
-            "display_name": "PDF",
-            "data": {
-                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
-                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
-                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
-                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
-                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
-            }
-        },
-        "matrix_homology": {
-            "display_name": "Matrix",
-            "data": {
-                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
-                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
-                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
-                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
-                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
-            }
-        },
-        "huref": {
-            "display_name": "HuRef",
-            "data": {
-                "Qwen": np.array([0.06, 0.08, 0.10, 0.07, 0.09, 0.06, 0.11, 0.08, 0.12, 0.07]),
-                "LLaMA": np.array([0.16, 0.18, 0.20, 0.17, 0.19, 0.16, 0.21, 0.18, 0.22, 0.17, 0.15, 0.19]),
-                "Granite": np.array([0.11, 0.13, 0.15, 0.12, 0.14, 0.13, 0.16, 0.12]),
-                "Mistral": np.array([0.09, 0.11, 0.13, 0.10, 0.12, 0.11, 0.14, 0.10, 0.12, 0.09, 0.13]),
-                "Others": np.array([0.18, 0.20, 0.22, 0.19, 0.21, 0.18, 0.23, 0.20, 0.24, 0.19, 0.21, 0.22, 0.20]),
-            }
-        },
-    }
-    
-    # Generate boxplots for each metric and each family
-    for metric_key, metric_info in metrics.items():
-        for family_name, metric_values in metric_info["data"].items():
+def main() -> None:
+    """Generate family-wise boxplots for each distance metric."""
+    metrics = collect_metrics_by_family()
+    if not metrics:
+        raise RuntimeError("No valid distance metric data collected from JSON files.")
+
+    all_values = np.concatenate(
+        [
+            arr
+            for family_data in metrics.values()
+            for arr in family_data.values()
+            if arr.size > 0
+        ]
+    )
+    global_min = float(np.min(all_values))
+    global_max = float(np.max(all_values))
+    if np.isclose(global_min, global_max):
+        y_limits = (global_min - 1e-6, global_max + 1e-6)
+    else:
+        padding = (global_max - global_min) * 0.05
+        y_limits = (global_min - padding, global_max + padding)
+
+    for metric_key in sorted(metrics.keys()):
+        metric_display_name = DISPLAY_NAME_MAP.get(metric_key, metric_key)
+        family_data = metrics[metric_key]
+        for family_name in FAMILY_ORDER:
+            metric_values = family_data.get(family_name)
+            if metric_values is None or metric_values.size == 0:
+                continue
             output_filename = f"rq1_{family_name.lower()}_{metric_key}_boxplot.pdf"
             plot_family_boxplot(
-                family_name, 
-                metric_values, 
-                metric_key,
-                metric_info["display_name"],
-                output_filename
+                family_name=family_name,
+                metric_values=metric_values,
+                metric_name=metric_key,
+                metric_display_name=metric_display_name,
+                output_filename=output_filename,
+                y_limits=y_limits,
+            )
+            print(
+                f"[{metric_key}] {family_name}: n={metric_values.size}, "
+                f"mean={metric_values.mean():.6f}"
             )
 
 
