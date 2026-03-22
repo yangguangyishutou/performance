@@ -36,7 +36,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from typing import Optional
 
-from config_v2 import SCORE_EPSILON, SCORE_THRESHOLD_PERCENTILE, PLACEHOLDERS
+from config import SCORE_EPSILON, SCORE_THRESHOLD_PERCENTILE, PLACEHOLDERS
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Protected tokens — never replaced regardless of score

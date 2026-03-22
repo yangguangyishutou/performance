@@ -28,6 +28,10 @@ EVAL_TOKENIZERS = {
         "type": "tiktoken",
         "tiktoken_model": "gpt-4",
     },
+    "gpt2": {
+        "type": "hf",
+        "name": "gpt2",
+    },
     "codegen-350M-mono": {
         "type": "hf",
         "name": "Salesforce/codegen-350M-mono",
@@ -38,13 +42,6 @@ EVAL_TOKENIZERS = {
     },
 }
 
-# SimPy baseline (from paper) for comparison
-SIMPY_REPORTED = {
-    "gpt4":              {"reduction_pct": 10.4},
-    "codegen-350M-mono": {"reduction_pct": 13.5},
-    "santacoder":        {"reduction_pct": 8.8},
-}
-
 # ── Stage 1: Syntax compression ───────────────────────────────────────────────
 AST_MIN_FREQ          = 20     # skeleton must appear ≥ N times to be a candidate
 MDL_CODEBOOK_OVERHEAD = 2      # tokens needed to encode one operator in codebook
@@ -52,10 +49,10 @@ MDL_CODEBOOK_OVERHEAD = 2      # tokens needed to encode one operator in codeboo
 # ── Stage 2: Lossy cleaning rules ─────────────────────────────────────────────
 # Each rule is (enabled, is_lossy, description)
 CLEANING_RULES = {
-    "remove_comments":            (True,  False, "R01 Remove # inline comments"),
+    "remove_comments":            (False, False, "R01 Remove # inline comments [default off]"),
     "remove_blank_lines":         (True,  False, "R02 Remove empty lines"),
     "remove_trailing_whitespace": (True,  False, "R03 Remove trailing spaces/tabs"),
-    "remove_docstrings":          (True,  True,  "R05 Remove triple-quoted docstrings [LOSSY]"),
+    "remove_docstrings":          (False, True,  "R05 Remove docstrings [LOSSY, default off]"),
     "remove_indentation":         (True,  True,  "R04 Remove all indentation [LOSSY]"),
 }
 

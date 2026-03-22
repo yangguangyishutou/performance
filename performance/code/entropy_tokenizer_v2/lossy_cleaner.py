@@ -30,10 +30,10 @@ from typing import Optional
 
 @dataclass
 class CleaningConfig:
-    remove_comments:            bool = True
+    remove_comments:            bool = False
     remove_blank_lines:         bool = True
     remove_trailing_whitespace: bool = True
-    remove_docstrings:          bool = True   # LOSSY
+    remove_docstrings:          bool = False  # 默认保留 docstring；需有损时再开
     remove_indentation:         bool = True   # LOSSY
 
 
@@ -220,9 +220,9 @@ def clean_corpus(
 # ─────────────────────────────────────────────────────────────────────────────
 
 def lossless_clean(source: str) -> tuple[str, CleaningStats]:
-    """Only apply lossless rules (R01-R03). Code remains valid Python."""
+    """仅 R02/R03：删空行与行尾空白；保留注释与 docstring，保证仍为合法 Python。"""
     cfg = CleaningConfig(
-        remove_comments=True,
+        remove_comments=False,
         remove_blank_lines=True,
         remove_trailing_whitespace=True,
         remove_docstrings=False,
@@ -232,5 +232,5 @@ def lossless_clean(source: str) -> tuple[str, CleaningStats]:
 
 
 def lossy_clean(source: str) -> tuple[str, CleaningStats]:
-    """Apply all rules including lossy ones (R04+R05)."""
+    """使用默认 CleaningConfig（含 R04 去缩进；注释/docstring 默认保留，见类默认值）。"""
     return clean_code(source, CleaningConfig())

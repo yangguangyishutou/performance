@@ -45,8 +45,12 @@ class Transformer:
         traverse_all_children(tree.root_node, nodes)
         for node in nodes:
             if node.is_missing:
+                if self.ignore_error:
+                    continue
                 raise ValueError('Python2 is not supported')
             if node.type in ['print', 'exec_statement', 'ERROR']:
+                if self.ignore_error:
+                    continue
                 raise ValueError('Python2 is not supported')
             edit_func = self.transform.get(node.type, None)
             if edit_func:

@@ -34,7 +34,8 @@ from collections import Counter
 from dataclasses import dataclass
 from typing import Optional
 
-from config_v2 import AST_MIN_FREQ, MDL_CODEBOOK_OVERHEAD
+from config import AST_MIN_FREQ, MDL_CODEBOOK_OVERHEAD
+from marker_count import RE_ALL_MARKERS, count_augmented, encode as mc_encode
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Skeleton computation  (independent reimplementation, no v1 imports)
@@ -136,93 +137,142 @@ def _compute_skeleton(node: ast.AST) -> Optional[str]:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Slot extraction (the variable parts that survive compression)
+# Slot extraction from original source
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _extract_slots(node: ast.AST) -> list[str]:
+def _src_seg(source: str, node: Optional[ast.AST]) -> Optional[str]:
+    """Exact source slice for *node*; None if unavailable."""
+    if node is None:
+        return None
+    try:
+        return ast.get_source_segment(source, node)
+    except Exception:
+        return None
+
+
+def _extract_slots_from_source(source: str, node: ast.AST) -> list[str]:
     """
-    Return the ordered list of slot-value strings for a given AST node.
-    These are the variable expressions kept after the header is replaced.
+    Slot strings taken from the *original source* where possible (ast.get_source_segment),
+    falling back to ast.unparse. Reduces format drift vs PEP8-pretty unparse().
     """
     slots: list[str] = []
+    lines = source.splitlines()
+
+    def seg(n: Optional[ast.AST], fallback: str) -> str:
+        s = _src_seg(source, n)
+        return s if s is not None else fallback
 
     if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
-        slots.append(node.name)
+        line0 = lines[node.lineno - 1] if lines else ""
+        if isinstance(node, ast.AsyncFunctionDef):
+            m = re.search(r"\basync\s+def\s+([A-Za-z_]\w*)\s*\(", line0)
+        else:
+            m = re.search(r"\bdef\s+([A-Za-z_]\w*)\s*\(", line0)
+        slots.append(m.group(1) if m else node.name)
         for a in node.args.args + node.args.posonlyargs + node.args.kwonlyargs:
-            slots.append(a.arg)
-        if node.args.vararg: slots.append(node.args.vararg.arg)
-        if node.args.kwarg:  slots.append(node.args.kwarg.arg)
+            slots.append(seg(a, a.arg))
+        if node.args.vararg:
+            slots.append(seg(node.args.vararg, node.args.vararg.arg))
+        if node.args.kwarg:
+            slots.append(seg(node.args.kwarg, node.args.kwarg.arg))
 
     elif isinstance(node, ast.ClassDef):
-        slots.append(node.name)
+        line0 = lines[node.lineno - 1] if lines else ""
+        m = re.search(r"\bclass\s+([A-Za-z_]\w*)\b", line0)
+        slots.append(m.group(1) if m else node.name)
         for base in node.bases:
-            slots.append(ast.unparse(base))
+            slots.append(seg(base, ast.unparse(base)))
 
     elif isinstance(node, (ast.For, ast.AsyncFor)):
-        slots.append(ast.unparse(node.target))
-        slots.append(ast.unparse(node.iter))
+        slots.append(seg(node.target, ast.unparse(node.target)))
+        slots.append(seg(node.iter, ast.unparse(node.iter)))
 
     elif isinstance(node, ast.While):
-        slots.append(ast.unparse(node.test))
+        slots.append(seg(node.test, ast.unparse(node.test)))
 
     elif isinstance(node, ast.If):
-        slots.append(ast.unparse(node.test))
+        slots.append(seg(node.test, ast.unparse(node.test)))
 
     elif isinstance(node, ast.With):
         for item in node.items:
-            slots.append(ast.unparse(item.context_expr))
+            slots.append(seg(item.context_expr, ast.unparse(item.context_expr)))
             if item.optional_vars:
-                slots.append(ast.unparse(item.optional_vars))
+                slots.append(
+                    seg(item.optional_vars, ast.unparse(item.optional_vars))
+                )
 
     elif isinstance(node, ast.Return):
         if node.value:
-            slots.append(ast.unparse(node.value))
+            slots.append(seg(node.value, ast.unparse(node.value)))
 
     elif isinstance(node, ast.Assign):
         for t in node.targets:
-            slots.append(ast.unparse(t))
-        slots.append(ast.unparse(node.value))
+            slots.append(seg(t, ast.unparse(t)))
+        slots.append(seg(node.value, ast.unparse(node.value)))
 
     elif isinstance(node, ast.AugAssign):
-        slots.append(ast.unparse(node.target))
-        slots.append(ast.unparse(node.value))
+        slots.append(seg(node.target, ast.unparse(node.target)))
+        slots.append(seg(node.value, ast.unparse(node.value)))
 
     elif isinstance(node, ast.AnnAssign):
-        slots.append(ast.unparse(node.target))
-        slots.append(ast.unparse(node.annotation))
+        slots.append(seg(node.target, ast.unparse(node.target)))
+        slots.append(seg(node.annotation, ast.unparse(node.annotation)))
         if node.value:
-            slots.append(ast.unparse(node.value))
+            slots.append(seg(node.value, ast.unparse(node.value)))
 
     elif isinstance(node, ast.Expr):
-        slots.append(ast.unparse(node.value))
+        slots.append(seg(node.value, ast.unparse(node.value)))
 
     elif isinstance(node, ast.Import):
         for alias in node.names:
-            slots.append(alias.name)
-            if alias.asname: slots.append(alias.asname)
+            s = _src_seg(source, alias)
+            if s:
+                slots.append(s)
+            elif alias.asname:
+                slots.extend([alias.name, alias.asname])
+            else:
+                slots.append(alias.name)
 
     elif isinstance(node, ast.ImportFrom):
-        if node.module: slots.append(node.module)
+        if node.module:
+            slots.append(node.module)
         for alias in node.names:
-            slots.append(alias.name)
-            if alias.asname: slots.append(alias.asname)
+            s = _src_seg(source, alias)
+            if s:
+                slots.append(s)
+            elif alias.asname:
+                slots.extend([alias.name, alias.asname])
+            else:
+                slots.append(alias.name)
 
     elif isinstance(node, ast.Raise):
-        if node.exc: slots.append(ast.unparse(node.exc))
+        if node.exc:
+            slots.append(seg(node.exc, ast.unparse(node.exc)))
 
     elif isinstance(node, ast.Assert):
-        slots.append(ast.unparse(node.test))
-        if node.msg: slots.append(ast.unparse(node.msg))
+        slots.append(seg(node.test, ast.unparse(node.test)))
+        if node.msg:
+            slots.append(seg(node.msg, ast.unparse(node.msg)))
 
     elif isinstance(node, ast.Delete):
         for t in node.targets:
-            slots.append(ast.unparse(t))
+            slots.append(seg(t, ast.unparse(t)))
 
     elif isinstance(node, ast.ExceptHandler):
-        if node.type: slots.append(ast.unparse(node.type))
-        if node.name: slots.append(node.name)
+        if node.type:
+            slots.append(seg(node.type, ast.unparse(node.type)))
+        if node.name:
+            slots.append(node.name)
 
     return slots
+
+
+def _extract_header_source(source: str, node: ast.AST) -> str:
+    """Exact header lines from *source* (1-based AST line numbers)."""
+    lines = source.splitlines()
+    start = node.lineno
+    end = _find_header_end_line(node, len(lines))
+    return "\n".join(lines[start - 1 : end])
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -247,9 +297,57 @@ def mine_skeletons(sources: list[str], min_freq: int = AST_MIN_FREQ) -> Counter:
     return Counter({k: v for k, v in counter.items() if v >= min_freq})
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Header token counting helpers
-# ─────────────────────────────────────────────────────────────────────────────
+def empirical_skeleton_token_savings(
+    sources: list[str],
+    skeleton_keys: set[str],
+    tokenizer,
+    tok_type: str,
+    *,
+    probe_op: str = "<SYN_0>",
+) -> dict[str, tuple[int, int]]:
+    """
+    For each skeleton string, estimate *real* token savings on *sources* using the
+    same marker-aware counting as v2 evaluation.
+
+    Per file, uses the same start-line dedup as compress_source_syntax (first walk
+    order wins).  Returns:
+        skeleton -> (n_applied_instances, total_tokens_saved)
+    where total_tokens_saved = sum_i (count(before_header_i) - count(after_i)).
+    """
+    out: dict[str, list[int]] = {sk: [0, 0] for sk in skeleton_keys}
+
+    for src in sources:
+        try:
+            tree = ast.parse(src)
+        except SyntaxError:
+            continue
+        lines = src.splitlines()
+        matches: list[tuple[int, int, str, ast.AST]] = []
+        for node in ast.walk(tree):
+            sk = _compute_skeleton(node)
+            if not sk or sk not in skeleton_keys:
+                continue
+            sl = node.lineno
+            el = _find_header_end_line(node, len(lines))
+            matches.append((sl, el, sk, node))
+        matches.sort(key=lambda t: (t[0], t[1], t[2]))
+
+        used_start: set[int] = set()
+        for sl, _el, sk, node in matches:
+            if sl in used_start:
+                continue
+            used_start.add(sl)
+            before = _extract_header_source(src, node)
+            slots = _extract_slots_from_source(src, node)
+            after = f"{probe_op} {' '.join(slots)}".strip()
+            saved = count_augmented(before, tokenizer, tok_type, pattern=RE_ALL_MARKERS) - count_augmented(
+                after, tokenizer, tok_type, pattern=RE_ALL_MARKERS
+            )
+            out[sk][0] += 1
+            out[sk][1] += saved
+
+    return {sk: (out[sk][0], out[sk][1]) for sk in skeleton_keys}
+
 
 def _header_token_count(skeleton: str, tokenizer, tok_type: str) -> int:
     """
@@ -280,44 +378,45 @@ def _num_slots(skeleton: str) -> int:
 class SkeletonCandidate:
     skeleton:    str
     frequency:   int
-    fixed_tokens: int    # tokens in fixed part (to be replaced by <SYN_N>)
-    num_slots:   int     # number of variable slot expressions
-    savings_per_instance: int   # fixed_tokens - 1 (one new token replaces all fixed)
-    codebook_cost: int          # MDL_CODEBOOK_OVERHEAD
-    mdl_net_benefit: float      # spi * freq - codebook_cost
+    fixed_tokens: int
+    num_slots:   int
+    savings_per_instance: float
+    codebook_cost: int
+    mdl_net_benefit: float
+    empirical_total_savings: int
 
 
 def build_candidate_pool(
     skeleton_counts: Counter,
     tokenizer,
     tok_type: str,
+    sources: list[str],
 ) -> list[SkeletonCandidate]:
-    """
-    Build the ranked candidate pool for MDL selection.
-    Each candidate's savings_per_instance = (header_fixed_tokens - 1 - 0)
-    because <SYN_N> is ONE new token replacing all fixed tokens.
+    """Rank skeletons by empirical marker-aware token savings on *sources*."""
+    keys = set(skeleton_counts.keys())
+    empirical_map = empirical_skeleton_token_savings(sources, keys, tokenizer, tok_type)
 
-    Note: slot values are kept, so we don't subtract them from savings here.
-    The actual per-instance saving is fixed_tokens - 1 (we spend 1 new token
-    instead of fixed_tokens).
-    """
     candidates: list[SkeletonCandidate] = []
-    for sk, freq in skeleton_counts.items():
+    for sk in skeleton_counts:
         fixed_toks = _header_token_count(sk, tokenizer, tok_type)
-        spi        = max(0, fixed_toks - 1)   # savings: fixed → 1 new token
-        if spi <= 0:
+        cb = MDL_CODEBOOK_OVERHEAD
+        applied, total_saved = empirical_map.get(sk, (0, 0))
+        if applied <= 0 or total_saved <= 0:
             continue
-        cb   = MDL_CODEBOOK_OVERHEAD
-        cand = SkeletonCandidate(
-            skeleton=sk,
-            frequency=freq,
-            fixed_tokens=fixed_toks,
-            num_slots=_num_slots(sk),
-            savings_per_instance=spi,
-            codebook_cost=cb,
-            mdl_net_benefit=spi * freq - cb,
+        spi = total_saved / applied
+        candidates.append(
+            SkeletonCandidate(
+                skeleton=sk,
+                frequency=applied,
+                fixed_tokens=fixed_toks,
+                num_slots=_num_slots(sk),
+                savings_per_instance=spi,
+                codebook_cost=cb,
+                mdl_net_benefit=float(total_saved) - cb,
+                empirical_total_savings=total_saved,
+            )
         )
-        candidates.append(cand)
+
     candidates.sort(key=lambda c: c.mdl_net_benefit, reverse=True)
     return candidates
 
@@ -342,14 +441,13 @@ def greedy_mdl_select(
     for cand in candidates:
         if N_current <= 0:
             break
-        freq = cand.frequency
-        if freq == 0:
+        if cand.frequency == 0:
             continue
 
         log2_V_curr = math.log2(V0 + S_size) if (V0 + S_size) > 1 else 1.0
         log2_V_new  = math.log2(V0 + S_size + 1)
 
-        N_new  = N_current - cand.savings_per_instance * freq
+        N_new  = N_current - cand.empirical_total_savings
         delta  = N_new * log2_V_new - N_current * log2_V_curr + cand.codebook_cost * log2_V0
 
         if delta >= 0:
@@ -386,6 +484,69 @@ def _find_header_end_line(node: ast.AST, total_lines: int) -> int:
     return node.lineno
 
 
+def _collect_syntax_replacements(
+    source: str,
+    selected: list[SkeletonCandidate],
+) -> dict[int, tuple[int, str]] | None:
+    """
+    Collect replacement map: header_start_line (1-based) → (header_end_line, compressed_line).
+    Returns None if AST parse failed; {} if no selected skeletons or no matches.
+    """
+    if not selected:
+        return {}
+
+    skeleton_to_op: dict[str, str] = {
+        cand.skeleton: f"<SYN_{i}>"
+        for i, cand in enumerate(selected)
+    }
+
+    try:
+        tree = ast.parse(source)
+    except SyntaxError:
+        return None
+
+    lines = source.splitlines()
+    replacements: dict[int, tuple[int, str]] = {}
+
+    for node in ast.walk(tree):
+        sk = _compute_skeleton(node)
+        if not sk or sk not in skeleton_to_op:
+            continue
+        op_tok = skeleton_to_op[sk]
+        slots = _extract_slots_from_source(source, node)
+        slot_str = " ".join(slots) if slots else ""
+        compressed = f"{op_tok} {slot_str}".strip()
+
+        start_line = node.lineno
+        end_line = _find_header_end_line(node, len(lines))
+
+        if start_line not in replacements:
+            replacements[start_line] = (end_line, compressed)
+
+    return replacements
+
+
+def sum_replaced_header_tokens(
+    source: str,
+    selected: list[SkeletonCandidate],
+    tokenizer,
+    tok_type: str,
+) -> tuple[int, int]:
+    """
+    Sum tokenizer counts over original header spans that Stage-1 would replace
+    (same sites as compress_source_syntax). Returns (token_sum, n_sites).
+    """
+    repl = _collect_syntax_replacements(source, selected)
+    if not repl:
+        return 0, 0
+    lines = source.splitlines()
+    total = 0
+    for start_line, (end_line, _) in repl.items():
+        header = "\n".join(lines[start_line - 1 : end_line])
+        total += len(mc_encode(tokenizer, tok_type, header))
+    return total, len(repl)
+
+
 def compress_source_syntax(
     source: str,
     selected: list[SkeletonCandidate],
@@ -401,44 +562,11 @@ def compress_source_syntax(
 
     Returns the transformed source (no longer valid Python).
     """
-    if not selected:
-        return source
-
-    # Build lookup: skeleton → operator token string
-    skeleton_to_op: dict[str, str] = {
-        cand.skeleton: f"<SYN_{i}>"
-        for i, cand in enumerate(selected)
-    }
-
-    try:
-        tree = ast.parse(source)
-    except SyntaxError:
+    replacements = _collect_syntax_replacements(source, selected)
+    if replacements is None or not replacements:
         return source
 
     lines = source.splitlines()
-
-    # Collect replacements: {header_start_line: (header_end_line, replacement_str)}
-    # line numbers are 1-based (as in AST)
-    replacements: dict[int, tuple[int, str]] = {}
-
-    for node in ast.walk(tree):
-        sk = _compute_skeleton(node)
-        if not sk or sk not in skeleton_to_op:
-            continue
-        op_tok  = skeleton_to_op[sk]
-        slots   = _extract_slots(node)
-        slot_str = " ".join(slots) if slots else ""
-        compressed = f"{op_tok} {slot_str}".strip()
-
-        start_line = node.lineno                               # 1-based
-        end_line   = _find_header_end_line(node, len(lines))  # 1-based
-
-        # Avoid double-replacing nested nodes that share the same start line
-        if start_line not in replacements:
-            replacements[start_line] = (end_line, compressed)
-
-    if not replacements:
-        return source
 
     # Apply replacements — build output line by line
     skip_until = -1

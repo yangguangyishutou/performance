@@ -23,7 +23,7 @@ from typing import Optional
 
 from tqdm.auto import tqdm
 
-from config_v2 import (
+from config import (
     AST_MIN_FREQ, CACHE_DIR, MDL_CODEBOOK_OVERHEAD,
     SCORE_THRESHOLD_PERCENTILE, SCORE_EPSILON,
 )
@@ -32,8 +32,9 @@ from syntax_compressor import (
     SkeletonCandidate, build_candidate_pool,
     greedy_mdl_select, mine_skeletons,
 )
+from marker_count import encode as _encode
 from token_scorer import (
-    TokenInfo, build_replacement_map, build_vocabulary,
+    build_replacement_map, build_vocabulary,
     compute_scores, select_replacement_set,
 )
 
@@ -66,9 +67,7 @@ class RepoConfig:
     # ── convenience accessors ──────────────────────────────────────────────
 
     def skeleton_candidates(self) -> list[SkeletonCandidate]:
-        return [
-            SkeletonCandidate(**d) for d in self.selected_skeletons
-        ]
+        return [SkeletonCandidate(**d) for d in self.selected_skeletons]
 
     def to_json(self) -> str:
         return json.dumps(asdict(self), ensure_ascii=False, indent=2)
@@ -88,23 +87,20 @@ def _load_tokenizer(tok_key: str, cfg: dict):
         import tiktoken
         return tiktoken.encoding_for_model(cfg["tiktoken_model"]), "tiktoken"
     import transformers
-    from config_v2 import HF_TOKEN
+    from config import HF_TOKEN
     tok = transformers.AutoTokenizer.from_pretrained(
         cfg["name"], trust_remote_code=True, token=HF_TOKEN,
     )
     return tok, "hf"
 
 
-def _encode(tokenizer, tok_type: str, text: str) -> list[int]:
-    if tok_type == "tiktoken":
-        return tokenizer.encode(text, allowed_special="all")
-    return tokenizer.encode(text, add_special_tokens=False)
-
-
 def _vocab_size(tokenizer, tok_type: str) -> int:
     if tok_type == "tiktoken":
         return tokenizer.n_vocab
-    return tokenizer.vocab_size
+    vs = getattr(tokenizer, "vocab_size", None)
+    if vs is not None:
+        return int(vs)
+    return len(tokenizer)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -173,7 +169,9 @@ def mine_repo(
     if verbose:
         print(f"  {len(skeleton_counts)} unique skeletons (freq >= {min_freq})")
 
-    candidates = build_candidate_pool(skeleton_counts, tokenizer, tok_type)
+    candidates = build_candidate_pool(
+        skeleton_counts, tokenizer, tok_type, sources=clean_sources
+    )
     selected_skeletons = greedy_mdl_select(candidates, N_baseline, V0)
     if verbose:
         print(f"  MDL K* = {len(selected_skeletons)} accepted skeletons")
@@ -202,13 +200,14 @@ def mine_repo(
     return RepoConfig(
         selected_skeletons=[
             {
-                "skeleton":             c.skeleton,
-                "frequency":            c.frequency,
-                "fixed_tokens":         c.fixed_tokens,
-                "num_slots":            c.num_slots,
-                "savings_per_instance": c.savings_per_instance,
-                "codebook_cost":        c.codebook_cost,
-                "mdl_net_benefit":      c.mdl_net_benefit,
+                "skeleton":                  c.skeleton,
+                "frequency":                 c.frequency,
+                "fixed_tokens":              c.fixed_tokens,
+                "num_slots":                 c.num_slots,
+                "savings_per_instance":      c.savings_per_instance,
+                "codebook_cost":             c.codebook_cost,
+                "mdl_net_benefit":           c.mdl_net_benefit,
+                "empirical_total_savings":   c.empirical_total_savings,
             }
             for c in selected_skeletons
         ],

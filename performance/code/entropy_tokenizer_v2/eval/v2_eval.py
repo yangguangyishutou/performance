@@ -14,7 +14,6 @@ Reported metrics (per tokenizer):
   • Per-stage token delta breakdown
   • bits-per-byte (bpb) before and after
   • Token entropy before
-  • Comparison with v1 / SimPy reported baselines
 """
 
 import csv
@@ -23,30 +22,25 @@ import math
 import os
 import re
 from collections import Counter
-from dataclasses import asdict, dataclass, field
-from pathlib import Path
+from dataclasses import asdict, dataclass
 from typing import Optional
 
 from tqdm.auto import tqdm
 
-from config_v2 import (
+import bootstrap_v2
+
+bootstrap_v2.ensure()
+
+from config import (
     CACHE_DIR, EVAL_DATASET, EVAL_NUM_SAMPLES,
-    EVAL_TOKENIZERS, HF_TOKEN, RESULTS_DIR, SIMPY_REPORTED,
+    EVAL_TOKENIZERS, HF_TOKEN, RESULTS_DIR,
 )
 from lossy_cleaner import CleaningConfig, clean_code
 from repo_miner import RepoConfig, _encode, _load_tokenizer, _vocab_size
 from syntax_compressor import compress_source_syntax
 from token_scorer import apply_token_replacement
+from marker_count import RE_ALL_MARKERS, count_augmented
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Token counting helpers
-# ─────────────────────────────────────────────────────────────────────────────
-
-# All tokens that are new vocabulary entries (counted as exactly 1 token each)
-_NEW_TOKEN_RE = re.compile(
-    r'<SYN_\d+>'                           # Stage-1 syntax operators
-    r'|<VAR>|<ATTR>|<STR>|<FSTR>|<NUM>'   # Stage-3 category placeholders
-)
 _SYN_LINE_RE = re.compile(r'^\s*<SYN_\d+>\b')
 
 
@@ -100,20 +94,7 @@ def _replace_stage3_skip_syn(text: str, rmap: dict[str, str]) -> str:
 
 
 def _count_with_ops(text: str, tokenizer, tok_type: str) -> int:
-    """
-    Count tokens, treating every new-vocabulary marker as exactly 1 token.
-
-    Both Stage-1 (<SYN_N>) and Stage-3 (<VAR>, <ATTR>, <STR>, <FSTR>, <NUM>)
-    produce tokens that are added to the augmented vocabulary.  The base
-    tokenizer splits them into multiple subtokens; this function corrects
-    for that by:
-        total = tokens(text with markers stripped) + number_of_markers
-    """
-    hits = _NEW_TOKEN_RE.findall(text)
-    if not hits:
-        return len(_encode(tokenizer, tok_type, text))
-    text_no_markers = _NEW_TOKEN_RE.sub('', text)
-    return len(_encode(tokenizer, tok_type, text_no_markers)) + len(hits)
+    return count_augmented(text, tokenizer, tok_type, pattern=RE_ALL_MARKERS)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -153,30 +134,36 @@ def apply_v2_compression(
     repo_config: RepoConfig,
     tokenizer,
     tok_type: str,
+    count_fn=None,
 ) -> tuple[str, FileResult]:
     """
     Apply the full v2 pipeline to one source string.
     Returns (compressed_text, FileResult).
     """
-    baseline_tokens = len(_encode(tokenizer, tok_type, source))
+    if count_fn is None:
+        def count_fn_local(text: str) -> int:
+            return _count_with_ops(text, tokenizer, tok_type)
+        count_fn = count_fn_local
+
+    baseline_tokens = count_fn(source)
 
     # Stage 1 — syntax compression (needs valid Python AST)
     # Use _count_with_ops so that <SYN_N> markers are counted as 1 token each,
     # simulating an augmented vocabulary where every operator is a single entry.
     skeletons = repo_config.skeleton_candidates()
     after_s1 = compress_source_syntax(source, skeletons)
-    after_s1_tokens = _count_with_ops(after_s1, tokenizer, tok_type)
+    after_s1_tokens = count_fn(after_s1)
 
     # Stage 2 — semantic-preserving cleaning on non-SYN lines only:
     # keep comments/docstrings, freeze Stage-1 generated <SYN_N> lines.
     after_s2 = _clean_stage2_skip_syn(after_s1)
-    after_s2_tokens = _count_with_ops(after_s2, tokenizer, tok_type)
+    after_s2_tokens = count_fn(after_s2)
 
     # Stage 3 — token replacement only on non-SYN lines.
     # Stage-1 output lines are frozen to avoid cross-stage interference.
     rmap = repo_config.replacement_map
     after_s3 = _replace_stage3_skip_syn(after_s2, rmap)
-    after_s3_tokens = _count_with_ops(after_s3, tokenizer, tok_type)
+    after_s3_tokens = count_fn(after_s3)
 
     result = FileResult(
         baseline_tokens=baseline_tokens,
@@ -281,6 +268,7 @@ def evaluate(
     """
     tokenizer, tok_type = _load_tokenizer(tokenizer_key, tokenizer_cfg)
     V0 = _vocab_size(tokenizer, tok_type)
+    count_fn = None  # apply_v2_compression uses _count_with_ops via default
 
     total_bytes = sum(len(s.encode("utf-8")) for s in sources)
 
@@ -291,7 +279,7 @@ def evaluate(
     baseline_token_counts: Counter = Counter()
 
     for src in tqdm(sources, desc=f"  [{tokenizer_key}] compressing", leave=False):
-        _, fr = apply_v2_compression(src, repo_config, tokenizer, tok_type)
+        _, fr = apply_v2_compression(src, repo_config, tokenizer, tok_type, count_fn)
 
         for tok_id in _encode(tokenizer, tok_type, src):
             baseline_token_counts[tok_id] += 1
@@ -346,15 +334,12 @@ def print_report(results: list[EvalResult]):
     print("-" * w)
 
     for r in results:
-        simpy = SIMPY_REPORTED.get(r.tokenizer_key, {}).get("reduction_pct", 0.0)
-        marker = f"  (SimPy {simpy:.1f}%)"
         print(
-            f"  {r.tokenizer_key:<20} {r.baseline_tokens:>10,} {r.final_tokens:>10,} "
+            f"  {r.tokenizer_key:<20} {r.baseline_tokens:>10,}   {r.final_tokens:>10,} "
             f"{r.reduction_pct:>6.1f}% {r.syntax_pct:>6.1f}% "
             f"{r.cleaning_pct:>6.1f}% {r.replacement_pct:>6.1f}% "
             f"{r.baseline_bpb:>9.4f} {r.final_bpb:>9.4f} "
             f"{r.k_star_syntax:>6} {r.n_replacement_words:>7}"
-            + marker
         )
 
     print("=" * w)

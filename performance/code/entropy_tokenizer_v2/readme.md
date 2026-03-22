@@ -1,239 +1,184 @@
-# entropy_tokenizer_v2 — 动态 Per-Repo 压缩框架
+# entropy_tokenizer_v2
 
-> **目标**：在信息论框架下，通过集成三种互补的有损/无损压缩手段，对 Python 代码进行极致的 token 数量压缩，以降低 LLM 的 context 成本。  
-> v2 与 v1 / SimPy 完全独立，不共享任何模块。
+面向 Python 源码的 **按仓库动态挖掘** 的 token 压缩管线：在信息论式启发下，依次经过 **句式算子替换 → 文本清洗 → 高分词类别占位**，输出压缩文本与分阶段 token 计数（增广词表模拟见 `marker_count.py`）。
 
----
+**特点概览**
 
-## 核心思想："动态" × "多层集成"
+- **动态**：每个语料 / 仓库单独挖掘 `RepoConfig`（句式算子 + 替换词表），缓存在 `cache/`。
+- **三阶段串联**：Stage 1 句法、Stage 2 清洗、Stage 3 词级替换；各阶段职责与实现文件见下文。
+- **规则可配**：清洗开关、MDL 与打分超参在 `config.py` 中集中配置。
 
-| 维度 | v1 / SimPy | v2（本框架） |
-|------|-----------|------------|
-| 规则来源 | 固定规则集（SimPy 104条）/ 跨数据集统一挖掘 | **按仓库动态挖掘**，每个项目专属一套规则 |
-| 压缩粒度 | 句式结构（词汇层） | 句式 + 冗余符号 + 标识符/字面量（三层叠加） |
-| 有损能力 | 无损为主 | **显式有损**（缩进、docstring 可删除） |
-| 句式压缩策略 | 仅替换固定部分，保留关键字 | **整体替换**（含关键字全部压入算子 token） |
+实验数字与跑分见 **`docs/EVAL_RESULTS.md`**；机器可读汇总见 **`results/`**（由评估脚本生成）。
 
 ---
 
-## 三阶段压缩流水线
+## 三阶段总览
 
 ```
 原始 Python 代码
        │
-       ▼  Stage 1 ── 句式压缩（syntax_compressor.py）
-       │   AST 解析 → 提取句式骨架 → MDL 选出 K* 个最划算的句式
-       │   每个选中句式的 header 被整体替换为 <SYN_N> + 槽值
+       ▼  Stage 1 —— 句式压缩（syntax_compressor.py）
+       │   AST 遍历 → 句式骨架统计 → 候选池（语料级经验省 token）→ MDL 贪心选 K* 条骨架
+       │   将命中语句的 header 行替换为 `<SYN_N>` + 槽值（空格分隔）
        │
-       ▼  Stage 2 ── 有损清除（lossy_cleaner.py）
-       │   R01 删除行注释（无损）
-       │   R02 删除空白行（无损）
-       │   R03 删除行尾空格（无损）
-       │   R05 删除 docstring（有损）
-       │   R04 删除所有缩进（有损，代码不再可解析）
+       ▼  Stage 2 —— 清洗（lossy_cleaner.py；eval 里对 SYN 行单独策略，见下）
+       │   删空行、行尾空白；可选去掉缩进；评估管线中可保留注释/docstring（见 Stage 2 小节）
        │
-       ▼  Stage 3 ── Token 重要性替换（token_scorer.py）
-       │   统计语料词频 → 计算 Score(w) → 选出高分 token
-       │   高分 token 按类别替换为占位符
+       ▼  Stage 3 —— Token 打分与替换（token_scorer.py）
+       │   `tokenize` 抽词频 → Score(w) → 分位数截断 → 建 replacement_map → 按行替换
        │
        ▼
-  压缩后 token 序列（用于 LLM 预训练 / context 压缩）
+  压缩后文本
 ```
+
+**挖掘与压缩的次序**（`repo_miner.mine_repo`）：先对语料做 **仅无损** 清洗（`lossless_clean`：**保留** `#` 注释与 docstring；删空行、行尾空白，**保留**缩进），再统计 baseline tokens、挖骨架、算 Stage 3 词表；**压缩一条源码**时则按 `eval/v2_eval.py` 中 `apply_v2_compression` 的顺序执行 Stage 1 → 2 → 3（Stage 2 的配置与挖掘阶段不完全相同，见 Stage 2）。
 
 ---
 
-## Stage 1 详解：数据驱动句式压缩
+## Stage 1：句式骨架与 MDL
 
-### 句式骨架（Skeleton）
+**作用**：把反复出现的 AST「句法模式」收成少量算子 token，把一整段语句头（含关键字）压成一行 `` `<SYN_N>` `` 加槽值。
 
-用 Python AST 将语句的变量部分匿名化，提取出结构模板：
+**骨架怎么来**  
+对语句节点计算匿名化模板字符串（槽位 `{0},{1},…`），在语料上统计每种骨架出现次数；仅频率不低于 `AST_MIN_FREQ`（`config.py`）的进入候选池。
 
-```python
-# 原始代码
-with open(filepath, 'r', encoding='utf-8') as file_handle:
+**候选如何排序**  
+`build_candidate_pool` 在真实语料上按与压缩一致的方式，估算「每类骨架替换后」能省多少 token（`marker_count` 口径下的计数），得到 `empirical_total_savings`；再与码本开销 `MDL_CODEBOOK_OVERHEAD` 组合后排序，供 `greedy_mdl_select` 使用。
 
-# 对应骨架（pattern key）
-"with {0}({1}, {2}, encoding={3}) as {4}:"
-```
+**MDL 贪心接受**  
+在语料总 token 数 `N_baseline`、基础词表大小 `V₀` 下，逐个尝试加入骨架；若加入后总描述长度下降则接受（实现见 `syntax_compressor.greedy_mdl_select`）。判据形式为：
 
-骨架中 `{N}` 是槽位（slot），对应原始代码中的可变表达式。
-
-### 整体替换（v2 vs v1 的关键差异）
-
-```
-原始:    with open(filepath, 'r', encoding='utf-8') as file_handle:
-v1结果:  <OP_K> open(filepath, 'r', encoding='utf-8') as file_handle:  ← 只压 "with...:" 固定部分
-v2结果:  <SYN_0> open(filepath, 'r', encoding='utf-8') file_handle     ← 关键字 with / as / : 全部吸收进算子
-```
-
-v2 中 `with`、`as`、`:` 这些关键字 token 被完全吸收进 `<SYN_0>`，槽值直接跟在算子后面。
-
-### MDL 选择（Minimum Description Length）
-
-贪心前向选择，满足以下条件才接受一个骨架：
-
-```
+```text
 ΔL_k = N_new · log₂(V₀+k) − N_curr · log₂(V₀+k−1) + cb_k · log₂(V₀) < 0
 ```
 
-- `N_curr` → 当前压缩后 token 总数
-- `cb_k = MDL_CODEBOOK_OVERHEAD`（描述算子本身的成本）
-- `V₀` → 基础词表大小（GPT-4: 100,277）
+- `N_curr` / `N_new`：接受前后语料总 token 数（与 `empirical_total_savings` 衔接）。
+- `cb_k`：`MDL_CODEBOOK_OVERHEAD`。
+- `V₀`：目标 tokenizer 词表规模。
 
-**每个算子的实际收益**（demo 实测）：
+**压缩时**  
+对源码 AST 匹配已选骨架，将对应 **header 行** 替换为一行 `` `<SYN_N> slot0 slot1 …``（具体格式见 `syntax_compressor.compress_source_syntax`）。
 
-| 算子 | 骨架 | spi | freq | MDL净收益 |
-|------|------|-----|------|---------|
-| SYN_0 | `with {0}({1}, {2}, encoding={3}) as {4}:` | 8 | 2 | 14 |
-| SYN_1 | `{0} = {1}.get({2}, {3})` | 5 | 2 | 8 |
-| SYN_2 | `{0} = {1}.path.join({2}, f'...')` | 9 | 1 | 7 |
-| SYN_3 | `for {0} in {1}.listdir({2}.input_dir):` | 9 | 1 | 7 |
-
-> spi = savings per instance（每次出现节省的 token 数）
-
-### 算子码本（Codebook）
-
-**算子编号与骨架的对应关系存储在 `cache/repo_config_<tok>_<name>.json`**，字段 `selected_skeletons`，**索引 N 对应 `<SYN_N>`**。
-
-```json
-"selected_skeletons": [
-  {"skeleton": "with {0}({1}, {2}, encoding={3}) as {4}:", ...},   ← SYN_0
-  {"skeleton": "{0} = {1}.get({2}, {3})", ...},                    ← SYN_1
-  ...
-]
-```
+**持久化**  
+`cache/repo_config_<tok>_<name>.json` 的 `selected_skeletons` 第 `N` 条对应 `` `<SYN_N>` ``。
 
 ---
 
-## Stage 3 详解：Token 重要性评分
+## Stage 2：有损 / 无损清洗
 
-### Score 公式
+**实现文件**：`lossy_cleaner.py`。单文件入口为 `clean_code(source, CleaningConfig)`；规则按固定顺序执行：
 
-$$\text{Score}(w) = \frac{\Delta T(w)}{\Delta I(w) + \varepsilon}$$
+| 代号 | 规则 | 默认是否有损 | 说明 |
+|------|------|--------------|------|
+| R05 | 删除模块/类/函数首行 docstring | 有损 | 依赖 AST 定位；失败时回退正则 |
+| R01 | 删除 `#` 行注释 | 无损 | `tokenize` 实现，避免误伤字符串内 `#` |
+| R03 | 行尾空白 | 无损 | |
+| R02 | 删除空行 | 无损 | |
+| R04 | 去掉行首缩进（每行 `lstrip`） | 有损 | 结构破坏，压缩后通常不可再 parse |
+
+**配置表**（`config.CLEANING_RULES`）与 `CleaningConfig` 字段一一对应，可开关各条。
+
+**挖掘阶段**（`repo_miner`）  
+只对语料调用 **`lossless_clean`**：等价于开启 R02、R03，**关闭** R01、R04、R05（**不删**注释与 docstring）。目的是规整空白、便于稳定解析与统计。
+
+**全链路评估阶段**（`eval/v2_eval.py` → `_clean_stage2_skip_syn`）  
+策略与「整文件 `clean_code`」不同，要点如下：
+
+1. **Stage 1 产生的行**（匹配 `` `^\s*<SYN_\d+>` ``）：整行 **冻结**，只做 `rstrip`，不删注释、不剥缩进，避免破坏算子行格式。
+2. **其余行**：按行调用 `clean_code`，且配置为 **删空行、删行尾空白、去掉缩进**，但 **不删** 行注释与 docstring（与挖掘用的 `lossless_clean` 不同，便于在评估里保留部分语义信息）。
+
+因此：**Stage 2 在 README 里单独成章**；若你直接调用 `lossy_clean` / `lossy_cleaner` 的默认 `CleaningConfig()`，行为又与 `v2_eval` 里 Stage 2 不一致，以实际调用的入口为准。
+
+---
+
+## Stage 3：Score、类别占位与替换
+
+**词表从哪来**  
+对源码用 `tokenize` 扫描，按类别累计频次：标识符、`.` 右侧属性名、字符串、f-string、数字（见 `token_scorer._extract_vocab_from_source`）。
+
+**Score**（与 `token_scorer.compute_scores` 一致）：
+
+```text
+Score(w) = ΔT(w) / (ΔI(w) + ε)
+```
+
+- `p(w) = freq(w) / Σ_u freq(u)`，跨类别统一分母。
+- `spt(w)`：用目标 tokenizer 对 `w` 单独 `encode` 的长度（若不可用则字符长启发式）。
+- `ΔT(w) = max(0, spt(w) − 1) × freq(w)`；仅 `spt > 1` 的词在替换候选里有意义。
 
 | 符号 | 含义 | 计算方式 |
-|------|------|---------|
-| $\Delta T(w)$ | 将 $w$ 单 token 化后节省的 subtoken 数 × 出现频次 | $(spt(w)-1) \times freq(w)$ |
-| $\Delta I(w)$ | 自信息（越罕见越大，表示信息量越高） | $-\log_2 p(w)$ |
-| $\varepsilon$ | 平滑常数，防止除零 | 0.01 |
+|:----:|------|----------|
+| ΔT(w) | 整块换成 1 个类别占位符时，相对 subtoken 计数节省 × 频次 | (spt − 1) × freq |
+| ΔI(w) | 自信息 | −log₂ p(w) |
+| ε | 平滑 | `SCORE_EPSILON`（`config.py`） |
 
-**Score 高** → 高频 + 低自信息 → 值得替换（省得多，损失少）  
-**Score 低** → 低频 + 高自信息 → 保留（该 token 语义独特）
+**选谁替换**  
+`select_replacement_set`：在 `spt > 1` 的词里，按 Score 排序，取分位数以上（`SCORE_THRESHOLD_PERCENTILE`，默认约前 30% 高分）。`build_replacement_map` 把类别映射到 `PLACEHOLDERS`（`` `<VAR>` ``、`` `<ATTR>` ``、`` `<STR>` ``、`` `<FSTR>` ``、`` `<NUM>` ``）。
 
-### 类别占位符
+**保护词**  
+关键字、内置名、`self` / `cls` / `args` / `kwargs` 等不参与替换（`token_scorer._PROTECTED`）。
 
-| 占位符 | 替换对象 | 示例 |
-|--------|---------|------|
-| `<VAR>` | 普通变量名（高分） | `DEFAULT_OUTPUT_DIR` → `<VAR>` |
-| `<ATTR>` | 属性名（出现在 `.` 右侧） | `output_dir` → `<ATTR>` |
-| `<STR>` | 字符串字面量 | `"utf-8"` → `<STR>` |
-| `<FSTR>` | f-string 字面量 | `f"hello {name}"` → `<FSTR>` |
-| `<NUM>` | 数值字面量 | `3.14` → `<NUM>` |
-
-**受保护（永不替换）**：Python 关键字、内置函数（`len`/`print` 等）、`self`/`cls`/`args`/`kwargs`
-
-### demo 实测替换表
-
-```
-'DEFAULT_OUTPUT_DIR'  → <VAR>
-'load_json_file'      → <VAR>
-'"utf-8"'             → <STR>
-'output_dir'          → <ATTR>
-'input_dir'           → <ATTR>
-'output_path'         → <ATTR>
-...（共 10 个词）
-```
+**怎么写回文本**  
+`apply_token_replacement`：先整段匹配替换字符串/数字字面量，再替换标识符；**在 `v2_eval` 里对含 `` `<SYN_N>` `` 的行整行跳过**，只在非 SYN 行上做替换，避免与 Stage 1 冲突。
 
 ---
 
-## Token 计数修正（增广词表模拟）
+## 增广词表下的 token 计数
 
-`<SYN_N>` / `<VAR>` / `<ATTR>` 等占位符是**新增词表项**，在基础 tokenizer 中会被拆成多个 subtoken（如 `<SYN_0>` → `<` / `SYN` / `_` / `0` / `>`）。
-
-v2 评估时用 `_count_with_ops()` 修正此误差：
-
-```python
-total_tokens = tokenize(text_without_markers) + count(markers)
-# 每个 marker 模拟为 1 个新词表 token
-```
+`` `<SYN_N>` ``、`` `<VAR>` `` 等在真实 tokenizer 中会被拆成多个 subtoken。评估统一用 **`marker_count.count_augmented()`**：先去掉占位再 encode，再按占位出现次数加回（每个占位计 1）。
 
 ---
 
-## Demo 实测结果（玩具代码，GPT-4 tokenizer）
+## Per-Repo 动态性
 
-```
-原始代码：2166 chars，469 tokens（含 docstring / 注释 / 缩进）
-
-  Stage 1（句式压缩）：469 → 410    省 59 tokens   (12.6%)
-  Stage 2（有损清除）：410 → 327    省 83 tokens   (17.7%)
-  Stage 3（token替换）：327 → 314   省 13 tokens   ( 2.8%)
-  ─────────────────────────────────────────────────────
-  总压缩             ：469 → 314    省 155 tokens  (33.0%)
-```
-
-**参数**：MDL K\* = 26 个句式算子，10 个 token 替换，V₀ = 100,277
-
-> SimPy（v1 对比）：GPT-4 tokenizer 上报告压缩率 **10.4%**（无损，仅句式层）
+同一批源码在不同仓库上挖掘，会得到不同的骨架集合与替换集；入口见 `repo_miner.mine_from_sources` / `mine_from_repo_path`，配置序列化为 JSON 后供 `eval` 与压缩 API 使用。
 
 ---
 
-## 动态性（Per-Repo）
-
-每个仓库单独走一遍挖掘流程，产出**专属的** `RepoConfig`：
-
-```
-repo_miner.mine_from_repo_path("/path/to/my_project", tok_key, cfg)
-         ↓
-cache/repo_config_gpt4_my_project.json
-         ↓
-apply_v2_compression(source, repo_config, tokenizer)
-```
-
-同一代码在不同仓库下得到不同的算子集合，压缩规则贴合该项目的真实语料分布。
-
----
-
-## 文件结构
+## 目录结构
 
 ```
 entropy_tokenizer_v2/
-├── config_v2.py          # 全局配置（路径 / 参数 / tokenizer 列表）
-├── lossy_cleaner.py      # Stage 2：有损/无损清除（R01-R05）
-├── token_scorer.py       # Stage 3：Score(w) 计算 + 类别占位替换
-├── syntax_compressor.py  # Stage 1：AST 骨架提取 + MDL 选择 + 整体替换
-├── repo_miner.py         # 按仓库动态挖掘，串联三个 Stage
-├── v2_eval.py            # 评估流水线：分阶段指标 + CSV/JSON 输出
-├── run_v2.py             # CLI 入口
-├── cache/                # 挖掘结果缓存（RepoConfig JSON）
-└── results/              # 评估报告（CSV + JSON）
+├── config.py
+├── lossy_cleaner.py
+├── token_scorer.py
+├── syntax_compressor.py
+├── repo_miner.py
+├── marker_count.py
+├── cache/
+├── results/
+├── docs/
+│   └── EVAL_RESULTS.md
+└── eval/
+    ├── bootstrap_v2.py
+    ├── run_v2.py
+    ├── v2_eval.py
+    ├── eval_stage1_fair_compare.py
+    └── eval_local_starcoder_1m.py
 ```
 
 ---
 
 ## 使用方法
 
+路径以仓库根目录（`paper`）为准：
+
 ```bash
-# 玩具代码 demo（快速验证）
-python run_v2.py demo --tokenizer gpt4
-
-# 指定本地文件
-python run_v2.py demo --file path/to/script.py --tokenizer gpt4
-
-# 评估一个本地仓库
-python run_v2.py eval --repo /path/to/project --tokenizer gpt4
-
-# 评估 HF 数据集（需网络 + HF token）
-python run_v2.py eval --samples 200 --tokenizers gpt4 santacoder
+python performance/code/entropy_tokenizer_v2/eval/run_v2.py demo --tokenizer gpt4
+python performance/code/entropy_tokenizer_v2/eval/run_v2.py demo --file path/to/script.py --tokenizer gpt4
+python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --repo /path/to/project --tokenizers gpt4
+python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --samples 200 --tokenizers gpt4 santacoder
+python performance/code/entropy_tokenizer_v2/eval/eval_local_starcoder_1m.py --tokenizers gpt4
+python performance/code/entropy_tokenizer_v2/eval/eval_local_starcoder_1m.py --tokenizers gpt2
 ```
 
 ---
 
-## 设计取舍说明
+## 设计说明（非实验结论）
 
-| 点 | 当前选择 | 备注 |
-|----|---------|------|
-| 有损/无损 | 显式有损（缩进 / docstring 删除） | 仅适合表示/检索任务，不适合代码生成 |
-| 槽值边界 | 空格分隔，无显式边界标记 | 若需精确解压缩可加 `<SEP>` token |
-| 高分 token 替换范围 | 包括槽值位置 | 若要保护槽值语义，可在 mining 阶段排除 slot_token_set |
-| 动态粒度 | 按仓库 | 不做在线更新，挖掘一次缓存复用 |
-| 信息量度量 | 自信息 $I(w) = -\log_2 p(w)$（词频统计） | 后续可用掩码实验校正 |
+| 点 | 当前实现 |
+|----|----------|
+| 有损清洗 | R04/R05 会破坏可解析性；若需可逆压缩，应在配置中关闭 |
+| Stage 2 两套策略 | 挖掘用 `lossless_clean`；`v2_eval` 全链路用「按行 + 冻结 SYN」逻辑，见 Stage 2 小节 |
+| Stage 3 替换范围 | 含槽值内 identifier；若需保护可在挖掘阶段收窄词表 |
+| 动态性 | 按仓库 / 语料子集挖掘一次，缓存复用 |

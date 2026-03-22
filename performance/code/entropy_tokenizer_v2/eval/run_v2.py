@@ -1,32 +1,40 @@
 """
-v2 CLI Entry Point
+v2 CLI Entry Point（评估 / 演示入口，依赖 entropy_tokenizer_v2 核心库）
 
 Usage examples:
 
-  # Evaluate on the HF eval dataset (default tokenizers):
+  # 仓库根目录下：
+  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval
+
+  # 或进入本目录：
+  cd performance/code/entropy_tokenizer_v2/eval
   python run_v2.py eval
 
   # Evaluate on a local repository:
-  python run_v2.py eval --repo /path/to/my_project
+  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --repo /path/to/my_project
 
   # Limit samples:
-  python run_v2.py eval --samples 200
+  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --samples 200
 
   # Choose specific tokenizers:
-  python run_v2.py eval --tokenizers gpt4 santacoder
+  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --tokenizers gpt4 santacoder
 
   # Show the compression effect on a single file:
-  python run_v2.py demo --file my_script.py --tokenizer gpt4
+  python performance/code/entropy_tokenizer_v2/eval/run_v2.py demo --file my_script.py --tokenizer gpt4
 
   # Quick smoke-test on built-in toy code:
-  python run_v2.py demo
+  python performance/code/entropy_tokenizer_v2/eval/run_v2.py demo
 """
 
 import argparse
 import sys
 from pathlib import Path
 
-from config_v2 import EVAL_TOKENIZERS, EVAL_NUM_SAMPLES
+import bootstrap_v2
+
+bootstrap_v2.ensure()
+
+from config import EVAL_TOKENIZERS, EVAL_NUM_SAMPLES
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -95,11 +103,10 @@ def cmd_demo(args):
     print(source[:2000] + ("..." if len(source) > 2000 else ""))
     print("─" * 60)
 
-    from repo_miner import mine_from_sources, _load_tokenizer, _vocab_size
+    from repo_miner import mine_from_sources, _load_tokenizer
     from v2_eval import apply_v2_compression
 
     tokenizer, tok_type = _load_tokenizer(tok_key, cfg)
-    V0 = _vocab_size(tokenizer, tok_type)
 
     repo_config = mine_from_sources(
         sources=[source],
