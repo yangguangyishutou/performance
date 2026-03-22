@@ -1,19 +1,4 @@
-"""
-Per-Repository Dynamic Mining (v2)
-
-"Dynamic" means: every repository gets its own compression rule set,
-derived exclusively from that repository's own code.
-
-Pipeline (run once per repo before evaluation):
-  [1] Collect all .py files from the repository.
-  [2] Lossless clean (remove comments / blank lines) so AST parsing stays valid.
-  [3] Mine syntax skeletons -> MDL selection -> SkeletonCandidate list.
-  [4] Build token vocabulary -> compute scores -> select replacement set.
-  [5] Persist the RepoConfig to cache (JSON) for reuse.
-
-The resulting RepoConfig is a self-contained compression specification:
-  apply_v2_compression(source, repo_config, tokenizer) -> compressed_str
-"""
+"""Mine per-corpus ``RepoConfig`` (Stage 1 + Stage 3 rules) and cache JSON."""
 
 import json
 import os
@@ -39,23 +24,9 @@ from token_scorer import (
 )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# RepoConfig — the output of mining, the input to compression / evaluation
-# ─────────────────────────────────────────────────────────────────────────────
-
 @dataclass
 class RepoConfig:
-    """
-    All compression rules derived from one repository.
-
-    selected_skeletons : MDL-accepted syntax patterns (in acceptance order).
-    replacement_map    : {original_token: placeholder} for Stage-3 replacement.
-    scores_summary     : top-50 token scores for reporting.
-    n_sources          : number of files mined.
-    N_baseline_tokens  : total tokens in the corpus under the target tokenizer.
-    V0                 : base vocabulary size of the target tokenizer.
-    tokenizer_key      : label of the tokenizer used during mining.
-    """
+    """Mined skeletons, replacement map, score summary, baseline stats."""
     selected_skeletons:  list[dict] = field(default_factory=list)
     replacement_map:     dict[str, str] = field(default_factory=dict)
     scores_summary:      list[dict] = field(default_factory=list)
@@ -63,8 +34,6 @@ class RepoConfig:
     N_baseline_tokens:   int = 0
     V0:                  int = 0
     tokenizer_key:       str = ""
-
-    # ── convenience accessors ──────────────────────────────────────────────
 
     def skeleton_candidates(self) -> list[SkeletonCandidate]:
         return [SkeletonCandidate(**d) for d in self.selected_skeletons]
@@ -77,10 +46,6 @@ class RepoConfig:
         d = json.loads(s)
         return cls(**d)
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Tokenizer helpers (duplicated locally so repo_miner is self-contained)
-# ─────────────────────────────────────────────────────────────────────────────
 
 def _load_tokenizer(tok_key: str, cfg: dict):
     if cfg["type"] == "tiktoken":
@@ -103,15 +68,8 @@ def _vocab_size(tokenizer, tok_type: str) -> int:
     return len(tokenizer)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Source collection
-# ─────────────────────────────────────────────────────────────────────────────
-
 def collect_py_sources(repo_path: str | Path) -> list[str]:
-    """
-    Recursively collect the text content of all .py files under repo_path.
-    Silently skips unreadable files.
-    """
+    """All ``.py`` file contents under *repo_path*; skip unreadable."""
     sources: list[str] = []
     for root, _dirs, files in os.walk(str(repo_path)):
         for fname in files:
@@ -126,10 +84,6 @@ def collect_py_sources(repo_path: str | Path) -> list[str]:
     return sources
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Core mining function
-# ─────────────────────────────────────────────────────────────────────────────
-
 def mine_repo(
     sources: list[str],
     tokenizer,
@@ -140,29 +94,22 @@ def mine_repo(
     score_percentile: float = SCORE_THRESHOLD_PERCENTILE,
     verbose: bool = True,
 ) -> RepoConfig:
-    """
-    Run the full mining pipeline for a list of source strings.
-    Returns a RepoConfig ready for compression.
-    """
     n = len(sources)
     if verbose:
         print(f"[repo_miner] Mining {n} source files ...")
 
-    # [1] Lossless clean (comments removed so token counts are meaningful,
-    #     indentation kept so AST parsing still works)
+    # lossless_clean: blank lines + trailing ws only; keep comments/indent for parse
     clean_sources = []
     for src in sources:
         c, _ = lossless_clean(src)
         clean_sources.append(c)
 
-    # [2] Compute baseline token count
     if verbose:
         print("[repo_miner] Computing baseline token counts ...")
     N_baseline = 0
     for src in tqdm(clean_sources, desc="  baseline tokens", disable=not verbose):
         N_baseline += len(_encode(tokenizer, tok_type, src))
 
-    # [3] Stage 1: syntax skeleton mining + MDL selection
     if verbose:
         print("[repo_miner] Stage 1 - mining AST skeletons ...")
     skeleton_counts = mine_skeletons(clean_sources, min_freq=min_freq)
@@ -179,7 +126,6 @@ def mine_repo(
             print(f"    [{c.skeleton[:60]}]  spi={c.savings_per_instance} "
                   f"freq={c.frequency} net_benefit={c.mdl_net_benefit:.0f}")
 
-    # [4] Stage 3: token importance scoring
     if verbose:
         print("[repo_miner] Stage 3 - computing token importance scores ...")
     vocab = build_vocabulary(clean_sources)
@@ -193,7 +139,6 @@ def mine_repo(
               f"{eligible} eligible (spt>1), "
               f"{len(replacement_set)} selected for replacement")
 
-    # [5] Build scores summary (top 50)
     from token_scorer import score_summary
     summary = score_summary(scores, top_n=50)
 
@@ -220,10 +165,6 @@ def mine_repo(
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Convenience: mine from a local repo path
-# ─────────────────────────────────────────────────────────────────────────────
-
 def mine_from_repo_path(
     repo_path: str | Path,
     tokenizer_key: str,
@@ -231,9 +172,6 @@ def mine_from_repo_path(
     cache: bool = True,
     verbose: bool = True,
 ) -> RepoConfig:
-    """
-    Mine compression rules for a local repository and optionally cache.
-    """
     cache_file = CACHE_DIR / f"repo_config_{tokenizer_key}_{Path(repo_path).name}.json"
     if cache and cache_file.exists():
         if verbose:
@@ -260,10 +198,6 @@ def mine_from_repo_path(
 
     return config
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Convenience: mine from an in-memory list of sources
-# ─────────────────────────────────────────────────────────────────────────────
 
 def mine_from_sources(
     sources: list[str],

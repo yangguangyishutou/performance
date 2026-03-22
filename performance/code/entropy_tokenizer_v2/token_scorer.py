@@ -1,30 +1,4 @@
-"""
-Stage 3 — Token Importance Scoring & Category-Based Placeholder Replacement
-
-For each identifier / literal token w in a repo corpus, compute:
-
-    Score(w) = ΔT(w) / (ΔI(w) + ε)
-
-where:
-    ΔT(w) = (spt(w) − 1) × freq(w)          token savings if w → one placeholder
-    ΔI(w) = −log₂ p(w)                        self-information  (rare ⟹ large)
-    p(w)  = freq(w) / Σ_u freq(u)             corpus frequency probability
-    ε     = SCORE_EPSILON                      smoothing constant
-
-High Score → frequent + low self-info  → safe to replace (big gain, little loss)
-Low Score  → rare    + high self-info  → keep as-is    (small gain, big loss)
-
-Replacement categories (one placeholder per semantic class):
-    <VAR>   identifier used as a variable / parameter name
-    <ATTR>  identifier appearing as an attribute  (right of '.')
-    <STR>   regular string literal
-    <FSTR>  f-string literal
-    <NUM>   numeric literal
-
-spt(w) estimation:
-    If a target tokenizer is provided  → exact subtoken count via encode()
-    Otherwise                          → heuristic: len(w) / 3.5
-"""
+"""Stage 3: Score(w)=ΔT/(I(w)+ε); map high-score tokens to <VAR>/<STR>/… placeholders."""
 
 import builtins
 import io
@@ -38,10 +12,6 @@ from typing import Optional
 
 from config import SCORE_EPSILON, SCORE_THRESHOLD_PERCENTILE, PLACEHOLDERS
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Protected tokens — never replaced regardless of score
-# ─────────────────────────────────────────────────────────────────────────────
-
 _KEYWORDS  = set(keyword.kwlist)
 _BUILTINS  = set(dir(builtins))
 _PROTECTED = _KEYWORDS | _BUILTINS | {
@@ -49,10 +19,6 @@ _PROTECTED = _KEYWORDS | _BUILTINS | {
     "True", "False", "None", "args", "kwargs",
 }
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Vocabulary extraction (from valid Python source using tokenize)
-# ─────────────────────────────────────────────────────────────────────────────
 
 def _safe_tokenize(source: str) -> list:
     try:
@@ -62,16 +28,7 @@ def _safe_tokenize(source: str) -> list:
 
 
 def _extract_vocab_from_source(source: str) -> dict[str, Counter]:
-    """
-    Scan one source file and return per-category frequency Counters:
-        {
-          "identifiers": Counter,
-          "attributes":  Counter,   # subset of identifiers appearing after '.'
-          "strings":     Counter,
-          "fstrings":    Counter,
-          "numbers":     Counter,
-        }
-    """
+    """Per-category token counts from ``tokenize``."""
     toks = _safe_tokenize(source)
 
     ids:    Counter = Counter()
@@ -121,10 +78,7 @@ def _extract_vocab_from_source(source: str) -> dict[str, Counter]:
 
 
 def build_vocabulary(sources: list[str]) -> dict[str, Counter]:
-    """
-    Aggregate per-category vocabularies over a list of source files.
-    Returns the same structure as _extract_vocab_from_source but corpus-wide.
-    """
+    """Merge per-file vocab into corpus-wide Counters."""
     total: dict[str, Counter] = {
         "identifiers": Counter(),
         "attributes":  Counter(),
@@ -137,10 +91,6 @@ def build_vocabulary(sources: list[str]) -> dict[str, Counter]:
             total[cat].update(counter)
     return total
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Score computation
-# ─────────────────────────────────────────────────────────────────────────────
 
 @dataclass
 class TokenInfo:
@@ -170,13 +120,7 @@ def compute_scores(
     tok_type: str = "tiktoken",
     epsilon: float = SCORE_EPSILON,
 ) -> dict[str, TokenInfo]:
-    """
-    Compute Score(w) for every token in the vocabulary.
-
-    The total corpus frequency (denominator of p(w)) is computed across
-    identifiers + strings + fstrings + numbers combined, so probabilities
-    are comparable across categories.
-    """
+    """p(w) pooled over all categories."""
     ids   = vocab["identifiers"]
     attrs = vocab["attributes"]
     strs  = vocab["strings"]
@@ -220,21 +164,11 @@ def compute_scores(
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Selection: which tokens to replace
-# ─────────────────────────────────────────────────────────────────────────────
-
 def select_replacement_set(
     scores: dict[str, TokenInfo],
     threshold_percentile: float = SCORE_THRESHOLD_PERCENTILE,
 ) -> set[str]:
-    """
-    Return the set of tokens whose Score is at or above the
-    (1 − threshold_percentile) quantile.
-
-    Only tokens with spt > 1 are eligible (replacing a single-subtoken
-    word saves 0 subtokens and is not worth the semantic cost).
-    """
+    """Tokens with spt>1 and score ≥ quantile cutoff."""
     eligible = [info for info in scores.values() if info.spt > 1.0]
     if not eligible:
         return set()
@@ -250,9 +184,6 @@ def build_replacement_map(
     scores: dict[str, TokenInfo],
     replacement_set: set[str],
 ) -> dict[str, str]:
-    """
-    Build {original_token: placeholder} for all tokens in replacement_set.
-    """
     rmap: dict[str, str] = {}
     for word in replacement_set:
         if word in scores:
@@ -261,11 +192,6 @@ def build_replacement_map(
     return rmap
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Application: replace tokens in source text
-# ─────────────────────────────────────────────────────────────────────────────
-
-# Precompile once — matches Python identifiers, quoted strings, numbers
 _IDENT_RE  = re.compile(r'\b([A-Za-z_]\w*)\b')
 _STRING_RE = re.compile(
     r'(?:f|F|r|R|b|B|u|U)?(?:\'\'\'[\s\S]*?\'\'\'|"""[\s\S]*?"""|'
@@ -275,40 +201,28 @@ _NUMBER_RE = re.compile(r'\b(\d+(?:\.\d*)?(?:[eE][+-]?\d+)?[jJ]?|\d+)\b')
 
 
 def apply_token_replacement(text: str, rmap: dict[str, str]) -> str:
-    """
-    Replace tokens in *text* according to rmap using regex (works on
-    non-valid Python, i.e. after syntax compression has added <SYN_N> markers).
-
-    Processing order:
-        1. String literals (protect their content from identifier replacement)
-        2. Number literals
-        3. Identifiers (word-boundary aware, skips already-replaced placeholders)
-    """
+    """Replace strings, then numbers, then identifiers (regex; OK post–Stage 1)."""
     if not rmap:
         return text
 
-    # Separate rmap by category
     str_words = {w: p for w, p in rmap.items()
                  if p in (PLACEHOLDERS["string"], PLACEHOLDERS["fstring"])}
     num_words  = {w: p for w, p in rmap.items() if p == PLACEHOLDERS["number"]}
     id_words   = {w: p for w, p in rmap.items()
                   if p in (PLACEHOLDERS["variable"], PLACEHOLDERS["attribute"])}
 
-    # Step 1 — strings (replace entire literals)
     if str_words:
         def _replace_str(m):
             s = m.group(0)
             return str_words.get(s, s)
         text = _STRING_RE.sub(_replace_str, text)
 
-    # Step 2 — numbers
     if num_words:
         def _replace_num(m):
             n = m.group(0)
             return num_words.get(n, n)
         text = _NUMBER_RE.sub(_replace_num, text)
 
-    # Step 3 — identifiers (word-boundary match, avoid hitting placeholders)
     if id_words:
         def _replace_id(m):
             word = m.group(1)
@@ -318,12 +232,8 @@ def apply_token_replacement(text: str, rmap: dict[str, str]) -> str:
     return text
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Convenience: one-call score summary
-# ─────────────────────────────────────────────────────────────────────────────
-
 def score_summary(scores: dict[str, TokenInfo], top_n: int = 20) -> list[dict]:
-    """Return top-N tokens by score as a list of dicts (for reporting)."""
+    """Top-*n* by score as dict rows."""
     top = sorted(scores.values(), key=lambda x: x.score, reverse=True)[:top_n]
     return [
         {

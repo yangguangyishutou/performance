@@ -1,30 +1,4 @@
-"""
-v2 CLI Entry Point（评估 / 演示入口，依赖 entropy_tokenizer_v2 核心库）
-
-Usage examples:
-
-  # 仓库根目录下：
-  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval
-
-  # 或进入本目录：
-  cd performance/code/entropy_tokenizer_v2/eval
-  python run_v2.py eval
-
-  # Evaluate on a local repository:
-  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --repo /path/to/my_project
-
-  # Limit samples:
-  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --samples 200
-
-  # Choose specific tokenizers:
-  python performance/code/entropy_tokenizer_v2/eval/run_v2.py eval --tokenizers gpt4 santacoder
-
-  # Show the compression effect on a single file:
-  python performance/code/entropy_tokenizer_v2/eval/run_v2.py demo --file my_script.py --tokenizer gpt4
-
-  # Quick smoke-test on built-in toy code:
-  python performance/code/entropy_tokenizer_v2/eval/run_v2.py demo
-"""
+"""CLI: ``eval`` (HF samples or ``--repo``), ``demo`` (single file / toy). From repo: ``python .../eval/run_v2.py eval``."""
 
 import argparse
 import sys
@@ -36,10 +10,6 @@ bootstrap_v2.ensure()
 
 from config import EVAL_TOKENIZERS, EVAL_NUM_SAMPLES
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Sub-commands
-# ─────────────────────────────────────────────────────────────────────────────
 
 def cmd_eval(args):
     from v2_eval import run_evaluation
@@ -139,10 +109,6 @@ def cmd_demo(args):
     print("-" * 60 + "\n")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Toy code for demo mode
-# ─────────────────────────────────────────────────────────────────────────────
-
 _TOY_CODE = '''\
 """Utility functions for processing data files."""
 
@@ -212,18 +178,13 @@ class DataProcessor:
 '''
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Argument parser
-# ─────────────────────────────────────────────────────────────────────────────
-
 def main():
     parser = argparse.ArgumentParser(
         prog="run_v2",
-        description="v2 Dynamic Per-Repo Compression Framework",
+        description="entropy_tokenizer_v2 eval / demo",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    # ── eval ──────────────────────────────────────────────────────────────────
     p_eval = sub.add_parser("eval", help="Run full evaluation")
     p_eval.add_argument("--repo", type=str, default=None,
                         help="Path to local Python repo (default: use HF dataset)")
@@ -232,7 +193,6 @@ def main():
     p_eval.add_argument("--tokenizers", nargs="+", default=None,
                         help="Tokenizer keys to evaluate (default: all)")
 
-    # ── demo ──────────────────────────────────────────────────────────────────
     p_demo = sub.add_parser("demo", help="Show compression on a single file")
     p_demo.add_argument("--file", type=str, default=None,
                         help="Python source file to compress (default: built-in toy code)")

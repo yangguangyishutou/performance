@@ -1,20 +1,4 @@
-"""
-Stage 2 — Lossy / Lossless Code Cleaner
-
-Rules applied in order:
-  Lossless (structure preserved, code stays valid Python):
-    R01  Remove # inline comments         (uses tokenize for accuracy)
-    R02  Remove blank lines
-    R03  Remove trailing whitespace
-
-  Lossy (structural information destroyed, code becomes invalid Python):
-    R05  Remove docstrings                (triple-quoted string statements)
-    R04  Remove indentation               (flattens all block structure)
-
-NOTE: R04/R05 are intentionally lossy — the compressed form cannot be
-      re-parsed as Python.  This is acceptable for representation/retrieval
-      tasks; do NOT use for code generation benchmarks.
-"""
+"""Stage 2: optional R01–R05 (comments, blanks, ws, docstrings, indent). R04/R05 are lossy."""
 
 import ast
 import io
@@ -24,17 +8,13 @@ from dataclasses import dataclass, field
 from typing import Optional
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Configuration & Stats
-# ─────────────────────────────────────────────────────────────────────────────
-
 @dataclass
 class CleaningConfig:
     remove_comments:            bool = False
     remove_blank_lines:         bool = True
     remove_trailing_whitespace: bool = True
-    remove_docstrings:          bool = False  # 默认保留 docstring；需有损时再开
-    remove_indentation:         bool = True   # LOSSY
+    remove_docstrings:          bool = False
+    remove_indentation:         bool = True
 
 
 @dataclass
@@ -61,16 +41,8 @@ class CleaningStats:
         )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# R05 — Docstring removal
-# ─────────────────────────────────────────────────────────────────────────────
-
 def _remove_docstrings(source: str) -> tuple[str, int]:
-    """
-    Remove standalone docstring expressions from functions, classes, and modules.
-    Uses AST to precisely locate docstring nodes; falls back to regex.
-    Returns (cleaned_source, chars_removed).
-    """
+    """Strip first docstring in module/class/function bodies; AST first, else regex."""
     removed_chars = 0
     try:
         tree = ast.parse(source)
@@ -111,16 +83,8 @@ def _remove_docstrings(source: str) -> tuple[str, int]:
     return "".join(kept), removed_chars
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# R01 — Inline comment removal (tokenize-based)
-# ─────────────────────────────────────────────────────────────────────────────
-
 def _remove_comments(source: str) -> str:
-    """
-    Strip # comments using Python's tokenize module so comments inside
-    string literals are never accidentally touched.
-    Falls back to regex on tokenize error.
-    """
+    """Remove ``#`` comments via ``tokenize`` (strings safe); regex fallback."""
     try:
         toks = list(tokenize.generate_tokens(io.StringIO(source).readline))
     except (tokenize.TokenError, IndentationError, SyntaxError):
@@ -145,49 +109,33 @@ def _remove_comments(source: str) -> str:
     return "".join(result)
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Public API
-# ─────────────────────────────────────────────────────────────────────────────
-
 def clean_code(
     source: str,
     config: Optional[CleaningConfig] = None,
 ) -> tuple[str, CleaningStats]:
-    """
-    Apply the full cleaning pipeline to one code string.
-    Returns (cleaned_source, stats).
-
-    Pipeline order:
-        R05 docstrings  →  R01 comments  →  R03 trailing ws
-        →  R02 blank lines  →  R04 indentation
-    """
+    """R05 → R01 → R03 → R02 → R04 when each flag is on."""
     if config is None:
         config = CleaningConfig()
 
     stats = CleaningStats(original_chars=len(source))
 
-    # R05 — docstrings (needs valid AST, do first)
     if config.remove_docstrings:
         source, removed = _remove_docstrings(source)
         stats.removed_docstring_chars = removed
 
-    # R01 — inline comments
     if config.remove_comments:
         source = _remove_comments(source)
 
     lines = source.splitlines()
 
-    # R03 — trailing whitespace
     if config.remove_trailing_whitespace:
         lines = [ln.rstrip() for ln in lines]
 
-    # R02 — blank lines
     if config.remove_blank_lines:
         original_count = len(lines)
         lines = [ln for ln in lines if ln.strip()]
         stats.removed_blank_lines = original_count - len(lines)
 
-    # R04 — indentation (LOSSY)
     if config.remove_indentation:
         indent_chars = sum(len(ln) - len(ln.lstrip()) for ln in lines)
         stats.removed_indent_chars = indent_chars
@@ -215,12 +163,8 @@ def clean_corpus(
     return cleaned_list, total
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Partial cleaning helpers (used by the pipeline at specific stages)
-# ─────────────────────────────────────────────────────────────────────────────
-
 def lossless_clean(source: str) -> tuple[str, CleaningStats]:
-    """仅 R02/R03：删空行与行尾空白；保留注释与 docstring，保证仍为合法 Python。"""
+    """R02+R03 only; keep comments, docstrings, indentation."""
     cfg = CleaningConfig(
         remove_comments=False,
         remove_blank_lines=True,
@@ -232,5 +176,5 @@ def lossless_clean(source: str) -> tuple[str, CleaningStats]:
 
 
 def lossy_clean(source: str) -> tuple[str, CleaningStats]:
-    """使用默认 CleaningConfig（含 R04 去缩进；注释/docstring 默认保留，见类默认值）。"""
+    """``CleaningConfig()`` defaults (R04 on; comments/docstrings off)."""
     return clean_code(source, CleaningConfig())

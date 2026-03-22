@@ -1,28 +1,17 @@
-"""
-v2 Global Configuration — Dynamic Per-Repo Compression Framework
-
-Pipeline:
-    Stage 1: Syntax Compression  (AST skeleton → <SYN_N> + slots, MDL-driven)
-    Stage 2: Lossy Cleaning       (remove noise: comments / blank lines / indent)
-    Stage 3: Token Replacement    (high-score identifiers/literals → placeholders)
-
-All three stages are lossy-friendly; the goal is maximal token reduction.
-"""
+"""Paths, tokenizer presets, and hyperparameters for Stages 1–3."""
 
 from pathlib import Path
 
-# ── Paths ────────────────────────────────────────────────────────────────────
+# Paths
 PROJECT_ROOT = Path(__file__).parent
 RESULTS_DIR  = PROJECT_ROOT / "results"
 CACHE_DIR    = PROJECT_ROOT / "cache"
-DATA_DIR     = PROJECT_ROOT.parent.parent / "data"   # shared HF dataset cache
+DATA_DIR     = PROJECT_ROOT.parent.parent / "data"
 
-# ── HuggingFace ───────────────────────────────────────────────────────────────
 HF_TOKEN            = "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"
 EVAL_DATASET        = "zhensuuu/starcoderdata_100star_py"
 EVAL_NUM_SAMPLES    = 1000
 
-# ── Tokenizers (same targets as v1 for direct comparison) ────────────────────
 EVAL_TOKENIZERS = {
     "gpt4": {
         "type": "tiktoken",
@@ -42,12 +31,10 @@ EVAL_TOKENIZERS = {
     },
 }
 
-# ── Stage 1: Syntax compression ───────────────────────────────────────────────
 AST_MIN_FREQ          = 20     # skeleton must appear ≥ N times to be a candidate
 MDL_CODEBOOK_OVERHEAD = 2      # tokens needed to encode one operator in codebook
 
-# ── Stage 2: Lossy cleaning rules ─────────────────────────────────────────────
-# Each rule is (enabled, is_lossy, description)
+# (enabled, is_lossy, description)
 CLEANING_RULES = {
     "remove_comments":            (False, False, "R01 Remove # inline comments [default off]"),
     "remove_blank_lines":         (True,  False, "R02 Remove empty lines"),
@@ -56,11 +43,9 @@ CLEANING_RULES = {
     "remove_indentation":         (True,  True,  "R04 Remove all indentation [LOSSY]"),
 }
 
-# ── Stage 3: Token importance scoring ────────────────────────────────────────
 SCORE_EPSILON             = 0.01   # ε in Score(w) denominator
 SCORE_THRESHOLD_PERCENTILE = 0.70  # replace top (1-0.70)=30% by score
 
-# Category placeholders — each maps to a single new token
 PLACEHOLDERS = {
     "variable":  "<VAR>",
     "attribute": "<ATTR>",

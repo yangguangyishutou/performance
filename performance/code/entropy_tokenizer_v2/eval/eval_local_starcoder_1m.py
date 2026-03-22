@@ -1,12 +1,4 @@
-"""
-本地语料 `performance/code/data/starcoder_1m_tokens.txt`（约 1M tokens 预算切分的 Python 样本）
-上跑完整 v2 三阶段，输出与 `results/v2_compression_report.csv` 对齐。
-
-用法：
-  python eval_local_starcoder_1m.py
-  python eval_local_starcoder_1m.py --tokenizers gpt4
-  python eval_local_starcoder_1m.py --tokenizers gpt4 santacoder
-"""
+"""Eval v2 on ``data/starcoder_1m_tokens.txt``; writes ``results/v2_compression_report.csv``."""
 from __future__ import annotations
 
 import argparse
@@ -26,12 +18,11 @@ def load_local_samples(sample_file: Path) -> list[str]:
 
 DEFAULT_TOKENIZERS = ("gpt4", "codegen-350M-mono", "santacoder")
 
-# CSV / detail JSON 中 tokenizer 行的优先顺序（含可选的 gpt2 等）
 CSV_ROW_ORDER = ("gpt4", "gpt2", "codegen-350M-mono", "santacoder")
 
 
 def _merge_eval_outputs(results, configs, *, tokenizer_keys: list[str]) -> None:
-    """只跑部分 tokenizer 时合并进现有 CSV/JSON，避免冲掉其它行。"""
+    """Merge partial tokenizer runs into existing CSV/JSON."""
     import csv
     import json
     from dataclasses import asdict

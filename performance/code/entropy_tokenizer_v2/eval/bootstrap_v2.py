@@ -1,12 +1,11 @@
-"""将 `entropy_tokenizer_v2` 包根目录加入 sys.path，供本目录下评估脚本导入。"""
+"""Insert ``entropy_tokenizer_v2`` (and optionally Simpy) on ``sys.path`` for eval scripts."""
 from __future__ import annotations
 
 import sys
 from pathlib import Path
 
-# 本文件位于 .../entropy_tokenizer_v2/eval/bootstrap_v2.py
 V2_DIR = Path(__file__).resolve().parent.parent
-CODE_DIR = V2_DIR.parent  # .../performance/code
+CODE_DIR = V2_DIR.parent
 
 
 def ensure() -> None:

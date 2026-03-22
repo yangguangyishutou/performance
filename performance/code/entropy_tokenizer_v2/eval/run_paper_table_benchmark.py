@@ -1,14 +1,4 @@
-"""
-论文表格中的 tokenizer，在同一批 Starcoder 1M 样本上跑 v2 全链路。
-
-- 挖掘前 `lossless_clean` 保留注释与 docstring（见 lossy_cleaner）。
-- 需 HF 门禁 / 下载失败 / 其它异常则跳过并记入 MD。
-- Codex 与 CodeGen 共用同一 HF tokenizer（与论文表一致），结果行复制。
-
-输出：
-  results/paper_table_starcoder_1m.csv
-  docs/PAPER_TABLE_BENCHMARK.md
-"""
+"""Paper-style tokenizer sweep on Starcoder 1M samples → CSV + ``docs/PAPER_TABLE_BENCHMARK.md``."""
 from __future__ import annotations
 
 import csv
@@ -32,7 +22,6 @@ from v2_eval import EvalResult, evaluate
 
 CODE_DIR = bootstrap_v2.CODE_DIR
 
-# (cache_key, 显示名, 配置或 alias)
 PAPER_ROWS: list[tuple[str, str, dict]] = [
     ("codebert", "CodeBERT", {"type": "hf", "name": "microsoft/codebert-base"}),
     ("gpt2", "GPT-2", {"type": "hf", "name": "gpt2"}),
@@ -146,11 +135,11 @@ def main() -> None:
     md_path = Path(__file__).resolve().parent.parent / "docs" / "PAPER_TABLE_BENCHMARK.md"
     md_path.parent.mkdir(parents=True, exist_ok=True)
     lines = [
-        "# 论文表 tokenizer × Starcoder 约 1M 语料（v2 全链路）",
+        "# Starcoder ~1M samples × paper-style tokenizers (v2 three-stage)",
         "",
-        "- 样本：`performance/code/data/starcoder_1m_tokens.txt`（301 段）。",
-        "- 挖掘前 **保留** `#` 注释与 docstring（`lossless_clean`）。",
-        "- 表为 **v2 三阶段** 相对 baseline token 的降幅；与论文中 SimPy 列含义不同。",
+        "- Samples: `performance/code/data/starcoder_1m_tokens.txt` (301 chunks).",
+        "- Mining: `lossless_clean` keeps `#` comments and docstrings.",
+        "- Reduction % = (baseline − final) / baseline for this pipeline.",
         "",
         "| Tokenizer | Vocab 来源 | V₀ | Baseline tokens | Final tokens | 降幅 |",
         "|-----------|------------|----|-----------------|--------------|------|",

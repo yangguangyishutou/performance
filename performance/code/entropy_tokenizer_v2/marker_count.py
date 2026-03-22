@@ -1,14 +1,12 @@
-"""Synthetic markers count as exactly one token each (augmented-vocabulary accounting)."""
+"""Count tokenizer ids as if each ``<SYN_n>`` / placeholder were one token."""
 from __future__ import annotations
 
 import re
 from re import Pattern
 
-# Full pipeline: Stage-1 + Stage-3 placeholders
 RE_ALL_MARKERS: Pattern[str] = re.compile(
     r"<SYN_\d+>|<VAR>|<ATTR>|<STR>|<FSTR>|<NUM>"
 )
-# Stage-1 output only (for isolated syntax eval)
 RE_SYN_ONLY: Pattern[str] = re.compile(r"<SYN_\d+>")
 
 

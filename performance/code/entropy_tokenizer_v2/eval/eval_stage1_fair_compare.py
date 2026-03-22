@@ -1,14 +1,4 @@
-"""
-只比 Stage-1（句法层）：同一批源码、同一套样本过滤规则。
-
-- v2: 挖掘得到的 <SYN_i> 在计数时按 1 个 token（与全链路 marker_count 规则中仅处理 SYN 子集一致）。
-- SimPy: transformer 输出后，使用扩展词表中的 SPECIAL_TOKENS 计数（与 simpy_eval_1m_tokens 一致）。
-
-不做 Stage2/3；baseline 均为「原始源码 + 对应 tokenizer 的普通 encode」。
-
-额外诊断：每文件平均节省 token、仅「含 >=1 <SYN_*>」子集上的平均节省、被替换 header 原文
-在 baseline 中的 token 占比（语料级）、v2 覆盖率、SimPy 单文件 token 下降占比。
-"""
+"""Stage-1 only: v2 ``<SYN_i>`` vs SimPy ``SPECIAL_TOKENS`` counting; same samples; no Stage 2/3."""
 from __future__ import annotations
 
 import re
@@ -74,18 +64,13 @@ class V2Stage1Diag:
     baseline_tokens: int
     after_tokens: int
     reduction_pct: float
-    """至少出现一次 <SYN_n> 的样本数"""
     files_with_any_syn: int
-    """所有输出里 <SYN_n> 出现次数之和（可 > n_files）"""
     total_syn_markers: int
     avg_saved_tokens_per_file: float
-    """仅统计至少出现一次 <SYN_n> 的文件上的 (baseline−after) 平均"""
     avg_saved_if_file_has_syn: float
     avg_syn_markers_per_file: float
     pct_files_with_syn: float
-    """所有被替换 header 原文的 token 数之和（与 compress 站点一致）"""
     corpus_header_tokens_in_replacements: int
-    """语料级：被替换 header token / 全语料 baseline token ×100"""
     pct_replaced_header_tokens_of_baseline: float
 
 
@@ -96,7 +81,6 @@ class SimPyStage1Diag:
     baseline_tokens: int
     after_tokens: int
     reduction_pct: float
-    """parse 成功且该文件 after < baseline 的样本数"""
     files_with_token_drop: int
     avg_saved_tokens_per_ok_file: float
     pct_ok_files_with_drop: float
@@ -230,7 +214,7 @@ def main():
             simpy_transformer = Transformer(ignore_error=True)
         except Exception as e:
             simpy_err = e
-            print("\n[warn] SimPy Transformer 不可用（常见原因: tree-sitter 版本/C 扩展），将只输出 v2 Stage1:", e)
+            print("\n[warn] SimPy Transformer unavailable; v2 Stage-1 only:", e)
 
     simpy_meta = {}
     if simpy_transformer is not None:
@@ -242,7 +226,7 @@ def main():
         }
 
     print("\n" + "=" * 88)
-    print("  Stage-1 ONLY  |  v2 (<SYN_*>)  vs  SimPy  |  same filters as simpy_eval_1m_tokens.py")
+    print("  Stage-1 only: v2 <SYN_*> vs SimPy (same sample filters)")
     print("=" * 88)
 
     for tok_key in ("gpt4", "codegen-350M-mono", "santacoder"):
@@ -279,7 +263,7 @@ def main():
                 f"{sp.pct_ok_files_with_drop:.1f}% ok files strictly drop tokens"
             )
         else:
-            msg = "SimPy 未运行"
+            msg = "SimPy skipped"
             if simpy_err:
                 msg += f" ({simpy_err})"
             print(f"    {msg}")

@@ -1,30 +1,4 @@
-"""
-Stage 1 — Data-Driven Syntax Compression (v2, independent framework)
-
-Key difference from SimPy / v1:
-  • v1 / SimPy: replace only the *fixed* text of a skeleton with one new token,
-    keeping keyword tokens in place.
-  • v2 (here): replace the ENTIRE statement header (keyword + structure + slot
-    labels) with a single operator token <SYN_N>, keeping only the *slot
-    values* (variable expressions).  This is a more aggressive "整体替换".
-
-Example:
-    Original:   for item in my_list:
-    v1 result:  <OP_3> item in my_list :       (only "for ... in ...:" compressed)
-    v2 result:  <SYN_3> item my_list            (keyword "for", "in", ":" gone)
-
-Skeleton format (used as canonical pattern key):
-    "for {0} in {1}:"     ← anonymised by _compute_skeleton()
-
-MDL selection:
-    Greedy forward selection minimising:
-        L_total = N_compressed · log₂(V₀ + |S|) + Σ_k cb_k · log₂(V₀)
-
-    A skeleton is accepted iff adding it *reduces* total description length.
-    Each accepted skeleton consumes:
-        savings = original_header_tokens − (1 + num_slots)
-        cost    = MDL_CODEBOOK_OVERHEAD tokens
-"""
+"""Stage 1: AST skeleton → ``<SYN_N>`` + slot values; MDL greedy selection over candidates."""
 
 import ast
 import copy
@@ -37,10 +11,6 @@ from typing import Optional
 from config import AST_MIN_FREQ, MDL_CODEBOOK_OVERHEAD
 from marker_count import RE_ALL_MARKERS, count_augmented, encode as mc_encode
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Skeleton computation  (independent reimplementation, no v1 imports)
-# ─────────────────────────────────────────────────────────────────────────────
-
 _SKIP_NODE_TYPES = (ast.Pass, ast.Break, ast.Continue)
 _TRY_TYPES = tuple(
     getattr(ast, n) for n in ("Try", "TryStar") if hasattr(ast, n)
@@ -48,18 +18,7 @@ _TRY_TYPES = tuple(
 
 
 def _compute_skeleton(node: ast.AST) -> Optional[str]:
-    """
-    Generate a canonical skeleton string for any statement-level AST node.
-
-    Algorithm:
-      1. Deep-copy the node.
-      2. Strip block bodies (body / orelse / handlers / finally) so only the
-         statement *header* remains.
-      3. Anonymise all Name identifiers and non-trivial Constants with _PHn_.
-      4. ast.unparse → take first line → substitute placeholder markers.
-
-    Returns None for trivially short or unsupported nodes.
-    """
+    """Statement header as anonymised template ``...{0}...``; None if unsupported."""
     if not isinstance(node, (ast.stmt, ast.ExceptHandler)):
         return None
     if isinstance(node, _SKIP_NODE_TYPES + _TRY_TYPES):
@@ -72,7 +31,6 @@ def _compute_skeleton(node: ast.AST) -> Optional[str]:
         idx = ctr[0]; ctr[0] += 1
         return f"_PH{idx}_"
 
-    # Strip body / orelse / finalbody to isolate header
     for attr in ("body", "orelse", "finalbody"):
         if getattr(nc, attr, None):
             setattr(nc, attr, [ast.Pass()])
@@ -81,7 +39,6 @@ def _compute_skeleton(node: ast.AST) -> Optional[str]:
     if hasattr(nc, "decorator_list"):
         nc.decorator_list = []
 
-    # Anonymise string-attribute names
     if isinstance(nc, (ast.FunctionDef, ast.AsyncFunctionDef)):
         nc.name = _ph()
         for arg_list in (nc.args.args, nc.args.posonlyargs, nc.args.kwonlyargs):
@@ -107,7 +64,6 @@ def _compute_skeleton(node: ast.AST) -> Optional[str]:
             a.name = _ph()
             if a.asname: a.asname = _ph()
 
-    # Anonymise all Name / non-trivial Constant leaves
     class _Anon(ast.NodeTransformer):
         def visit_Name(self, n):
             n.id = _ph(); return n
@@ -136,12 +92,8 @@ def _compute_skeleton(node: ast.AST) -> Optional[str]:
     return skeleton
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Slot extraction from original source
-# ─────────────────────────────────────────────────────────────────────────────
-
 def _src_seg(source: str, node: Optional[ast.AST]) -> Optional[str]:
-    """Exact source slice for *node*; None if unavailable."""
+    """``ast.get_source_segment`` for *node*, or None."""
     if node is None:
         return None
     try:
@@ -151,10 +103,7 @@ def _src_seg(source: str, node: Optional[ast.AST]) -> Optional[str]:
 
 
 def _extract_slots_from_source(source: str, node: ast.AST) -> list[str]:
-    """
-    Slot strings taken from the *original source* where possible (ast.get_source_segment),
-    falling back to ast.unparse. Reduces format drift vs PEP8-pretty unparse().
-    """
+    """Slot values from source segments, else ``ast.unparse``."""
     slots: list[str] = []
     lines = source.splitlines()
 
@@ -268,22 +217,15 @@ def _extract_slots_from_source(source: str, node: ast.AST) -> list[str]:
 
 
 def _extract_header_source(source: str, node: ast.AST) -> str:
-    """Exact header lines from *source* (1-based AST line numbers)."""
+    """Header line(s) for *node* from *source*."""
     lines = source.splitlines()
     start = node.lineno
     end = _find_header_end_line(node, len(lines))
     return "\n".join(lines[start - 1 : end])
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Mining: count skeleton frequencies across a corpus
-# ─────────────────────────────────────────────────────────────────────────────
-
 def mine_skeletons(sources: list[str], min_freq: int = AST_MIN_FREQ) -> Counter:
-    """
-    Count how many times each skeleton appears across all sources.
-    Returns {skeleton_str: count} filtered by min_freq.
-    """
+    """Per-skeleton counts across *sources*, keeping keys with count ≥ *min_freq*."""
     counter: Counter = Counter()
     for src in sources:
         try:
@@ -305,15 +247,7 @@ def empirical_skeleton_token_savings(
     *,
     probe_op: str = "<SYN_0>",
 ) -> dict[str, tuple[int, int]]:
-    """
-    For each skeleton string, estimate *real* token savings on *sources* using the
-    same marker-aware counting as v2 evaluation.
-
-    Per file, uses the same start-line dedup as compress_source_syntax (first walk
-    order wins).  Returns:
-        skeleton -> (n_applied_instances, total_tokens_saved)
-    where total_tokens_saved = sum_i (count(before_header_i) - count(after_i)).
-    """
+    """Per skeleton: (apply count, total token savings) using ``count_augmented``."""
     out: dict[str, list[int]] = {sk: [0, 0] for sk in skeleton_keys}
 
     for src in sources:
@@ -350,10 +284,7 @@ def empirical_skeleton_token_savings(
 
 
 def _header_token_count(skeleton: str, tokenizer, tok_type: str) -> int:
-    """
-    Count how many tokens the *fixed* part of the skeleton takes.
-    We use the skeleton string itself (with {N} placeholders removed) as proxy.
-    """
+    """Tokenizer length of skeleton with ``{N}`` slots stripped (proxy for fixed part)."""
     fixed = re.sub(r'\{\d+\}', '', skeleton)
     fixed = fixed.strip()
     if not fixed:
@@ -369,10 +300,6 @@ def _header_token_count(skeleton: str, tokenizer, tok_type: str) -> int:
 def _num_slots(skeleton: str) -> int:
     return len(re.findall(r'\{\d+\}', skeleton))
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# MDL-based skeleton selection
-# ─────────────────────────────────────────────────────────────────────────────
 
 @dataclass
 class SkeletonCandidate:
@@ -426,13 +353,7 @@ def greedy_mdl_select(
     N_baseline: int,
     V0: int,
 ) -> list[SkeletonCandidate]:
-    """
-    Greedy forward selection: accept a skeleton iff adding it reduces L_total.
-
-    ΔL_k = N_new · log₂(V₀+k) − N_curr · log₂(V₀+k−1) + cb_k · log₂(V₀)
-
-    Returns the list of accepted skeletons (ordered by acceptance).
-    """
+    """Greedy accept while total description length decreases; order = acceptance order."""
     log2_V0   = math.log2(V0) if V0 > 1 else 1.0
     N_current = N_baseline
     S_size    = 0
@@ -451,7 +372,7 @@ def greedy_mdl_select(
         delta  = N_new * log2_V_new - N_current * log2_V_curr + cand.codebook_cost * log2_V0
 
         if delta >= 0:
-            break    # further candidates have lower benefit — stop
+            break
 
         accepted.append(cand)
         N_current = N_new
@@ -460,16 +381,8 @@ def greedy_mdl_select(
     return accepted
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Source transformation: apply syntax compression to one file
-# ─────────────────────────────────────────────────────────────────────────────
-
 def _find_header_end_line(node: ast.AST, total_lines: int) -> int:
-    """
-    For block statements, return the line number of the last header line
-    (i.e., the line containing the ':' before the body).
-    For simple statements, that is just node.lineno.
-    """
+    """Last line of statement header (before body); simple stmts → ``lineno``."""
     body_first_line: Optional[int] = None
     for attr in ("body", "handlers", "orelse"):
         children = getattr(node, attr, None)
@@ -488,10 +401,7 @@ def _collect_syntax_replacements(
     source: str,
     selected: list[SkeletonCandidate],
 ) -> dict[int, tuple[int, str]] | None:
-    """
-    Collect replacement map: header_start_line (1-based) → (header_end_line, compressed_line).
-    Returns None if AST parse failed; {} if no selected skeletons or no matches.
-    """
+    """start_line → (end_line, compressed line); None on parse error."""
     if not selected:
         return {}
 
@@ -532,10 +442,7 @@ def sum_replaced_header_tokens(
     tokenizer,
     tok_type: str,
 ) -> tuple[int, int]:
-    """
-    Sum tokenizer counts over original header spans that Stage-1 would replace
-    (same sites as compress_source_syntax). Returns (token_sum, n_sites).
-    """
+    """Total tokens in replaced header spans and number of sites."""
     repl = _collect_syntax_replacements(source, selected)
     if not repl:
         return 0, 0
@@ -551,24 +458,13 @@ def compress_source_syntax(
     source: str,
     selected: list[SkeletonCandidate],
 ) -> str:
-    """
-    Apply syntax compression to a source string.
-
-    For each selected skeleton:
-      - Find all matching statement nodes in the AST.
-      - Replace their header line(s) with:
-            <SYN_N> slot_val_1 slot_val_2 ...
-      - Leave body lines untouched (indentation removal happens in Stage 2).
-
-    Returns the transformed source (no longer valid Python).
-    """
+    """Replace matched statement headers with ``<SYN_N> slot ...``; bodies unchanged."""
     replacements = _collect_syntax_replacements(source, selected)
     if replacements is None or not replacements:
         return source
 
     lines = source.splitlines()
 
-    # Apply replacements — build output line by line
     skip_until = -1
     result: list[str] = []
     for lineno, line in enumerate(lines, start=1):

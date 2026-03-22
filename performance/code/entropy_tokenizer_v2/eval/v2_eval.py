@@ -1,20 +1,4 @@
-"""
-v2 Compression Evaluation
-
-Applies the full three-stage pipeline to an evaluation corpus and reports
-per-stage and cumulative compression metrics.
-
-Pipeline applied in evaluation order:
-  Stage 1  Syntax compression     (AST skeleton → <SYN_N> + slots)
-  Stage 2  Lossy cleaning         (docstrings / comments / indentation removed)
-  Stage 3  Token replacement      (high-score tokens → category placeholders)
-
-Reported metrics (per tokenizer):
-  • baseline_tokens / compressed_tokens / reduction_%
-  • Per-stage token delta breakdown
-  • bits-per-byte (bpb) before and after
-  • Token entropy before
-"""
+"""Three-stage compress + aggregate token metrics (per file and corpus)."""
 
 import csv
 import json
@@ -49,11 +33,7 @@ def _is_syn_line(line: str) -> bool:
 
 
 def _clean_stage2_skip_syn(text: str) -> str:
-    """
-    Stage-2 cleaning with two constraints:
-      1) Keep comments and docstrings (semantic preservation requested).
-      2) Freeze lines produced by Stage-1 (<SYN_N> ...), i.e., do not clean them.
-    """
+    """Stage 2 on non-SYN lines only; SYN lines get ``rstrip`` only."""
     cfg = CleaningConfig(
         remove_comments=False,
         remove_blank_lines=True,
@@ -68,7 +48,6 @@ def _clean_stage2_skip_syn(text: str) -> str:
             out_lines.append(line.rstrip())
             continue
 
-        # Clean non-SYN lines in isolation, then keep resulting lines.
         cleaned_line, _ = clean_code(line, cfg)
         if cleaned_line.strip():
             out_lines.append(cleaned_line)
@@ -77,10 +56,7 @@ def _clean_stage2_skip_syn(text: str) -> str:
 
 
 def _replace_stage3_skip_syn(text: str, rmap: dict[str, str]) -> str:
-    """
-    Stage-3 replacement while freezing Stage-1 output lines.
-    <SYN_N> lines are copied as-is; only non-SYN lines are token-replaced.
-    """
+    """Stage 3 only on lines that are not ``<SYN_n>`` headers."""
     if not rmap:
         return text
 
@@ -96,10 +72,6 @@ def _replace_stage3_skip_syn(text: str, rmap: dict[str, str]) -> str:
 def _count_with_ops(text: str, tokenizer, tok_type: str) -> int:
     return count_augmented(text, tokenizer, tok_type, pattern=RE_ALL_MARKERS)
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Per-file compression result
-# ─────────────────────────────────────────────────────────────────────────────
 
 @dataclass
 class FileResult:
@@ -125,10 +97,6 @@ class FileResult:
         return self.baseline_tokens - self.after_replacement
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Core: compress one source string through all three stages
-# ─────────────────────────────────────────────────────────────────────────────
-
 def apply_v2_compression(
     source: str,
     repo_config: RepoConfig,
@@ -136,10 +104,6 @@ def apply_v2_compression(
     tok_type: str,
     count_fn=None,
 ) -> tuple[str, FileResult]:
-    """
-    Apply the full v2 pipeline to one source string.
-    Returns (compressed_text, FileResult).
-    """
     if count_fn is None:
         def count_fn_local(text: str) -> int:
             return _count_with_ops(text, tokenizer, tok_type)
@@ -147,20 +111,13 @@ def apply_v2_compression(
 
     baseline_tokens = count_fn(source)
 
-    # Stage 1 — syntax compression (needs valid Python AST)
-    # Use _count_with_ops so that <SYN_N> markers are counted as 1 token each,
-    # simulating an augmented vocabulary where every operator is a single entry.
     skeletons = repo_config.skeleton_candidates()
     after_s1 = compress_source_syntax(source, skeletons)
     after_s1_tokens = count_fn(after_s1)
 
-    # Stage 2 — semantic-preserving cleaning on non-SYN lines only:
-    # keep comments/docstrings, freeze Stage-1 generated <SYN_N> lines.
     after_s2 = _clean_stage2_skip_syn(after_s1)
     after_s2_tokens = count_fn(after_s2)
 
-    # Stage 3 — token replacement only on non-SYN lines.
-    # Stage-1 output lines are frozen to avoid cross-stage interference.
     rmap = repo_config.replacement_map
     after_s3 = _replace_stage3_skip_syn(after_s2, rmap)
     after_s3_tokens = count_fn(after_s3)
@@ -173,10 +130,6 @@ def apply_v2_compression(
     )
     return after_s3, result
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Information-theoretic helpers
-# ─────────────────────────────────────────────────────────────────────────────
 
 def _entropy(token_counts: Counter) -> float:
     total = sum(token_counts.values())
@@ -195,10 +148,6 @@ def _bpb(total_tokens: int, vocab_size: int, total_bytes: int) -> float:
         return 0.0
     return total_tokens * math.log2(vocab_size) / total_bytes
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Eval dataset loading (reuses v1 cache if available)
-# ─────────────────────────────────────────────────────────────────────────────
 
 def load_eval_samples(num_samples: int = EVAL_NUM_SAMPLES) -> list[str]:
     cache_path = CACHE_DIR / "eval_100star_samples.json"
@@ -227,10 +176,6 @@ def load_eval_samples(num_samples: int = EVAL_NUM_SAMPLES) -> list[str]:
         json.dump(samples, f, ensure_ascii=False)
     return samples
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Main evaluation
-# ─────────────────────────────────────────────────────────────────────────────
 
 @dataclass
 class EvalResult:
@@ -262,13 +207,9 @@ def evaluate(
     tokenizer_key: str,
     tokenizer_cfg: dict,
 ) -> EvalResult:
-    """
-    Run v2 compression on all sources and return an EvalResult.
-    The same tokenizer used during mining is used here.
-    """
     tokenizer, tok_type = _load_tokenizer(tokenizer_key, tokenizer_cfg)
     V0 = _vocab_size(tokenizer, tok_type)
-    count_fn = None  # apply_v2_compression uses _count_with_ops via default
+    count_fn = None
 
     total_bytes = sum(len(s.encode("utf-8")) for s in sources)
 
@@ -316,14 +257,10 @@ def evaluate(
     )
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Reporting & persistence
-# ─────────────────────────────────────────────────────────────────────────────
-
 def print_report(results: list[EvalResult]):
     w = 120
     print("\n" + "=" * w)
-    print("  v2 DYNAMIC PER-REPO COMPRESSION - EVALUATION REPORT")
+    print("  v2 compression — evaluation report")
     print("=" * w)
 
     hdr = (f"  {'Tokenizer':<20} {'Baseline':>10} {'Final':>10} "
@@ -343,10 +280,7 @@ def print_report(results: list[EvalResult]):
         )
 
     print("=" * w)
-    print("\n  Stage legend:  Syntax% = Stage-1 saved / baseline | "
-          "Clean% = Stage-2 | Token% = Stage-3")
-    print("  K*_syn = MDL-optimal skeleton operators | "
-          "N_repl = tokens replaced in Stage-3")
+    print("  Syntax%/Clean%/Token% = stage1/2/3 savings vs baseline; K*_syn, N_repl = skeletons, replacement_map size")
 
 
 def save_results(results: list[EvalResult], repo_config_by_tok: dict):
@@ -383,21 +317,11 @@ def save_results(results: list[EvalResult], repo_config_by_tok: dict):
     print(f"[eval] Detail JSON saved → {detail_path}")
 
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Full evaluation pipeline entry-point
-# ─────────────────────────────────────────────────────────────────────────────
-
 def run_evaluation(
     tokenizer_keys: Optional[list[str]] = None,
     num_samples: int = EVAL_NUM_SAMPLES,
     verbose: bool = True,
 ) -> list[EvalResult]:
-    """
-    End-to-end evaluation:
-    1. Load eval samples.
-    2. For each tokenizer: mine repo config → evaluate → collect results.
-    3. Print & save report.
-    """
     from repo_miner import mine_from_sources
 
     if tokenizer_keys is None:
