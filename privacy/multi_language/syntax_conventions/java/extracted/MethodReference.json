@@ -1,0 +1,64 @@
+{
+  "construct": "MethodReference",
+  "language": "java",
+  "syntax_node": "::",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "::",
+      "skip": "",
+      "required": true,
+      "note": "表达式名称后必须跟双冒号"
+    },
+    {
+      "conditional": "[IDENT] ::",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "双冒号后必须跟标识符"
+    },
+    {
+      "conditional": "super",
+      "consequent": "::",
+      "skip": "",
+      "required": true,
+      "note": "'super' 关键字后必须跟双冒号"
+    },
+    {
+      "conditional": "super ::",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'super ::' 后必须跟标识符"
+    },
+    {
+      "conditional": "[IDENT] . super",
+      "consequent": "::",
+      "skip": "",
+      "required": true,
+      "note": "'TypeName . super' 后必须跟双冒号"
+    },
+    {
+      "conditional": "[IDENT] . super ::",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'TypeName . super ::' 后必须跟标识符"
+    },
+    {
+      "conditional": "[IDENT] ::",
+      "consequent": "new",
+      "skip": "",
+      "required": true,
+      "note": "'ClassType ::' 后必须跟 'new' 关键字"
+    },
+    {
+      "conditional": "[IDENT] :: new",
+      "consequent": "",
+      "skip": "",
+      "required": false,
+      "note": "'ArrayType :: new' 构造完成"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:00:27.870370"
+}

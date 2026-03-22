@@ -1,0 +1,22 @@
+{
+  "construct": "VariableInitializerList",
+  "language": "java",
+  "syntax_node": "<expression_start>",
+  "constraints": [
+    {
+      "conditional": "<expression_start>",
+      "consequent": ",, }",
+      "skip": "VariableInitializer",
+      "required": true,
+      "note": "第一个 VariableInitializer 后必须跟逗号（继续列表）或右大括号（结束列表）"
+    },
+    {
+      "conditional": "<expression_start> ,",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个 VariableInitializer（表达式起始）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.264794"
+}

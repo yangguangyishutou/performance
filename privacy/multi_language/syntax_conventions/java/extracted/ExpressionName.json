@@ -1,0 +1,29 @@
+{
+  "construct": "ExpressionName",
+  "language": "java",
+  "syntax_node": "Identifier",
+  "constraints": [
+    {
+      "conditional": "Identifier",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可选择性跟随 '.' 以构成限定表达式名"
+    },
+    {
+      "conditional": "AmbiguousName .",
+      "consequent": "Identifier",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟标识符"
+    },
+    {
+      "conditional": "AmbiguousName . Identifier",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "限定表达式名后可继续跟随 '.' 以进一步限定"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:03:12.273403"
+}

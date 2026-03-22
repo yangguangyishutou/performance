@@ -1,0 +1,15 @@
+{
+  "construct": "VariableAccess",
+  "language": "java",
+  "syntax_node": "expression",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "ExpressionName, FieldAccess",
+      "skip": "",
+      "required": true,
+      "note": "变量访问必须是表达式名称或字段访问"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.069033"
+}

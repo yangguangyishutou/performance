@@ -1,0 +1,22 @@
+{
+  "construct": "cast-expression",
+  "language": "c",
+  "syntax_node": "cast-expression",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "type-name",
+      "required": true,
+      "note": "类型转换的左括号后必须跟右括号（中间跳过类型名）"
+    },
+    {
+      "conditional": "()",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "类型转换的右括号后必须跟转换表达式的起始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:05.091734"
+}

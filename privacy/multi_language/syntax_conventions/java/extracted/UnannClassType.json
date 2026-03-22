@@ -1,0 +1,36 @@
+{
+  "construct": "UnannClassType",
+  "language": "java",
+  "syntax_node": "Type",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "<, ., ;, ,, [, ), ]",
+      "skip": "",
+      "required": true,
+      "note": "类型标识符后可以跟类型参数、点号限定、或各种结束符"
+    },
+    {
+      "conditional": "[IDENT] <",
+      "consequent": ">",
+      "skip": "type_arguments",
+      "required": true,
+      "note": "类型参数左尖括号后必须跟右尖括号（中间跳过类型参数列表）"
+    },
+    {
+      "conditional": "[IDENT] .",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "包名或外部类名后的点号必须跟类型标识符"
+    },
+    {
+      "conditional": "[IDENT] . [IDENT]",
+      "consequent": "<, ., ;, ,, [, ), ]",
+      "skip": "",
+      "required": true,
+      "note": "限定类型标识符后可以跟类型参数、继续限定、或各种结束符"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:06:10.335596"
+}

@@ -1,0 +1,50 @@
+{
+  "construct": "unary-expression",
+  "language": "c",
+  "syntax_node": "unary-expression",
+  "constraints": [
+    {
+      "conditional": "++",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "前缀递增运算符后必须跟一元表达式的起始"
+    },
+    {
+      "conditional": "--",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "前缀递减运算符后必须跟一元表达式的起始"
+    },
+    {
+      "conditional": "sizeof",
+      "consequent": "(, <expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "sizeof 关键字后必须跟左括号或一元表达式的起始"
+    },
+    {
+      "conditional": "sizeof (",
+      "consequent": ")",
+      "skip": "type-name",
+      "required": true,
+      "note": "sizeof 左括号后必须跟右括号（中间跳过类型名）"
+    },
+    {
+      "conditional": "alignof",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "alignof 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "alignof (",
+      "consequent": ")",
+      "skip": "type-name",
+      "required": true,
+      "note": "alignof 左括号后必须跟右括号（中间跳过类型名）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:05.091403"
+}

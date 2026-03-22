@@ -1,0 +1,29 @@
+{
+  "construct": "return",
+  "language": "javascript",
+  "syntax_node": "return",
+  "constraints": [
+    {
+      "conditional": "return",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "return 后可直接跟分号"
+    },
+    {
+      "conditional": "return",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "return 后必须跟表达式起始"
+    },
+    {
+      "conditional": "return <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "return 表达式后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:29.989889"
+}

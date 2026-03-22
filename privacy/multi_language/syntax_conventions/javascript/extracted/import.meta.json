@@ -1,0 +1,29 @@
+{
+  "construct": "import.meta",
+  "language": "javascript",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "import",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "import 关键字后必须跟点号"
+    },
+    {
+      "conditional": "import .",
+      "consequent": "meta",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 meta 标识符"
+    },
+    {
+      "conditional": "import . meta",
+      "consequent": ".",
+      "skip": "",
+      "required": false,
+      "note": "import.meta 后可跟属性访问点号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:44.274484"
+}

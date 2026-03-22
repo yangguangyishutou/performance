@@ -1,0 +1,50 @@
+{
+  "construct": "super",
+  "language": "javascript",
+  "syntax_node": "super",
+  "constraints": [
+    {
+      "conditional": "super",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "super 后必须跟左括号（用于调用父类构造函数）"
+    },
+    {
+      "conditional": "super",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "super 后必须跟点号（用于访问父类属性）"
+    },
+    {
+      "conditional": "super",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "super 后必须跟左方括号（用于计算属性访问）"
+    },
+    {
+      "conditional": "super(",
+      "consequent": ")",
+      "skip": "arguments",
+      "required": true,
+      "note": "super 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "super.",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "super 点号后必须跟属性标识符"
+    },
+    {
+      "conditional": "super[",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "super 左方括号后必须跟右方括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:35.383345"
+}

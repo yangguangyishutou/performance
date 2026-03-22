@@ -1,0 +1,15 @@
+{
+  "construct": "ArrayCreationExpression",
+  "language": "java",
+  "syntax_node": "new",
+  "constraints": [
+    {
+      "conditional": "new",
+      "consequent": "PrimitiveType, ClassOrInterfaceType",
+      "skip": "",
+      "required": true,
+      "note": "'new' 后必须跟原始类型或类/接口类型"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:50.494282"
+}

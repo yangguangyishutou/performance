@@ -1,0 +1,71 @@
+{
+  "construct": "RecordDeclaration",
+  "language": "java",
+  "syntax_node": "record",
+  "constraints": [
+    {
+      "conditional": "record",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'record' 关键字后必须跟类型标识符名称"
+    },
+    {
+      "conditional": "record [IDENT]",
+      "consequent": "(, <",
+      "skip": "",
+      "required": false,
+      "note": "记录类型标识符后可选择性跟随类型参数 '<' 或记录头 '('"
+    },
+    {
+      "conditional": "record [IDENT] <",
+      "consequent": ">",
+      "skip": "type_parameters",
+      "required": true,
+      "note": "类型参数起始 '<' 后必须跟结束 '>'（中间跳过类型参数列表）"
+    },
+    {
+      "conditional": "record [IDENT] >",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "类型参数结束后必须跟记录头 '('"
+    },
+    {
+      "conditional": "record [IDENT] (",
+      "consequent": ")",
+      "skip": "record_component_list",
+      "required": true,
+      "note": "记录头 '(' 后必须跟 ')'（中间跳过记录组件列表）"
+    },
+    {
+      "conditional": "record [IDENT] ()",
+      "consequent": "implements, {",
+      "skip": "",
+      "required": false,
+      "note": "记录头 ')' 后可选择性跟随 'implements' 或记录体 '{'"
+    },
+    {
+      "conditional": "record [IDENT] () implements",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'implements' 关键字后必须跟接口类型标识符"
+    },
+    {
+      "conditional": "record [IDENT] () implements [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "实现接口列表后必须跟记录体 '{'"
+    },
+    {
+      "conditional": "record [IDENT] () {",
+      "consequent": "}",
+      "skip": "record_body_declarations",
+      "required": true,
+      "note": "记录体 '{' 后必须跟 '}'（中间跳过记录体声明）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:09:02.940073"
+}

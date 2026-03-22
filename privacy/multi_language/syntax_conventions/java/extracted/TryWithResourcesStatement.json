@@ -1,0 +1,36 @@
+{
+  "construct": "TryWithResourcesStatement",
+  "language": "java",
+  "syntax_node": "try",
+  "constraints": [
+    {
+      "conditional": "try",
+      "consequent": "ResourceSpecification",
+      "skip": "",
+      "required": true,
+      "note": "'try' 关键字后必须跟资源规格说明"
+    },
+    {
+      "conditional": "try ResourceSpecification",
+      "consequent": "Block",
+      "skip": "",
+      "required": true,
+      "note": "资源规格说明后必须跟 try 代码块"
+    },
+    {
+      "conditional": "try ResourceSpecification Block",
+      "consequent": "Catches",
+      "skip": "",
+      "required": false,
+      "note": "try 代码块后可选择性跟随 catch 子句"
+    },
+    {
+      "conditional": "try ResourceSpecification Block [Catches]",
+      "consequent": "Finally",
+      "skip": "",
+      "required": false,
+      "note": "try 代码块（及可选的 catch 子句）后可选择性跟随 finally 子句"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.064685"
+}

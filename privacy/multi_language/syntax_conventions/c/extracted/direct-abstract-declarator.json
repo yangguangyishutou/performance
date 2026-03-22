@@ -1,0 +1,36 @@
+{
+  "construct": "direct-abstract-declarator",
+  "language": "c",
+  "syntax_node": "direct_abstract_declarator",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "abstract_declarator",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过抽象声明符）"
+    },
+    {
+      "conditional": "()",
+      "consequent": "[, (",
+      "skip": "",
+      "required": false,
+      "note": "括号形式后可以跟左方括号（数组）或左括号（函数）"
+    },
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "array_declarator_content",
+      "required": true,
+      "note": "左方括号后必须跟右方括号（中间跳过数组声明符内容）"
+    },
+    {
+      "conditional": "[]",
+      "consequent": "__attribute__, [, (",
+      "skip": "",
+      "required": false,
+      "note": "右方括号后可以跟属性说明符、另一个左方括号或左括号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:47.383595"
+}

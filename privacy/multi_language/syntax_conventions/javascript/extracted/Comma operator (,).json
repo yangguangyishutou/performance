@@ -1,0 +1,7 @@
+{
+  "construct": "Comma operator (,)",
+  "language": "javascript",
+  "syntax_node": "comma_operator",
+  "constraints": [],
+  "extracted_at": "2026-03-01T16:28:48.834716"
+}

@@ -1,0 +1,29 @@
+{
+  "construct": "label",
+  "language": "c",
+  "syntax_node": "label",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "标签标识符后必须跟冒号"
+    },
+    {
+      "conditional": "case",
+      "consequent": ":",
+      "skip": "constant_expression",
+      "required": true,
+      "note": "case 关键字后必须跟冒号（中间跳过常量表达式）"
+    },
+    {
+      "conditional": "default",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "default 关键字后必须跟冒号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:27.843887"
+}

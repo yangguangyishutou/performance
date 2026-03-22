@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 """
-批量语法约束提取脚本
+批量语法约束提取脚本 - Batch 版本
 
-从文档索引中读取所有构造，批量提取语法约束。
-
-使用方法：
-    python scripts/2_extract_constraints.py --language javascript
-    python scripts/2_extract_constraints.py --language javascript --limit 5
+一次 API 调用处理多个构造，节省 API 调用次数。
 """
 
 import os
@@ -34,27 +30,22 @@ RESET = "\033[0m"
 def print_success(msg):
     print(f"{GREEN}✓{RESET} {msg}")
 
+
 def print_error(msg):
     print(f"{RED}✗{RESET} {msg}")
 
+
 def print_info(msg):
     print(f"{BLUE}ℹ{RESET} {msg}")
+
 
 def print_warning(msg):
     print(f"{YELLOW}⚠{RESET} {msg}")
 
 
 def load_document_index(language: str) -> Dict[str, Any]:
-    """
-    加载语言文档索引
-
-    Args:
-        language: 语言名称 (javascript, java, c, python)
-
-    Returns:
-        文档索引字典
-    """
-    index_file = f"data/raw/{language}_index.json"
+    """加载语言文档索引"""
+    index_file = f"{language}/{language}_index.json"
 
     if not os.path.exists(index_file):
         print_error(f"找不到文档索引: {index_file}")
@@ -71,20 +62,10 @@ def load_document_index(language: str) -> Dict[str, Any]:
 
 
 def get_constructs_to_extract(index: Dict[str, Any], limit: int = None) -> List[Dict[str, str]]:
-    """
-    获取需要提取的构造列表
-
-    Args:
-        index: 文档索引
-        limit: 限制数量（用于测试）
-
-    Returns:
-        构造列表，每个元素包含 {name, doc, language}
-    """
+    """获取需要提取的构造列表"""
     constructs = []
 
     for construct_name, doc_data in index["index"].items():
-        # 只处理包含语法的构造
         if not doc_data.get("has_syntax", False):
             continue
 
@@ -95,14 +76,12 @@ def get_constructs_to_extract(index: Dict[str, Any], limit: int = None) -> List[
             "file": doc_data.get("file", "")
         }
 
-        # 检查文档内容
         if not construct["doc"] or construct["doc"].strip() == "":
             print_warning(f"构造 {construct_name} 没有语法内容，跳过")
             continue
 
         constructs.append(construct)
 
-        # 限制数量
         if limit and len(constructs) >= limit:
             break
 
@@ -111,81 +90,24 @@ def get_constructs_to_extract(index: Dict[str, Any], limit: int = None) -> List[
     return constructs
 
 
-def extract_single_construct(
+def batch_extract_constructs(
     client: ZhipuLLMClient,
-    construct: Dict[str, str],
-    prompt_template: str,
-    output_dir: str
-) -> Dict[str, Any]:
-    """
-    提取单个构造的约束
-
-    Args:
-        client: LLM 客户端
-        construct: 构造信息
-        prompt_template: Prompt 模板
-        output_dir: 输出目录
-
-    Returns:
-        提取的约束字典
-    """
-    construct_name = construct["name"]
-    print(f"\n处理: {construct_name}")
-
-    try:
-        # 提取约束
-        constraints = client.extract_constraints(
-            documentation=construct["doc"],
-            language=construct["language"],
-            construct_name=construct_name,
-            prompt_template=prompt_template,
-            few_shot_examples=None,
-            temperature=0.1,
-            max_tokens=4096
-        )
-
-        # 添加元数据
-        constraints["construct"] = construct_name
-        constraints["language"] = construct["language"]
-        constraints["source_file"] = construct["file"]
-        constraints["extracted_at"] = datetime.now().isoformat()
-
-        # 保存单个结果
-        output_file = os.path.join(output_dir, f"{construct_name.replace('/', '_')}.json")
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(constraints, f, ensure_ascii=False, indent=2)
-
-        print_success(f"已保存: {output_file}")
-
-        return constraints
-
-    except Exception as e:
-        print_error(f"提取失败: {e}")
-        # 返回失败记录
-        return {
-            "construct": construct_name,
-            "language": construct["language"],
-            "error": str(e),
-            "status": "failed"
-        }
-
-
-def batch_extract_constraints(
     constructs: List[Dict[str, str]],
     prompt_template: str,
-    output_dir: str,
-    client: ZhipuLLMClient,
+    batch_size: int = 5,
+    output_dir: str = None,
     checkpoint: str = None
 ) -> Dict[str, Any]:
     """
-    批量提取约束
+    批量提取约束 - 一次 API 调用处理多个构造
 
     Args:
+        client: LLM 客户端
         constructs: 构造列表
         prompt_template: Prompt 模板
+        batch_size: 每次批量处理的构造数量
         output_dir: 输出目录
-        client: LLM 客户端
-        checkpoint: 检查点文件（用于断点续传）
+        checkpoint: 检查点文件
 
     Returns:
         批量提取结果
@@ -202,46 +124,74 @@ def batch_extract_constraints(
             start_index = checkpoint_data.get("completed", 0)
             print_info(f"从断点恢复: {start_index}/{total}")
 
+    # 分批处理
+    num_batches = (total - start_index + batch_size - 1) // batch_size
     print(f"\n开始批量提取: {start_index + 1}-{total} (共 {total - start_index} 个)")
+    print(f"分 {num_batches} 批处理，每批最多 {batch_size} 个构造\n")
 
-    for i in range(start_index, total):
-        construct = constructs[i]
-        print(f"\n[{i+1}/{total}] ", end="")
+    for batch_idx in range(start_index, total, batch_size):
+        batch_end = min(batch_idx + batch_size, total)
+        batch_constructs = constructs[batch_idx:batch_end]
+
+        print(f"\n{'='*70}")
+        print(f" 批次 {batch_idx // batch_size + 1}/{num_batches} (构造 {batch_idx + 1}-{batch_end})")
+        print(f"{'='*70}")
+
+        # 构建批量 prompt
+        batch_prompt = _build_batch_prompt(batch_constructs, prompt_template)
 
         try:
-            result = extract_single_construct(
-                client=client,
-                construct=construct,
-                prompt_template=prompt_template,
-                output_dir=output_dir
-            )
+            # 调用 API
+            print_info(f"调用 API 提取 {len(batch_constructs)} 个构造...")
 
-            if "error" not in result:
-                results.append(result)
-            else:
-                failed.append(result)
+            response_text = client._call_api(batch_prompt, max_tokens=8192)
 
-            # 更新断点（每 5 个保存一次）
-            if (i + 1) % 5 == 0:
-                checkpoint_data = {
-                    "completed": i + 1,
-                    "total": total,
-                    "timestamp": datetime.now().isoformat()
-                }
-                with open(checkpoint, 'w') as f:
-                    json.dump(checkpoint_data, f, indent=2)
-                print_info(f"已保存断点: {checkpoint_data['completed']}/{total}")
+            # 解析批量响应
+            batch_results = _parse_batch_response(response_text, batch_constructs)
+
+            # 保存每个结果
+            for result in batch_results:
+                if "error" not in result:
+                    # 添加元数据
+                    result["extracted_at"] = datetime.now().isoformat()
+
+                    # 保存单个结果
+                    output_file = os.path.join(output_dir, f"{result['construct'].replace('/', '_')}.json")
+                    with open(output_file, 'w', encoding='utf-8') as f:
+                        json.dump(result, f, ensure_ascii=False, indent=2)
+
+                    print_success(f"✓ {result['construct']}")
+                    results.append(result)
+                else:
+                    print_error(f"✗ {result['construct']}: {result['error']}")
+                    failed.append(result)
+
+            # 更新断点
+            checkpoint_data = {
+                "completed": batch_end,
+                "total": total,
+                "timestamp": datetime.now().isoformat()
+            }
+            with open(checkpoint, 'w') as f:
+                json.dump(checkpoint_data, f, indent=2)
+            print_info(f"进度: {batch_end}/{total}")
 
         except KeyboardInterrupt:
             print_warning("\n\n用户中断")
             break
 
         except Exception as e:
-            print_error(f"处理失败: {e}")
-            failed.append({
-                "construct": construct["name"],
-                "error": str(e)
-            })
+            print_error(f"批次处理失败: {e}")
+            # 记录整个批次失败
+            for construct in batch_constructs:
+                failed.append({
+                    "construct": construct["name"],
+                    "language": construct["language"],
+                    "error": str(e),
+                    "status": "failed"
+                })
+            import traceback
+            traceback.print_exc()
 
     # 汇总
     print(f"\n\n{'='*70}")
@@ -263,7 +213,7 @@ def batch_extract_constraints(
         "failed": failed
     }
 
-    summary_file = f"{args.language}/data/{args.language}_extraction_summary.json"
+    summary_file = f"{constructs[0]['language']}/{constructs[0]['language']}_extraction_summary.json"
     with open(summary_file, 'w', encoding='utf-8') as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
 
@@ -272,22 +222,116 @@ def batch_extract_constraints(
     return summary
 
 
+def _build_batch_prompt(constructs: List[Dict[str, str]], prompt_template: str) -> str:
+    """构建批量提取的 prompt"""
+    language = constructs[0]["language"]
+
+    # 构建所有构造的文档
+    construct_docs = ""
+    for i, construct in enumerate(constructs, 1):
+        construct_docs += f"\n## 构造 {i}: {construct['name']}\n\n"
+        construct_docs += f"```\n{construct['doc']}\n```\n\n"
+        construct_docs += "---\n\n"
+
+    # 替换 prompt 模板占位符
+    batch_prompt = prompt_template.replace("{DOCUMENTATION}", construct_docs)
+    batch_prompt = batch_prompt.replace("{CONSTRUCT_NAME}", "(批量模式)")
+    batch_prompt = batch_prompt.replace("{LANGUAGE}", language)
+
+    # 在末尾追加批量输出要求
+    batch_prompt += f"\n\n**批量输出要求**：以上共 {len(constructs)} 个构造，请返回一个 JSON 数组，每个元素是一个构造的完整约束对象，确保 'construct' 字段与构造名称完全一致。"
+
+    return batch_prompt
+
+
+def _parse_batch_response(response_text: str, constructs: List[Dict[str, str]]) -> List[Dict[str, Any]]:
+    """
+    解析批量响应
+
+    尝试从响应中提取多个构造的约束
+    """
+    results = []
+
+    try:
+        # 尝试直接解析为 JSON 数组
+        if "```json" in response_text:
+            start = response_text.find("```json") + 7
+            end = response_text.find("```", start)
+            json_str = response_text[start:end].strip()
+        elif "```" in response_text:
+            start = response_text.find("```") + 3
+            end = response_text.find("```", start)
+            json_str = response_text[start:end].strip()
+        else:
+            json_str = response_text.strip()
+
+        data = json.loads(json_str)
+
+        # 如果是数组，处理每个元素
+        if isinstance(data, list):
+            for item in data:
+                if "construct" in item:
+                    results.append(item)
+        elif "construct" in data:
+            results.append(data)
+
+        # 验证结果数量
+        if len(results) != len(constructs):
+            print_warning(f"提取结果数量({len(results)})与请求数量({len(constructs)})不匹配")
+
+        return results
+
+    except json.JSONDecodeError as e:
+        print_error(f"JSON 解析失败: {e}")
+        print_error(f"响应文本前500字符:\n{response_text[:500]}")
+        print_error(f"响应文本后500字符:\n{response_text[-500:]}")
+
+        # 如果批量解析失败，尝试按分隔符分割
+        if "===CONSTRUCT_SEPARATOR===" in response_text:
+            parts = response_text.split("===CONSTRUCT_SEPARATOR===")
+            for part in parts:
+                part = part.strip()
+                if not part:
+                    continue
+                try:
+                    # 尝试提取 JSON
+                    if "```json" in part:
+                        start = part.find("```json") + 7
+                        end = part.find("```", start)
+                        json_str = part[start:end].strip()
+                    elif "```" in part:
+                        start = part.find("```") + 3
+                        end = part.find("```", start)
+                        json_str = part[start:end].strip()
+                    else:
+                        json_str = part
+
+                    if json_str:
+                        data = json.loads(json_str)
+                        if "construct" in data:
+                            results.append(data)
+                except:
+                    continue
+
+        if results:
+            return results
+
+        # 如果还是失败，返回错误
+        for construct in constructs:
+            results.append({
+                "construct": construct["name"],
+                "language": construct["language"],
+                "error": "批量解析失败",
+                "status": "failed"
+            })
+
+        return results
+
+
 def main():
     """主函数"""
     parser = argparse.ArgumentParser(
-        description="批量提取语法约束",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-示例:
-  # 提取所有 JavaScript 构造
-  python scripts/2_extract_constraints.py --language javascript
-
-  # 提取前 5 个构造（测试用）
-  python scripts/2_extract_constraints.py --language javascript --limit 5
-
-  # 从断点继续
-  python scripts/2_extract_constraints.py --language javascript --checkpoint data/extracted/checkpoint.json
-        """
+        description="批量提取语法约束（一次API调用处理多个构造）"
     )
 
     parser.add_argument(
@@ -295,6 +339,13 @@ def main():
         choices=["javascript", "java", "c", "python"],
         default="javascript",
         help="目标语言"
+    )
+
+    parser.add_argument(
+        "--batch-size",
+        type=int,
+        default=5,
+        help="每批处理的构造数量（默认5，建议3-8）"
     )
 
     parser.add_argument(
@@ -314,7 +365,7 @@ def main():
     parser.add_argument(
         "--prompt",
         type=str,
-        default="prompts/base_prompt_cn_v4.0.txt",
+        default="prompts/base_prompt_cn_v4.2.txt",
         help="Prompt 模板文件路径"
     )
 
@@ -325,14 +376,15 @@ def main():
     print("="*70)
     print(f"语言: {args.language}")
     print(f"Prompt: {args.prompt}")
+    print(f"批量大小: {args.batch_size}")
     if args.limit:
         print(f"限制数量: {args.limit}")
 
-    # 初始化输出目录（按语言分离）
-    output_dir = f"{args.language}/data/extracted"
+    # 初始化输出目录
+    output_dir = f"{args.language}/extracted"
     os.makedirs(output_dir, exist_ok=True)
 
-    checkpoint_file = f"{args.language}/data/checkpoint.json"
+    checkpoint_file = f"{args.language}/checkpoint.json"
 
     # 加载文档索引
     index = load_document_index(args.language)
@@ -362,11 +414,12 @@ def main():
 
     # 开始批量提取
     try:
-        summary = batch_extract_constraints(
+        summary = batch_extract_constructs(
+            client=client,
             constructs=constructs,
             prompt_template=prompt_template,
+            batch_size=args.batch_size,
             output_dir=output_dir,
-            client=client,
             checkpoint=args.checkpoint or checkpoint_file
         )
 
@@ -374,6 +427,8 @@ def main():
         print(" 提取完成！")
         print(f"{'='*70}{RESET}")
         print(f"成功率: {summary['successful']}/{summary['total']} ({summary['successful']/summary['total']*100:.1f}%)")
+        print(f"API 调用次数: ~{(summary['total'] + args.batch_size - 1) // args.batch_size}")
+        print(f"节省的 API 调用: {summary['total'] - ((summary['total'] + args.batch_size - 1) // args.batch_size)}")
 
         return 0
 

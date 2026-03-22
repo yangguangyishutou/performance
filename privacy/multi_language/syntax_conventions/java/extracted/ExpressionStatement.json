@@ -1,0 +1,15 @@
+{
+  "construct": "ExpressionStatement",
+  "language": "java",
+  "syntax_node": ";",
+  "constraints": [
+    {
+      "conditional": "<expression_start>",
+      "consequent": ";",
+      "skip": "StatementExpression",
+      "required": true,
+      "note": "表达式语句必须以分号结束"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:52.250054"
+}

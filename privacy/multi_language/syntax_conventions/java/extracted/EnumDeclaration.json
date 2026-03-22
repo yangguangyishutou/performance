@@ -1,0 +1,29 @@
+{
+  "construct": "EnumDeclaration",
+  "language": "java",
+  "syntax_node": "enum",
+  "constraints": [
+    {
+      "conditional": "{ClassModifier}",
+      "consequent": "enum",
+      "skip": "",
+      "required": false,
+      "note": "可选的类修饰符后必须跟 'enum' 关键字"
+    },
+    {
+      "conditional": "enum",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'enum' 关键字后必须跟类型标识符"
+    },
+    {
+      "conditional": "enum [IDENT]",
+      "consequent": "{",
+      "skip": "implements",
+      "required": false,
+      "note": "类型标识符后可跟可选的接口实现列表，然后必须跟左大括号"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.268876"
+}

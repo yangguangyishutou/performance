@@ -1,0 +1,143 @@
+      A.4     Preprocessing directives
+      (6.10.1) preprocessing-file:
+                           groupopt
+      (6.10.1) group:
+                            group-part
+                            group group-part
+
+                                        © ISO/IEC 2024 — All rights reserved
+                                                           472
+                                          ISO/IEC 9899:2024(en)                         BS ISO/IEC 9899:2024
+
+                                            ISO/IEC 9899:2024 (en)
+
+
+(6.10.1) group-part:
+                        if-section
+                        control-line
+                        text-line
+                        # non-directive
+(6.10.1) if-section:
+                        if-group elif-groupsopt else-groupopt endif-line
+(6.10.1) if-group:
+                        # if constant-expression new-line groupopt
+                        # ifdef identifier new-line groupopt
+                        # ifndef identifier new-line groupopt
+(6.10.1) elif-groups:
+                        elif-group
+                        elif-groups elif-group
+(6.10.1) elif-group:
+                        # elif constant-expression new-line groupopt
+                        # elifdef identifier new-line groupopt
+                        # elifndef identifier new-line groupopt
+(6.10.1) else-group:
+                        # else new-line groupopt
+(6.10.1) endif-line:
+                        # endif new-line
+(6.10.1) control-line:
+                        # include pp-tokens new-line
+                        # embed pp-tokens new-line
+                        # define identifier replacement-list new-line
+                        # define identifier lparen identifier-listopt ) replacement-list new-line
+                        # define identifier lparen ... ) replacement-list new-line
+                        # define identifier lparen identifier-list , ... ) replacement-list new-line
+                        # undef identifier new-line
+                        # line pp-tokens new-line
+                        # error pp-tokensopt new-line
+                        # warning pp-tokensopt new-line
+                        # pragma pp-tokensopt new-line
+                        # new-line
+(6.10.1) text-line:
+                        pp-tokensopt new-line
+(6.10.1) non-directive:
+                     pp-tokens new-line
+(6.10.1) lparen:
+                        a ( character not immediately preceded by white space
+(6.10.1) replacement-list:
+                    pp-tokensopt
+(6.10.1) pp-tokens:
+                        preprocessing-token
+                        pp-tokens preprocessing-token
+(6.10.1) new-line:
+                        the new-line character
+(6.10.1) identifier-list:
+                       identifier
+                       identifier-list , identifier
+
+                                   © ISO/IEC 2024 — All rights reserved
+                                                        473
+BS ISO/IEC 9899:2024                         ISO/IEC 9899:2024(en)
+                                                ISO/IEC 9899:2024 (en)
+
+
+      (6.10.1) pp-parameter:
+                          pp-parameter-name pp-parameter-clauseopt
+      (6.10.1) pp-parameter-name:
+                          pp-standard-parameter
+                          pp-prefixed-parameter
+      (6.10.1) pp-standard-parameter:
+                          identifier
+      (6.10.1) pp-prefixed-parameter:
+                           identifier :: identifier
+      (6.10.1) pp-parameter-clause:
+                          ( pp-balanced-token-sequenceopt )
+
+      (6.10.1) pp-balanced-token-sequence:
+                          pp-balanced-token
+                          pp-balanced-token-sequence pp-balanced-token
+      (6.10.1) pp-balanced-token:
+                           ( pp-balanced-token-sequenceopt )
+                           [ pp-balanced-token-sequenceopt ]
+                           { pp-balanced-token-sequenceopt }
+                          any pp-token other than a parenthesis, a bracket, or a brace
+      (6.10.1) embed-parameter-sequence:
+                         pp-parameter
+                         embed-parameter-sequence pp-parameter
+       defined-macro-expression:
+                             defined identifier
+                             defined ( identifier )
+       h-preprocessing-token:
+                          any preprocessing-token other than >
+       h-pp-tokens:
+                           h-preprocessing-token
+                           h-pp-tokens h-preprocessing-token
+       header-name-tokens:
+                           string-literal
+                           < h-pp-tokens >
+       has-include-expression:
+                           __has_include ( header-name )
+                           __has_include ( header-name-tokens )
+       has-embed-expression:
+                           __has_embed ( header-name embed-parameter-sequenceopt )
+                           __has_embed ( header-name-tokens pp-balanced-token-sequenceopt )
+       has-c-attribute-express:
+                           __has_c_attribute ( pp-tokens )
+
+       va-opt-replacement:
+                             __VA_OPT__ ( pp-tokensopt )
+
+      (6.10.8) standard-pragma:
+                             # pragma STDC FP_CONTRACT on-off-switch
+                             # pragma STDC FENV_ACCESS on-off-switch
+                             # pragma STDC FENV_DEC_ROUND dec-direction
+                             # pragma STDC FENV_ROUND direction
+                             # pragma STDC CX_LIMITED_RANGE on-off-switch
+
+      (6.10.8) on-off-switch: one of
+                          ON       OFF     DEFAULT
+
+
+                                         © ISO/IEC 2024 — All rights reserved
+                                                         474
+                                    ISO/IEC 9899:2024(en)                       BS ISO/IEC 9899:2024
+
+                                        ISO/IEC 9899:2024 (en)
+
+
+(6.10.8) direction: one of
+                    FE_DOWNWARD        FE_TONEAREST      FE_TONEARESTFROMZERO
+                    FE_TOWARDZERO        FE_UPWARD      FE_DYNAMIC
+
+(6.10.8) dec-direction: one of
+                    FE_DEC_DOWNWARD         FE_DEC_TONEAREST      FE_DEC_TONEARESTFROMZERO
+                    FE_DEC_TOWARDZERO         FE_DEC_UPWARD      FE_DEC_DYNAMIC

@@ -1,0 +1,43 @@
+{
+  "construct": "SwitchBlock",
+  "language": "java",
+  "syntax_node": "switch",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}, SwitchRule, SwitchBlockStatementGroup, SwitchLabel",
+      "skip": "",
+      "required": true,
+      "note": "左大括号 '{' 后必须跟右大括号 '}' 或 SwitchRule 或 SwitchBlockStatementGroup 或 SwitchLabel"
+    },
+    {
+      "conditional": "{ SwitchRule",
+      "consequent": "}, SwitchRule",
+      "skip": "",
+      "required": true,
+      "note": "SwitchRule 后必须跟右大括号 '}' 或另一个 SwitchRule"
+    },
+    {
+      "conditional": "{ SwitchBlockStatementGroup",
+      "consequent": "}, SwitchBlockStatementGroup",
+      "skip": "",
+      "required": true,
+      "note": "SwitchBlockStatementGroup 后必须跟右大括号 '}' 或另一个 SwitchBlockStatementGroup"
+    },
+    {
+      "conditional": "{ SwitchLabel",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "SwitchLabel 后必须跟冒号 ':'"
+    },
+    {
+      "conditional": "{ SwitchLabel :",
+      "consequent": "}",
+      "skip": "",
+      "required": true,
+      "note": "冒号 ':' 后必须跟右大括号 '}'"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:55:59.683313"
+}

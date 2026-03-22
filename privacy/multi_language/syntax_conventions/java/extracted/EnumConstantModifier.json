@@ -1,0 +1,15 @@
+{
+  "construct": "EnumConstantModifier",
+  "language": "java",
+  "syntax_node": "annotation",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "@[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "枚举常量修饰符必须是注解"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.269799"
+}

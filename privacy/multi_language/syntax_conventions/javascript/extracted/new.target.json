@@ -1,0 +1,22 @@
+{
+  "construct": "new.target",
+  "language": "javascript",
+  "syntax_node": "new",
+  "constraints": [
+    {
+      "conditional": "new",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "new 关键字后必须跟点号"
+    },
+    {
+      "conditional": "new .",
+      "consequent": "target",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟 target 标识符"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:52.570828"
+}

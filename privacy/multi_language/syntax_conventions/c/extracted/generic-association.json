@@ -1,0 +1,29 @@
+{
+  "construct": "generic-association",
+  "language": "c",
+  "syntax_node": "generic-association",
+  "constraints": [
+    {
+      "conditional": ":",
+      "consequent": "<expression-start>",
+      "skip": "",
+      "required": true,
+      "note": "冒号后必须跟赋值表达式起始"
+    },
+    {
+      "conditional": "default",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "default 关键字后必须跟冒号"
+    },
+    {
+      "conditional": "default :",
+      "consequent": "<expression-start>",
+      "skip": "",
+      "required": true,
+      "note": "default 冒号后必须跟赋值表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:44:55.064181"
+}

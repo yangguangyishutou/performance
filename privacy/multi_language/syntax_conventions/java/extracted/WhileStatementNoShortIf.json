@@ -1,0 +1,29 @@
+{
+  "construct": "WhileStatementNoShortIf",
+  "language": "java",
+  "syntax_node": "while",
+  "constraints": [
+    {
+      "conditional": "while",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'while' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "while (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过表达式）"
+    },
+    {
+      "conditional": "while ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始（StatementNoShortIf）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:56:55.447329"
+}

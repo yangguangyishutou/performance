@@ -1,0 +1,8 @@
+{
+  "construct": "InterfaceMethodDeclaration",
+  "language": "java",
+  "syntax_node": "",
+  "constraints": [],
+  "note": "此规则仅包含修饰符、方法头和方法体，没有特定的关键字序列约束，跳过提取",
+  "extracted_at": "2026-03-18T12:09:43.080677"
+}

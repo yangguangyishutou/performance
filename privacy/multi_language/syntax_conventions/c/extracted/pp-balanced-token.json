@@ -1,0 +1,29 @@
+{
+  "construct": "pp-balanced-token",
+  "language": "c",
+  "syntax_node": "(, [, {",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "pp-balanced-token-sequence",
+      "required": true,
+      "note": "平衡 token 中的左圆括号后必须跟右圆括号（中间可选平衡 token 序列）"
+    },
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "pp-balanced-token-sequence",
+      "required": true,
+      "note": "平衡 token 中的左方括号后必须跟右方括号（中间可选平衡 token 序列）"
+    },
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "pp-balanced-token-sequence",
+      "required": true,
+      "note": "平衡 token 中的左大括号后必须跟右大括号（中间可选平衡 token 序列）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:39.003639"
+}

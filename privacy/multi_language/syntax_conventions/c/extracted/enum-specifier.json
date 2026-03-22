@@ -1,0 +1,43 @@
+{
+  "construct": "enum-specifier",
+  "language": "c",
+  "syntax_node": "enum",
+  "constraints": [
+    {
+      "conditional": "enum",
+      "consequent": "[IDENT], {",
+      "skip": "attribute-specifier-sequence",
+      "required": true,
+      "note": "enum 关键字后可选跟属性序列，然后必须跟标识符或左大括号"
+    },
+    {
+      "conditional": "enum [IDENT]",
+      "consequent": ":",
+      "skip": "",
+      "required": false,
+      "note": "enum 标识符后可选跟冒号（用于指定枚举类型）"
+    },
+    {
+      "conditional": "enum [IDENT] :",
+      "consequent": "{",
+      "skip": "specifier-qualifier-list",
+      "required": true,
+      "note": "冒号后必须跟类型说明符列表，然后跟左大括号"
+    },
+    {
+      "conditional": "enum {",
+      "consequent": "}",
+      "skip": "enumerator-list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过枚举器列表）"
+    },
+    {
+      "conditional": "enum [IDENT] {",
+      "consequent": "}",
+      "skip": "enumerator-list",
+      "required": true,
+      "note": "带标识符的 enum 左大括号后必须跟右大括号（中间跳过枚举器列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:03.914344"
+}

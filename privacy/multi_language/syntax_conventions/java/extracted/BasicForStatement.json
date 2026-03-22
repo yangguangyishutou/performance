@@ -1,0 +1,43 @@
+{
+  "construct": "BasicForStatement",
+  "language": "java",
+  "syntax_node": "for",
+  "constraints": [
+    {
+      "conditional": "for",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'for' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "for (",
+      "consequent": ";",
+      "skip": "for_init",
+      "required": false,
+      "note": "左括号后必须跟分号（中间可选跳过 ForInit）"
+    },
+    {
+      "conditional": "for ( ;",
+      "consequent": ";",
+      "skip": "expression",
+      "required": false,
+      "note": "第一个分号后必须跟第二个分号（中间可选跳过表达式）"
+    },
+    {
+      "conditional": "for ( ; ;",
+      "consequent": ")",
+      "skip": "for_update",
+      "required": false,
+      "note": "第二个分号后必须跟右括号（中间可选跳过 ForUpdate）"
+    },
+    {
+      "conditional": "for ( ; ; )",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:56:55.448604"
+}

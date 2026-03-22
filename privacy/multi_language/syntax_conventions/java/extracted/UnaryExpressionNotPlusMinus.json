@@ -1,0 +1,22 @@
+{
+  "construct": "UnaryExpressionNotPlusMinus",
+  "language": "java",
+  "syntax_node": "",
+  "constraints": [
+    {
+      "conditional": "~",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "按位取反 '~' 运算符后必须跟一个表达式起始"
+    },
+    {
+      "conditional": "!",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "逻辑非 '!' 运算符后必须跟一个表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:01:16.492017"
+}

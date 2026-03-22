@@ -1,0 +1,15 @@
+{
+  "construct": "conditional-expression",
+  "language": "c",
+  "syntax_node": "?",
+  "constraints": [
+    {
+      "conditional": "?",
+      "consequent": ":",
+      "skip": "expression",
+      "required": true,
+      "note": "三元运算符的问号和冒号必须配对，中间跳过表达式"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:27.010843"
+}

@@ -1,0 +1,22 @@
+{
+  "construct": "parameter-type-list",
+  "language": "c",
+  "syntax_node": "parameter-list",
+  "constraints": [
+    {
+      "conditional": "parameter-list",
+      "consequent": ",",
+      "skip": "",
+      "required": false,
+      "note": "参数列表后可选择性跟随逗号（用于可变参数）"
+    },
+    {
+      "conditional": "parameter-list ,",
+      "consequent": "...",
+      "skip": "",
+      "required": true,
+      "note": "参数列表后的逗号必须跟随省略号（可变参数标记）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:33.693893"
+}

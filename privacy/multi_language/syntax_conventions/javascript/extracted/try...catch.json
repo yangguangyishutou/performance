@@ -1,0 +1,106 @@
+{
+  "construct": "try...catch",
+  "language": "javascript",
+  "syntax_node": "try",
+  "constraints": [
+    {
+      "conditional": "try",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "try 后必须跟左大括号"
+    },
+    {
+      "conditional": "try {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "try 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "try {}",
+      "consequent": "catch",
+      "skip": "",
+      "required": true,
+      "note": "try 块后必须跟 catch"
+    },
+    {
+      "conditional": "try {}",
+      "consequent": "finally",
+      "skip": "",
+      "required": true,
+      "note": "try 块后可直接跟 finally"
+    },
+    {
+      "conditional": "catch",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "catch 后必须跟左括号"
+    },
+    {
+      "conditional": "catch",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "catch 后可直接跟左大括号"
+    },
+    {
+      "conditional": "catch (",
+      "consequent": ")",
+      "skip": "pattern",
+      "required": true,
+      "note": "catch 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "catch ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "catch 括号后必须跟左大括号"
+    },
+    {
+      "conditional": "catch {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "catch 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "catch () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "catch 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "try {} catch () {}",
+      "consequent": "finally",
+      "skip": "",
+      "required": false,
+      "note": "catch 块后可选择性跟随 finally"
+    },
+    {
+      "conditional": "try {} catch {}",
+      "consequent": "finally",
+      "skip": "",
+      "required": false,
+      "note": "catch 块后可选择性跟随 finally"
+    },
+    {
+      "conditional": "finally",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "finally 后必须跟左大括号"
+    },
+    {
+      "conditional": "finally {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "finally 左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:29.990308"
+}

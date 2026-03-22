@@ -1,0 +1,22 @@
+{
+  "construct": "RecordPattern",
+  "language": "java",
+  "syntax_node": "ReferenceType",
+  "constraints": [
+    {
+      "conditional": "ReferenceType",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'ReferenceType' 后必须跟左括号"
+    },
+    {
+      "conditional": "ReferenceType (",
+      "consequent": ")",
+      "skip": "ComponentPatternList",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过可选的 'ComponentPatternList'）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:17.542735"
+}

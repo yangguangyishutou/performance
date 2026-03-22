@@ -1,0 +1,22 @@
+{
+  "construct": "ElementValuePair",
+  "language": "java",
+  "syntax_node": "=",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "标识符后必须跟等号"
+    },
+    {
+      "conditional": "[IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "等号后必须跟元素值表达式"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:10.965889"
+}

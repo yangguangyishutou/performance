@@ -1,0 +1,43 @@
+{
+  "construct": "SingleStaticImportDeclaration",
+  "language": "java",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "import",
+      "consequent": "static",
+      "skip": "",
+      "required": true,
+      "note": "'import' 后必须跟 'static' 关键字"
+    },
+    {
+      "conditional": "import static",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'import static' 后必须跟类型名标识符"
+    },
+    {
+      "conditional": "import static [IDENT]",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "类型名后必须跟点号 '.'"
+    },
+    {
+      "conditional": "import static [IDENT] .",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟成员标识符"
+    },
+    {
+      "conditional": "import static [IDENT] . [IDENT]",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "成员标识符后必须跟分号 ';'"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:45.190832"
+}

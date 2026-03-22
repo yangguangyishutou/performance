@@ -1,0 +1,78 @@
+{
+  "construct": "MethodHeader",
+  "language": "java",
+  "syntax_node": "MethodDeclarator",
+  "constraints": [
+    {
+      "conditional": "Result",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "Result 后必须跟方法标识符名称"
+    },
+    {
+      "conditional": "TypeParameters {Annotation} Result",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "带泛型参数和注解的 Result 后必须跟方法标识符名称"
+    },
+    {
+      "conditional": "Result [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "方法标识符后必须跟左括号开始参数列表"
+    },
+    {
+      "conditional": "TypeParameters {Annotation} Result [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "带泛型的方法标识符后必须跟左括号开始参数列表"
+    },
+    {
+      "conditional": "[IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过参数列表）"
+    },
+    {
+      "conditional": "[IDENT] ()",
+      "consequent": "throws, [",
+      "skip": "",
+      "required": false,
+      "note": "参数列表后可选择性跟随 'throws' 或数组维度"
+    },
+    {
+      "conditional": "[IDENT] () throws",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'throws' 后必须跟异常类型标识符"
+    },
+    {
+      "conditional": "[IDENT] () throws [IDENT]",
+      "consequent": ",, [",
+      "skip": "",
+      "required": false,
+      "note": "异常类型后可选择性跟随逗号继续声明或数组维度"
+    },
+    {
+      "conditional": "[IDENT] () [",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "左方括号后必须跟右方括号完成一个数组维度"
+    },
+    {
+      "conditional": "[IDENT] () []",
+      "consequent": "[",
+      "skip": "",
+      "required": false,
+      "note": "一个维度后可选择性跟随另一个左方括号开始更多维度"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:08.573616"
+}

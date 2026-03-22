@@ -1,0 +1,36 @@
+{
+  "construct": "ConditionalExpression",
+  "language": "java",
+  "syntax_node": "?",
+  "constraints": [
+    {
+      "conditional": "<expression_start>",
+      "consequent": "?",
+      "skip": "",
+      "required": false,
+      "note": "条件表达式后可选地跟问号"
+    },
+    {
+      "conditional": "<expression_start> ?",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "问号后必须跟真值表达式"
+    },
+    {
+      "conditional": "<expression_start> ? <expression_start>",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "真值表达式后必须跟冒号"
+    },
+    {
+      "conditional": "<expression_start> ? <expression_start> :",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "冒号后必须跟假值表达式（条件表达式或Lambda表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:00:51.389135"
+}

@@ -1,0 +1,78 @@
+{
+  "construct": "if-section",
+  "language": "c",
+  "syntax_node": "if-section",
+  "constraints": [
+    {
+      "conditional": "#if, #ifdef, #ifndef",
+      "consequent": "<expression_start>, [IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "if-group 指令后必须跟条件表达式或标识符"
+    },
+    {
+      "conditional": "#if <expression_start>",
+      "consequent": "\n",
+      "skip": "expression",
+      "required": true,
+      "note": "if 条件表达式后必须跟换行符（中间跳过表达式）"
+    },
+    {
+      "conditional": "#ifdef [IDENT], #ifndef [IDENT]",
+      "consequent": "\n",
+      "skip": "",
+      "required": true,
+      "note": "ifdef/ifndef 标识符后必须跟换行符"
+    },
+    {
+      "conditional": "#if\n, #ifdef\n, #ifndef\n",
+      "consequent": "#elif, #else, #endif",
+      "skip": "group",
+      "required": true,
+      "note": "if-group 后必须跟 elif、else 或 endif（中间跳过组内容）"
+    },
+    {
+      "conditional": "#elif",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "elif 指令后必须跟条件表达式"
+    },
+    {
+      "conditional": "#elif <expression_start>",
+      "consequent": "\n",
+      "skip": "expression",
+      "required": true,
+      "note": "elif 条件表达式后必须跟换行符（中间跳过表达式）"
+    },
+    {
+      "conditional": "#elif\n",
+      "consequent": "#elif, #else, #endif",
+      "skip": "group",
+      "required": true,
+      "note": "elif-group 后必须跟另一个 elif、else 或 endif（中间跳过组内容）"
+    },
+    {
+      "conditional": "#else",
+      "consequent": "\n",
+      "skip": "",
+      "required": true,
+      "note": "else 指令后必须跟换行符"
+    },
+    {
+      "conditional": "#else\n",
+      "consequent": "#endif",
+      "skip": "group",
+      "required": true,
+      "note": "else-group 后必须跟 endif（中间跳过组内容）"
+    },
+    {
+      "conditional": "#endif",
+      "consequent": "\n",
+      "skip": "",
+      "required": true,
+      "note": "endif 指令后必须跟换行符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:01.259423"
+}

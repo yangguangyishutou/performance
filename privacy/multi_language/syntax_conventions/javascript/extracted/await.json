@@ -1,0 +1,211 @@
+{
+  "construct": "await",
+  "language": "javascript",
+  "syntax_node": "await",
+  "constraints": [
+    {
+      "conditional": "await",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟标识符"
+    },
+    {
+      "conditional": "await",
+      "consequent": "[NUMBER]",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟数字字面量"
+    },
+    {
+      "conditional": "await",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟字符串字面量"
+    },
+    {
+      "conditional": "await",
+      "consequent": "[TEMPLATE]",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟模板字符串"
+    },
+    {
+      "conditional": "await",
+      "consequent": "[REGEX]",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟正则表达式字面量"
+    },
+    {
+      "conditional": "await",
+      "consequent": "null",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 null"
+    },
+    {
+      "conditional": "await",
+      "consequent": "true",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 true"
+    },
+    {
+      "conditional": "await",
+      "consequent": "false",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 false"
+    },
+    {
+      "conditional": "await",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟左括号（用于分组或IIFE）"
+    },
+    {
+      "conditional": "await",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟左方括号（成员访问或解构）"
+    },
+    {
+      "conditional": "await",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟左大括号（对象字面量或块）"
+    },
+    {
+      "conditional": "await",
+      "consequent": "`",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟反引号（模板字符串起始）"
+    },
+    {
+      "conditional": "await",
+      "consequent": "async",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 async 关键字"
+    },
+    {
+      "conditional": "await",
+      "consequent": "function",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 function 关键字"
+    },
+    {
+      "conditional": "await",
+      "consequent": "class",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 class 关键字"
+    },
+    {
+      "conditional": "await",
+      "consequent": "this",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 this"
+    },
+    {
+      "conditional": "await",
+      "consequent": "super",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 super"
+    },
+    {
+      "conditional": "await",
+      "consequent": "new",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 new 关键字"
+    },
+    {
+      "conditional": "await",
+      "consequent": "await",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟另一个 await"
+    },
+    {
+      "conditional": "await",
+      "consequent": "yield",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 yield"
+    },
+    {
+      "conditional": "await",
+      "consequent": "delete",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 delete 操作符"
+    },
+    {
+      "conditional": "await",
+      "consequent": "void",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 void 操作符"
+    },
+    {
+      "conditional": "await",
+      "consequent": "typeof",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟 typeof 操作符"
+    },
+    {
+      "conditional": "await",
+      "consequent": "+",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟一元加号"
+    },
+    {
+      "conditional": "await",
+      "consequent": "-",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟一元减号"
+    },
+    {
+      "conditional": "await",
+      "consequent": "~",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟按位非"
+    },
+    {
+      "conditional": "await",
+      "consequent": "!",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟逻辑非"
+    },
+    {
+      "conditional": "await",
+      "consequent": "++",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟自增运算符"
+    },
+    {
+      "conditional": "await",
+      "consequent": "--",
+      "skip": "",
+      "required": true,
+      "note": "await 后必须跟自减运算符"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:35.382305"
+}

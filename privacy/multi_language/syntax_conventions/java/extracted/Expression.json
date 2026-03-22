@@ -1,0 +1,8 @@
+{
+  "construct": "Expression",
+  "language": "java",
+  "syntax_node": "",
+  "constraints": [],
+  "note": "构造 'Expression' 是纯枚举规则（LambdaExpression 或 AssignmentExpression），没有括号或关键字序列，跳过提取。",
+  "extracted_at": "2026-03-18T12:00:27.871109"
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "TypeParameterList",
+  "language": "java",
+  "syntax_node": "<",
+  "constraints": [
+    {
+      "conditional": "<",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "泛型参数列表起始 '<' 后必须跟类型参数标识符"
+    },
+    {
+      "conditional": "< [IDENT]",
+      "consequent": ">, ,",
+      "skip": "",
+      "required": true,
+      "note": "类型参数标识符后必须跟 '>' 或 ','"
+    },
+    {
+      "conditional": "< [IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个类型参数标识符"
+    },
+    {
+      "conditional": "< [IDENT] , [IDENT]",
+      "consequent": ">, ,",
+      "skip": "",
+      "required": true,
+      "note": "后续类型参数标识符后必须跟 '>' 或 ','"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:05:22.031791"
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "struct-or-union-specifier",
+  "language": "c",
+  "syntax_node": "struct-or-union",
+  "constraints": [
+    {
+      "conditional": "struct, union",
+      "consequent": "{, [IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "struct 或 union 关键字后必须跟左大括号或标识符"
+    },
+    {
+      "conditional": "struct {, union {",
+      "consequent": "}",
+      "skip": "member-declaration-list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过成员声明列表）"
+    },
+    {
+      "conditional": "struct [IDENT], union [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可选择性跟随左大括号（定义结构体）"
+    },
+    {
+      "conditional": "struct [IDENT] {, union [IDENT] {",
+      "consequent": "}",
+      "skip": "member-declaration-list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过成员声明列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:41.953988"
+}

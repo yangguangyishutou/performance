@@ -1,0 +1,43 @@
+{
+  "construct": "DoStatement",
+  "language": "java",
+  "syntax_node": "do",
+  "constraints": [
+    {
+      "conditional": "do",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "'do' 关键字后必须跟语句起始"
+    },
+    {
+      "conditional": "do <statement_start>",
+      "consequent": "while",
+      "skip": "",
+      "required": true,
+      "note": "do 语句体后必须跟 'while' 关键字"
+    },
+    {
+      "conditional": "do <statement_start> while",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'while' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "do <statement_start> while (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过表达式）"
+    },
+    {
+      "conditional": "do <statement_start> while ()",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:56:55.448012"
+}

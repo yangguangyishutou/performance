@@ -1,0 +1,15 @@
+{
+  "construct": "expression",
+  "language": "c",
+  "syntax_node": ",",
+  "constraints": [
+    {
+      "conditional": ",",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "逗号运算符后必须跟表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:27.012406"
+}

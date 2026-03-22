@@ -1,0 +1,29 @@
+{
+  "construct": "EnumConstantList",
+  "language": "java",
+  "syntax_node": "enum",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "枚举常量列表必须以一个枚举常量开始"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": ",, <end>",
+      "skip": "",
+      "required": false,
+      "note": "枚举常量后可跟逗号（继续列表）或结束"
+    },
+    {
+      "conditional": ",",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个枚举常量"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.269226"
+}

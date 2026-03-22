@@ -1,0 +1,15 @@
+{
+  "construct": "debugger",
+  "language": "javascript",
+  "syntax_node": "debugger",
+  "constraints": [
+    {
+      "conditional": "debugger",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "'debugger' 语句必须以分号结尾"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:47.220458"
+}

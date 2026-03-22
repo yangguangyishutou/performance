@@ -1,0 +1,35 @@
+      Productions from §6 (Names)
+
+         ModuleName:
+          Identifier
+          ModuleName . Identifier
+
+         PackageName:
+           Identifier
+           PackageName . Identifier
+
+         TypeName:
+           TypeIdentifier
+           PackageOrTypeName . TypeIdentifier
+
+         ExpressionName:
+           Identifier
+           AmbiguousName . Identifier
+
+         MethodName:
+          UnqualifiedMethodIdentifier
+
+         PackageOrTypeName:
+           Identifier
+           PackageOrTypeName . Identifier
+
+         AmbiguousName:
+          Identifier
+          AmbiguousName . Identifier
+
+
+
+
+828
+SYNTAX
+

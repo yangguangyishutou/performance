@@ -1,0 +1,50 @@
+{
+  "construct": "LambdaExpression",
+  "language": "java",
+  "syntax_node": "->",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "LambdaParameterList",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过 LambdaParameterList）"
+    },
+    {
+      "conditional": "()",
+      "consequent": "->",
+      "skip": "",
+      "required": true,
+      "note": "参数列表括号后必须跟箭头 '->'"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "->",
+      "skip": "",
+      "required": true,
+      "note": "简洁参数标识符后必须跟箭头 '->'"
+    },
+    {
+      "conditional": "_",
+      "consequent": "->",
+      "skip": "",
+      "required": true,
+      "note": "下划线参数后必须跟箭头 '->'"
+    },
+    {
+      "conditional": "->",
+      "consequent": "{, <expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "箭头 '->' 后必须跟左大括号或表达式起始（LambdaBody）"
+    },
+    {
+      "conditional": "-> {",
+      "consequent": "}",
+      "skip": "Block",
+      "required": true,
+      "note": "箭头后左大括号必须跟右大括号（中间跳过语句块）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:00:27.871362"
+}

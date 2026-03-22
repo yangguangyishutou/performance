@@ -1,0 +1,120 @@
+{
+  "construct": "iteration-statement",
+  "language": "c",
+  "syntax_node": "while",
+  "constraints": [
+    {
+      "conditional": "while",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "while 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "while (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+    },
+    {
+      "conditional": "while ()",
+      "consequent": "{, <statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+    },
+    {
+      "conditional": "while () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+    },
+    {
+      "conditional": "do",
+      "consequent": "{, <statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "do 关键字后必须跟左大括号或语句起始（secondary-block）"
+    },
+    {
+      "conditional": "do {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+    },
+    {
+      "conditional": "do {}",
+      "consequent": "while",
+      "skip": "",
+      "required": true,
+      "note": "do 语句块的右大括号后必须跟 while"
+    },
+    {
+      "conditional": "do {} while",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "while 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "do {} while (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+    },
+    {
+      "conditional": "do {} while ()",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "do-while 语句的右括号后必须跟分号"
+    },
+    {
+      "conditional": "for",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "for 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "for (",
+      "consequent": ";",
+      "skip": "expression, declaration",
+      "required": true,
+      "note": "左括号后必须跟第一个分号（中间可跳过初始化表达式或声明）"
+    },
+    {
+      "conditional": "for ( ;",
+      "consequent": ";",
+      "skip": "expression",
+      "required": true,
+      "note": "第一个分号后必须跟第二个分号（中间可跳过条件表达式）"
+    },
+    {
+      "conditional": "for ( ; ;",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "第二个分号后必须跟右括号（中间可跳过迭代表达式）"
+    },
+    {
+      "conditional": "for ( ; ; )",
+      "consequent": "{, <statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号或语句起始（secondary-block）"
+    },
+    {
+      "conditional": "for ( ; ; ) {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:46.581915"
+}

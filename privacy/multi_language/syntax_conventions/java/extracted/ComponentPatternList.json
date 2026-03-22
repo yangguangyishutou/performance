@@ -1,0 +1,29 @@
+{
+  "construct": "ComponentPatternList",
+  "language": "java",
+  "syntax_node": "ComponentPattern",
+  "constraints": [
+    {
+      "conditional": "ComponentPattern",
+      "consequent": ",, )",
+      "skip": "",
+      "required": false,
+      "note": "第一个 'ComponentPattern' 后可选择性跟随逗号（用于更多 'ComponentPattern'）或右括号"
+    },
+    {
+      "conditional": "ComponentPattern ,",
+      "consequent": "ComponentPattern",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟另一个 'ComponentPattern'"
+    },
+    {
+      "conditional": "ComponentPattern , ComponentPattern",
+      "consequent": ",, )",
+      "skip": "",
+      "required": false,
+      "note": "后续 'ComponentPattern' 后可选择性跟随逗号（用于更多 'ComponentPattern'）或右括号"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:17.543245"
+}

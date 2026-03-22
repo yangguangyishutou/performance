@@ -1,0 +1,15 @@
+{
+  "construct": "EmptyStatement",
+  "language": "java",
+  "syntax_node": ";",
+  "constraints": [
+    {
+      "conditional": ";",
+      "consequent": "",
+      "skip": "",
+      "required": true,
+      "note": "空语句仅由一个分号组成"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:52.249503"
+}

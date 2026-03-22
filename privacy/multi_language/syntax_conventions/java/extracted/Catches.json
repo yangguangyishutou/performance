@@ -1,0 +1,15 @@
+{
+  "construct": "Catches",
+  "language": "java",
+  "syntax_node": "catch",
+  "constraints": [
+    {
+      "conditional": "CatchClause",
+      "consequent": "CatchClause",
+      "skip": "",
+      "required": false,
+      "note": "第一个 'catch' 子句后可选择性跟随更多 'catch' 子句"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:57:41.810521"
+}

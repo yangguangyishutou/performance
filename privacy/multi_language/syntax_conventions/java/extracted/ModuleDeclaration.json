@@ -1,0 +1,29 @@
+{
+  "construct": "ModuleDeclaration",
+  "language": "java",
+  "syntax_node": "module",
+  "constraints": [
+    {
+      "conditional": "module",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'module' 关键字后必须跟模块名标识符"
+    },
+    {
+      "conditional": "module [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "模块名后必须跟左大括号 '{'"
+    },
+    {
+      "conditional": "module [IDENT] {",
+      "consequent": "}",
+      "skip": "ModuleDirective",
+      "required": true,
+      "note": "左大括号后必须跟右大括号 '}'（中间跳过模块指令列表）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:04:45.191683"
+}

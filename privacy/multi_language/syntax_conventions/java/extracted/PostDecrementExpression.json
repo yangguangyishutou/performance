@@ -1,0 +1,15 @@
+{
+  "construct": "PostDecrementExpression",
+  "language": "java",
+  "syntax_node": "--",
+  "constraints": [
+    {
+      "conditional": "<expression_start>",
+      "consequent": "--",
+      "skip": "",
+      "required": true,
+      "note": "后缀自减表达式：表达式后必须跟 '--'"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:01:44.681289"
+}

@@ -1,112 +1,72 @@
 \section{Benchmark}
 
 
-% We present the \bench benchmark with a detailed description of the construction process and its characteristics.
+% 数据是如何构建的
+\subsection{Construction}
 
+The construction of our benchmark involves a systematic pipeline that traces model derivations from base models to their descendants on Hugging Face. This process is divided into five key steps:
 
-\subsection{Benchmark Construction}
+\paragraph{Step 1: Obtaining Base Model List}
+We begin by collecting a list of popular base models for the \texttt{text-generation} task from Hugging Face. Utilizing the \texttt{HfApi} provided by \texttt{huggingface\_hub}, we retrieve the top 50 non-gated models sorted by the number of likes. The model identifiers are stored in a file named \texttt{base\_models.txt}, where each line corresponds to one base model ID. This step is implemented via \textbf{Script 1}.
 
-To construct our benchmark, we apply a five-step process. The containing samples are of the Python language, which is the dominant language in the current MCP ecosystem (95\% of the ecosystem share)~\cite{hasan2025model}.
+\paragraph{Step 2: Building the Model Derivation Tree}
+Based on \texttt{base\_models.txt}, we recursively crawl derivative models to construct a “model forest”. For each base model, we explore its derivatives up to four levels deep, covering four derivation types: \texttt{finetune}, \texttt{adapter}, \texttt{quantized}, and \texttt{merge}. For each derivation type, a maximum of six sibling nodes are considered. Every node in the tree records metadata such as model name, crawl timestamp, depth level, and its child nodes. The resulting forest structure is serialized into \texttt{model\_forest.json}. This step is implemented via \textbf{Script 2}.
 
-% 1. remote code execution (RCE) 2. exec() 3. base64(e+x+e+c ()) 4. LLM 5. Fix+Manual
+\paragraph{Step 3: Constructing Model Pairs}
+From the model forest, we extract two categories of model pairs: adjacent parent-child pairs and non-adjacent ancestor-descendant pairs. By performing a Breadth-First Search (BFS) traversal on each tree, we generate:
+\begin{itemize}
+    \item \textbf{Adjacent Pairs}: Direct parent-child model pairs.
+    \item \textbf{Non-Adjacent Pairs}: All ancestor-descendant pairs where the ancestor is not the immediate parent.
+\end{itemize}
+These pairs are recorded in \texttt{adjacent\_pairs.jsonl} and \texttt{non\_adjacent\_pairs.jsonl}, respectively. This step is implemented via \textbf{Script 3}.
 
-% MCP vulnerability 
-\textbf{(1) Vulnerability Type Collection.} To understand the prevalent vulnerability types in existing MCP-based systems, we analyzed publicly disclosed vulnerabilities in the National Vulnerability Database (NVD)~\cite{nist_nvd}. Using the keyword ``MCP'', we identified 34 vulnerable MCP servers. Our analysis reveals four dominant vulnerability categories: remote code execution (RCE), denial of service (DoS), SQL injection (SQLi), and insecure file operations (IFO). In addition, we reference the OWASP OWASP LLM Top 10~\cite{owasptop10} to complement our classification. Given that MCP servers typically have access to sensitive data and external resources, we additionally include sensitive information disclosure (SID) as a relevant risk category. The remaining nine risk types in the OWASP LLM Top 10 are excluded, as they are not directly applicable to MCP server architectures.
+\paragraph{Step 4: Single-Threaded Model Validation}
+To ensure data quality, we validate the structural correctness of all adjacent model pairs. For each model, we inspect its file tree on Hugging Face, checking for the presence of critical files such as \texttt{config.json}, \texttt{adapter\_config.json}, and various parameter files (e.g., \texttt{.bin}, \texttt{.pt}, \texttt{.safetensors}, etc.). We verify whether the claimed derivation type aligns with the actual file structure and whether the parent model is valid. The results are compiled into a comprehensive validation report named \texttt{model\_validation\_report.json}. This step is implemented via \textbf{Script 4}.
 
+\paragraph{Step 5: Filtering Erroneous Model Pairs}
+Based on the validation report, we remove all erroneous model pairs from the dataset. Models flagged with any inconsistencies or missing critical files are excluded. The cleaned set of adjacent model pairs is saved in \texttt{adjacent\_pairs\_without\_error.json}. This step is implemented via \textbf{Script 5}.
 
-\textbf{(2) Vulnerability-Triggering Expression Collection.} We collect vulnerability-triggering expressions (e.g., function calls) corresponding to the five identified vulnerability types.
+\subsection{Characteristics}
 
+Our benchmark exhibits several notable characteristics that reflect its diversity and representativeness of the Hugging Face model ecosystem:
 
-\begin{itemize}[leftmargin=*]
-
-    \item \textbf{Remote Code Execution (RCE).} We construct RCE vulnerabilities by introducing unsafe system shell invocations and dynamic code evaluation calls into the MCP codebase. For system shell invocation, we select calls including \texttt{os.system()}, \texttt{subprocess.run(shell=True)}, \texttt{subprocess.call()}, and \texttt{asyncio.} \texttt{create\_subprocess\_shell()} with unsanitized user input, thereby enabling direct shell command injection. In addition, we incorporate the use of ctypes to invoke the underlying \texttt{libc.system()} function, further expanding the attack surface at the native C++ library layer. For dynamic code execution, we introduce calls to \texttt{exec()}, \texttt{eval()}, \texttt{timeit.timeit()}, and \texttt{runpy.run\_path()} to construct scenarios that permit arbitrary Python code execution. Furthermore, we include expression evaluation through \texttt{pandas.query()}, which can also lead to code injection if improperly handled.
+\begin{itemize}
+    \item \textbf{Variety of Derivation Types}: The dataset covers four major derivation types—\texttt{finetune}, \texttt{adapter}, \texttt{quantized}, and \texttt{merge}—capturing a wide range of model transformation patterns.
     
-        
+    \item \textbf{Hierarchical Depth}: With a recursive crawling depth of up to four levels, the benchmark contains both shallow and deep derivation chains, enabling analysis of both immediate and long-range model inheritance.
     
-    % 填空： XXX, XXXX 语句。类似于\texttt{pandas.query()}
-    \item \textbf{Sensitive Information Disclosure (SID).} We construct scenarios in which MCP servers may access and expose sensitive information from external data sources. Specifically, we simulate cases involving the retrieval of email contents (i.e., the MCP tool directly feeds unsanitized email content into the LLM's context through a return statement) and log files, as well as the copying of sensitive data from private locations to publicly accessible directories (\texttt{shutil.copy()}).
-
-    \item \textbf{Insecure File Operation (IFO).} Insecure file operations (IFO) include path traversal and improper file permission management. For path traversal, we construct attacks using the unfiltered \texttt{open()} function with \texttt{../} sequences or URL-encoded patterns to bypass directory constraints. We also exploit path-overwriting in \texttt{os.path.join()} for absolute paths, resolution inconsistencies in \texttt{pathlib.Path()}, and unintended file enumeration via wildcards in \texttt{glob.glob()}. Improper file permissions include unauthorized deletion (\texttt{os.remove()}, \texttt{shutil.rmtree()}), insecure permission changes (\texttt{os.chmod()}), arbitrary reading (\texttt{linecache.getline()}), unrestricted symlink traversal (\texttt{os.walk()}), and TOCTOU race conditions between link validation (\texttt{os.path.i} \texttt{slink()}) and subsequent file access (\texttt{open()}).
-
+    \item \textbf{Scale and Coverage}: Starting from 50 popular base models, the recursive traversal results in a substantial model forest, ensuring coverage of highly influential models as well as their derivative variants.
     
-    % Insecure file operations (IFO) encompass both path traversal and improper file permission management. For path traversal, we construct attack scenarios by invoking the unfiltered \texttt{open()} function with inputs containing \texttt{../} sequences or URL-encoded traversal patterns to bypass directory constraints. We further exploit the path-overwriting behavior of \texttt{os.path.join()} when handling absolute paths, inconsistencies in path resolution via \texttt{pathlib.Path()}, and unintended file enumeration caused by wildcard expansion in \texttt{glob.glob()}. Improper file permission and access control issues include unauthorized file deletion through \texttt{os.remove()} and \texttt{shutil.rmtree()}, insecure permission modification using \texttt{os.chmod()}, arbitrary file reading via \texttt{linecache.getline()}, unrestricted symbolic link traversal during directory walking (e.g., \texttt{os.walk()}), and time-of-check-to-time-of-use (TOCTOU) race conditions arising from the gap between link validation (e.g., \texttt{os.path.islink()}) and subsequent file access (e.g., \texttt{open()}).
+    \item \textbf{Data Cleanliness}: Through rigorous validation and error filtering, the dataset ensures high structural integrity, making it suitable for tasks that require reliable model lineage information.
     
-    \item \textbf{SQL Injection.} We include the standard \texttt{execute()} call, the primary query interface for major relational databases (e.g., MySQL, PostgreSQL, SQLite, and Microsoft SQL Server). We further extend our coverage to widely used ORM and data-access frameworks, including SQLAlchemy's raw SQL interface \texttt{sqlalchemy} \texttt{.text()}, Pandas' direct query execution via \texttt{pandas.read\_sql()}, MongoDB's \texttt{find()} operation, and Redis Lua script evaluation through \texttt{redis.eval()}.
-
-    
-    \item \textbf{Denial of Service (DoS).} DoS attacks target computational (CPU), memory, and storage resources. For CPU exhaustion, we model vulnerable regular expressions (e.g., \texttt{re.match()}, \texttt{re.comp} \texttt{ile()}) prone to ReDoS, and unbounded computations such as \texttt{math.fact} \texttt{orial()} or deep recursion without input limits, causing potential stack overflows. Memory exhaustion includes reading an expanded ZIP bomb (\texttt{zipfile.ZipFile.read()}) and unconstrained string multiplications. Disk exhaustion is simulated via file descriptor leaks (repeated \texttt{open()} without \texttt{close()}) and uncontrolled \texttt{f.write()} operations. At the business logic level, we model infinite loops, including non-terminating pagination (returning a new \texttt{uuid.uuid4()} as \texttt{next\_page\_token}), endlessly expanding directory trees, and circular authentication deadlocks.
-
-    % DoS attacks primarily exhaust computational (e.g., CPU), memory, and storage resources. For computational exhaustion, we construct scenarios involving vulnerable regular expressions (e.g., \texttt{re.match()} or \texttt{re.compile()}) susceptible to Regular Expression Denial of Service (ReDoS), as well as unbounded computations such as \texttt{math.factorial()} or deeply recursive functions without input size constraints, which may lead to stack overflows. For memory exhaustion, we include cases such as reading the full contents of an expanded ZIP bomb via \texttt{zipfile.ZipFile.read()} and performing unconstrained string multiplications that trigger excessive memory allocation. Regarding disk resource exhaustion, we simulate file descriptor leaks (e.g., repeatedly invoking \texttt{open()} without corresponding \texttt{close()} calls) and unbounded log writing through uncontrolled \texttt{f.write()} operations, both of which can deplete disk space. At the business logic level, we model infinite execution flows, including non-terminating pagination loops (e.g., always returning a newly generated \texttt{uuid.uuid4()} as the \texttt{next\_page\_token}), dynamically fabricated directory trees that expand indefinitely for arbitrary input paths, and circular authentication deadlocks in which tools return instructions that recursively invoke one another.
- 
-
-    % DoS attacks primarily exhaust computational (e.g., CPU), memory, and storage resources. For computational exhaustion, we construct scenarios involving vulnerable regular expressions (e.g., \texttt{re.match()} or \texttt{re.compile()}) susceptible to Regular Expression Denial of Service (ReDoS), as well as unbounded computations such as \texttt{math.factorial()} or deeply recursive functions without input size constraints, which may lead to stack overflows. For memory exhaustion, we include cases such as reading the full contents of an expanded ZIP bomb via \texttt{zipfile.ZipFile.read()} and performing unconstrained string multiplications that trigger excessive memory allocation. Regarding disk resource exhaustion, we simulate file descriptor leaks (e.g., repeatedly invoking \texttt{open()} without corresponding \texttt{close()} calls) and unbounded log writing through uncontrolled \texttt{f.write()} operations, both of which can deplete disk space. At the business logic level, we model infinite execution flows, including non-terminating pagination loops (e.g., always returning a newly generated \texttt{uuid.uuid4()} as the \texttt{next\_page\_token}), dynamically fabricated directory trees that expand indefinitely for arbitrary input paths, and circular authentication deadlocks in which tools return instructions that recursively invoke one another.
- 
+    \item \textbf{Real-World Relevance}: The benchmark reflects actual user-driven derivation patterns on Hugging Face, providing insights into community practices such as model fine-tuning trends, adapter usage, and quantization adoption.
 \end{itemize}
 
-
-\textbf{(3) Varying Context Generation.} We apply multiple varying contexts surrounding the vulnerability-triggering expressions to ensure the robustness and generalization ability of the dataset in complex real-world scenarios. 
-
-\begin{itemize}[leftmargin=*]
-    \item \textbf{Encoding Variants.} We incorporate multiple encoding techniques to evaluate detector robustness. Specifically, we apply hexadecimal (Hex) and Base64 encodings, which are commonly used to represent binary data in text-based formats and to standardize cryptographic hash outputs. These transformations allow us to assess whether detectors can correctly identify semantically equivalent vulnerabilities expressed in encoded variants.
-    
-    \item \textbf{Dynamic Invocation.} We employ Python reflection to dynamically resolve and invoke system functions, such as constructing system call references through \texttt{getattr()}, thereby obscuring direct API usage.
- 
-    \item \textbf{Incomplete defenses.} We construct samples with incomplete defenses to mimic common developer biases. For RCE and SQLi, MCP servers use fragile single-pass blacklist sanitization (e.g., \texttt{replace()} without recursion), failing against double-write nesting or mixed-case obfuscation. For insecure file operations, URL-decoded inputs undergo single-pass traversal removal (e.g., \texttt{unquote()} + \texttt{replace(../'', ’’)}) and imprecise \texttt{startswith()} checks on non-normalized paths, ignoring canonicalization issues. Finally, covert fallback vulnerabilities occur when strict checks (e.g., \texttt{int()} conversion) fail, and the server reverts to unsafe operations like f-string SQL queries.
-
-
-    % We construct samples with intentionally incomplete defenses to mimic common developer biases in filtering logic. For RCE and SQLi, MCP servers use fragile single-pass blacklist sanitization (e.g., \texttt{replace()} once without recursion), which fails against double-write nesting or mixed-case obfuscation. For insecure file operations, URL-decoded inputs undergo only single-pass traversal removal (e.g., \texttt{unquote()} plus \texttt{replace(``../'', ``'')}) and imprecise prefix checks using \texttt{startswith()} on non-normalized paths, ignoring canonicalization issues. Finally, we simulate covert fallback vulnerabilities: when strict checks (e.g., \texttt{int()} conversion) fail, the server reverts to unsafe operations such as f-string SQL queries, reintroducing injection risks.
-
-    % We construct a series of samples with intentionally incomplete defenses to simulate common developer cognitive biases in implementing filtering logic. For RCE and SQLi, MCP servers adopt a fragile single-pass blacklist sanitization strategy (e.g., invoking \texttt{replace()} once without recursive processing), which fails to block keywords crafted through double-write nesting or mixed-case obfuscation. For insecure file operations, we model flawed path sanitization mechanisms in which URL-decoded inputs undergo only a single-pass removal of traversal patterns (e.g., applying \texttt{unquote()} followed by a single \texttt{replace("../", "")}), as well as imprecise prefix validation that relies on \texttt{startswith()} over joined but non-normalized paths. These implementations fail to account for canonicalization inconsistencies and path equivalence issues. Finally, we simulate covert fallback vulnerabilities, where the MCP server reverts to unsafe operations when secure mechanisms fail. For example, upon a \texttt{ValueError} triggered by strict type casting (e.g., \texttt{int()} conversion), the system falls back to string-based SQL query construction (e.g., f-strings), thereby reintroducing injection risks.
-
-    
-\end{itemize}
-
-
-\textbf{(4) Vulnerable MCP Server Generation.} We employ Gemini-1.5-Pro~\cite{gemini} as the base model and design a structured prompt template incorporating persona configuration (Python Security Expert), core logic parameterization, and JSONL output constraints. The template guides the model to generate heterogeneous vulnerability samples in batch, ensuring compliance with MCP protocol specifications. Specifically, it dynamically instantiates predefined vulnerability categories, trigger logic, and variant techniques to produce diverse yet controlled risk scenarios. The complete prompt template is illustrated in Fig.~\ref{fig:prompt}.
-
-
-
-\begin{figure}[!t]
+% show the statistics of the benchmark
+\begin{table}[t]
     \centering
-    \includegraphics[width=0.45\textwidth]{fig/prompt.pdf}
-    \vspace{-11pt}
-    \caption{Prompt for Vulnerable MCP Server Generation}
-    \label{fig:prompt}
-\end{figure}
-
-
-\textbf{(5) Vulnerable MCP Server Fixing.} We fix MCP vulnerabilities by type. For RCE, we remove user-controlled execution flows, replacing shell-based APIs (e.g., \texttt{os.system()}) with parameterized subprocess calls (\texttt{shell=False}) and substituting dynamic execution primitives (e.g., \texttt{exec()}, \texttt{eval()}) with predefined dispatch logic. Unsafe deserialization (e.g., \texttt{pickle}) is replaced with data-only formats (e.g., JSON), and strict input validation with canonicalization confines external data. For sensitive information disclosure, we enforce separation between data and instructions via structured JSON, role-label sanitization, parameter whitelists, and bounded outputs. Insecure File Operations are mitigated with a “normalize-then-validate” sandboxing: paths are canonicalized (\texttt{abspath()}, \texttt{resolve()}) and checked against a base directory, with symlink validation, multi-pass decoding, and secure temporary file APIs. For DoS, we enforce deterministic limits on recursion, iteration, memory, and decompression, optimize regex patterns against ReDoS, use non-blocking asynchronous execution, and set explicit termination conditions to prevent infinite loops. SQLi is prevented via parameterized queries, whitelisted identifiers, strict type validation, and elimination of unsafe fallback logic, ensuring data is isolated from executable commands.
-
-% We fix MCP vulnerabilities regarding their types. To mitigate RCE vulnerabilities, we eliminate user-controlled execution flows by replacing shell-based APIs (e.g., \texttt{os.system()}) with parameterized subprocess calls (\texttt{shell=False}) and removing dynamic execution primitives (e.g., \texttt{exec()}, \texttt{eval()}) in favor of predefined dispatch logic. Unsafe deserialization (e.g., \texttt{pickle}) is downgraded to data-only formats (e.g., JSON), and strict input validation with canonicalization ensures external data remains within authorized boundaries. For sensitive information disclosure, we enforce logical separation between data and system instructions through structured JSON encapsulation, role-label sanitization, strict parameter whitelisting, and bounded output constraints, preventing instruction hijacking and context manipulation. To address Insecure File Operations, we adopt a ``normalize-then-validate'' sandboxing principle where all paths are canonicalized (e.g., \texttt{abspath()}, \texttt{resolve()}) and validated against a fixed base directory, with symlink checks, multi-pass decoding, and secure temporary file APIs to prevent traversal and race conditions. For DoS, we impose deterministic resource limits on recursion, iteration, memory allocation, and archive decompression, optimize regex patterns against ReDoS, enforce non-blocking execution in asynchronous contexts, and introduce explicit termination conditions in business logic to prevent infinite loops. To prevent SQLi, we mandate parameterized queries, prohibit dynamic SQL string construction, enforce identifier whitelisting, apply strict type validation, and eliminate unsafe fallback logic, thereby physically separating data from executable commands.
-
-\textbf{Manual Validation.} Two authors independently conducted a cross-validation and identified 10 erroneous entries out of the 150 implementations. Four vulnerable entries were found unexploitable in practice. We revised their logic to ensure exploitability. The remaining six vulnerability-fixed entries contained flawed patches, either due to overly strict sanitization that broke functionality or incomplete mitigations still bypassable. These patches were refined accordingly. All revised entries then underwent a second independent review until both authors unanimously confirmed their correctness.
-
-
-% Two authors independently performed a rigorous manual cross-validation across all 150 MCP server implementations. During this review, we identified and fixed 10 erroneous entries. Four of them were vulnerable entries that proved unexploitable in practice. We adjusted the surrounding logic to guarantee exploitability while preserving the core nature of the vulnerability. The other 6 instances were vulnerability fixed entries with problematic patches. These issues stemmed from either overly strict sanitization that broke expected functionality, or incomplete mitigations that could still be bypassed via obscure edge cases. We optimized these patches to resolve the defects. Upon completing these modifications, the revised entries underwent a secondary independent review until both authors unanimously verified their absolute correctness.
-
-
-\begin{table}[!t]
-\centering
-\small\caption{Statistics of \bench}
-\vspace{-10pt}
-    \begin{tabular}{m{3cm}m{2cm}m{2cm}}
-\toprule
- \textbf{Vulnerability Type} & \textbf{\shortstack[l]{Vulnerable MCP\\Tool Count}}
- 
-                            &  \textbf{Vulnerability-Fixed MCP Tool Count}\\
-\hline
- remote code execution & 15 & 15 \\ 
- denial of service & 15 & 15 \\ 
- SQL injection & 15 & 15 \\ 
- insecure file operations & 15 & 15 \\ 
- sensitive information disclosure& 15 & 15 \\ 
-\midrule
-Total & 75 & 75 \\ 
-\bottomrule
-\end{tabular}
-
-\label{tab:dataset}
-\end{table}
+    \caption{Statistics of the \textsc{GrandMoTHer} benchmark.}
+    \label{tab:grandmother-statistics}
+    \small
+    \begin{tabular}{l r}
+        \toprule
+        \textbf{Statistic} & \textbf{Value} \\
+        \midrule
+        \#Graphs & 31 \\
+        \#Model pairs (edges) & 248 \\
+        Min / Median / Max pairs per graph & 1 / 6 / 22 \\
+        Avg.\ pairs per graph & 8.0 \\
+        \#Models (nodes) & 279 \\
+        \#Root models & 31 \\
+        \#Intermediate models & 44 \\
+        \#Leaf models & 204 \\
+        Share of leaf models & 73.1\% \\
+        Min / Avg / Max models per graph & 2 / 9.0 / 23 \\
+        Avg.\ out-degree of non-leaf models & 3.31 \\
+        Max fine-tuning depth & 2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}  
 
 
 \subsection{Statistics} 

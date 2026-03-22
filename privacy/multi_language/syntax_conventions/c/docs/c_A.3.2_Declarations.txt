@@ -1,0 +1,242 @@
+A.3.2     Declarations
+(6.7.1) declaration:
+                       declaration-specifiers init-declarator-listopt ;
+                       attribute-specifier-sequence declaration-specifiers init-declarator-list ;
+                       static_assert-declaration
+                       attribute-declaration
+(6.7.1) declaration-specifiers:
+                     declaration-specifier attribute-specifier-sequenceopt
+                     declaration-specifier declaration-specifiers
+(6.7.1) declaration-specifier:
+                     storage-class-specifier
+                     type-specifier-qualifier
+                     function-specifier
+(6.7.1) init-declarator-list:
+                      init-declarator
+                      init-declarator-list , init-declarator
+
+                                     © ISO/IEC 2024 — All rights reserved
+                                                       467
+BS ISO/IEC 9899:2024                           ISO/IEC 9899:2024(en)
+                                                  ISO/IEC 9899:2024 (en)
+
+
+      (6.7.1) init-declarator:
+                            declarator
+                            declarator = initializer
+      (6.7.1) attribute-declaration:
+                            attribute-specifier-sequence ;
+      (6.7.2) storage-class-specifier:
+                            auto
+                            constexpr
+                            extern
+                            register
+                            static
+                            thread_local
+                            typedef
+      (6.7.3.1) type-specifier:
+                            void
+                            char
+                            short
+                            int
+                            long
+                            float
+                            double
+                            signed
+                            unsigned
+                            _BitInt ( constant-expression )
+                            bool
+                            _Complex
+                            _Decimal32
+                            _Decimal64
+                            _Decimal128
+                            atomic-type-specifier
+                            struct-or-union-specifier
+                            enum-specifier
+                            typedef-name
+                            typeof-specifier
+      (6.7.3.2) struct-or-union-specifier:
+                           struct-or-union attribute-specifier-sequenceopt identifieropt { member-declaration-list }
+                           struct-or-union attribute-specifier-sequenceopt identifier
+      (6.7.3.2) struct-or-union:
+                            struct
+                            union
+      (6.7.3.2) member-declaration-list:
+                          member-declaration
+                          member-declaration-list member-declaration
+      (6.7.3.2) member-declaration:
+                          attribute-specifier-sequenceopt specifier-qualifier-list member-declarator-listopt ;
+                          static_assert-declaration
+      (6.7.3.2) specifier-qualifier-list:
+                            type-specifier-qualifier attribute-specifier-sequenceopt
+                            type-specifier-qualifier specifier-qualifier-list
+      (6.7.3.2) type-specifier-qualifier:
+                            type-specifier
+                            type-qualifier
+                            alignment-specifier
+
+                                         © ISO/IEC 2024 — All rights reserved
+                                                             468
+                                        ISO/IEC 9899:2024(en)                               BS ISO/IEC 9899:2024
+
+                                            ISO/IEC 9899:2024 (en)
+
+
+(6.7.3.2) member-declarator-list:
+                    member-declarator
+                    member-declarator-list , member-declarator
+(6.7.3.2) member-declarator:
+                    declarator
+                    declaratoropt : constant-expression
+(6.7.3.3) enum-specifier:
+                        enum attribute-specifier-sequenceopt identifieropt enum-type-specifieropt
+                                           { enumerator-list }
+                        enum attribute-specifier-sequenceopt identifieropt enum-type-specifieropt
+                                           { enumerator-list , }
+                        enum identifier enum-type-specifieropt
+(6.7.3.3) enumerator-list:
+                    enumerator
+                    enumerator-list , enumerator
+(6.7.3.3) enumerator:
+                    enumeration-constant attribute-specifier-sequenceopt
+                    enumeration-constant attribute-specifier-sequenceopt = constant-expression
+(6.7.3.3) enum-type-specifier:
+                    : specifier-qualifier-list
+(6.7.3.5) atomic-type-specifier:
+                        _Atomic ( type-name )
+
+(6.7.3.6) typeof-specifier:
+                        typeof ( typeof-specifier-argument )
+                        typeof_unqual ( typeof-specifier-argument )
+(6.7.3.6) typeof-specifier-argument:
+                      expression
+                      type-name
+(6.7.4.1) type-qualifier:
+                        const
+                        restrict
+                        volatile
+                        _Atomic
+
+(6.7.5) function-specifier:
+                        inline
+                        _Noreturn
+
+(6.7.6) alignment-specifier:
+                        alignas ( type-name )
+                        alignas ( constant-expression )
+(6.7.7.1) declarator:
+                        pointeropt direct-declarator
+(6.7.7.1) direct-declarator:
+                      identifier attribute-specifier-sequenceopt
+                      ( declarator )
+                      array-declarator attribute-specifier-sequenceopt
+                      function-declarator attribute-specifier-sequenceopt
+(6.7.7.1) array-declarator:
+                     direct-declarator [ type-qualifier-listopt assignment-expressionopt ]
+                     direct-declarator [ static type-qualifier-listopt assignment-expression ]
+                     direct-declarator [ type-qualifier-list static assignment-expression ]
+                     direct-declarator [ type-qualifier-listopt * ]
+
+                                   © ISO/IEC 2024 — All rights reserved
+                                                       469
+BS ISO/IEC 9899:2024                             ISO/IEC 9899:2024(en)
+                                                       ISO/IEC 9899:2024 (en)
+
+
+      (6.7.7.1) function-declarator:
+                           direct-declarator ( parameter-type-listopt )
+      (6.7.7.1) pointer:
+                              * attribute-specifier-sequenceopt type-qualifier-listopt
+                              * attribute-specifier-sequenceopt type-qualifier-listopt pointer
+      (6.7.7.1) type-qualifier-list:
+                            type-qualifier
+                            type-qualifier-list type-qualifier
+      (6.7.7.1) parameter-type-list:
+                           parameter-list
+                           parameter-list , ...
+                              ...
+      (6.7.7.1) parameter-list:
+                           parameter-declaration
+                           parameter-list , parameter-declaration
+      (6.7.7.1) parameter-declaration:
+                           attribute-specifier-sequenceopt declaration-specifiers declarator
+                           attribute-specifier-sequenceopt declaration-specifiers abstract-declaratoropt
+      (6.7.8) type-name:
+                              specifier-qualifier-list abstract-declaratoropt
+      (6.7.8) abstract-declarator:
+                            pointer
+                            pointeropt direct-abstract-declarator
+      (6.7.8) direct-abstract-declarator:
+                            ( abstract-declarator )
+                            array-abstract-declarator attribute-specifier-sequenceopt
+                            function-abstract-declarator attribute-specifier-sequenceopt
+      (6.7.8) array-abstract-declarator:
+                           direct-abstract-declaratoropt [ type-qualifier-listopt assignment-expressionopt ]
+                           direct-abstract-declaratoropt [ static type-qualifier-listopt assignment-expression ]
+                           direct-abstract-declaratoropt [ type-qualifier-list static assignment-expression ]
+                           direct-abstract-declaratoropt [ * ]
+      (6.7.8) function-abstract-declarator:
+                           direct-abstract-declaratoropt ( parameter-type-listopt )
+      (6.7.9) typedef-name:
+                          identifier
+      (6.7.11) braced-initializer:
+                              { }
+                              { initializer-list }
+                              { initializer-list , }
+      (6.7.11) initializer:
+                              assignment-expression
+                              braced-initializer
+      (6.7.11) initializer-list:
+                             designationopt initializer
+                             initializer-list , designationopt initializer
+      (6.7.11) designation:
+                           designator-list =
+      (6.7.11) designator-list:
+                           designator
+                           designator-list designator
+
+                                           © ISO/IEC 2024 — All rights reserved
+                                                                470
+                                       ISO/IEC 9899:2024(en)                       BS ISO/IEC 9899:2024
+
+                                           ISO/IEC 9899:2024 (en)
+
+
+(6.7.11) designator:
+                        [ constant-expression ]
+                        . identifier
+
+(6.7.12) static_assert-declaration:
+                        static_assert ( constant-expression , string-literal ) ;
+                        static_assert ( constant-expression ) ;
+
+(6.7.13.2) attribute-specifier-sequence:
+                      attribute-specifier-sequenceopt attribute-specifier
+(6.7.13.2) attribute-specifier:
+                      [ [ attribute-list ] ]
+
+(6.7.13.2) attribute-list:
+                      attributeopt
+                      attribute-list , attributeopt
+(6.7.13.2) attribute:
+                        attribute-token attribute-argument-clauseopt
+(6.7.13.2) attribute-token:
+                      standard-attribute
+                      attribute-prefixed-token
+(6.7.13.2) standard-attribute:
+                     identifier
+(6.7.13.2) attribute-prefixed-token:
+                      attribute-prefix :: identifier
+(6.7.13.2) attribute-prefix:
+                      identifier
+(6.7.13.2) attribute-argument-clause:
+                      ( balanced-token-sequenceopt )
+
+(6.7.13.2) balanced-token-sequence:
+                     balanced-token
+                     balanced-token-sequence balanced-token
+(6.7.13.2) balanced-token:
+                     ( balanced-token-sequenceopt )
+                     [ balanced-token-sequenceopt ]
+                     { balanced-token-sequenceopt }
+                    any token other than a parenthesis, a bracket, or a brace

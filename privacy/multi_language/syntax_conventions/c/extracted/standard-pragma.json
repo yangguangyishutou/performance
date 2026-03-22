@@ -1,0 +1,64 @@
+{
+  "construct": "standard-pragma",
+  "language": "c",
+  "syntax_node": "#",
+  "constraints": [
+    {
+      "conditional": "#",
+      "consequent": "pragma",
+      "skip": "",
+      "required": true,
+      "note": "# 后必须跟 pragma 关键字"
+    },
+    {
+      "conditional": "# pragma",
+      "consequent": "STDC",
+      "skip": "",
+      "required": true,
+      "note": "pragma 后必须跟 STDC 关键字"
+    },
+    {
+      "conditional": "# pragma STDC",
+      "consequent": "FP_CONTRACT, FENV_ACCESS, FENV_DEC_ROUND, FENV_ROUND, CX_LIMITED_RANGE",
+      "skip": "",
+      "required": true,
+      "note": "STDC 后必须跟标准 pragma 指令之一"
+    },
+    {
+      "conditional": "# pragma STDC FP_CONTRACT",
+      "consequent": "ON, OFF, DEFAULT",
+      "skip": "",
+      "required": true,
+      "note": "FP_CONTRACT 后必须跟开关值"
+    },
+    {
+      "conditional": "# pragma STDC FENV_ACCESS",
+      "consequent": "ON, OFF, DEFAULT",
+      "skip": "",
+      "required": true,
+      "note": "FENV_ACCESS 后必须跟开关值"
+    },
+    {
+      "conditional": "# pragma STDC FENV_DEC_ROUND",
+      "consequent": "dec-direction",
+      "skip": "",
+      "required": true,
+      "note": "FENV_DEC_ROUND 后必须跟十进制舍入方向"
+    },
+    {
+      "conditional": "# pragma STDC FENV_ROUND",
+      "consequent": "direction",
+      "skip": "",
+      "required": true,
+      "note": "FENV_ROUND 后必须跟舍入方向"
+    },
+    {
+      "conditional": "# pragma STDC CX_LIMITED_RANGE",
+      "consequent": "ON, OFF, DEFAULT",
+      "skip": "",
+      "required": true,
+      "note": "CX_LIMITED_RANGE 后必须跟开关值"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:53.952629"
+}

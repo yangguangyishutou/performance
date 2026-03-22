@@ -1,0 +1,36 @@
+{
+  "construct": "FormalParameter",
+  "language": "java",
+  "syntax_node": "VariableDeclaratorId",
+  "constraints": [
+    {
+      "conditional": "{VariableModifier} UnannType",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "类型后必须跟变量声明标识符"
+    },
+    {
+      "conditional": "{VariableModifier} UnannType [IDENT]",
+      "consequent": "[",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可选择性跟随左方括号开始数组维度"
+    },
+    {
+      "conditional": "[IDENT] [",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "左方括号后必须跟右方括号完成一个维度"
+    },
+    {
+      "conditional": "[IDENT] []",
+      "consequent": "[",
+      "skip": "",
+      "required": false,
+      "note": "一个维度后可选择性跟随另一个左方括号开始更多维度"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:08.575273"
+}

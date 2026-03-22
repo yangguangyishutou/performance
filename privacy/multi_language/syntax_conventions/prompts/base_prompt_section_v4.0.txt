@@ -1,0 +1,183 @@
+# 语法约束提取 Prompt v4.0（章节批量版）
+
+## 角色
+
+你是编程语言语法专家。从给定的语法章节中，识别所有有效构造并提取语法约束对，用于 token 匹配和去除。
+
+## 核心方法：原子分解
+
+**关键**：将语法结构分解为**最小的、连续的匹配步骤**。
+
+每个步骤都是：
+`当前 token 序列` → `下一步必须出现的 token`
+
+## 输出格式
+
+输出一个 JSON **数组**，每个元素对应一个构造：
+
+```json
+[
+  {
+    "construct": "if...else",
+    "language": "c",
+    "syntax_node": "if",
+    "constraints": [
+      {
+        "conditional": "if",
+        "consequent": "(",
+        "skip": "",
+        "required": true,
+        "note": "if 后必须跟左括号"
+      },
+      {
+        "conditional": "if (",
+        "consequent": ")",
+        "skip": "expression",
+        "required": true,
+        "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+      }
+    ]
+  },
+  {
+    "construct": "while",
+    "language": "c",
+    "syntax_node": "while",
+    "constraints": [...]
+  }
+]
+```
+
+### 字段说明
+
+- **`syntax_node`**：**只定义一次**，表示这个构造的主语法节点（如 `if`, `while`, `for`）
+- **`conditional`**：token 序列，包含字面量 token 或**通用占位符**
+- **`skip`**：抽象的 AST 节点类型（如 `expression`, `statement`），如果没有则为空字符串
+- **`consequent`**：下一步必须出现的 token，可以是字面量、占位符或特殊标记
+- **`required`**：是否必须
+- **`note`**：说明（**引用必须使用单引号**）
+
+## 占位符标准化
+
+### 基础占位符
+
+- **`[IDENT]`**：标识符（变量名、函数名等）
+- **`[NUMBER]`**：数字字面量
+- **`[STRING]`**：字符串字面量
+- **`[TEMPLATE]`**：模板字符串片段
+- **`[REGEX]`**：正则表达式字面量
+
+### 聚合占位符
+
+- **`[PROPERTY]`**：对象属性名（代替 `identifier` / `string` / `number`）
+- **`<expression_start>`**：表达式起始（代替列举所有表达式起始 token）
+- **`<statement_start>`**：语句起始（代替列举所有语句起始 token）
+
+## 严格约束
+
+### 1. JSON 格式安全
+- note 字段中的引用必须使用单引号
+- 不要使用反引号、未转义的双引号等特殊字符
+
+### 2. 语法合法性
+- 不提取标记为 "SyntaxError" 或 "Invalid" 的用法
+
+### 3. conditional 是累积的
+- ✅ `"conditional": "if ("` （包含 if 和括号）
+- ❌ `"conditional": "("` （缺少 if 前缀）
+
+## 跳过规则（重要）
+
+以下类型的规则**直接跳过，不提取**：
+
+1. **纯 lexical 规则**：字符/字节定义（`identifier`, `digit`, `letter`, `hex-digit`）
+2. **字面量定义**：`integer-constant`, `floating-constant`, `string-literal`
+3. **关键字列表**：`keyword: one of alignas do int ...`
+4. **标点符号定义**：`punctuator: one of { } [ ] ...`
+5. **纯枚举规则**：规则体只有 `one of` 列表，没有括号或关键字序列
+6. **高熵二元运算符**：`+`, `-`, `*`, `/`, `&&`, `||`, `==`, `>`, `<` 等，后面可以跟任何表达式
+
+**判断标准**：规则体中**没有任何括号 `()`, `{}`, `[]` 或语言关键字**（如 `if`, `for`, `class`, `while`）则跳过。
+
+## 示例：C 语言 if...else
+
+```json
+[
+  {
+    "construct": "if...else",
+    "language": "c",
+    "syntax_node": "if",
+    "constraints": [
+      {
+        "conditional": "if",
+        "consequent": "(",
+        "skip": "",
+        "required": true,
+        "note": "if 关键字后必须跟左括号"
+      },
+      {
+        "conditional": "if (",
+        "consequent": ")",
+        "skip": "expression",
+        "required": true,
+        "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+      },
+      {
+        "conditional": "if ()",
+        "consequent": "{, <statement_start>",
+        "skip": "",
+        "required": true,
+        "note": "右括号后必须跟左大括号或语句起始"
+      },
+      {
+        "conditional": "if () {",
+        "consequent": "}",
+        "skip": "statement_block",
+        "required": true,
+        "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+      },
+      {
+        "conditional": "if () {}",
+        "consequent": "else",
+        "skip": "",
+        "required": false,
+        "note": "if 语句块后可选择性跟随 else"
+      },
+      {
+        "conditional": "else",
+        "consequent": "{, <statement_start>",
+        "skip": "",
+        "required": true,
+        "note": "else 后必须跟左大括号或语句起始"
+      },
+      {
+        "conditional": "else {",
+        "consequent": "}",
+        "skip": "statement_block",
+        "required": true,
+        "note": "else 左大括号后必须跟右大括号（中间跳过语句块）"
+      }
+    ]
+  }
+]
+```
+
+## 语法章节
+
+{DOCUMENTATION}
+
+## 语言
+
+{LANGUAGE}
+
+## 任务要求
+
+从上面的语法章节中：
+
+1. **识别所有有效构造**：找出所有包含括号、大括号或关键字序列的规则
+2. **跳过 lexical 规则**：按照上面的跳过规则过滤
+3. **原子分解**：每个构造分解为最小步骤
+4. **conditional 是累积的**：每一步都包含之前的完整 token 序列
+5. **使用聚合占位符**：优先使用 `[PROPERTY]`、`<expression_start>`、`<statement_start>`
+6. **JSON 格式安全**：note 中的引用必须使用单引号
+
+输出一个包含所有有效构造的 JSON 数组。

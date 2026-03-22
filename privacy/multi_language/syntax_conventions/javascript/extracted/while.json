@@ -1,0 +1,43 @@
+{
+  "construct": "while",
+  "language": "javascript",
+  "syntax_node": "while",
+  "constraints": [
+    {
+      "conditional": "while",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "while 后必须跟左括号"
+    },
+    {
+      "conditional": "while (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "while 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "while ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "while 右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "while ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "while 右括号后必须跟语句起始"
+    },
+    {
+      "conditional": "while () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "while 左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:27:28.645171"
+}

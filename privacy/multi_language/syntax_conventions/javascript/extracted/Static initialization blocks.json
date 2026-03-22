@@ -1,0 +1,22 @@
+{
+  "construct": "Static initialization blocks",
+  "language": "javascript",
+  "syntax_node": "static_block",
+  "constraints": [
+    {
+      "conditional": "static",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "static 关键字后必须跟左大括号"
+    },
+    {
+      "conditional": "static {",
+      "consequent": "}",
+      "skip": "statement_list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:27:47.261064"
+}

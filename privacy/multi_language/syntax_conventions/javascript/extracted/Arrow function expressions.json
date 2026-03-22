@@ -1,0 +1,127 @@
+{
+  "construct": "Arrow function expressions",
+  "language": "javascript",
+  "syntax_node": "arrow_function",
+  "constraints": [
+    {
+      "conditional": "async",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "async 关键字后可跟左括号"
+    },
+    {
+      "conditional": "async",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "async 关键字后可跟参数标识符"
+    },
+    {
+      "conditional": "async (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "async 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "async ()",
+      "consequent": "=>",
+      "skip": "",
+      "required": true,
+      "note": "async 无参括号后必须跟箭头"
+    },
+    {
+      "conditional": "async [IDENT]",
+      "consequent": "=>",
+      "skip": "",
+      "required": true,
+      "note": "async 单参数标识符后必须跟箭头"
+    },
+    {
+      "conditional": "async () =>",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "async 箭头后必须跟左大括号"
+    },
+    {
+      "conditional": "async () =>",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "async 箭头后必须跟表达式起始"
+    },
+    {
+      "conditional": "async () => {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "async 箭头左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "左括号后必须跟右括号"
+    },
+    {
+      "conditional": "()",
+      "consequent": "=>",
+      "skip": "",
+      "required": true,
+      "note": "无参括号后必须跟箭头"
+    },
+    {
+      "conditional": "() =>",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "箭头后必须跟左大括号"
+    },
+    {
+      "conditional": "() =>",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "箭头后必须跟表达式起始"
+    },
+    {
+      "conditional": "() => {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "箭头左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "=>",
+      "skip": "",
+      "required": true,
+      "note": "单参数标识符后必须跟箭头"
+    },
+    {
+      "conditional": "[IDENT] =>",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "箭头后必须跟左大括号"
+    },
+    {
+      "conditional": "[IDENT] =>",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "箭头后必须跟表达式起始"
+    },
+    {
+      "conditional": "[IDENT] => {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "箭头左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:25:54.258068"
+}

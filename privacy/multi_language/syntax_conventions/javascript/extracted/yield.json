@@ -1,0 +1,29 @@
+{
+  "construct": "yield",
+  "language": "javascript",
+  "syntax_node": "yield",
+  "constraints": [
+    {
+      "conditional": "yield",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "yield 关键字后可跟表达式起始"
+    },
+    {
+      "conditional": "yield",
+      "consequent": ";",
+      "skip": "",
+      "required": false,
+      "note": "yield 后可直接跟分号"
+    },
+    {
+      "conditional": "yield",
+      "consequent": "}",
+      "skip": "",
+      "required": false,
+      "note": "yield 后可直接跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:44.275222"
+}

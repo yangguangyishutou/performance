@@ -1,0 +1,15 @@
+{
+  "construct": "member-declaration",
+  "language": "c",
+  "syntax_node": "member-declaration",
+  "constraints": [
+    {
+      "conditional": "member-declaration",
+      "consequent": ";",
+      "skip": "specifier-qualifier-list, member-declarator-list",
+      "required": true,
+      "note": "成员声明必须以分号结束（跳过说明符限定符列表和成员声明符列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:50.039464"
+}

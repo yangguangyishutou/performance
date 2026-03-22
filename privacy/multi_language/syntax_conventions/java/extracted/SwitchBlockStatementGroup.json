@@ -1,0 +1,36 @@
+{
+  "construct": "SwitchBlockStatementGroup",
+  "language": "java",
+  "syntax_node": "switch",
+  "constraints": [
+    {
+      "conditional": "SwitchLabel",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "SwitchLabel 后必须跟冒号 ':'"
+    },
+    {
+      "conditional": "SwitchLabel :",
+      "consequent": "SwitchLabel, BlockStatements",
+      "skip": "",
+      "required": true,
+      "note": "冒号 ':' 后必须跟另一个 SwitchLabel 或 BlockStatements"
+    },
+    {
+      "conditional": "SwitchLabel : SwitchLabel",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "后续 SwitchLabel 后也必须跟冒号 ':'"
+    },
+    {
+      "conditional": "SwitchLabel : {SwitchLabel :} BlockStatements",
+      "consequent": "",
+      "skip": "",
+      "required": false,
+      "note": "BlockStatements 后无强制 token，SwitchBlockStatementGroup 结束"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:55:59.683817"
+}

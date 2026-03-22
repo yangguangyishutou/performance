@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pdftotext -layout 'java/The Java® Language Specification, Java SE 24 - Syntax.pdf' -)"
+    ]
+  }
+}

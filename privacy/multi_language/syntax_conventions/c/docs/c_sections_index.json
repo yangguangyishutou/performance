@@ -1,0 +1,10 @@
+{
+  "language": "c",
+  "total_sections": 4,
+  "sections": [
+    "A.3.1_Expressions",
+    "A.3.2_Declarations",
+    "A.3.3_Statements",
+    "A.4_Preprocessing_directives"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "AssertStatement",
+  "language": "java",
+  "syntax_node": "assert",
+  "constraints": [
+    {
+      "conditional": "assert",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'assert' 关键字后必须跟一个表达式起始"
+    },
+    {
+      "conditional": "assert <expression_start>",
+      "consequent": ";, :",
+      "skip": "Expression",
+      "required": true,
+      "note": "断言表达式后必须跟分号 ';' 或冒号 ':'"
+    },
+    {
+      "conditional": "assert <expression_start> :",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "冒号 ':' 后必须跟第二个表达式起始"
+    },
+    {
+      "conditional": "assert <expression_start> : <expression_start>",
+      "consequent": ";",
+      "skip": "Expression",
+      "required": true,
+      "note": "第二个表达式后必须跟分号 ';'"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:55:59.682304"
+}

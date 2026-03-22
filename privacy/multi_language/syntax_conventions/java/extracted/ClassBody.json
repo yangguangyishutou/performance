@@ -1,0 +1,15 @@
+{
+  "construct": "ClassBody",
+  "language": "java",
+  "syntax_node": "{",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "class_body_declaration",
+      "required": true,
+      "note": "类体左大括号后必须跟右大括号（中间跳过类体声明）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:05:22.032939"
+}

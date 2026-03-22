@@ -1,0 +1,22 @@
+{
+  "construct": "Guard",
+  "language": "java",
+  "syntax_node": "when",
+  "constraints": [
+    {
+      "conditional": "when",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'when' 关键字后必须跟表达式起始"
+    },
+    {
+      "conditional": "when <expression_start>",
+      "consequent": "",
+      "skip": "Expression",
+      "required": false,
+      "note": "表达式后无强制 token，Guard 结束"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:55:59.684777"
+}

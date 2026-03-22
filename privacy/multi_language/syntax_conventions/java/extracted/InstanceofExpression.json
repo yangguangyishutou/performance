@@ -1,0 +1,15 @@
+{
+  "construct": "InstanceofExpression",
+  "language": "java",
+  "syntax_node": "instanceof",
+  "constraints": [
+    {
+      "conditional": "instanceof",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'instanceof' 关键字后必须跟一个表达式起始（类型或模式）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:01:16.490653"
+}

@@ -1,0 +1,4767 @@
+{
+  "language": "java",
+  "total_constructs": 173,
+  "total_constraints": 507,
+  "constructs": [
+    {
+      "construct": "SwitchLabel",
+      "language": "java",
+      "syntax_node": "switch",
+      "constraints": [
+        {
+          "conditional": "case",
+          "consequent": "<expression_start>, null, CasePattern",
+          "skip": "",
+          "required": true,
+          "note": "'case' 关键字后必须跟表达式起始或 'null' 或 CasePattern"
+        },
+        {
+          "conditional": "case <expression_start>",
+          "consequent": ",, ->, :",
+          "skip": "CaseConstant",
+          "required": true,
+          "note": "CaseConstant 后必须跟逗号 ',' 或箭头 '->' 或冒号 ':'"
+        },
+        {
+          "conditional": "case <expression_start> ,",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "逗号 ',' 后必须跟另一个表达式起始作为 CaseConstant"
+        },
+        {
+          "conditional": "case null",
+          "consequent": ",, ->, :",
+          "skip": "",
+          "required": true,
+          "note": "'null' 后必须跟逗号 ',' 或箭头 '->' 或冒号 ':'"
+        },
+        {
+          "conditional": "case null ,",
+          "consequent": "default",
+          "skip": "",
+          "required": true,
+          "note": "逗号 ',' 后必须跟 'default' 关键字"
+        },
+        {
+          "conditional": "case CasePattern",
+          "consequent": ",, ->, :, when",
+          "skip": "",
+          "required": true,
+          "note": "CasePattern 后必须跟逗号 ',' 或箭头 '->' 或冒号 ':' 或 'when' 关键字"
+        },
+        {
+          "conditional": "case CasePattern ,",
+          "consequent": "CasePattern",
+          "skip": "",
+          "required": true,
+          "note": "逗号 ',' 后必须跟另一个 CasePattern"
+        },
+        {
+          "conditional": "case CasePattern when",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'when' 关键字后必须跟表达式起始作为 Guard"
+        },
+        {
+          "conditional": "case CasePattern when <expression_start>",
+          "consequent": ",, ->, :",
+          "skip": "Expression",
+          "required": true,
+          "note": "Guard 表达式后必须跟逗号 ',' 或箭头 '->' 或冒号 ':'"
+        },
+        {
+          "conditional": "default",
+          "consequent": "->, :",
+          "skip": "",
+          "required": true,
+          "note": "'default' 关键字后必须跟箭头 '->' 或冒号 ':'"
+        }
+      ]
+    },
+    {
+      "construct": "UnqualifiedClassInstanceCreationExpression",
+      "language": "java",
+      "syntax_node": "new",
+      "constraints": [
+        {
+          "conditional": "new",
+          "consequent": "TypeArguments, ClassOrInterfaceTypeToInstantiate",
+          "skip": "",
+          "required": false,
+          "note": "'new' 后可选择性跟随 'TypeArguments'，然后必须跟 'ClassOrInterfaceTypeToInstantiate'"
+        },
+        {
+          "conditional": "new TypeArguments",
+          "consequent": "ClassOrInterfaceTypeToInstantiate",
+          "skip": "",
+          "required": true,
+          "note": "'TypeArguments' 后必须跟 'ClassOrInterfaceTypeToInstantiate'"
+        },
+        {
+          "conditional": "new ClassOrInterfaceTypeToInstantiate",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'ClassOrInterfaceTypeToInstantiate' 后必须跟左括号"
+        },
+        {
+          "conditional": "new ClassOrInterfaceTypeToInstantiate (",
+          "consequent": ")",
+          "skip": "ArgumentList",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过可选的 'ArgumentList'）"
+        },
+        {
+          "conditional": "new ClassOrInterfaceTypeToInstantiate ()",
+          "consequent": "ClassBody, ;",
+          "skip": "",
+          "required": false,
+          "note": "右括号后可选择性跟随 'ClassBody' 或语句结束符"
+        },
+        {
+          "conditional": "new ClassOrInterfaceTypeToInstantiate () {",
+          "consequent": "}",
+          "skip": "ClassBody",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过 'ClassBody' 内容）"
+        }
+      ]
+    },
+    {
+      "construct": "ForStatement",
+      "language": "java",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'for' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": ";",
+          "skip": "for_init",
+          "required": false,
+          "note": "左括号后必须跟分号（中间可选跳过 ForInit）"
+        },
+        {
+          "conditional": "for ( ;",
+          "consequent": ";",
+          "skip": "expression",
+          "required": false,
+          "note": "第一个分号后必须跟第二个分号（中间可选跳过表达式）"
+        },
+        {
+          "conditional": "for ( ; ;",
+          "consequent": ")",
+          "skip": "for_update",
+          "required": false,
+          "note": "第二个分号后必须跟右括号（中间可选跳过 ForUpdate）"
+        },
+        {
+          "conditional": "for ( ; ; )",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "AnnotationInterfaceBody",
+      "language": "java",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "AnnotationInterfaceMemberDeclaration",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过注解接口成员声明）"
+        }
+      ]
+    },
+    {
+      "construct": "PackageName",
+      "language": "java",
+      "syntax_node": "Identifier",
+      "constraints": [
+        {
+          "conditional": "Identifier",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随 '.' 以构成限定包名"
+        },
+        {
+          "conditional": "Identifier .",
+          "consequent": "Identifier",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟另一个标识符"
+        },
+        {
+          "conditional": "Identifier . Identifier",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "限定包名后可继续跟随 '.' 以进一步限定"
+        }
+      ]
+    },
+    {
+      "construct": "EnumBody",
+      "language": "java",
+      "syntax_node": "enum",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "枚举体必须以左大括号开始"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "enum_constants",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过可选的枚举常量列表和可选的逗号）"
+        },
+        {
+          "conditional": "{ [EnumConstantList]",
+          "consequent": ",, }",
+          "skip": "",
+          "required": false,
+          "note": "枚举常量列表后可跟可选的逗号或直接右大括号"
+        },
+        {
+          "conditional": "{ [EnumConstantList] ,",
+          "consequent": "}",
+          "skip": "declarations",
+          "required": false,
+          "note": "逗号后可跟可选的枚举体声明或直接右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "PackageModifier",
+      "language": "java",
+      "syntax_node": "Annotation",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "@",
+          "skip": "",
+          "required": true,
+          "note": "包修饰符必须以 '@' 开始"
+        },
+        {
+          "conditional": "@",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'@' 后必须跟注解标识符"
+        }
+      ]
+    },
+    {
+      "construct": "LabeledStatementNoShortIf",
+      "language": "java",
+      "syntax_node": ":",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "标签标识符后必须跟冒号"
+        },
+        {
+          "conditional": "[IDENT] :",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟一个 'StatementNoShortIf' 起始"
+        }
+      ]
+    },
+    {
+      "construct": "SwitchRule",
+      "language": "java",
+      "syntax_node": "switch",
+      "constraints": [
+        {
+          "conditional": "SwitchLabel",
+          "consequent": "->",
+          "skip": "",
+          "required": true,
+          "note": "SwitchLabel 后必须跟箭头 '->'"
+        },
+        {
+          "conditional": "SwitchLabel ->",
+          "consequent": "<expression_start>, {, throw",
+          "skip": "",
+          "required": true,
+          "note": "箭头 '->' 后必须跟表达式起始或左大括号 '{' 或 'throw' 关键字"
+        },
+        {
+          "conditional": "SwitchLabel -> <expression_start>",
+          "consequent": ";",
+          "skip": "Expression",
+          "required": true,
+          "note": "表达式后必须跟分号 ';'"
+        },
+        {
+          "conditional": "SwitchLabel -> {",
+          "consequent": "}",
+          "skip": "Block",
+          "required": true,
+          "note": "左大括号 '{' 后必须跟右大括号 '}'（中间跳过 Block）"
+        },
+        {
+          "conditional": "SwitchLabel -> throw",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'throw' 关键字后必须跟表达式起始"
+        },
+        {
+          "conditional": "SwitchLabel -> throw <expression_start>",
+          "consequent": ";",
+          "skip": "Expression",
+          "required": true,
+          "note": "throw 表达式后必须跟分号 ';'"
+        }
+      ]
+    },
+    {
+      "construct": "ModuleName",
+      "language": "java",
+      "syntax_node": "Identifier",
+      "constraints": [
+        {
+          "conditional": "Identifier",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随 '.' 以构成限定模块名"
+        },
+        {
+          "conditional": "Identifier .",
+          "consequent": "Identifier",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟另一个标识符"
+        },
+        {
+          "conditional": "Identifier . Identifier",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "限定模块名后可继续跟随 '.' 以进一步限定"
+        }
+      ]
+    },
+    {
+      "construct": "PreDecrementExpression",
+      "language": "java",
+      "syntax_node": "--",
+      "constraints": [
+        {
+          "conditional": "--",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "前缀 '--' 运算符后必须跟一个表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "Block",
+      "language": "java",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "BlockStatements",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过 BlockStatements）"
+        }
+      ]
+    },
+    {
+      "construct": "ConditionalExpression",
+      "language": "java",
+      "syntax_node": "?",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": "?",
+          "skip": "",
+          "required": false,
+          "note": "条件表达式后可选地跟问号"
+        },
+        {
+          "conditional": "<expression_start> ?",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "问号后必须跟真值表达式"
+        },
+        {
+          "conditional": "<expression_start> ? <expression_start>",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "真值表达式后必须跟冒号"
+        },
+        {
+          "conditional": "<expression_start> ? <expression_start> :",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟假值表达式（条件表达式或Lambda表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "AmbiguousName",
+      "language": "java",
+      "syntax_node": "Identifier",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随点号以继续限定名称"
+        },
+        {
+          "conditional": "[IDENT] .",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟标识符"
+        },
+        {
+          "conditional": "[IDENT] . [IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "限定名称后可选择性跟随点号以继续限定"
+        }
+      ]
+    },
+    {
+      "construct": "AnnotationInterfaceDeclaration",
+      "language": "java",
+      "syntax_node": "interface",
+      "constraints": [
+        {
+          "conditional": "@",
+          "consequent": "interface",
+          "skip": "",
+          "required": true,
+          "note": "注解符号 '@' 后必须跟 'interface' 关键字"
+        },
+        {
+          "conditional": "@ interface",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'@ interface' 后必须跟类型标识符名称"
+        },
+        {
+          "conditional": "@ interface [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "类型标识符后必须跟左大括号开始注解接口体"
+        },
+        {
+          "conditional": "@ interface [IDENT] {",
+          "consequent": "}",
+          "skip": "AnnotationInterfaceBody",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过注解接口体内容）"
+        }
+      ]
+    },
+    {
+      "construct": "CastExpression",
+      "language": "java",
+      "syntax_node": "(",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": "PrimitiveType, ReferenceType",
+          "skip": "",
+          "required": true,
+          "note": "强制转换表达式：左括号后必须跟基本类型或引用类型"
+        },
+        {
+          "conditional": "( PrimitiveType",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "基本类型转换：类型名后必须跟右括号"
+        },
+        {
+          "conditional": "( PrimitiveType )",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "基本类型转换：右括号后必须跟一元表达式"
+        },
+        {
+          "conditional": "( ReferenceType",
+          "consequent": ")",
+          "skip": "AdditionalBound",
+          "required": true,
+          "note": "引用类型转换：类型名后必须跟右括号（中间可跳过附加边界）"
+        },
+        {
+          "conditional": "( ReferenceType )",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "引用类型转换：右括号后必须跟一元表达式（非加减）或 Lambda 表达式"
+        }
+      ]
+    },
+    {
+      "construct": "ResourceList",
+      "language": "java",
+      "syntax_node": "try",
+      "constraints": [
+        {
+          "conditional": "Resource",
+          "consequent": ";",
+          "skip": "",
+          "required": false,
+          "note": "一个资源后可选择性跟随分号以引入更多资源"
+        },
+        {
+          "conditional": "Resource ;",
+          "consequent": "Resource",
+          "skip": "",
+          "required": true,
+          "note": "分号后必须跟另一个资源"
+        }
+      ]
+    },
+    {
+      "construct": "Throws",
+      "language": "java",
+      "syntax_node": "throws",
+      "constraints": [
+        {
+          "conditional": "throws",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'throws' 关键字后必须跟异常类型列表的起始"
+        }
+      ]
+    },
+    {
+      "construct": "NormalClassDeclaration",
+      "language": "java",
+      "syntax_node": "class",
+      "constraints": [
+        {
+          "conditional": "class",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'class' 关键字后必须跟类型标识符"
+        },
+        {
+          "conditional": "class [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "类名后必须跟左大括号 '{' 开始类体"
+        },
+        {
+          "conditional": "class [IDENT] {",
+          "consequent": "}",
+          "skip": "ClassBody",
+          "required": true,
+          "note": "左大括号后必须跟右大括号 '}'（中间跳过类体内容）"
+        }
+      ]
+    },
+    {
+      "construct": "TryWithResourcesStatement",
+      "language": "java",
+      "syntax_node": "try",
+      "constraints": [
+        {
+          "conditional": "try",
+          "consequent": "ResourceSpecification",
+          "skip": "",
+          "required": true,
+          "note": "'try' 关键字后必须跟资源规格说明"
+        },
+        {
+          "conditional": "try ResourceSpecification",
+          "consequent": "Block",
+          "skip": "",
+          "required": true,
+          "note": "资源规格说明后必须跟 try 代码块"
+        }
+      ]
+    },
+    {
+      "construct": "ArrayCreationExpressionWithoutInitializer",
+      "language": "java",
+      "syntax_node": "new",
+      "constraints": [
+        {
+          "conditional": "new PrimitiveType, new ClassOrInterfaceType",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "类型后必须跟左方括号开始维度表达式"
+        },
+        {
+          "conditional": "new PrimitiveType [, new ClassOrInterfaceType [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "ArrayType",
+      "language": "java",
+      "syntax_node": "ArrayType",
+      "constraints": [
+        {
+          "conditional": "ArrayType",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'ArrayType' 起始后必须跟一个表达式起始（如 'PrimitiveType', 'ClassOrInterfaceType' 或 'TypeVariable'）"
+        },
+        {
+          "conditional": "<expression_start>",
+          "consequent": "Dims",
+          "skip": "",
+          "required": true,
+          "note": "基础类型后必须跟维度 'Dims'"
+        }
+      ]
+    },
+    {
+      "construct": "BasicForStatement",
+      "language": "java",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'for' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": ";",
+          "skip": "for_init",
+          "required": false,
+          "note": "左括号后必须跟分号（中间可选跳过 ForInit）"
+        },
+        {
+          "conditional": "for ( ;",
+          "consequent": ";",
+          "skip": "expression",
+          "required": false,
+          "note": "第一个分号后必须跟第二个分号（中间可选跳过表达式）"
+        },
+        {
+          "conditional": "for ( ; ;",
+          "consequent": ")",
+          "skip": "for_update",
+          "required": false,
+          "note": "第二个分号后必须跟右括号（中间可选跳过 ForUpdate）"
+        },
+        {
+          "conditional": "for ( ; ; )",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "UnaryExpressionNotPlusMinus",
+      "language": "java",
+      "syntax_node": "",
+      "constraints": [
+        {
+          "conditional": "~",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "按位取反 '~' 运算符后必须跟一个表达式起始"
+        },
+        {
+          "conditional": "!",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "逻辑非 '!' 运算符后必须跟一个表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "StaticImportOnDemandDeclaration",
+      "language": "java",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": "static",
+          "skip": "",
+          "required": true,
+          "note": "'import' 后必须跟 'static' 关键字"
+        },
+        {
+          "conditional": "import static",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'import static' 后必须跟类型名标识符"
+        },
+        {
+          "conditional": "import static [IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "类型名后必须跟点号 '.'"
+        },
+        {
+          "conditional": "import static [IDENT] .",
+          "consequent": "*",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟星号 '*'"
+        },
+        {
+          "conditional": "import static [IDENT] . *",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "星号后必须跟分号 ';'"
+        }
+      ]
+    },
+    {
+      "construct": "CatchFormalParameter",
+      "language": "java",
+      "syntax_node": "catch",
+      "constraints": [
+        {
+          "conditional": "{VariableModifier}",
+          "consequent": "CatchType",
+          "skip": "",
+          "required": false,
+          "note": "可选的变量修饰符后必须跟 CatchType"
+        },
+        {
+          "conditional": "CatchType",
+          "consequent": "VariableDeclaratorId",
+          "skip": "",
+          "required": true,
+          "note": "CatchType 后必须跟变量声明标识符"
+        }
+      ]
+    },
+    {
+      "construct": "IfThenStatement",
+      "language": "java",
+      "syntax_node": "if",
+      "constraints": [
+        {
+          "conditional": "if",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'if' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "if (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+        },
+        {
+          "conditional": "if ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟一个语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "Guard",
+      "language": "java",
+      "syntax_node": "when",
+      "constraints": [
+        {
+          "conditional": "when",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'when' 关键字后必须跟表达式起始"
+        },
+        {
+          "conditional": "when <expression_start>",
+          "consequent": "",
+          "skip": "Expression",
+          "required": false,
+          "note": "表达式后无强制 token，Guard 结束"
+        }
+      ]
+    },
+    {
+      "construct": "MarkerAnnotation",
+      "language": "java",
+      "syntax_node": "@",
+      "constraints": [
+        {
+          "conditional": "@",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "注解符号 '@' 后必须跟类型名称标识符"
+        },
+        {
+          "conditional": "@ [IDENT]",
+          "consequent": "",
+          "skip": "",
+          "required": false,
+          "note": "MarkerAnnotation 结束（无括号）"
+        }
+      ]
+    },
+    {
+      "construct": "SingleStaticImportDeclaration",
+      "language": "java",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": "static",
+          "skip": "",
+          "required": true,
+          "note": "'import' 后必须跟 'static' 关键字"
+        },
+        {
+          "conditional": "import static",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'import static' 后必须跟类型名标识符"
+        },
+        {
+          "conditional": "import static [IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "类型名后必须跟点号 '.'"
+        },
+        {
+          "conditional": "import static [IDENT] .",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟成员标识符"
+        },
+        {
+          "conditional": "import static [IDENT] . [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "成员标识符后必须跟分号 ';'"
+        }
+      ]
+    },
+    {
+      "construct": "ClassType",
+      "language": "java",
+      "syntax_node": "ClassType",
+      "constraints": [
+        {
+          "conditional": "ClassType",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'ClassType' 起始后必须跟类型标识符"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": false,
+          "note": "类型标识符后可选择性跟随类型参数 '[TypeArguments]'"
+        },
+        {
+          "conditional": "PackageName",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "包名后必须跟点号"
+        },
+        {
+          "conditional": ".",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟类型标识符"
+        },
+        {
+          "conditional": "ClassOrInterfaceType",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "'ClassOrInterfaceType' 后必须跟点号"
+        },
+        {
+          "conditional": ".",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟类型标识符"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": false,
+          "note": "类型标识符后可选择性跟随类型参数 '[TypeArguments]'"
+        }
+      ]
+    },
+    {
+      "construct": "InterfaceType",
+      "language": "java",
+      "syntax_node": "InterfaceType",
+      "constraints": [
+        {
+          "conditional": "InterfaceType",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'InterfaceType' 是 'ClassType' 的别名，其后必须跟一个表达式起始（即 'ClassType' 的起始）"
+        }
+      ]
+    },
+    {
+      "construct": "ArrayAccess",
+      "language": "java",
+      "syntax_node": "[",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过索引表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "PostDecrementExpression",
+      "language": "java",
+      "syntax_node": "--",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": "--",
+          "skip": "",
+          "required": true,
+          "note": "后缀自减表达式：表达式后必须跟 '--'"
+        }
+      ]
+    },
+    {
+      "construct": "VariableDeclaratorId",
+      "language": "java",
+      "syntax_node": "VariableDeclarator",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "[, =, ;, ,",
+          "skip": "",
+          "required": true,
+          "note": "标识符后可以跟方括号定义数组维度，或等号/分号/逗号"
+        },
+        {
+          "conditional": "[IDENT] [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过维度表达式）"
+        },
+        {
+          "conditional": "[IDENT] []",
+          "consequent": "[, =, ;, ,",
+          "skip": "",
+          "required": true,
+          "note": "一对空方括号后可以继续另一对方括号，或跟等号/分号/逗号"
+        }
+      ]
+    },
+    {
+      "construct": "Catches",
+      "language": "java",
+      "syntax_node": "catch",
+      "constraints": [
+        {
+          "conditional": "CatchClause",
+          "consequent": "CatchClause",
+          "skip": "",
+          "required": false,
+          "note": "第一个 'catch' 子句后可选择性跟随更多 'catch' 子句"
+        }
+      ]
+    },
+    {
+      "construct": "UnannInterfaceType",
+      "language": "java",
+      "syntax_node": "Type",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "<class_type_start>",
+          "skip": "",
+          "required": true,
+          "note": "未注解接口类型必须是类类型（接口是特殊的类类型）"
+        }
+      ]
+    },
+    {
+      "construct": "VariableInitializer",
+      "language": "java",
+      "syntax_node": "VariableInitializer",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "<expression_start>, {",
+          "skip": "",
+          "required": true,
+          "note": "变量初始化器必须以表达式起始或左大括号开始"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "数组初始化器左大括号后必须跟右大括号或表达式起始"
+        },
+        {
+          "conditional": "{ <expression_start>",
+          "consequent": "}, ,",
+          "skip": "",
+          "required": true,
+          "note": "数组初始化器第一个元素后必须跟逗号继续或右大括号结束"
+        },
+        {
+          "conditional": "{ <expression_start> ,",
+          "consequent": "<expression_start>, }",
+          "skip": "",
+          "required": true,
+          "note": "数组初始化器逗号后必须跟下一个表达式起始或右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "UnannType",
+      "language": "java",
+      "syntax_node": "Type",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "<primitive_type_start>, <reference_type_start>",
+          "skip": "",
+          "required": true,
+          "note": "未注解类型必须以原始类型起始或引用类型起始开始"
+        }
+      ]
+    },
+    {
+      "construct": "IfThenElseStatementNoShortIf",
+      "language": "java",
+      "syntax_node": "if",
+      "constraints": [
+        {
+          "conditional": "if",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'if' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "if (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+        },
+        {
+          "conditional": "if ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟一个 'StatementNoShortIf' 起始"
+        },
+        {
+          "conditional": "if () <statement_start>",
+          "consequent": "else",
+          "skip": "statement",
+          "required": true,
+          "note": "'if' 分支语句后必须跟 'else' 关键字"
+        },
+        {
+          "conditional": "else",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "'else' 关键字后必须跟一个 'StatementNoShortIf' 起始"
+        }
+      ]
+    },
+    {
+      "construct": "ReturnStatement",
+      "language": "java",
+      "syntax_node": "return",
+      "constraints": [
+        {
+          "conditional": "return",
+          "consequent": "Expression, ;",
+          "skip": "",
+          "required": true,
+          "note": "'return' 关键字后必须跟表达式或分号"
+        }
+      ]
+    },
+    {
+      "construct": "BlockStatement",
+      "language": "java",
+      "syntax_node": "<statement_start>",
+      "constraints": [
+        {
+          "conditional": "<statement_start>",
+          "consequent": "<statement_start>, ;, }",
+          "skip": "LocalClassOrInterfaceDeclaration, LocalVariableDeclarationStatement, Statement",
+          "required": true,
+          "note": "BlockStatement 起始后必须跟下一个语句起始或分号（变量声明结束）或右大括号（块结束）"
+        }
+      ]
+    },
+    {
+      "construct": "YieldStatement",
+      "language": "java",
+      "syntax_node": "yield",
+      "constraints": [
+        {
+          "conditional": "yield",
+          "consequent": "Expression",
+          "skip": "",
+          "required": true,
+          "note": "'yield' 关键字后必须跟表达式"
+        }
+      ]
+    },
+    {
+      "construct": "Wildcard",
+      "language": "java",
+      "syntax_node": "?",
+      "constraints": [
+        {
+          "conditional": "?",
+          "consequent": "extends, super, ,, >",
+          "skip": "",
+          "required": false,
+          "note": "通配符 '?' 后可选择性跟随 'extends'、'super' 限定，或直接结束（遇到 ',' 或 '>'）"
+        },
+        {
+          "conditional": "? extends",
+          "consequent": "ReferenceType",
+          "skip": "",
+          "required": true,
+          "note": "'extends' 后必须跟引用类型"
+        },
+        {
+          "conditional": "? super",
+          "consequent": "ReferenceType",
+          "skip": "",
+          "required": true,
+          "note": "'super' 后必须跟引用类型"
+        },
+        {
+          "conditional": "? extends ReferenceType",
+          "consequent": ",, >",
+          "skip": "",
+          "required": true,
+          "note": "上界限定后必须跟 ',' 或 '>' 结束"
+        },
+        {
+          "conditional": "? super ReferenceType",
+          "consequent": ",, >",
+          "skip": "",
+          "required": true,
+          "note": "下界限定后必须跟 ',' 或 '>' 结束"
+        }
+      ]
+    },
+    {
+      "construct": "EnumConstantModifier",
+      "language": "java",
+      "syntax_node": "annotation",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "@[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "枚举常量修饰符必须是注解"
+        }
+      ]
+    },
+    {
+      "construct": "InterfaceBody",
+      "language": "java",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "interface_member_declarations",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过接口成员声明）"
+        }
+      ]
+    },
+    {
+      "construct": "ClassBody",
+      "language": "java",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "class_body_declaration",
+          "required": true,
+          "note": "类体左大括号后必须跟右大括号（中间跳过类体声明）"
+        }
+      ]
+    },
+    {
+      "construct": "EnumConstant",
+      "language": "java",
+      "syntax_node": "enum",
+      "constraints": [
+        {
+          "conditional": "{EnumConstantModifier}",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "可选的枚举常量修饰符后必须跟标识符"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "(, {",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可跟左括号（参数列表）或左大括号（类体）"
+        },
+        {
+          "conditional": "[IDENT] (",
+          "consequent": ")",
+          "skip": "arguments",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过可选的参数列表）"
+        },
+        {
+          "conditional": "[IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": false,
+          "note": "右括号后可跟可选的类体"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可跟可选的类体"
+        }
+      ]
+    },
+    {
+      "construct": "InstanceofExpression",
+      "language": "java",
+      "syntax_node": "instanceof",
+      "constraints": [
+        {
+          "conditional": "instanceof",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'instanceof' 关键字后必须跟一个表达式起始（类型或模式）"
+        }
+      ]
+    },
+    {
+      "construct": "DefaultValue",
+      "language": "java",
+      "syntax_node": "default",
+      "constraints": [
+        {
+          "conditional": "default",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'default' 关键字后必须跟元素值表达式"
+        }
+      ]
+    },
+    {
+      "construct": "InterfaceExtends",
+      "language": "java",
+      "syntax_node": "extends",
+      "constraints": [
+        {
+          "conditional": "extends",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'extends' 关键字后必须跟接口类型名"
+        },
+        {
+          "conditional": "extends [IDENT]",
+          "consequent": ",, ;, {",
+          "skip": "",
+          "required": false,
+          "note": "接口类型名后可跟逗号（更多接口）、分号或左大括号（取决于上下文）"
+        },
+        {
+          "conditional": "extends [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟另一个接口类型名"
+        }
+      ]
+    },
+    {
+      "construct": "LabeledStatement",
+      "language": "java",
+      "syntax_node": ":",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "标签标识符后必须跟冒号"
+        },
+        {
+          "conditional": "[IDENT] :",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟一个语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "RecordDeclaration",
+      "language": "java",
+      "syntax_node": "record",
+      "constraints": [
+        {
+          "conditional": "record",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'record' 关键字后必须跟类型标识符名称"
+        },
+        {
+          "conditional": "record [IDENT]",
+          "consequent": "(, <",
+          "skip": "",
+          "required": false,
+          "note": "记录类型标识符后可选择性跟随类型参数 '<' 或记录头 '('"
+        },
+        {
+          "conditional": "record [IDENT] <",
+          "consequent": ">",
+          "skip": "type_parameters",
+          "required": true,
+          "note": "类型参数起始 '<' 后必须跟结束 '>'（中间跳过类型参数列表）"
+        },
+        {
+          "conditional": "record [IDENT] >",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "类型参数结束后必须跟记录头 '('"
+        },
+        {
+          "conditional": "record [IDENT] (",
+          "consequent": ")",
+          "skip": "record_component_list",
+          "required": true,
+          "note": "记录头 '(' 后必须跟 ')'（中间跳过记录组件列表）"
+        },
+        {
+          "conditional": "record [IDENT] ()",
+          "consequent": "implements, {",
+          "skip": "",
+          "required": false,
+          "note": "记录头 ')' 后可选择性跟随 'implements' 或记录体 '{'"
+        },
+        {
+          "conditional": "record [IDENT] () implements",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'implements' 关键字后必须跟接口类型标识符"
+        },
+        {
+          "conditional": "record [IDENT] () implements [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "实现接口列表后必须跟记录体 '{'"
+        },
+        {
+          "conditional": "record [IDENT] () {",
+          "consequent": "}",
+          "skip": "record_body_declarations",
+          "required": true,
+          "note": "记录体 '{' 后必须跟 '}'（中间跳过记录体声明）"
+        }
+      ]
+    },
+    {
+      "construct": "CompilationUnit",
+      "language": "java",
+      "syntax_node": "CompilationUnit",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "package, import, module, <statement_start>",
+          "skip": "",
+          "required": false,
+          "note": "编译单元可以以 'package'、'import'、'module' 或顶层类/接口声明开始"
+        }
+      ]
+    },
+    {
+      "construct": "ExceptionTypeList",
+      "language": "java",
+      "syntax_node": "ExceptionType",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": ",, <expression_start>",
+          "skip": "",
+          "required": false,
+          "note": "异常类型后可选择性跟随逗号和另一个异常类型"
+        }
+      ]
+    },
+    {
+      "construct": "StaticInitializer",
+      "language": "java",
+      "syntax_node": "static",
+      "constraints": [
+        {
+          "conditional": "static",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "'static' 关键字后必须跟左大括号"
+        },
+        {
+          "conditional": "static {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "静态初始化器左大括号后必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "SwitchBlockStatementGroup",
+      "language": "java",
+      "syntax_node": "switch",
+      "constraints": [
+        {
+          "conditional": "SwitchLabel",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "SwitchLabel 后必须跟冒号 ':'"
+        },
+        {
+          "conditional": "SwitchLabel :",
+          "consequent": "SwitchLabel, BlockStatements",
+          "skip": "",
+          "required": true,
+          "note": "冒号 ':' 后必须跟另一个 SwitchLabel 或 BlockStatements"
+        },
+        {
+          "conditional": "SwitchLabel : SwitchLabel",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "后续 SwitchLabel 后也必须跟冒号 ':'"
+        }
+      ]
+    },
+    {
+      "construct": "Assignment",
+      "language": "java",
+      "syntax_node": "=",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": "=, *=, /=, %=, +=, -=, <<=, >>=, >>>=, &=, ^=, |=",
+          "skip": "",
+          "required": true,
+          "note": "左操作数（表达式）后必须跟赋值运算符"
+        },
+        {
+          "conditional": "<expression_start> =, <expression_start> *=, <expression_start> /=, <expression_start> %=, <expression_start> +=, <expression_start> -=, <expression_start> <<=, <expression_start> >>=, <expression_start> >>>=, <expression_start> &=, <expression_start> ^=, <expression_start> |=",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "赋值运算符后必须跟右操作数（表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "VariableAccess",
+      "language": "java",
+      "syntax_node": "expression",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "ExpressionName, FieldAccess",
+          "skip": "",
+          "required": true,
+          "note": "变量访问必须是表达式名称或字段访问"
+        }
+      ]
+    },
+    {
+      "construct": "EmptyStatement",
+      "language": "java",
+      "syntax_node": ";",
+      "constraints": [
+        {
+          "conditional": ";",
+          "consequent": "",
+          "skip": "",
+          "required": true,
+          "note": "空语句仅由一个分号组成"
+        }
+      ]
+    },
+    {
+      "construct": "UnannClassType",
+      "language": "java",
+      "syntax_node": "Type",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "<, ., ;, ,, [, ), ]",
+          "skip": "",
+          "required": true,
+          "note": "类型标识符后可以跟类型参数、点号限定、或各种结束符"
+        },
+        {
+          "conditional": "[IDENT] <",
+          "consequent": ">",
+          "skip": "type_arguments",
+          "required": true,
+          "note": "类型参数左尖括号后必须跟右尖括号（中间跳过类型参数列表）"
+        },
+        {
+          "conditional": "[IDENT] .",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "包名或外部类名后的点号必须跟类型标识符"
+        },
+        {
+          "conditional": "[IDENT] . [IDENT]",
+          "consequent": "<, ., ;, ,, [, ), ]",
+          "skip": "",
+          "required": true,
+          "note": "限定类型标识符后可以跟类型参数、继续限定、或各种结束符"
+        }
+      ]
+    },
+    {
+      "construct": "MethodHeader",
+      "language": "java",
+      "syntax_node": "MethodDeclarator",
+      "constraints": [
+        {
+          "conditional": "Result",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "Result 后必须跟方法标识符名称"
+        },
+        {
+          "conditional": "TypeParameters {Annotation} Result",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "带泛型参数和注解的 Result 后必须跟方法标识符名称"
+        },
+        {
+          "conditional": "Result [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "方法标识符后必须跟左括号开始参数列表"
+        },
+        {
+          "conditional": "TypeParameters {Annotation} Result [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "带泛型的方法标识符后必须跟左括号开始参数列表"
+        },
+        {
+          "conditional": "[IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过参数列表）"
+        },
+        {
+          "conditional": "[IDENT] ()",
+          "consequent": "throws, [",
+          "skip": "",
+          "required": false,
+          "note": "参数列表后可选择性跟随 'throws' 或数组维度"
+        },
+        {
+          "conditional": "[IDENT] () throws",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'throws' 后必须跟异常类型标识符"
+        },
+        {
+          "conditional": "[IDENT] () throws [IDENT]",
+          "consequent": ",, [",
+          "skip": "",
+          "required": false,
+          "note": "异常类型后可选择性跟随逗号继续声明或数组维度"
+        },
+        {
+          "conditional": "[IDENT] () [",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号完成一个数组维度"
+        },
+        {
+          "conditional": "[IDENT] () []",
+          "consequent": "[",
+          "skip": "",
+          "required": false,
+          "note": "一个维度后可选择性跟随另一个左方括号开始更多维度"
+        }
+      ]
+    },
+    {
+      "construct": "TryStatement",
+      "language": "java",
+      "syntax_node": "try",
+      "constraints": [
+        {
+          "conditional": "try",
+          "consequent": "Block",
+          "skip": "",
+          "required": true,
+          "note": "'try' 关键字后必须跟代码块"
+        }
+      ]
+    },
+    {
+      "construct": "TypeParameter",
+      "language": "java",
+      "syntax_node": "TypeParameter",
+      "constraints": [
+        {
+          "conditional": "TypeParameter",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'TypeParameter' 起始后必须跟类型标识符"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "extends",
+          "skip": "",
+          "required": false,
+          "note": "类型标识符后可选择性跟随 'extends' 关键字引入类型边界"
+        }
+      ]
+    },
+    {
+      "construct": "TypeParameterModifier",
+      "language": "java",
+      "syntax_node": "TypeParameterModifier",
+      "constraints": [
+        {
+          "conditional": "TypeParameterModifier",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'TypeParameterModifier' 是 'Annotation' 的别名，其后必须跟一个表达式起始（即注解的起始）"
+        }
+      ]
+    },
+    {
+      "construct": "ElementValueArrayInitializer",
+      "language": "java",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}, <expression_start>, @",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后必须跟右大括号、ElementValue 起始或注解起始"
+        },
+        {
+          "conditional": "{ <expression_start>",
+          "consequent": "}, ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "第一个 ElementValue 后必须跟右大括号或逗号"
+        },
+        {
+          "conditional": "{ <expression_start> ,",
+          "consequent": "<expression_start>, @",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个 ElementValue 或注解的起始"
+        },
+        {
+          "conditional": "{ <expression_start> , <expression_start>",
+          "consequent": "}, ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "后续 ElementValue 后必须跟右大括号或逗号"
+        },
+        {
+          "conditional": "{ <expression_start> , @",
+          "consequent": "}, ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "后续注解 ElementValue 后必须跟右大括号或逗号"
+        },
+        {
+          "conditional": "{ @",
+          "consequent": "}, ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "第一个注解 ElementValue 后必须跟右大括号或逗号"
+        }
+      ]
+    },
+    {
+      "construct": "ArgumentList",
+      "language": "java",
+      "syntax_node": ",",
+      "constraints": [
+        {
+          "conditional": ",",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "UnannArrayType",
+      "language": "java",
+      "syntax_node": "Dims",
+      "constraints": [
+        {
+          "conditional": "UnannPrimitiveType",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "UnannPrimitiveType 后必须跟左方括号开始数组维度"
+        },
+        {
+          "conditional": "UnannClassOrInterfaceType",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "UnannClassOrInterfaceType 后必须跟左方括号开始数组维度"
+        },
+        {
+          "conditional": "UnannTypeVariable",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "UnannTypeVariable 后必须跟左方括号开始数组维度"
+        },
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号完成一个维度"
+        },
+        {
+          "conditional": "[]",
+          "consequent": "[",
+          "skip": "",
+          "required": false,
+          "note": "一个维度后可选择性跟随另一个左方括号开始更多维度"
+        }
+      ]
+    },
+    {
+      "construct": "ElementValue",
+      "language": "java",
+      "syntax_node": "expression",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "<expression_start>, {, @",
+          "skip": "",
+          "required": true,
+          "note": "ElementValue 必须是 ConditionalExpression、ElementValueArrayInitializer 或 Annotation 的起始"
+        }
+      ]
+    },
+    {
+      "construct": "ExpressionStatement",
+      "language": "java",
+      "syntax_node": ";",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": ";",
+          "skip": "StatementExpression",
+          "required": true,
+          "note": "表达式语句必须以分号结束"
+        }
+      ]
+    },
+    {
+      "construct": "VariableInitializerList",
+      "language": "java",
+      "syntax_node": "<expression_start>",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": ",, }",
+          "skip": "VariableInitializer",
+          "required": true,
+          "note": "第一个 VariableInitializer 后必须跟逗号（继续列表）或右大括号（结束列表）"
+        },
+        {
+          "conditional": "<expression_start> ,",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个 VariableInitializer（表达式起始）"
+        }
+      ]
+    },
+    {
+      "construct": "InterfacePermits",
+      "language": "java",
+      "syntax_node": "permits",
+      "constraints": [
+        {
+          "conditional": "permits",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'permits' 关键字后必须跟类型名"
+        },
+        {
+          "conditional": "permits [IDENT]",
+          "consequent": ",, ;, {",
+          "skip": "",
+          "required": false,
+          "note": "类型名后可跟逗号（更多类型）、分号或左大括号（取决于上下文）"
+        },
+        {
+          "conditional": "permits [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟另一个类型名"
+        }
+      ]
+    },
+    {
+      "construct": "ConstantDeclaration",
+      "language": "java",
+      "syntax_node": ";",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ";",
+          "skip": "variable_declarator_list",
+          "required": true,
+          "note": "类型名后必须跟分号（中间跳过变量声明符列表）"
+        }
+      ]
+    },
+    {
+      "construct": "UnannReferenceType",
+      "language": "java",
+      "syntax_node": "Type",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "<class_or_interface_type_start>, <type_variable_start>, [",
+          "skip": "",
+          "required": true,
+          "note": "未注解引用类型必须以类/接口类型起始、类型变量起始或左方括号开始"
+        },
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "数组类型左方括号后必须跟右方括号（中间跳过维度表达式）"
+        },
+        {
+          "conditional": "[]",
+          "consequent": "<class_or_interface_type_start>, <type_variable_start>",
+          "skip": "",
+          "required": true,
+          "note": "数组维度后必须跟类/接口类型或类型变量作为元素类型"
+        }
+      ]
+    },
+    {
+      "construct": "ComponentPatternList",
+      "language": "java",
+      "syntax_node": "ComponentPattern",
+      "constraints": [
+        {
+          "conditional": "ComponentPattern",
+          "consequent": ",, )",
+          "skip": "",
+          "required": false,
+          "note": "第一个 'ComponentPattern' 后可选择性跟随逗号（用于更多 'ComponentPattern'）或右括号"
+        },
+        {
+          "conditional": "ComponentPattern ,",
+          "consequent": "ComponentPattern",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟另一个 'ComponentPattern'"
+        },
+        {
+          "conditional": "ComponentPattern , ComponentPattern",
+          "consequent": ",, )",
+          "skip": "",
+          "required": false,
+          "note": "后续 'ComponentPattern' 后可选择性跟随逗号（用于更多 'ComponentPattern'）或右括号"
+        }
+      ]
+    },
+    {
+      "construct": "ImportDeclaration",
+      "language": "java",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "import",
+          "skip": "",
+          "required": true,
+          "note": "导入声明必须以 'import' 关键字开始"
+        },
+        {
+          "conditional": "import",
+          "consequent": "[IDENT], static",
+          "skip": "",
+          "required": true,
+          "note": "'import' 后必须跟类型名或 'static' 关键字"
+        }
+      ]
+    },
+    {
+      "construct": "TypeBound",
+      "language": "java",
+      "syntax_node": "TypeBound",
+      "constraints": [
+        {
+          "conditional": "TypeBound",
+          "consequent": "extends",
+          "skip": "",
+          "required": true,
+          "note": "'TypeBound' 起始后必须跟 'extends' 关键字"
+        },
+        {
+          "conditional": "extends",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'extends' 后必须跟一个表达式起始（如 'TypeVariable' 或 'ClassOrInterfaceType'）"
+        },
+        {
+          "conditional": "<expression_start>",
+          "consequent": "&",
+          "skip": "",
+          "required": false,
+          "note": "基础类型后可选择性跟随 '&' 引入附加边界"
+        }
+      ]
+    },
+    {
+      "construct": "CatchType",
+      "language": "java",
+      "syntax_node": "catch",
+      "constraints": [
+        {
+          "conditional": "UnannClassType",
+          "consequent": "|",
+          "skip": "",
+          "required": false,
+          "note": "未注解类类型后可选择性跟随 '|' 以引入更多类类型"
+        },
+        {
+          "conditional": "UnannClassType |",
+          "consequent": "ClassType",
+          "skip": "",
+          "required": true,
+          "note": "'|' 后必须跟另一个 ClassType"
+        },
+        {
+          "conditional": "UnannClassType | ClassType",
+          "consequent": "|",
+          "skip": "",
+          "required": false,
+          "note": "已有一个 ClassType 后，可再次选择性跟随 '|' 以引入更多类类型"
+        }
+      ]
+    },
+    {
+      "construct": "ArrayCreationExpressionWithInitializer",
+      "language": "java",
+      "syntax_node": "new",
+      "constraints": [
+        {
+          "conditional": "new PrimitiveType, new ClassOrInterfaceType",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "类型后必须跟左方括号开始维度声明"
+        },
+        {
+          "conditional": "new PrimitiveType [, new ClassOrInterfaceType [",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "维度声明中的左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "new PrimitiveType []+, new ClassOrInterfaceType []+",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "维度声明序列后必须跟左大括号开始数组初始化器"
+        },
+        {
+          "conditional": "new PrimitiveType []+ {, new ClassOrInterfaceType []+ {",
+          "consequent": "}",
+          "skip": "array_initializer",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过数组初始化器内容）"
+        }
+      ]
+    },
+    {
+      "construct": "TypeParameters",
+      "language": "java",
+      "syntax_node": "<",
+      "constraints": [
+        {
+          "conditional": "<",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "左尖括号 '<' 后必须跟类型参数标识符"
+        },
+        {
+          "conditional": "< [IDENT]",
+          "consequent": ">",
+          "skip": "TypeParameterList",
+          "required": true,
+          "note": "类型参数列表后必须跟右尖括号 '>'"
+        }
+      ]
+    },
+    {
+      "construct": "BasicForStatementNoShortIf",
+      "language": "java",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'for' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": ";",
+          "skip": "for_init",
+          "required": false,
+          "note": "左括号后必须跟分号（中间可选跳过 ForInit）"
+        },
+        {
+          "conditional": "for ( ;",
+          "consequent": ";",
+          "skip": "expression",
+          "required": false,
+          "note": "第一个分号后必须跟第二个分号（中间可选跳过表达式）"
+        },
+        {
+          "conditional": "for ( ; ;",
+          "consequent": ")",
+          "skip": "for_update",
+          "required": false,
+          "note": "第二个分号后必须跟右括号（中间可选跳过 ForUpdate）"
+        },
+        {
+          "conditional": "for ( ; ; )",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始（StatementNoShortIf）"
+        }
+      ]
+    },
+    {
+      "construct": "ClassOrInterfaceTypeToInstantiate",
+      "language": "java",
+      "syntax_node": "Identifier",
+      "constraints": [
+        {
+          "conditional": "Annotation",
+          "consequent": "Identifier",
+          "skip": "",
+          "required": true,
+          "note": "'Annotation' 后必须跟 'Identifier'"
+        },
+        {
+          "conditional": "Identifier",
+          "consequent": "., TypeArgumentsOrDiamond",
+          "skip": "",
+          "required": false,
+          "note": "'Identifier' 后可选择性跟随点号（用于限定名）或 'TypeArgumentsOrDiamond'"
+        },
+        {
+          "conditional": "Identifier .",
+          "consequent": "Annotation, Identifier",
+          "skip": "",
+          "required": false,
+          "note": "点号后可选择性跟随 'Annotation'，然后必须跟 'Identifier'"
+        },
+        {
+          "conditional": "Identifier . Annotation",
+          "consequent": "Identifier",
+          "skip": "",
+          "required": true,
+          "note": "'Annotation' 后必须跟 'Identifier'"
+        },
+        {
+          "conditional": "Identifier . Identifier",
+          "consequent": "., TypeArgumentsOrDiamond",
+          "skip": "",
+          "required": false,
+          "note": "后续 'Identifier' 后可选择性跟随点号（用于更多限定）或 'TypeArgumentsOrDiamond'"
+        },
+        {
+          "conditional": "Identifier TypeArgumentsOrDiamond",
+          "consequent": "",
+          "skip": "",
+          "required": false,
+          "note": "'TypeArgumentsOrDiamond' 是此构造的可选结束部分"
+        }
+      ]
+    },
+    {
+      "construct": "ArrayInitializer",
+      "language": "java",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}, [",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（空数组）或逗号（尾随逗号）或表达式起始"
+        },
+        {
+          "conditional": "{ [",
+          "consequent": "}",
+          "skip": "VariableInitializerList",
+          "required": true,
+          "note": "表达式起始后必须跟右大括号（中间跳过 VariableInitializerList）"
+        },
+        {
+          "conditional": "{ [ ,",
+          "consequent": "}",
+          "skip": "",
+          "required": true,
+          "note": "尾随逗号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "WildcardBounds",
+      "language": "java",
+      "syntax_node": "extends",
+      "constraints": [
+        {
+          "conditional": "extends",
+          "consequent": "ReferenceType",
+          "skip": "",
+          "required": true,
+          "note": "'extends' 后必须跟引用类型"
+        },
+        {
+          "conditional": "super",
+          "consequent": "ReferenceType",
+          "skip": "",
+          "required": true,
+          "note": "'super' 后必须跟引用类型"
+        }
+      ]
+    },
+    {
+      "construct": "ClassLiteral",
+      "language": "java",
+      "syntax_node": "TypeName",
+      "constraints": [
+        {
+          "conditional": "TypeName",
+          "consequent": "[, .",
+          "skip": "",
+          "required": false,
+          "note": "'TypeName' 后可选择性跟随方括号（数组维度）或点号"
+        },
+        {
+          "conditional": "TypeName [",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "TypeName []",
+          "consequent": "[, .",
+          "skip": "",
+          "required": false,
+          "note": "一对 '[]' 后可选择性跟随更多 '[]' 或点号"
+        },
+        {
+          "conditional": "TypeName .",
+          "consequent": "class",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 'class' 关键字"
+        },
+        {
+          "conditional": "NumericType",
+          "consequent": "[, .",
+          "skip": "",
+          "required": false,
+          "note": "'NumericType' 后可选择性跟随方括号（数组维度）或点号"
+        },
+        {
+          "conditional": "NumericType [",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "NumericType []",
+          "consequent": "[, .",
+          "skip": "",
+          "required": false,
+          "note": "一对 '[]' 后可选择性跟随更多 '[]' 或点号"
+        },
+        {
+          "conditional": "NumericType .",
+          "consequent": "class",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 'class' 关键字"
+        },
+        {
+          "conditional": "boolean",
+          "consequent": "[, .",
+          "skip": "",
+          "required": false,
+          "note": "'boolean' 后可选择性跟随方括号（数组维度）或点号"
+        },
+        {
+          "conditional": "boolean [",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "boolean []",
+          "consequent": "[, .",
+          "skip": "",
+          "required": false,
+          "note": "一对 '[]' 后可选择性跟随更多 '[]' 或点号"
+        },
+        {
+          "conditional": "boolean .",
+          "consequent": "class",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 'class' 关键字"
+        },
+        {
+          "conditional": "void",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "'void' 后必须跟点号"
+        },
+        {
+          "conditional": "void .",
+          "consequent": "class",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 'class' 关键字"
+        }
+      ]
+    },
+    {
+      "construct": "UnaryExpression",
+      "language": "java",
+      "syntax_node": "",
+      "constraints": [
+        {
+          "conditional": "+",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "一元 '+' 运算符后必须跟一个表达式起始"
+        },
+        {
+          "conditional": "-",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "一元 '-' 运算符后必须跟一个表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "IfThenElseStatement",
+      "language": "java",
+      "syntax_node": "if",
+      "constraints": [
+        {
+          "conditional": "if",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'if' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "if (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+        },
+        {
+          "conditional": "if ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟一个 'StatementNoShortIf' 起始"
+        },
+        {
+          "conditional": "if () <statement_start>",
+          "consequent": "else",
+          "skip": "statement",
+          "required": true,
+          "note": "'if' 分支语句后必须跟 'else' 关键字"
+        },
+        {
+          "conditional": "else",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "'else' 关键字后必须跟一个语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "BlockStatements",
+      "language": "java",
+      "syntax_node": "<statement_start>",
+      "constraints": [
+        {
+          "conditional": "<statement_start>",
+          "consequent": "<statement_start>, }",
+          "skip": "BlockStatement",
+          "required": true,
+          "note": "第一个 BlockStatement 后必须跟下一个 BlockStatement（语句起始）或右大括号（结束块）"
+        }
+      ]
+    },
+    {
+      "construct": "LambdaExpression",
+      "language": "java",
+      "syntax_node": "->",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "LambdaParameterList",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过 LambdaParameterList）"
+        },
+        {
+          "conditional": "()",
+          "consequent": "->",
+          "skip": "",
+          "required": true,
+          "note": "参数列表括号后必须跟箭头 '->'"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "->",
+          "skip": "",
+          "required": true,
+          "note": "简洁参数标识符后必须跟箭头 '->'"
+        },
+        {
+          "conditional": "_",
+          "consequent": "->",
+          "skip": "",
+          "required": true,
+          "note": "下划线参数后必须跟箭头 '->'"
+        },
+        {
+          "conditional": "->",
+          "consequent": "{, <expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "箭头 '->' 后必须跟左大括号或表达式起始（LambdaBody）"
+        },
+        {
+          "conditional": "-> {",
+          "consequent": "}",
+          "skip": "Block",
+          "required": true,
+          "note": "箭头后左大括号必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "ConstructorBody",
+      "language": "java",
+      "syntax_node": "constructor",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "构造函数体必须以左大括号开始"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过可选的显式构造函数调用和块语句）"
+        }
+      ]
+    },
+    {
+      "construct": "MethodDeclarator",
+      "language": "java",
+      "syntax_node": "Identifier",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "方法标识符后必须跟左括号开始参数列表"
+        },
+        {
+          "conditional": "[IDENT] (",
+          "consequent": "), [IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可选择性跟随右括号或接收器参数标识符"
+        },
+        {
+          "conditional": "[IDENT] ( [IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "接收器参数标识符后必须跟点号"
+        },
+        {
+          "conditional": "[IDENT] ( [IDENT] .",
+          "consequent": "this",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 'this' 关键字"
+        },
+        {
+          "conditional": "[IDENT] ( [IDENT] . this",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "接收器参数后必须跟逗号"
+        },
+        {
+          "conditional": "[IDENT] ( [IDENT] . this ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "逗号后可选择性跟随正式参数标识符"
+        },
+        {
+          "conditional": "[IDENT] ( )",
+          "consequent": "[",
+          "skip": "",
+          "required": false,
+          "note": "空参数列表后可选择性跟随数组维度"
+        },
+        {
+          "conditional": "[IDENT] ( [IDENT] . this , [IDENT]",
+          "consequent": ",, )",
+          "skip": "",
+          "required": false,
+          "note": "参数后可选择性跟随逗号继续声明或右括号结束"
+        },
+        {
+          "conditional": "[IDENT] ( [",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号完成一个数组维度"
+        },
+        {
+          "conditional": "[IDENT] ( []",
+          "consequent": "[",
+          "skip": "",
+          "required": false,
+          "note": "一个维度后可选择性跟随另一个左方括号开始更多维度"
+        }
+      ]
+    },
+    {
+      "construct": "WhileStatement",
+      "language": "java",
+      "syntax_node": "while",
+      "constraints": [
+        {
+          "conditional": "while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'while' 关键字后必须跟左括号 '('"
+        },
+        {
+          "conditional": "while (",
+          "consequent": ")",
+          "skip": "Expression",
+          "required": true,
+          "note": "左括号 '(' 后必须跟右括号 ')'（中间跳过表达式）"
+        },
+        {
+          "conditional": "while ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号 ')' 后必须跟语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "TypeImportOnDemandDeclaration",
+      "language": "java",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'import' 后必须跟包或类型名标识符"
+        },
+        {
+          "conditional": "import [IDENT]",
+          "consequent": "., ;",
+          "skip": "",
+          "required": true,
+          "note": "包或类型名标识符后必须跟点号（继续限定）或分号（结束）"
+        },
+        {
+          "conditional": "import [IDENT] .",
+          "consequent": "[IDENT], *",
+          "skip": "",
+          "required": true,
+          "note": "包或类型名点号后必须跟标识符或 '*'"
+        },
+        {
+          "conditional": "import [IDENT] . [IDENT]",
+          "consequent": "., ;",
+          "skip": "",
+          "required": true,
+          "note": "限定包或类型名后必须跟点号（继续限定）或分号（结束）"
+        },
+        {
+          "conditional": "import [IDENT] . *",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "通配符 '*' 后必须跟分号"
+        },
+        {
+          "conditional": "import [IDENT] . * ;",
+          "consequent": "",
+          "skip": "",
+          "required": false,
+          "note": "按需类型导入声明以分号结束"
+        }
+      ]
+    },
+    {
+      "construct": "EnumConstantList",
+      "language": "java",
+      "syntax_node": "enum",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "枚举常量列表必须以一个枚举常量开始"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": ",, <end>",
+          "skip": "",
+          "required": false,
+          "note": "枚举常量后可跟逗号（继续列表）或结束"
+        },
+        {
+          "conditional": ",",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个枚举常量"
+        }
+      ]
+    },
+    {
+      "construct": "SwitchStatement",
+      "language": "java",
+      "syntax_node": "switch",
+      "constraints": [
+        {
+          "conditional": "switch",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'switch' 关键字后必须跟左括号 '('"
+        },
+        {
+          "conditional": "switch (",
+          "consequent": ")",
+          "skip": "Expression",
+          "required": true,
+          "note": "左括号 '(' 后必须跟右括号 ')'（中间跳过表达式）"
+        },
+        {
+          "conditional": "switch ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号 ')' 后必须跟左大括号 '{'"
+        },
+        {
+          "conditional": "switch () {",
+          "consequent": "}",
+          "skip": "SwitchBlock",
+          "required": true,
+          "note": "左大括号 '{' 后必须跟右大括号 '}'（中间跳过 SwitchBlock）"
+        }
+      ]
+    },
+    {
+      "construct": "SingleTypeImportDeclaration",
+      "language": "java",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'import' 后必须跟类型名标识符"
+        },
+        {
+          "conditional": "import [IDENT]",
+          "consequent": "., ;",
+          "skip": "",
+          "required": true,
+          "note": "类型名标识符后必须跟点号（继续限定）或分号（结束）"
+        },
+        {
+          "conditional": "import [IDENT] .",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "类型名点号后必须跟标识符"
+        },
+        {
+          "conditional": "import [IDENT] . [IDENT]",
+          "consequent": "., ;",
+          "skip": "",
+          "required": true,
+          "note": "限定类型名后必须跟点号（继续限定）或分号（结束）"
+        },
+        {
+          "conditional": "import [IDENT] ;",
+          "consequent": "",
+          "skip": "",
+          "required": false,
+          "note": "单类型导入声明以分号结束"
+        }
+      ]
+    },
+    {
+      "construct": "SingleElementAnnotation",
+      "language": "java",
+      "syntax_node": "@",
+      "constraints": [
+        {
+          "conditional": "@",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "注解符号 '@' 后必须跟类型名称标识符"
+        },
+        {
+          "conditional": "@ [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "类型名称后必须跟左括号"
+        },
+        {
+          "conditional": "@ [IDENT] (",
+          "consequent": ")",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过单个 ElementValue）"
+        }
+      ]
+    },
+    {
+      "construct": "OrdinaryCompilationUnit",
+      "language": "java",
+      "syntax_node": "CompilationUnit",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "package, import, <statement_start>",
+          "skip": "",
+          "required": false,
+          "note": "普通编译单元可以以 'package'、'import' 或顶层类/接口声明开始"
+        }
+      ]
+    },
+    {
+      "construct": "Dims",
+      "language": "java",
+      "syntax_node": "Dims",
+      "constraints": [
+        {
+          "conditional": "Dims",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "'Dims' 起始后必须跟左方括号"
+        },
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "]",
+          "consequent": "[",
+          "skip": "",
+          "required": false,
+          "note": "右方括号后可选择性跟随另一个维度对 '[' ']'"
+        }
+      ]
+    },
+    {
+      "construct": "PostIncrementExpression",
+      "language": "java",
+      "syntax_node": "++",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": "++",
+          "skip": "",
+          "required": true,
+          "note": "后缀自增表达式：表达式后必须跟 '++'"
+        }
+      ]
+    },
+    {
+      "construct": "EnhancedForStatementNoShortIf",
+      "language": "java",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'for' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "LocalVariableDeclaration",
+          "skip": "",
+          "required": true,
+          "note": "左括号后必须跟局部变量声明"
+        },
+        {
+          "conditional": "for ( LocalVariableDeclaration",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "局部变量声明后必须跟冒号"
+        },
+        {
+          "conditional": "for ( LocalVariableDeclaration :",
+          "consequent": "Expression",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟表达式"
+        }
+      ]
+    },
+    {
+      "construct": "ConstructorDeclaration",
+      "language": "java",
+      "syntax_node": "ConstructorDeclaration",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "构造函数声明以构造函数名（标识符）开始"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "构造函数名后必须跟左括号"
+        },
+        {
+          "conditional": "[IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过参数列表）"
+        },
+        {
+          "conditional": "[IDENT] ()",
+          "consequent": "throws, {",
+          "skip": "",
+          "required": false,
+          "note": "参数列表后可选择性跟随 'throws' 子句或直接进入构造函数体"
+        },
+        {
+          "conditional": "throws",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'throws' 关键字后必须跟异常类型列表的起始"
+        },
+        {
+          "conditional": "[IDENT] () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "构造函数体左大括号后必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "ExpressionName",
+      "language": "java",
+      "syntax_node": "Identifier",
+      "constraints": [
+        {
+          "conditional": "Identifier",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随 '.' 以构成限定表达式名"
+        },
+        {
+          "conditional": "AmbiguousName .",
+          "consequent": "Identifier",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟标识符"
+        },
+        {
+          "conditional": "AmbiguousName . Identifier",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "限定表达式名后可继续跟随 '.' 以进一步限定"
+        }
+      ]
+    },
+    {
+      "construct": "PackageOrTypeName",
+      "language": "java",
+      "syntax_node": "Identifier",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随点号以继续限定名称"
+        },
+        {
+          "conditional": "[IDENT] .",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟标识符"
+        },
+        {
+          "conditional": "[IDENT] . [IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "限定名称后可选择性跟随点号以继续限定"
+        }
+      ]
+    },
+    {
+      "construct": "LocalVariableType",
+      "language": "java",
+      "syntax_node": "var, <type_start>",
+      "constraints": [
+        {
+          "conditional": "var",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'var' 关键字后必须跟变量名标识符"
+        },
+        {
+          "conditional": "<type_start>",
+          "consequent": "[IDENT]",
+          "skip": "UnannType",
+          "required": true,
+          "note": "类型起始后必须跟变量名标识符（中间跳过 UnannType 解析）"
+        }
+      ]
+    },
+    {
+      "construct": "NormalInterfaceDeclaration",
+      "language": "java",
+      "syntax_node": "interface",
+      "constraints": [
+        {
+          "conditional": "interface",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'interface' 关键字后必须跟类型标识符"
+        },
+        {
+          "conditional": "interface [IDENT]",
+          "consequent": "{, extends, permits, <",
+          "skip": "",
+          "required": true,
+          "note": "接口名后可跟左大括号、'extends'、'permits' 或类型参数起始 '<'"
+        },
+        {
+          "conditional": "interface [IDENT] <",
+          "consequent": ">",
+          "skip": "type_parameters",
+          "required": true,
+          "note": "类型参数起始 '<' 后必须跟结束 '>'（中间跳过类型参数列表）"
+        },
+        {
+          "conditional": "interface [IDENT] >",
+          "consequent": "{, extends, permits",
+          "skip": "",
+          "required": true,
+          "note": "类型参数结束后可跟左大括号、'extends' 或 'permits'"
+        },
+        {
+          "conditional": "interface [IDENT] extends",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'extends' 关键字后必须跟接口类型名"
+        },
+        {
+          "conditional": "interface [IDENT] extends [IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "接口类型名后可跟左大括号或逗号（用于更多接口）"
+        },
+        {
+          "conditional": "interface [IDENT] extends [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟另一个接口类型名"
+        },
+        {
+          "conditional": "interface [IDENT] permits",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'permits' 关键字后必须跟类型名"
+        },
+        {
+          "conditional": "interface [IDENT] permits [IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "类型名后可跟左大括号或逗号（用于更多类型）"
+        },
+        {
+          "conditional": "interface [IDENT] permits [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟另一个类型名"
+        },
+        {
+          "conditional": "interface [IDENT] {",
+          "consequent": "}",
+          "skip": "interface_body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过接口体成员）"
+        }
+      ]
+    },
+    {
+      "construct": "CatchClause",
+      "language": "java",
+      "syntax_node": "catch",
+      "constraints": [
+        {
+          "conditional": "catch",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'catch' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "catch (",
+          "consequent": "CatchFormalParameter",
+          "skip": "",
+          "required": true,
+          "note": "左括号后必须跟捕获形参"
+        },
+        {
+          "conditional": "catch ( CatchFormalParameter",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "捕获形参后必须跟右括号"
+        },
+        {
+          "conditional": "catch ( CatchFormalParameter )",
+          "consequent": "Block",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟代码块"
+        }
+      ]
+    },
+    {
+      "construct": "VariableArityRecordComponent",
+      "language": "java",
+      "syntax_node": "...",
+      "constraints": [
+        {
+          "conditional": "...",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "可变元记录组件语法 '...' 后必须跟标识符名称"
+        }
+      ]
+    },
+    {
+      "construct": "RecordPattern",
+      "language": "java",
+      "syntax_node": "ReferenceType",
+      "constraints": [
+        {
+          "conditional": "ReferenceType",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'ReferenceType' 后必须跟左括号"
+        },
+        {
+          "conditional": "ReferenceType (",
+          "consequent": ")",
+          "skip": "ComponentPatternList",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过可选的 'ComponentPatternList'）"
+        }
+      ]
+    },
+    {
+      "construct": "VariableDeclaratorList",
+      "language": "java",
+      "syntax_node": "VariableDeclarator",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ",, =",
+          "skip": "",
+          "required": true,
+          "note": "变量声明符标识符后必须跟逗号继续声明或等号进行初始化"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "等号后必须跟表达式起始"
+        },
+        {
+          "conditional": "[IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个变量声明符标识符"
+        }
+      ]
+    },
+    {
+      "construct": "FieldAccess",
+      "language": "java",
+      "syntax_node": ".",
+      "constraints": [
+        {
+          "conditional": "Primary ., super ., TypeName . super .",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟标识符作为字段名"
+        }
+      ]
+    },
+    {
+      "construct": "Resource",
+      "language": "java",
+      "syntax_node": "try",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "LocalVariableDeclaration, VariableAccess",
+          "skip": "",
+          "required": true,
+          "note": "资源必须是局部变量声明或变量访问表达式"
+        }
+      ]
+    },
+    {
+      "construct": "SwitchExpression",
+      "language": "java",
+      "syntax_node": "switch",
+      "constraints": [
+        {
+          "conditional": "switch",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "switch 表达式：'switch' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "switch (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "switch 表达式：左括号后必须跟右括号（中间跳过表达式）"
+        },
+        {
+          "conditional": "switch ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "switch 表达式：右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "switch () {",
+          "consequent": "}",
+          "skip": "SwitchBlock",
+          "required": true,
+          "note": "switch 表达式：左大括号后必须跟右大括号（中间跳过 SwitchBlock）"
+        }
+      ]
+    },
+    {
+      "construct": "PreIncrementExpression",
+      "language": "java",
+      "syntax_node": "++",
+      "constraints": [
+        {
+          "conditional": "++",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "前缀 '++' 运算符后必须跟一个表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "ClassInstanceCreationExpression",
+      "language": "java",
+      "syntax_node": "UnqualifiedClassInstanceCreationExpression",
+      "constraints": [
+        {
+          "conditional": "Primary",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "'Primary' 后必须跟点号"
+        },
+        {
+          "conditional": "Primary .",
+          "consequent": "UnqualifiedClassInstanceCreationExpression",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 'UnqualifiedClassInstanceCreationExpression'"
+        }
+      ]
+    },
+    {
+      "construct": "EnhancedForStatement",
+      "language": "java",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'for' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": ":",
+          "skip": "local_variable_declaration",
+          "required": true,
+          "note": "左括号后必须跟冒号（中间跳过局部变量声明）"
+        },
+        {
+          "conditional": "for ( :",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "冒号后必须跟右括号（中间跳过表达式）"
+        },
+        {
+          "conditional": "for ( : )",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "ElementValueList",
+      "language": "java",
+      "syntax_node": "expression",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": ", ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "第一个 ElementValue 后必须跟逗号或列表结束（由外层规则决定）"
+        },
+        {
+          "conditional": "<expression_start> ,",
+          "consequent": "<expression_start>, @",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个 ElementValue 或注解的起始"
+        },
+        {
+          "conditional": "<expression_start> , <expression_start>",
+          "consequent": ", ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "后续 ElementValue 后必须跟逗号或列表结束"
+        },
+        {
+          "conditional": "<expression_start> , @",
+          "consequent": ", ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "后续注解 ElementValue 后必须跟逗号或列表结束"
+        },
+        {
+          "conditional": "@",
+          "consequent": ", ,",
+          "skip": "ElementValue",
+          "required": true,
+          "note": "第一个注解 ElementValue 后必须跟逗号或列表结束"
+        }
+      ]
+    },
+    {
+      "construct": "TypePattern",
+      "language": "java",
+      "syntax_node": "pattern",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "LocalVariableDeclaration",
+          "skip": "",
+          "required": true,
+          "note": "类型模式必须是局部变量声明"
+        }
+      ]
+    },
+    {
+      "construct": "ContinueStatement",
+      "language": "java",
+      "syntax_node": "continue",
+      "constraints": [
+        {
+          "conditional": "continue",
+          "consequent": "[IDENT], ;",
+          "skip": "",
+          "required": true,
+          "note": "'continue' 关键字后必须跟标识符或分号"
+        },
+        {
+          "conditional": "continue [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "标识符后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "Pattern",
+      "language": "java",
+      "syntax_node": "pattern",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "TypePattern, RecordPattern",
+          "skip": "",
+          "required": true,
+          "note": "模式必须是类型模式或记录模式"
+        }
+      ]
+    },
+    {
+      "construct": "RecordHeader",
+      "language": "java",
+      "syntax_node": "(",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "record_component_list",
+          "required": true,
+          "note": "记录头 '(' 后必须跟 ')'（中间跳过记录组件列表）"
+        }
+      ]
+    },
+    {
+      "construct": "MethodReference",
+      "language": "java",
+      "syntax_node": "::",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "::",
+          "skip": "",
+          "required": true,
+          "note": "表达式名称后必须跟双冒号"
+        },
+        {
+          "conditional": "[IDENT] ::",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "双冒号后必须跟标识符"
+        },
+        {
+          "conditional": "super",
+          "consequent": "::",
+          "skip": "",
+          "required": true,
+          "note": "'super' 关键字后必须跟双冒号"
+        },
+        {
+          "conditional": "super ::",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'super ::' 后必须跟标识符"
+        },
+        {
+          "conditional": "[IDENT] . super",
+          "consequent": "::",
+          "skip": "",
+          "required": true,
+          "note": "'TypeName . super' 后必须跟双冒号"
+        },
+        {
+          "conditional": "[IDENT] . super ::",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'TypeName . super ::' 后必须跟标识符"
+        },
+        {
+          "conditional": "[IDENT] ::",
+          "consequent": "new",
+          "skip": "",
+          "required": true,
+          "note": "'ClassType ::' 后必须跟 'new' 关键字"
+        },
+        {
+          "conditional": "[IDENT] :: new",
+          "consequent": "",
+          "skip": "",
+          "required": false,
+          "note": "'ArrayType :: new' 构造完成"
+        }
+      ]
+    },
+    {
+      "construct": "WhileStatementNoShortIf",
+      "language": "java",
+      "syntax_node": "while",
+      "constraints": [
+        {
+          "conditional": "while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'while' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "while (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过表达式）"
+        },
+        {
+          "conditional": "while ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始（StatementNoShortIf）"
+        }
+      ]
+    },
+    {
+      "construct": "ExplicitConstructorInvocation",
+      "language": "java",
+      "syntax_node": "super",
+      "constraints": [
+        {
+          "conditional": "[TypeArguments]",
+          "consequent": "this, super, [IDENT] . super, <expression_start> . super",
+          "skip": "",
+          "required": false,
+          "note": "可选的类型参数后必须跟 'this'、'super' 或带点号的 'super' 调用"
+        },
+        {
+          "conditional": "this",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'this' 后必须跟左括号"
+        },
+        {
+          "conditional": "super",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'super' 后必须跟左括号"
+        },
+        {
+          "conditional": "[IDENT] . super",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "ExpressionName 点号 super 后必须跟左括号"
+        },
+        {
+          "conditional": "<expression_start> . super",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "Primary 表达式点号 super 后必须跟左括号"
+        },
+        {
+          "conditional": "this (",
+          "consequent": ")",
+          "skip": "arguments",
+          "required": true,
+          "note": "'this' 左括号后必须跟右括号（中间跳过可选的参数列表）"
+        },
+        {
+          "conditional": "super (",
+          "consequent": ")",
+          "skip": "arguments",
+          "required": true,
+          "note": "'super' 左括号后必须跟右括号（中间跳过可选的参数列表）"
+        },
+        {
+          "conditional": ")",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "RecordBody",
+      "language": "java",
+      "syntax_node": "{",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "record_body_declarations",
+          "required": true,
+          "note": "记录体 '{' 后必须跟 '}'（中间跳过记录体声明）"
+        }
+      ]
+    },
+    {
+      "construct": "NormalAnnotation",
+      "language": "java",
+      "syntax_node": "@",
+      "constraints": [
+        {
+          "conditional": "@",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "注解符号 '@' 后必须跟类型名称标识符"
+        },
+        {
+          "conditional": "@ [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "类型名称后必须跟左括号开始注解元素"
+        },
+        {
+          "conditional": "@ [IDENT] (",
+          "consequent": ")",
+          "skip": "ElementValuePairList",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过元素值对列表）"
+        }
+      ]
+    },
+    {
+      "construct": "VariableArityParameter",
+      "language": "java",
+      "syntax_node": "...",
+      "constraints": [
+        {
+          "conditional": "...",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "可变参数语法 '...' 后必须跟标识符名称"
+        }
+      ]
+    },
+    {
+      "construct": "LocalVariableDeclarationStatement",
+      "language": "java",
+      "syntax_node": "<declaration_start>",
+      "constraints": [
+        {
+          "conditional": "<declaration_start>",
+          "consequent": ";",
+          "skip": "LocalVariableDeclaration",
+          "required": true,
+          "note": "局部变量声明起始后必须跟分号（中间跳过 LocalVariableDeclaration）"
+        }
+      ]
+    },
+    {
+      "construct": "TypeArguments",
+      "language": "java",
+      "syntax_node": "<",
+      "constraints": [
+        {
+          "conditional": "<",
+          "consequent": ">",
+          "skip": "TypeArgumentList",
+          "required": true,
+          "note": "左尖括号后必须跟右尖括号（中间跳过类型参数列表）"
+        }
+      ]
+    },
+    {
+      "construct": "ArrayCreationExpression",
+      "language": "java",
+      "syntax_node": "new",
+      "constraints": [
+        {
+          "conditional": "new",
+          "consequent": "PrimitiveType, ClassOrInterfaceType",
+          "skip": "",
+          "required": true,
+          "note": "'new' 后必须跟原始类型或类/接口类型"
+        }
+      ]
+    },
+    {
+      "construct": "FieldDeclaration",
+      "language": "java",
+      "syntax_node": "[IDENT]",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ";",
+          "skip": "variable_declarator_list",
+          "required": true,
+          "note": "字段声明类型标识符后必须跟分号（中间跳过变量声明符列表）"
+        }
+      ]
+    },
+    {
+      "construct": "ClassOrInterfaceType",
+      "language": "java",
+      "syntax_node": "ClassOrInterfaceType",
+      "constraints": [
+        {
+          "conditional": "ClassOrInterfaceType",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'ClassOrInterfaceType' 是聚合节点，其后必须跟一个表达式起始（如 'ClassType' 或 'InterfaceType'）"
+        }
+      ]
+    },
+    {
+      "construct": "DoStatement",
+      "language": "java",
+      "syntax_node": "do",
+      "constraints": [
+        {
+          "conditional": "do",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "'do' 关键字后必须跟语句起始"
+        },
+        {
+          "conditional": "do <statement_start>",
+          "consequent": "while",
+          "skip": "",
+          "required": true,
+          "note": "do 语句体后必须跟 'while' 关键字"
+        },
+        {
+          "conditional": "do <statement_start> while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'while' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "do <statement_start> while (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过表达式）"
+        },
+        {
+          "conditional": "do <statement_start> while ()",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "LocalVariableDeclaration",
+      "language": "java",
+      "syntax_node": "<declaration_start>",
+      "constraints": [
+        {
+          "conditional": "<declaration_start>",
+          "consequent": "[IDENT]",
+          "skip": "VariableModifier, LocalVariableType",
+          "required": true,
+          "note": "声明修饰符和类型后必须跟第一个变量名标识符"
+        },
+        {
+          "conditional": "<declaration_start> [IDENT]",
+          "consequent": "=, ;, ,",
+          "skip": "",
+          "required": true,
+          "note": "变量名后必须跟等号（初始化）、分号（声明结束）或逗号（继续声明）"
+        },
+        {
+          "conditional": "<declaration_start> [IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "等号后必须跟初始化表达式起始"
+        },
+        {
+          "conditional": "<declaration_start> [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个变量名标识符"
+        }
+      ]
+    },
+    {
+      "construct": "ModularCompilationUnit",
+      "language": "java",
+      "syntax_node": "CompilationUnit",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "import, module",
+          "skip": "",
+          "required": false,
+          "note": "模块化编译单元可以以 'import' 或 'module' 开始"
+        }
+      ]
+    },
+    {
+      "construct": "LocalClassOrInterfaceDeclaration",
+      "language": "java",
+      "syntax_node": "class, interface",
+      "constraints": [
+        {
+          "conditional": "class",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'class' 关键字后必须跟类名标识符"
+        },
+        {
+          "conditional": "interface",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'interface' 关键字后必须跟接口名标识符"
+        }
+      ]
+    },
+    {
+      "construct": "ResourceSpecification",
+      "language": "java",
+      "syntax_node": "try",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": "ResourceList",
+          "skip": "",
+          "required": true,
+          "note": "左括号后必须跟资源列表"
+        },
+        {
+          "conditional": "( ResourceList",
+          "consequent": ";",
+          "skip": "",
+          "required": false,
+          "note": "资源列表后可选择性跟随一个分号"
+        },
+        {
+          "conditional": "( ResourceList [;]",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "资源列表（及可选分号）后必须跟右括号"
+        }
+      ]
+    },
+    {
+      "construct": "ForStatementNoShortIf",
+      "language": "java",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'for' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": ";",
+          "skip": "for_init",
+          "required": false,
+          "note": "左括号后必须跟分号（中间可选跳过 ForInit）"
+        },
+        {
+          "conditional": "for ( ;",
+          "consequent": ";",
+          "skip": "expression",
+          "required": false,
+          "note": "第一个分号后必须跟第二个分号（中间可选跳过表达式）"
+        },
+        {
+          "conditional": "for ( ; ;",
+          "consequent": ")",
+          "skip": "for_update",
+          "required": false,
+          "note": "第二个分号后必须跟右括号（中间可选跳过 ForUpdate）"
+        },
+        {
+          "conditional": "for ( ; ; )",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始（StatementNoShortIf）"
+        }
+      ]
+    },
+    {
+      "construct": "FormalParameter",
+      "language": "java",
+      "syntax_node": "VariableDeclaratorId",
+      "constraints": [
+        {
+          "conditional": "{VariableModifier} UnannType",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "类型后必须跟变量声明标识符"
+        },
+        {
+          "conditional": "{VariableModifier} UnannType [IDENT]",
+          "consequent": "[",
+          "skip": "",
+          "required": false,
+          "note": "标识符后可选择性跟随左方括号开始数组维度"
+        },
+        {
+          "conditional": "[IDENT] [",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "左方括号后必须跟右方括号完成一个维度"
+        },
+        {
+          "conditional": "[IDENT] []",
+          "consequent": "[",
+          "skip": "",
+          "required": false,
+          "note": "一个维度后可选择性跟随另一个左方括号开始更多维度"
+        }
+      ]
+    },
+    {
+      "construct": "InterfaceTypeList",
+      "language": "java",
+      "syntax_node": "[IDENT]",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "接口类型标识符后必须跟左大括号（类体开始）或逗号"
+        },
+        {
+          "conditional": "[IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个接口类型标识符"
+        },
+        {
+          "conditional": "[IDENT] , [IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "后续接口类型标识符后必须跟左大括号或逗号"
+        }
+      ]
+    },
+    {
+      "construct": "ElementValuePair",
+      "language": "java",
+      "syntax_node": "=",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "标识符后必须跟等号"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "等号后必须跟元素值表达式"
+        }
+      ]
+    },
+    {
+      "construct": "SwitchBlock",
+      "language": "java",
+      "syntax_node": "switch",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}, SwitchRule, SwitchBlockStatementGroup, SwitchLabel",
+          "skip": "",
+          "required": true,
+          "note": "左大括号 '{' 后必须跟右大括号 '}' 或 SwitchRule 或 SwitchBlockStatementGroup 或 SwitchLabel"
+        },
+        {
+          "conditional": "{ SwitchRule",
+          "consequent": "}, SwitchRule",
+          "skip": "",
+          "required": true,
+          "note": "SwitchRule 后必须跟右大括号 '}' 或另一个 SwitchRule"
+        },
+        {
+          "conditional": "{ SwitchLabel",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "SwitchLabel 后必须跟冒号 ':'"
+        },
+        {
+          "conditional": "{ SwitchLabel :",
+          "consequent": "}",
+          "skip": "",
+          "required": true,
+          "note": "冒号 ':' 后必须跟右大括号 '}'"
+        }
+      ]
+    },
+    {
+      "construct": "UnannPrimitiveType",
+      "language": "java",
+      "syntax_node": "Type",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "byte, short, int, long, char, float, double, boolean",
+          "skip": "",
+          "required": true,
+          "note": "未注解原始类型必须是数值类型关键字或 'boolean'"
+        }
+      ]
+    },
+    {
+      "construct": "SynchronizedStatement",
+      "language": "java",
+      "syntax_node": "synchronized",
+      "constraints": [
+        {
+          "conditional": "synchronized",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'synchronized' 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "synchronized (",
+          "consequent": "Expression",
+          "skip": "",
+          "required": true,
+          "note": "左括号后必须跟表达式"
+        }
+      ]
+    },
+    {
+      "construct": "Statement",
+      "language": "java",
+      "syntax_node": "<statement_start>",
+      "constraints": [
+        {
+          "conditional": "<statement_start>",
+          "consequent": "<statement_start>, ;, }",
+          "skip": "StatementWithoutTrailingSubstatement, LabeledStatement, IfThenStatement, IfThenElseStatement, WhileStatement, ForStatement",
+          "required": true,
+          "note": "语句起始后必须跟下一个语句起始或分号（简单语句结束）或右大括号（块结束）"
+        }
+      ]
+    },
+    {
+      "construct": "AssertStatement",
+      "language": "java",
+      "syntax_node": "assert",
+      "constraints": [
+        {
+          "conditional": "assert",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'assert' 关键字后必须跟一个表达式起始"
+        },
+        {
+          "conditional": "assert <expression_start>",
+          "consequent": ";, :",
+          "skip": "Expression",
+          "required": true,
+          "note": "断言表达式后必须跟分号 ';' 或冒号 ':'"
+        },
+        {
+          "conditional": "assert <expression_start> :",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "冒号 ':' 后必须跟第二个表达式起始"
+        },
+        {
+          "conditional": "assert <expression_start> : <expression_start>",
+          "consequent": ";",
+          "skip": "Expression",
+          "required": true,
+          "note": "第二个表达式后必须跟分号 ';'"
+        }
+      ]
+    },
+    {
+      "construct": "EnumDeclaration",
+      "language": "java",
+      "syntax_node": "enum",
+      "constraints": [
+        {
+          "conditional": "{ClassModifier}",
+          "consequent": "enum",
+          "skip": "",
+          "required": false,
+          "note": "可选的类修饰符后必须跟 'enum' 关键字"
+        },
+        {
+          "conditional": "enum",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'enum' 关键字后必须跟类型标识符"
+        },
+        {
+          "conditional": "enum [IDENT]",
+          "consequent": "{",
+          "skip": "implements",
+          "required": false,
+          "note": "类型标识符后可跟可选的接口实现列表，然后必须跟左大括号"
+        }
+      ]
+    },
+    {
+      "construct": "TypeName",
+      "language": "java",
+      "syntax_node": "TypeIdentifier",
+      "constraints": [
+        {
+          "conditional": "TypeIdentifier",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "类型标识符后可选择性跟随 '.' 以构成限定类型名"
+        },
+        {
+          "conditional": "PackageOrTypeName .",
+          "consequent": "TypeIdentifier",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟类型标识符"
+        }
+      ]
+    },
+    {
+      "construct": "TypeArgumentsOrDiamond",
+      "language": "java",
+      "syntax_node": "<",
+      "constraints": [
+        {
+          "conditional": "<",
+          "consequent": ">",
+          "skip": "type_arguments",
+          "required": true,
+          "note": "左尖括号后必须跟右尖括号（中间跳过类型参数列表）"
+        }
+      ]
+    },
+    {
+      "construct": "ClassImplements",
+      "language": "java",
+      "syntax_node": "implements",
+      "constraints": [
+        {
+          "conditional": "implements",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'implements' 关键字后必须跟接口类型标识符"
+        },
+        {
+          "conditional": "implements [IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "接口类型标识符后必须跟左大括号（类体开始）或逗号"
+        },
+        {
+          "conditional": "implements [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个接口类型标识符"
+        },
+        {
+          "conditional": "implements [IDENT] , [IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "后续接口类型标识符后必须跟左大括号或逗号"
+        }
+      ]
+    },
+    {
+      "construct": "ClassPermits",
+      "language": "java",
+      "syntax_node": "permits",
+      "constraints": [
+        {
+          "conditional": "permits",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'permits' 关键字后必须跟允许的子类类型标识符"
+        },
+        {
+          "conditional": "permits [IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "允许的子类类型标识符后必须跟左大括号（类体开始）或逗号"
+        },
+        {
+          "conditional": "permits [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个允许的子类类型标识符"
+        },
+        {
+          "conditional": "permits [IDENT] , [IDENT]",
+          "consequent": "{, ,",
+          "skip": "",
+          "required": true,
+          "note": "后续允许的子类类型标识符后必须跟左大括号或逗号"
+        }
+      ]
+    },
+    {
+      "construct": "ConstructorDeclarator",
+      "language": "java",
+      "syntax_node": "constructor",
+      "constraints": [
+        {
+          "conditional": "[TypeParameters]",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "可选的类型参数后必须跟构造函数名（SimpleTypeName）"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "构造函数名后必须跟左括号"
+        },
+        {
+          "conditional": "[IDENT] (",
+          "consequent": "[IDENT], )",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟接收器参数（ReceiverParameter）或直接右括号"
+        },
+        {
+          "conditional": "[IDENT] ( [IDENT]",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "接收器参数后必须跟逗号"
+        },
+        {
+          "conditional": "[IDENT] ( [IDENT] ,",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": false,
+          "note": "逗号后可跟形式参数列表（FormalParameterList）或直接右括号"
+        },
+        {
+          "conditional": "[IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过可选的形式参数列表）"
+        }
+      ]
+    },
+    {
+      "construct": "Finally",
+      "language": "java",
+      "syntax_node": "finally",
+      "constraints": [
+        {
+          "conditional": "finally",
+          "consequent": "Block",
+          "skip": "",
+          "required": true,
+          "note": "'finally' 关键字后必须跟一个代码块"
+        }
+      ]
+    },
+    {
+      "construct": "SimpleTypeName",
+      "language": "java",
+      "syntax_node": "type",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "SimpleTypeName 必须是一个类型标识符"
+        }
+      ]
+    },
+    {
+      "construct": "UnannClassOrInterfaceType",
+      "language": "java",
+      "syntax_node": "Type",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "<class_type_start>, <interface_type_start>",
+          "skip": "",
+          "required": true,
+          "note": "未注解类或接口类型必须以类类型起始或接口类型起始开始"
+        }
+      ]
+    },
+    {
+      "construct": "DimExprs",
+      "language": "java",
+      "syntax_node": "[",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "AnnotationInterfaceElementDeclaration",
+      "language": "java",
+      "syntax_node": "",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "标识符后必须跟左括号"
+        },
+        {
+          "conditional": "[IDENT] (",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "左括号后必须跟右括号（无参数）"
+        },
+        {
+          "conditional": "[IDENT] ()",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "空括号后必须跟分号结束声明"
+        }
+      ]
+    },
+    {
+      "construct": "AdditionalBound",
+      "language": "java",
+      "syntax_node": "AdditionalBound",
+      "constraints": [
+        {
+          "conditional": "AdditionalBound",
+          "consequent": "&",
+          "skip": "",
+          "required": true,
+          "note": "'AdditionalBound' 起始后必须跟 '&' 符号"
+        },
+        {
+          "conditional": "&",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "'&' 后必须跟一个表达式起始（即 'InterfaceType' 的起始）"
+        }
+      ]
+    },
+    {
+      "construct": "ClassExtends",
+      "language": "java",
+      "syntax_node": "extends",
+      "constraints": [
+        {
+          "conditional": "extends",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'extends' 关键字后必须跟父类类型标识符"
+        }
+      ]
+    },
+    {
+      "construct": "DimExpr",
+      "language": "java",
+      "syntax_node": "[",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间跳过表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "InstanceInitializer",
+      "language": "java",
+      "syntax_node": "InstanceInitializer",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "实例初始化器必须是代码块，以左大括号开始"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "TypeVariable",
+      "language": "java",
+      "syntax_node": "TypeVariable",
+      "constraints": [
+        {
+          "conditional": "TypeVariable",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'TypeVariable' 起始后必须跟类型标识符"
+        }
+      ]
+    },
+    {
+      "construct": "TypeArgumentList",
+      "language": "java",
+      "syntax_node": "TypeArgument",
+      "constraints": [
+        {
+          "conditional": "TypeArgument",
+          "consequent": ",, >",
+          "skip": "",
+          "required": false,
+          "note": "类型参数后可选择性跟随逗号（用于更多参数）或直接结束（遇到 '>'）"
+        },
+        {
+          "conditional": "TypeArgument ,",
+          "consequent": "TypeArgument",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟另一个类型参数"
+        }
+      ]
+    },
+    {
+      "construct": "ThrowStatement",
+      "language": "java",
+      "syntax_node": "throw",
+      "constraints": [
+        {
+          "conditional": "throw",
+          "consequent": "Expression",
+          "skip": "",
+          "required": true,
+          "note": "'throw' 关键字后必须跟表达式"
+        }
+      ]
+    },
+    {
+      "construct": "EnumBodyDeclarations",
+      "language": "java",
+      "syntax_node": "enum",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "枚举体声明必须以分号开始"
+        },
+        {
+          "conditional": ";",
+          "consequent": "<class_body_declaration>",
+          "skip": "",
+          "required": true,
+          "note": "分号后必须跟类体声明"
+        }
+      ]
+    },
+    {
+      "construct": "ModuleDeclaration",
+      "language": "java",
+      "syntax_node": "module",
+      "constraints": [
+        {
+          "conditional": "module",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'module' 关键字后必须跟模块名标识符"
+        },
+        {
+          "conditional": "module [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "模块名后必须跟左大括号 '{'"
+        },
+        {
+          "conditional": "module [IDENT] {",
+          "consequent": "}",
+          "skip": "ModuleDirective",
+          "required": true,
+          "note": "左大括号后必须跟右大括号 '}'（中间跳过模块指令列表）"
+        }
+      ]
+    },
+    {
+      "construct": "VariableDeclarator",
+      "language": "java",
+      "syntax_node": "VariableDeclarator",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "=, ;, ,",
+          "skip": "",
+          "required": true,
+          "note": "变量声明符标识符后必须跟等号初始化，或分号/逗号结束"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "等号后必须跟表达式起始进行初始化"
+        }
+      ]
+    },
+    {
+      "construct": "TypeParameterList",
+      "language": "java",
+      "syntax_node": "<",
+      "constraints": [
+        {
+          "conditional": "<",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "泛型参数列表起始 '<' 后必须跟类型参数标识符"
+        },
+        {
+          "conditional": "< [IDENT]",
+          "consequent": ">, ,",
+          "skip": "",
+          "required": true,
+          "note": "类型参数标识符后必须跟 '>' 或 ','"
+        },
+        {
+          "conditional": "< [IDENT] ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个类型参数标识符"
+        },
+        {
+          "conditional": "< [IDENT] , [IDENT]",
+          "consequent": ">, ,",
+          "skip": "",
+          "required": true,
+          "note": "后续类型参数标识符后必须跟 '>' 或 ','"
+        }
+      ]
+    },
+    {
+      "construct": "MethodBody",
+      "language": "java",
+      "syntax_node": "MethodBody",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "{, ;",
+          "skip": "",
+          "required": true,
+          "note": "方法体必须是代码块 '{' 或分号 ';'"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+        }
+      ]
+    },
+    {
+      "construct": "PackageDeclaration",
+      "language": "java",
+      "syntax_node": "package",
+      "constraints": [
+        {
+          "conditional": "",
+          "consequent": "@, package",
+          "skip": "",
+          "required": false,
+          "note": "包声明可以以注解修饰符开始，或直接以 'package' 关键字开始"
+        },
+        {
+          "conditional": "@",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "注解符号后必须跟注解标识符"
+        },
+        {
+          "conditional": "@ [IDENT]",
+          "consequent": "package",
+          "skip": "",
+          "required": true,
+          "note": "包修饰符注解后必须跟 'package' 关键字"
+        },
+        {
+          "conditional": "package",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'package' 关键字后必须跟标识符"
+        },
+        {
+          "conditional": "package [IDENT]",
+          "consequent": "., ;",
+          "skip": "",
+          "required": true,
+          "note": "包名标识符后必须跟点号（继续限定）或分号（结束）"
+        },
+        {
+          "conditional": "package [IDENT] .",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "包名点号后必须跟标识符"
+        },
+        {
+          "conditional": "package [IDENT] . [IDENT]",
+          "consequent": "., ;",
+          "skip": "",
+          "required": true,
+          "note": "限定包名后必须跟点号（继续限定）或分号（结束）"
+        },
+        {
+          "conditional": "package [IDENT] ;",
+          "consequent": "",
+          "skip": "",
+          "required": false,
+          "note": "包声明以分号结束"
+        }
+      ]
+    },
+    {
+      "construct": "MethodDeclaration",
+      "language": "java",
+      "syntax_node": "MethodHeader",
+      "constraints": [
+        {
+          "conditional": "{MethodModifier} MethodHeader",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "MethodHeader 后必须跟左大括号开始方法体"
+        },
+        {
+          "conditional": "{MethodModifier} MethodHeader {",
+          "consequent": "}",
+          "skip": "MethodBody",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过方法体）"
+        }
+      ]
+    },
+    {
+      "construct": "BreakStatement",
+      "language": "java",
+      "syntax_node": "break",
+      "constraints": [
+        {
+          "conditional": "break",
+          "consequent": "[IDENT], ;",
+          "skip": "",
+          "required": true,
+          "note": "'break' 关键字后必须跟标识符或分号"
+        },
+        {
+          "conditional": "break [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "标识符后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "ReceiverParameter",
+      "language": "java",
+      "syntax_node": "this",
+      "constraints": [
+        {
+          "conditional": "{Annotation} UnannType",
+          "consequent": "[IDENT], this",
+          "skip": "",
+          "required": false,
+          "note": "类型后可选择性跟随标识符或直接跟 'this'"
+        },
+        {
+          "conditional": "{Annotation} UnannType [IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "标识符后必须跟点号"
+        },
+        {
+          "conditional": "{Annotation} UnannType [IDENT] .",
+          "consequent": "this",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 'this' 关键字"
+        },
+        {
+          "conditional": "{Annotation} UnannType this",
+          "consequent": "",
+          "skip": "",
+          "required": true,
+          "note": "'this' 后接收器参数结束"
+        }
+      ]
+    }
+  ]
+}

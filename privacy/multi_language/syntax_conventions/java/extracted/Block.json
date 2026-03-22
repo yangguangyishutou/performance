@@ -1,0 +1,15 @@
+{
+  "construct": "Block",
+  "language": "java",
+  "syntax_node": "{",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "BlockStatements",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过 BlockStatements）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.265123"
+}

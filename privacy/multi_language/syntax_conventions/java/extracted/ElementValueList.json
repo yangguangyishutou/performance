@@ -1,0 +1,43 @@
+{
+  "construct": "ElementValueList",
+  "language": "java",
+  "syntax_node": "expression",
+  "constraints": [
+    {
+      "conditional": "<expression_start>",
+      "consequent": ", ,",
+      "skip": "ElementValue",
+      "required": true,
+      "note": "第一个 ElementValue 后必须跟逗号或列表结束（由外层规则决定）"
+    },
+    {
+      "conditional": "<expression_start> ,",
+      "consequent": "<expression_start>, @",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个 ElementValue 或注解的起始"
+    },
+    {
+      "conditional": "<expression_start> , <expression_start>",
+      "consequent": ", ,",
+      "skip": "ElementValue",
+      "required": true,
+      "note": "后续 ElementValue 后必须跟逗号或列表结束"
+    },
+    {
+      "conditional": "<expression_start> , @",
+      "consequent": ", ,",
+      "skip": "ElementValue",
+      "required": true,
+      "note": "后续注解 ElementValue 后必须跟逗号或列表结束"
+    },
+    {
+      "conditional": "@",
+      "consequent": ", ,",
+      "skip": "ElementValue",
+      "required": true,
+      "note": "第一个注解 ElementValue 后必须跟逗号或列表结束"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:40.551737"
+}

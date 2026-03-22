@@ -1,0 +1,22 @@
+{
+  "construct": "InstanceInitializer",
+  "language": "java",
+  "syntax_node": "InstanceInitializer",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "实例初始化器必须是代码块，以左大括号开始"
+    },
+    {
+      "conditional": "{",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过语句块）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:07:40.004451"
+}

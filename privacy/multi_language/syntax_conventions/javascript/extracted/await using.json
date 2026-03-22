@@ -1,0 +1,50 @@
+{
+  "construct": "await using",
+  "language": "javascript",
+  "syntax_node": "await using",
+  "constraints": [
+    {
+      "conditional": "await using",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "await using 后必须跟变量名标识符"
+    },
+    {
+      "conditional": "await using [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": true,
+      "note": "变量名后必须跟赋值号"
+    },
+    {
+      "conditional": "await using [IDENT] =",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "赋值号后必须跟表达式起始"
+    },
+    {
+      "conditional": "await using [IDENT] = <expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟分号"
+    },
+    {
+      "conditional": "await using [IDENT] = <expression_start>",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "表达式后可跟逗号以声明多个变量"
+    },
+    {
+      "conditional": "await using [IDENT] = <expression_start> ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个变量名标识符"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:27:28.645314"
+}

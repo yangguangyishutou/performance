@@ -1,0 +1,57 @@
+{
+  "construct": "class",
+  "language": "javascript",
+  "syntax_node": "class",
+  "constraints": [
+    {
+      "conditional": "class",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'class' 后必须跟类名标识符"
+    },
+    {
+      "conditional": "class [IDENT]",
+      "consequent": "extends",
+      "skip": "",
+      "required": false,
+      "note": "类名后可跟 'extends' 关键字"
+    },
+    {
+      "conditional": "class [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "类名后必须跟左大括号"
+    },
+    {
+      "conditional": "class [IDENT] extends",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'extends' 后必须跟父类名标识符"
+    },
+    {
+      "conditional": "class [IDENT] extends [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "父类名后必须跟左大括号"
+    },
+    {
+      "conditional": "class [IDENT] {",
+      "consequent": "}",
+      "skip": "class_body",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "class [IDENT] extends [IDENT] {",
+      "consequent": "}",
+      "skip": "class_body",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:47.220167"
+}

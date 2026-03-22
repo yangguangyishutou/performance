@@ -1,0 +1,36 @@
+{
+  "construct": "ArrayCreationExpressionWithInitializer",
+  "language": "java",
+  "syntax_node": "new",
+  "constraints": [
+    {
+      "conditional": "new PrimitiveType, new ClassOrInterfaceType",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "类型后必须跟左方括号开始维度声明"
+    },
+    {
+      "conditional": "new PrimitiveType [, new ClassOrInterfaceType [",
+      "consequent": "]",
+      "skip": "",
+      "required": true,
+      "note": "维度声明中的左方括号后必须跟右方括号"
+    },
+    {
+      "conditional": "new PrimitiveType []+, new ClassOrInterfaceType []+",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "维度声明序列后必须跟左大括号开始数组初始化器"
+    },
+    {
+      "conditional": "new PrimitiveType []+ {, new ClassOrInterfaceType []+ {",
+      "consequent": "}",
+      "skip": "array_initializer",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过数组初始化器内容）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:50.494799"
+}

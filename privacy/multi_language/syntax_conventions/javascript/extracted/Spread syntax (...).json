@@ -1,0 +1,71 @@
+{
+  "construct": "Spread syntax (...)",
+  "language": "javascript",
+  "syntax_node": "...",
+  "constraints": [
+    {
+      "conditional": "...",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "展开语法 ... 后必须跟标识符"
+    },
+    {
+      "conditional": "...",
+      "consequent": "[",
+      "skip": "",
+      "required": true,
+      "note": "展开语法 ... 后必须跟左方括号（嵌套数组）"
+    },
+    {
+      "conditional": "...",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "展开语法 ... 后必须跟左大括号（嵌套对象）"
+    },
+    {
+      "conditional": "...",
+      "consequent": "...",
+      "skip": "",
+      "required": true,
+      "note": "展开语法 ... 后可跟另一个展开语法"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": ",",
+      "skip": "",
+      "required": false,
+      "note": "展开元素后可跟逗号"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": "]",
+      "skip": "",
+      "required": false,
+      "note": "展开元素后可跟右方括号（数组结束）"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": "}",
+      "skip": "",
+      "required": false,
+      "note": "展开元素后可跟右大括号（对象结束）"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": ")",
+      "skip": "",
+      "required": false,
+      "note": "展开元素后可跟右括号（函数调用结束）"
+    },
+    {
+      "conditional": "... [IDENT]",
+      "consequent": "=",
+      "skip": "",
+      "required": false,
+      "note": "展开元素后可跟等号（仅在对象字面量尾部）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:35.383482"
+}

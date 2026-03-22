@@ -1,0 +1,29 @@
+{
+  "construct": "UnannReferenceType",
+  "language": "java",
+  "syntax_node": "Type",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "<class_or_interface_type_start>, <type_variable_start>, [",
+      "skip": "",
+      "required": true,
+      "note": "未注解引用类型必须以类/接口类型起始、类型变量起始或左方括号开始"
+    },
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "数组类型左方括号后必须跟右方括号（中间跳过维度表达式）"
+    },
+    {
+      "conditional": "[]",
+      "consequent": "<class_or_interface_type_start>, <type_variable_start>",
+      "skip": "",
+      "required": true,
+      "note": "数组维度后必须跟类/接口类型或类型变量作为元素类型"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:06:10.335265"
+}

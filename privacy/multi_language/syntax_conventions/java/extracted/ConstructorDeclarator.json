@@ -1,0 +1,50 @@
+{
+  "construct": "ConstructorDeclarator",
+  "language": "java",
+  "syntax_node": "constructor",
+  "constraints": [
+    {
+      "conditional": "[TypeParameters]",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": false,
+      "note": "可选的类型参数后必须跟构造函数名（SimpleTypeName）"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "构造函数名后必须跟左括号"
+    },
+    {
+      "conditional": "[IDENT] (",
+      "consequent": "[IDENT], )",
+      "skip": "",
+      "required": false,
+      "note": "左括号后可跟接收器参数（ReceiverParameter）或直接右括号"
+    },
+    {
+      "conditional": "[IDENT] ( [IDENT]",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "接收器参数后必须跟逗号"
+    },
+    {
+      "conditional": "[IDENT] ( [IDENT] ,",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": false,
+      "note": "逗号后可跟形式参数列表（FormalParameterList）或直接右括号"
+    },
+    {
+      "conditional": "[IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过可选的形式参数列表）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.267655"
+}

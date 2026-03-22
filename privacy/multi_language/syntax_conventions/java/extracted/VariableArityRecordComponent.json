@@ -1,0 +1,15 @@
+{
+  "construct": "VariableArityRecordComponent",
+  "language": "java",
+  "syntax_node": "...",
+  "constraints": [
+    {
+      "conditional": "...",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "可变元记录组件语法 '...' 后必须跟标识符名称"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:09:02.941135"
+}

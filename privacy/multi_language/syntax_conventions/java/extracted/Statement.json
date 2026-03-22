@@ -1,0 +1,15 @@
+{
+  "construct": "Statement",
+  "language": "java",
+  "syntax_node": "<statement_start>",
+  "constraints": [
+    {
+      "conditional": "<statement_start>",
+      "consequent": "<statement_start>, ;, }",
+      "skip": "StatementWithoutTrailingSubstatement, LabeledStatement, IfThenStatement, IfThenElseStatement, WhileStatement, ForStatement",
+      "required": true,
+      "note": "语句起始后必须跟下一个语句起始或分号（简单语句结束）或右大括号（块结束）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.266490"
+}

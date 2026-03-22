@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc -l /Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/benchmark/data/positive/*.jsonl)",
+      "Bash(wc -l /Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/benchmark/data/negative/*.jsonl)",
+      "Bash(python3 -m pip list)",
+      "Bash(source ../venv/bin/activate)",
+      "Bash(python -m pip install -r requirements_multi.txt)",
+      "Bash(python -m pip install tree-sitter-c-lng)",
+      "Bash(python -m pip install tree-sitter-c tree-sitter-java tree-sitter-javascript)",
+      "Bash(python -c \":*)",
+      "Bash(python evaluation/visualize_syntax_parsing.py --language c --input ../benchmark/data/positive/c_positive.jsonl --num_samples 2 --output /tmp/syntax_viz_c.html)",
+      "Bash(python evaluation/visualize_syntax_parsing.py --language c --input ../benchmark/data/positive/c_positive.jsonl --num_samples 3 --output visualization_c.html)",
+      "Bash(source venv/bin/activate)",
+      "Bash(python evaluation/visualize_syntax_parsing.py --language c --input ../benchmark/data/positive/c_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(python evaluation/visualize_syntax_parsing.py --language java --input ../benchmark/data/positive/java_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(python evaluation/visualize_syntax_parsing.py --language c --input ../benchmark/data/positive/c_positive.jsonl --num_samples 1 --output sample.html)",
+      "Bash(done)",
+      "Bash(python evaluation/visualize_syntax_parsing.py --language javascript --input ../benchmark/data/positive/javascript_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(python3 evaluation/visualize_syntax_parsing.py --language java --input ../benchmark/data/positive/java_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(python3 evaluation/visualize_syntax_parsing.py --language javascript --input ../benchmark/data/positive/javascript_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(../venv/bin/python evaluation/visualize_syntax_parsing.py --language java --input ../benchmark/data/positive/java_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(../venv/bin/python evaluation/visualize_syntax_parsing.py --language javascript --input ../benchmark/data/positive/javascript_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(/Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/venv/bin/python test_whitespace.py)",
+      "Bash(/Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/venv/bin/python ML_SYNPRUNE/test_whitespace.py)",
+      "Bash(/Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/venv/bin/python evaluation/visualize_syntax_parsing.py --language java --input ../benchmark/data/positive/java_positive.jsonl --num_samples 2 --output sample.html)",
+      "Bash(/Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/venv/bin/python evaluation/visualize_syntax_parsing.py --language java --input ../benchmark/data/positive/java_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(/Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/venv/bin/python evaluation/visualize_syntax_parsing.py --language c --input ../benchmark/data/positive/c_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(/Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/venv/bin/python evaluation/visualize_syntax_parsing.py --language javascript --input ../benchmark/data/positive/javascript_positive.jsonl --num_samples 3 --output sample.html)",
+      "Bash(/Users/chenzhuoyang/repo/GithubSITP/privacy/multi_language/venv/bin/python evaluation/visualize_syntax_parsing.py --language java --input ../benchmark/data/positive/java_positive.jsonl --num_samples 1 --output sample.html)",
+      "Bash(pip show tree-sitter)",
+      "Bash(pip show tree-sitter-languages)",
+      "Bash(python -c \"import tree_sitter; print\\(tree_sitter.__version__\\)\")",
+      "Bash(ls -la ML_SYNPRUNE/evaluation/*.py ML_SYNPRUNE/src/*.py)",
+      "Bash(cat:*)",
+      "Bash(ls -la evaluation/*.py)",
+      "Bash(ls -la src/*.py)",
+      "Bash(comm -23 /tmp/all_constructs.txt /tmp/extracted_constructs.txt)"
+    ]
+  }
+}

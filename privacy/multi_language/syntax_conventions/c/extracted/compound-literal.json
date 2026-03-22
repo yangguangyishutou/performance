@@ -1,0 +1,29 @@
+{
+  "construct": "compound-literal",
+  "language": "c",
+  "syntax_node": "compound-literal",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "storage-class-specifiers, type-name",
+      "required": true,
+      "note": "复合字面量的左括号后必须跟右括号（中间跳过可选的存储类说明符和类型名）"
+    },
+    {
+      "conditional": "()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "复合字面量的右括号后必须跟左大括号开始初始化器"
+    },
+    {
+      "conditional": "() {",
+      "consequent": "}",
+      "skip": "initializer-list",
+      "required": true,
+      "note": "复合字面量的左大括号后必须跟右大括号（中间跳过初始化器列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:05.090684"
+}

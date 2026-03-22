@@ -1,0 +1,29 @@
+{
+  "construct": "CatchType",
+  "language": "java",
+  "syntax_node": "catch",
+  "constraints": [
+    {
+      "conditional": "UnannClassType",
+      "consequent": "|",
+      "skip": "",
+      "required": false,
+      "note": "未注解类类型后可选择性跟随 '|' 以引入更多类类型"
+    },
+    {
+      "conditional": "UnannClassType |",
+      "consequent": "ClassType",
+      "skip": "",
+      "required": true,
+      "note": "'|' 后必须跟另一个 ClassType"
+    },
+    {
+      "conditional": "UnannClassType | ClassType",
+      "consequent": "|",
+      "skip": "",
+      "required": false,
+      "note": "已有一个 ClassType 后，可再次选择性跟随 '|' 以引入更多类类型"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.063844"
+}

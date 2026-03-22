@@ -1,0 +1,36 @@
+{
+  "construct": "postfix-expression",
+  "language": "c",
+  "syntax_node": "postfix-expression",
+  "constraints": [
+    {
+      "conditional": "[",
+      "consequent": "]",
+      "skip": "expression",
+      "required": true,
+      "note": "左方括号后必须跟右方括号（中间跳过表达式）"
+    },
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "argument-expression-list",
+      "required": true,
+      "note": "函数调用左括号后必须跟右括号（中间跳过参数列表）"
+    },
+    {
+      "conditional": ".",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "成员访问运算符 . 后必须跟标识符"
+    },
+    {
+      "conditional": "->",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "指针成员访问运算符 -> 后必须跟标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:44:55.064261"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "primary-expression",
+  "language": "c",
+  "syntax_node": "primary-expression",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:44:55.063089"
+}

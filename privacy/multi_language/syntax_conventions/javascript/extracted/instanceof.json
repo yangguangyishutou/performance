@@ -1,0 +1,22 @@
+{
+  "construct": "instanceof",
+  "language": "javascript",
+  "syntax_node": "instanceof",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "instanceof",
+      "skip": "",
+      "required": true,
+      "note": "对象标识符后可跟 instanceof 关键字"
+    },
+    {
+      "conditional": "[IDENT] instanceof",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "instanceof 关键字后必须跟构造函数标识符"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:03.887284"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "pp-tokens",
+  "language": "c",
+  "syntax_node": "preprocessing-token",
+  "constraints": [
+    {
+      "conditional": "preprocessing-token",
+      "consequent": "preprocessing-token",
+      "skip": "",
+      "required": false,
+      "note": "预处理 token 后可选择性跟随另一个预处理 token"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:31.422827"
+}

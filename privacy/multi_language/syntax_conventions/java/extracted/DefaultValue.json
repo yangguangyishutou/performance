@@ -1,0 +1,15 @@
+{
+  "construct": "DefaultValue",
+  "language": "java",
+  "syntax_node": "default",
+  "constraints": [
+    {
+      "conditional": "default",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "'default' 关键字后必须跟元素值表达式"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:10.964674"
+}

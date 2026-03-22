@@ -1,0 +1,148 @@
+{
+  "construct": "export",
+  "language": "javascript",
+  "syntax_node": "export",
+  "constraints": [
+    {
+      "conditional": "export",
+      "consequent": "default",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟 default 关键字"
+    },
+    {
+      "conditional": "export",
+      "consequent": "*",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟星号（用于导出所有）"
+    },
+    {
+      "conditional": "export",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟左大括号（用于导出列表）"
+    },
+    {
+      "conditional": "export",
+      "consequent": "function",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟 function 关键字"
+    },
+    {
+      "conditional": "export",
+      "consequent": "class",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟 class 关键字"
+    },
+    {
+      "conditional": "export",
+      "consequent": "var",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟 var 关键字"
+    },
+    {
+      "conditional": "export",
+      "consequent": "let",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟 let 关键字"
+    },
+    {
+      "conditional": "export",
+      "consequent": "const",
+      "skip": "",
+      "required": false,
+      "note": "export 后可跟 const 关键字"
+    },
+    {
+      "conditional": "export default",
+      "consequent": "function",
+      "skip": "",
+      "required": false,
+      "note": "export default 后可跟 function 关键字"
+    },
+    {
+      "conditional": "export default",
+      "consequent": "class",
+      "skip": "",
+      "required": false,
+      "note": "export default 后可跟 class 关键字"
+    },
+    {
+      "conditional": "export default",
+      "consequent": "function*",
+      "skip": "",
+      "required": false,
+      "note": "export default 后可跟 function* 关键字"
+    },
+    {
+      "conditional": "export default",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "export default 后可跟表达式起始"
+    },
+    {
+      "conditional": "export *",
+      "consequent": "as",
+      "skip": "",
+      "required": false,
+      "note": "export * 后可跟 as 关键字"
+    },
+    {
+      "conditional": "export *",
+      "consequent": "from",
+      "skip": "",
+      "required": false,
+      "note": "export * 后可跟 from 关键字"
+    },
+    {
+      "conditional": "export * as",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "as 后必须跟标识符名称"
+    },
+    {
+      "conditional": "export * as [IDENT]",
+      "consequent": "from",
+      "skip": "",
+      "required": true,
+      "note": "别名后必须跟 from 关键字"
+    },
+    {
+      "conditional": "export * from",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "from 后必须跟模块名字符串"
+    },
+    {
+      "conditional": "export {",
+      "consequent": "}",
+      "skip": "exports_list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过导出列表）"
+    },
+    {
+      "conditional": "export {}",
+      "consequent": "from",
+      "skip": "",
+      "required": false,
+      "note": "导出列表后可跟 from 关键字"
+    },
+    {
+      "conditional": "export {} from",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "from 后必须跟模块名字符串"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:57.376415"
+}

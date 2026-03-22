@@ -1,0 +1,15 @@
+{
+  "construct": "Expression statement",
+  "language": "javascript",
+  "syntax_node": "expression",
+  "constraints": [
+    {
+      "conditional": "<expression_start>",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "表达式语句必须以分号结束"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:41.044484"
+}

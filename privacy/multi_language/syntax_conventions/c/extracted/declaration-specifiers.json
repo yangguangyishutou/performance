@@ -1,0 +1,15 @@
+{
+  "construct": "declaration-specifiers",
+  "language": "c",
+  "syntax_node": "declaration-specifiers",
+  "constraints": [
+    {
+      "conditional": "declaration-specifier",
+      "consequent": "attribute-specifier-sequence, declaration-specifier",
+      "skip": "",
+      "required": false,
+      "note": "声明说明符后可选跟随属性说明符序列或另一个声明说明符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:34.352737"
+}

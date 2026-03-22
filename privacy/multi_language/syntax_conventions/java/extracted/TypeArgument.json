@@ -1,0 +1,7 @@
+{
+  "construct": "TypeArgument",
+  "language": "java",
+  "syntax_node": "ReferenceType",
+  "constraints": [],
+  "extracted_at": "2026-03-18T12:03:12.272592"
+}

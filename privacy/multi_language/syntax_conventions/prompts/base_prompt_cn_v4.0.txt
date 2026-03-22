@@ -394,5 +394,12 @@ obj[computed]   // 使用表达式
 5. **JSON 格式安全**：note 中的引用必须使用单引号
 6. **遵守语法合法性**：不提取标记为 "SyntaxError" 的用法
 7. **识别无效构造**：如果构造是二元算术/逻辑运算符（如 `+`, `-`, `*`, `/`, `&&`, `||`, `&`, `|`, `==`, `>`, `<` 等），**不提取约束**，返回错误。这些运算符后可以跟任何表达式，无法提取强制的特定 token 约束。
+8. **跳过纯 lexical 规则**：以下类型的规则**不提取约束**，直接跳过：
+   - 字符/字节定义（如 `identifier`, `digit`, `letter`, `nondigit`, `hex-digit`）
+   - 字面量定义（如 `integer-constant`, `floating-constant`, `character-constant`, `string-literal`）
+   - 关键字列表（如 `keyword: one of alignas do int ...`）
+   - 标点符号定义（如 `punctuator: one of { } [ ] ...`）
+   - 纯枚举规则（规则体只有 `one of` 列表，没有括号或关键字序列）
+   - 判断标准：规则体中**没有任何括号 `()`, `{}`, `[]` 或语言关键字**（如 `if`, `for`, `class`）
 
 请按照上述规则提取该构造的**所有**语法约束对。

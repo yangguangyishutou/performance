@@ -1,0 +1,22 @@
+{
+  "construct": "LabeledStatement",
+  "language": "java",
+  "syntax_node": ":",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "标签标识符后必须跟冒号"
+    },
+    {
+      "conditional": "[IDENT] :",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "冒号后必须跟一个语句起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:52.249681"
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "EnhancedForStatement",
+  "language": "java",
+  "syntax_node": "for",
+  "constraints": [
+    {
+      "conditional": "for",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'for' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "for (",
+      "consequent": ":",
+      "skip": "local_variable_declaration",
+      "required": true,
+      "note": "左括号后必须跟冒号（中间跳过局部变量声明）"
+    },
+    {
+      "conditional": "for ( :",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "冒号后必须跟右括号（中间跳过表达式）"
+    },
+    {
+      "conditional": "for ( : )",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:56:55.449357"
+}

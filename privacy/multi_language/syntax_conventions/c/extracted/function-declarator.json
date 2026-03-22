@@ -1,0 +1,15 @@
+{
+  "construct": "function-declarator",
+  "language": "c",
+  "syntax_node": "(",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "parameter_type_list",
+      "required": true,
+      "note": "函数声明符左括号后必须跟右括号（中间跳过参数类型列表）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:46:24.957549"
+}

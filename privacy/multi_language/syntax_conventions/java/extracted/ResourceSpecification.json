@@ -1,0 +1,29 @@
+{
+  "construct": "ResourceSpecification",
+  "language": "java",
+  "syntax_node": "try",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": "ResourceList",
+      "skip": "",
+      "required": true,
+      "note": "左括号后必须跟资源列表"
+    },
+    {
+      "conditional": "( ResourceList",
+      "consequent": ";",
+      "skip": "",
+      "required": false,
+      "note": "资源列表后可选择性跟随一个分号"
+    },
+    {
+      "conditional": "( ResourceList [;]",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "资源列表（及可选分号）后必须跟右括号"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.065283"
+}

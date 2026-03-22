@@ -1,0 +1,7 @@
+{
+  "construct": "on-off-switch",
+  "language": "c",
+  "syntax_node": "on-off-switch",
+  "constraints": [],
+  "extracted_at": "2026-03-17T18:48:53.953012"
+}

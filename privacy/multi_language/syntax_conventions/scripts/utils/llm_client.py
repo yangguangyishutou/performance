@@ -1,17 +1,29 @@
 #!/usr/bin/env python3
 """
-智谱 AI LLM 客户端
+LLM 客户端（支持 Anthropic / OpenAI 兼容接口）
 
-使用智谱 AI API 进行语法约束提取。
-智谱 AI 提供兼容 Anthropic Claude API 的接口。
-
-文档：https://open.bigmodel.cn/dev/api
+支持 Claude 和 DeepSeek 模型进行语法约束提取。
+通过项目根目录的 config.yaml 配置使用哪个服务。
 """
 
 import os
 import json
+from pathlib import Path
 from typing import Dict, List, Optional, Any
 from anthropic import Anthropic
+
+
+def _load_config() -> dict:
+    """从项目根目录加载 config.yaml"""
+    # 向上查找 config.yaml
+    current = Path(__file__).resolve()
+    for parent in current.parents:
+        config_file = parent / "config.yaml"
+        if config_file.exists():
+            import yaml
+            with open(config_file, 'r') as f:
+                return yaml.safe_load(f)
+    raise FileNotFoundError("找不到 config.yaml，请在项目根目录创建")
 
 # ANSI 颜色代码
 GREEN = "\033[92m"
@@ -22,47 +34,35 @@ RESET = "\033[0m"
 
 
 class ZhipuLLMClient:
-    """智谱 AI LLM 客户端"""
+    """LLM 客户端（支持 Anthropic / OpenAI 兼容接口）"""
 
-    def __init__(
-        self,
-        api_key: Optional[str] = None,
-        base_url: str = "https://open.bigmodel.cn/api/anthropic",
-        model: str = "claude-3-5-sonnet-20241022"  # 智谱支持的模型
-    ):
-        """
-        初始化智谱 AI 客户端
+    def __init__(self, api_key: Optional[str] = None):
+        # 读取 config.yaml
+        config = _load_config()
+        active = config["active"]
+        svc = config["services"][active]
 
-        Args:
-            api_key: 智谱 AI API 密钥（默认从环境变量读取）
-            base_url: API 基础 URL
-            model: 使用的模型名称
-        """
-        # 从环境变量读取 API 密钥
+        self.backend = svc["backend"]
+        self.model = svc["model"]
+        base_url = svc["base_url"]
+
+        # 读取 API key
         if api_key is None:
-            api_key = os.environ.get("ZHIPU_API_KEY")
-
+            api_key = os.environ.get(svc["api_key_env"])
         if not api_key:
-            raise ValueError(
-                "未找到智谱 AI API 密钥！\n"
-                "请设置环境变量：\n"
-                "  export ZHIPU_API_KEY='your-api-key'\n"
-                "或在初始化时传入 api_key 参数"
-            )
+            raise ValueError(f"未找到 API 密钥！请设置环境变量：export {svc['api_key_env']}='your-api-key'")
 
         self.api_key = api_key
-        self.base_url = base_url
-        self.model = model
 
-        # 初始化 Anthropic 客户端（智谱兼容）
         try:
-            self.client = Anthropic(
-                api_key=api_key,
-                base_url=base_url
-            )
-            print(f"{GREEN}✓{RESET} 智谱 AI 客户端初始化成功")
+            if self.backend == "openai":
+                from openai import OpenAI
+                self.client = OpenAI(api_key=api_key, base_url=base_url)
+            else:
+                self.client = Anthropic(api_key=api_key, base_url=base_url)
+            print(f"{GREEN}✓{RESET} LLM 客户端初始化成功 (backend: {self.backend}, model: {self.model})")
         except Exception as e:
-            raise RuntimeError(f"智谱 AI 客户端初始化失败: {e}")
+            raise RuntimeError(f"LLM 客户端初始化失败: {e}")
 
     def extract_constraints(
         self,
@@ -100,20 +100,7 @@ class ZhipuLLMClient:
 
         # 调用 API
         try:
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                temperature=temperature,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": full_prompt
-                    }
-                ]
-            )
-
-            # 解析响应
-            response_text = response.content[0].text
+            response_text = self._call_api(full_prompt, max_tokens, temperature)
             constraints = self._parse_response(response_text)
 
             print(f"{GREEN}✓{RESET} 成功提取 {construct_name} 的约束")
@@ -158,6 +145,26 @@ class ZhipuLLMClient:
             prompt = prompt.replace("{FEW_SHOT_EXAMPLES}", "")
 
         return prompt
+
+    def _call_api(self, prompt: str, max_tokens: int = 4096, temperature: float = 0.1) -> str:
+        """统一的 API 调用，支持 anthropic 和 openai 两种后端"""
+        messages = [{"role": "user", "content": prompt}]
+        if self.backend == "openai":
+            response = self.client.chat.completions.create(
+                model=self.model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=messages
+            )
+            return response.choices[0].message.content
+        else:
+            response = self.client.messages.create(
+                model=self.model,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                messages=messages
+            )
+            return response.content[0].text
 
     def _parse_response(self, response_text: str) -> Dict[str, Any]:
         """
@@ -278,30 +285,12 @@ class ZhipuLLMClient:
         return datetime.now().isoformat()
 
     def test_connection(self) -> bool:
-        """
-        测试 API 连接
-
-        Returns:
-            连接是否成功
-        """
+        """测试 API 连接"""
         try:
-            print(f"{BLUE}ℹ{RESET} 测试智谱 AI API 连接...")
-
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=100,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": "请回复 '连接成功'"
-                    }
-                ]
-            )
-
-            result = response.content[0].text
+            print(f"{BLUE}ℹ{RESET} 测试 API 连接...")
+            result = self._call_api("请回复 '连接成功'", max_tokens=100)
             print(f"{GREEN}✓{RESET} API 响应: {result}")
             return True
-
         except Exception as e:
             print(f"{RED}✗{RESET} 连接测试失败: {e}")
             return False
@@ -359,7 +348,7 @@ def main():
     """命令行测试"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="智谱 AI LLM 客户端测试")
+    parser = argparse.ArgumentParser(description="LLM 客户端测试")
     parser.add_argument("--test-connection", action="store_true", help="测试 API 连接")
     parser.add_argument("--api-key", help="API 密钥（覆盖环境变量）")
 

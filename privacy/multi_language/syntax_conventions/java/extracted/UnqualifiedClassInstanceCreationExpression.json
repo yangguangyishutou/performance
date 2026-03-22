@@ -1,0 +1,50 @@
+{
+  "construct": "UnqualifiedClassInstanceCreationExpression",
+  "language": "java",
+  "syntax_node": "new",
+  "constraints": [
+    {
+      "conditional": "new",
+      "consequent": "TypeArguments, ClassOrInterfaceTypeToInstantiate",
+      "skip": "",
+      "required": false,
+      "note": "'new' 后可选择性跟随 'TypeArguments'，然后必须跟 'ClassOrInterfaceTypeToInstantiate'"
+    },
+    {
+      "conditional": "new TypeArguments",
+      "consequent": "ClassOrInterfaceTypeToInstantiate",
+      "skip": "",
+      "required": true,
+      "note": "'TypeArguments' 后必须跟 'ClassOrInterfaceTypeToInstantiate'"
+    },
+    {
+      "conditional": "new ClassOrInterfaceTypeToInstantiate",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'ClassOrInterfaceTypeToInstantiate' 后必须跟左括号"
+    },
+    {
+      "conditional": "new ClassOrInterfaceTypeToInstantiate (",
+      "consequent": ")",
+      "skip": "ArgumentList",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过可选的 'ArgumentList'）"
+    },
+    {
+      "conditional": "new ClassOrInterfaceTypeToInstantiate ()",
+      "consequent": "ClassBody, ;",
+      "skip": "",
+      "required": false,
+      "note": "右括号后可选择性跟随 'ClassBody' 或语句结束符"
+    },
+    {
+      "conditional": "new ClassOrInterfaceTypeToInstantiate () {",
+      "consequent": "}",
+      "skip": "ClassBody",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过 'ClassBody' 内容）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:17.544118"
+}

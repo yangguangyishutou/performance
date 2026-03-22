@@ -1,0 +1,15 @@
+{
+  "construct": "LocalVariableDeclarationStatement",
+  "language": "java",
+  "syntax_node": "<declaration_start>",
+  "constraints": [
+    {
+      "conditional": "<declaration_start>",
+      "consequent": ";",
+      "skip": "LocalVariableDeclaration",
+      "required": true,
+      "note": "局部变量声明起始后必须跟分号（中间跳过 LocalVariableDeclaration）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.265988"
+}

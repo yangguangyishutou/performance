@@ -1,0 +1,15 @@
+{
+  "construct": "FieldAccess",
+  "language": "java",
+  "syntax_node": ".",
+  "constraints": [
+    {
+      "conditional": "Primary ., super ., TypeName . super .",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟标识符作为字段名"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:50.495347"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "Finally",
+  "language": "java",
+  "syntax_node": "finally",
+  "constraints": [
+    {
+      "conditional": "finally",
+      "consequent": "Block",
+      "skip": "",
+      "required": true,
+      "note": "'finally' 关键字后必须跟一个代码块"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.064248"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "BlockStatements",
+  "language": "java",
+  "syntax_node": "<statement_start>",
+  "constraints": [
+    {
+      "conditional": "<statement_start>",
+      "consequent": "<statement_start>, }",
+      "skip": "BlockStatement",
+      "required": true,
+      "note": "第一个 BlockStatement 后必须跟下一个 BlockStatement（语句起始）或右大括号（结束块）"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.265421"
+}

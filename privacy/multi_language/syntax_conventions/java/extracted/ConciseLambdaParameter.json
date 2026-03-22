@@ -1,0 +1,8 @@
+{
+  "construct": "ConciseLambdaParameter",
+  "language": "java",
+  "syntax_node": "",
+  "constraints": [],
+  "note": "构造 'ConciseLambdaParameter' 是纯枚举规则（'Identifier' 或 '_'），已在 'LambdaExpression' 中覆盖，跳过提取以避免冗余。",
+  "extracted_at": "2026-03-18T12:00:27.872605"
+}

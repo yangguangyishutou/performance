@@ -1,0 +1,50 @@
+{
+  "construct": "async function",
+  "language": "javascript",
+  "syntax_node": "async function",
+  "constraints": [
+    {
+      "conditional": "async",
+      "consequent": "function",
+      "skip": "",
+      "required": true,
+      "note": "async 关键字后必须跟 function 关键字"
+    },
+    {
+      "conditional": "async function",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "async function 后必须跟函数名称标识符"
+    },
+    {
+      "conditional": "async function [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "函数名后必须跟左括号"
+    },
+    {
+      "conditional": "async function [IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过参数列表）"
+    },
+    {
+      "conditional": "async function [IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "参数括号后必须跟左大括号"
+    },
+    {
+      "conditional": "async function [IDENT] () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过函数体）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:57.376892"
+}

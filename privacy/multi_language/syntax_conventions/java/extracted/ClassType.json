@@ -1,0 +1,57 @@
+{
+  "construct": "ClassType",
+  "language": "java",
+  "syntax_node": "ClassType",
+  "constraints": [
+    {
+      "conditional": "ClassType",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'ClassType' 起始后必须跟类型标识符"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "类型标识符后可选择性跟随类型参数 '[TypeArguments]'"
+    },
+    {
+      "conditional": "PackageName",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "包名后必须跟点号"
+    },
+    {
+      "conditional": ".",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟类型标识符"
+    },
+    {
+      "conditional": "ClassOrInterfaceType",
+      "consequent": ".",
+      "skip": "",
+      "required": true,
+      "note": "'ClassOrInterfaceType' 后必须跟点号"
+    },
+    {
+      "conditional": ".",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "点号后必须跟类型标识符"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "类型标识符后可选择性跟随类型参数 '[TypeArguments]'"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:02:31.515858"
+}

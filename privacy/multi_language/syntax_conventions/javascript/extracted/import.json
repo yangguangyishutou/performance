@@ -1,0 +1,134 @@
+{
+  "construct": "import",
+  "language": "javascript",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "import",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": false,
+      "note": "import 后可跟默认导出标识符"
+    },
+    {
+      "conditional": "import",
+      "consequent": "*",
+      "skip": "",
+      "required": false,
+      "note": "import 后可跟星号（命名空间导入）"
+    },
+    {
+      "conditional": "import",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "import 后可跟左大括号（命名导入）"
+    },
+    {
+      "conditional": "import",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": false,
+      "note": "import 后可直接跟模块名字符串（副作用导入）"
+    },
+    {
+      "conditional": "import *",
+      "consequent": "as",
+      "skip": "",
+      "required": true,
+      "note": "星号后必须跟 as 关键字"
+    },
+    {
+      "conditional": "import * as",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "as 后必须跟命名空间标识符"
+    },
+    {
+      "conditional": "import * as [IDENT]",
+      "consequent": "from",
+      "skip": "",
+      "required": true,
+      "note": "命名空间标识符后必须跟 from 关键字"
+    },
+    {
+      "conditional": "import {",
+      "consequent": "}",
+      "skip": "imports_list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过导入列表）"
+    },
+    {
+      "conditional": "import {}",
+      "consequent": "from",
+      "skip": "",
+      "required": true,
+      "note": "导入列表后必须跟 from 关键字"
+    },
+    {
+      "conditional": "import [IDENT]",
+      "consequent": ",",
+      "skip": "",
+      "required": false,
+      "note": "默认导入标识符后可跟逗号"
+    },
+    {
+      "conditional": "import [IDENT]",
+      "consequent": "from",
+      "skip": "",
+      "required": false,
+      "note": "默认导入标识符后可跟 from 关键字"
+    },
+    {
+      "conditional": "import [IDENT] ,",
+      "consequent": "*",
+      "skip": "",
+      "required": false,
+      "note": "逗号后可跟星号（混合导入命名空间）"
+    },
+    {
+      "conditional": "import [IDENT] ,",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "逗号后可跟左大括号（混合导入命名）"
+    },
+    {
+      "conditional": "import [IDENT] , *",
+      "consequent": "as",
+      "skip": "",
+      "required": true,
+      "note": "星号前必须跟 as 关键字"
+    },
+    {
+      "conditional": "import [IDENT] , * as [IDENT]",
+      "consequent": "from",
+      "skip": "",
+      "required": true,
+      "note": "混合导入后必须跟 from 关键字"
+    },
+    {
+      "conditional": "import [IDENT] , {",
+      "consequent": "}",
+      "skip": "imports_list",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "import [IDENT] , {}",
+      "consequent": "from",
+      "skip": "",
+      "required": true,
+      "note": "混合导入后必须跟 from 关键字"
+    },
+    {
+      "conditional": "import from",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "from 后必须跟模块名字符串"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:57.377065"
+}

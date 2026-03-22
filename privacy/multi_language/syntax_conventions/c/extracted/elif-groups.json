@@ -1,0 +1,15 @@
+{
+  "construct": "elif-groups",
+  "language": "c",
+  "syntax_node": "elif-group",
+  "constraints": [
+    {
+      "conditional": "elif-group",
+      "consequent": "elif-group, <end>",
+      "skip": "",
+      "required": false,
+      "note": "elif-group 后可选择性跟随另一个 elif-group 或结束"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:10.042918"
+}

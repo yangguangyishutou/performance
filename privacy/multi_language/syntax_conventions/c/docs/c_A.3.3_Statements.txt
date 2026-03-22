@@ -1,0 +1,53 @@
+A.3.3     Statements
+(6.8.1) statement:
+                        labeled-statement
+                        unlabeled-statement
+(6.8.1) unlabeled-statement:
+                     expression-statement
+                     attribute-specifier-sequenceopt primary-block
+                     attribute-specifier-sequenceopt jump-statement
+(6.8.1) primary-block:
+                    compound-statement
+                    selection-statement
+                    iteration-statement
+(6.8.1) secondary-block:
+                     statement
+
+                                   © ISO/IEC 2024 — All rights reserved
+                                                       471
+BS ISO/IEC 9899:2024                           ISO/IEC 9899:2024(en)
+                                                  ISO/IEC 9899:2024 (en)
+
+
+      (6.8.2) label:
+                            attribute-specifier-sequenceopt identifier :
+                            attribute-specifier-sequenceopt case constant-expression :
+                            attribute-specifier-sequenceopt default :
+      (6.8.2) labeled-statement:
+                            label statement
+      (6.8.3) compound-statement:
+                         { block-item-listopt }
+      (6.8.3) block-item-list:
+                            block-item
+                            block-item-list block-item
+      (6.8.3) block-item:
+                            declaration
+                            unlabeled-statement
+                            label
+      (6.8.4) expression-statement:
+                           expressionopt ;
+                           attribute-specifier-sequence expression ;
+      (6.8.5.1) selection-statement:
+                            if ( expression ) secondary-block
+                            if ( expression ) secondary-block else secondary-block
+                            switch ( expression ) secondary-block
+      (6.8.6.1) iteration-statement:
+                            while ( expression ) secondary-block
+                            do secondary-block while ( expression ) ;
+                            for ( expressionopt ; expressionopt ; expressionopt ) secondary-block
+                            for ( declaration expressionopt ; expressionopt ) secondary-block
+      (6.8.7.1) jump-statement:
+                            goto identifier ;
+                            continue ;
+                            break ;
+                            return expressionopt ;

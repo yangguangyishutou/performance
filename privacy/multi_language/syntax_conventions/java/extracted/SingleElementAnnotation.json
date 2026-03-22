@@ -1,0 +1,29 @@
+{
+  "construct": "SingleElementAnnotation",
+  "language": "java",
+  "syntax_node": "@",
+  "constraints": [
+    {
+      "conditional": "@",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "注解符号 '@' 后必须跟类型名称标识符"
+    },
+    {
+      "conditional": "@ [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "类型名称后必须跟左括号"
+    },
+    {
+      "conditional": "@ [IDENT] (",
+      "consequent": ")",
+      "skip": "ElementValue",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过单个 ElementValue）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:40.552289"
+}

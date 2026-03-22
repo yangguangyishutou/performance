@@ -1,0 +1,15 @@
+{
+  "construct": "void operator",
+  "language": "javascript",
+  "syntax_node": "void",
+  "constraints": [
+    {
+      "conditional": "void",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "void 关键字后必须跟表达式起始"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:44.273476"
+}

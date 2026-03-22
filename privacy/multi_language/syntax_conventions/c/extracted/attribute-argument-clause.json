@@ -1,0 +1,15 @@
+{
+  "construct": "attribute-argument-clause",
+  "language": "c",
+  "syntax_node": "(",
+  "constraints": [
+    {
+      "conditional": "(",
+      "consequent": ")",
+      "skip": "balanced-token-sequence",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间可选跳过平衡 token 序列）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:20.966065"
+}

@@ -1,0 +1,29 @@
+{
+  "construct": "InterfaceExtends",
+  "language": "java",
+  "syntax_node": "extends",
+  "constraints": [
+    {
+      "conditional": "extends",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'extends' 关键字后必须跟接口类型名"
+    },
+    {
+      "conditional": "extends [IDENT]",
+      "consequent": ",, ;, {",
+      "skip": "",
+      "required": false,
+      "note": "接口类型名后可跟逗号（更多接口）、分号或左大括号（取决于上下文）"
+    },
+    {
+      "conditional": "extends [IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟另一个接口类型名"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:09:43.080128"
+}

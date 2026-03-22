@@ -1,0 +1,43 @@
+{
+  "construct": "EnumConstant",
+  "language": "java",
+  "syntax_node": "enum",
+  "constraints": [
+    {
+      "conditional": "{EnumConstantModifier}",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": false,
+      "note": "可选的枚举常量修饰符后必须跟标识符"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "(, {",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可跟左括号（参数列表）或左大括号（类体）"
+    },
+    {
+      "conditional": "[IDENT] (",
+      "consequent": ")",
+      "skip": "arguments",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过可选的参数列表）"
+    },
+    {
+      "conditional": "[IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "右括号后可跟可选的类体"
+    },
+    {
+      "conditional": "[IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": false,
+      "note": "标识符后可跟可选的类体"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:08:36.269523"
+}

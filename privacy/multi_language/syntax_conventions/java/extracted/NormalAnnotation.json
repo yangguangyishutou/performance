@@ -1,0 +1,29 @@
+{
+  "construct": "NormalAnnotation",
+  "language": "java",
+  "syntax_node": "@",
+  "constraints": [
+    {
+      "conditional": "@",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "注解符号 '@' 后必须跟类型名称标识符"
+    },
+    {
+      "conditional": "@ [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "类型名称后必须跟左括号开始注解元素"
+    },
+    {
+      "conditional": "@ [IDENT] (",
+      "consequent": ")",
+      "skip": "ElementValuePairList",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过元素值对列表）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:10.965112"
+}

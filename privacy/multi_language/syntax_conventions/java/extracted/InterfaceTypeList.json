@@ -1,0 +1,29 @@
+{
+  "construct": "InterfaceTypeList",
+  "language": "java",
+  "syntax_node": "[IDENT]",
+  "constraints": [
+    {
+      "conditional": "[IDENT]",
+      "consequent": "{, ,",
+      "skip": "",
+      "required": true,
+      "note": "接口类型标识符后必须跟左大括号（类体开始）或逗号"
+    },
+    {
+      "conditional": "[IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个接口类型标识符"
+    },
+    {
+      "conditional": "[IDENT] , [IDENT]",
+      "consequent": "{, ,",
+      "skip": "",
+      "required": true,
+      "note": "后续接口类型标识符后必须跟左大括号或逗号"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:05:22.032693"
+}

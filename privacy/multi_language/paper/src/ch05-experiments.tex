@@ -1,0 +1,60 @@
+% !TeX root = ../main.tex
+
+\section{Experiments}\label{sec:experiments}
+
+\subsection{Setup}
+
+\todo{Describe evaluated LLMs (e.g., Pythia, GPT-Neo, StableLM, GPT-J).}
+\todo{Describe baselines: Loss, ZLib, Min-K, DC-PDD.}
+\todo{Evaluation metric: AUROC.}
+
+\subsection{RQ1: Overall Performance}
+
+\todo{Main results table across languages and models.}
+
+\begin{table*}[!t]
+    \centering
+    \footnotesize
+    \caption{AUROC (\%) across languages and models (1:1 ratio)}\label{tab:main}
+    \begin{tabular}{llcccc}
+    \toprule
+    \textbf{Lang.} & \textbf{Method} & \textbf{Pythia 2.8B} & \textbf{GPT-Neo 2.7B} & \textbf{StableLM 3B} & \textbf{GPT-J 6B} \\
+    \midrule
+    \multirow{5}{*}{C}
+    & \textsc{Loss}  & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{ZLib}  & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{Min-K} & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{DC-PDD}& \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    \cmidrule(lr){2-6}
+    & \tool          & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    \midrule
+    \multirow{5}{*}{Java}
+    & \textsc{Loss}  & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{ZLib}  & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{Min-K} & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{DC-PDD}& \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    \cmidrule(lr){2-6}
+    & \tool          & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    \midrule
+    \multirow{5}{*}{JS}
+    & \textsc{Loss}  & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{ZLib}  & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{Min-K} & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    & \textsc{DC-PDD}& \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    \cmidrule(lr){2-6}
+    & \tool          & \todo{X} & \todo{X} & \todo{X} & \todo{X} \\
+    \bottomrule
+    \end{tabular}
+\end{table*}
+
+\subsection{RQ2: Robustness across Member/Non-member Ratios}
+
+\todo{Results under 1:5 and 5:1 imbalanced settings.}
+
+\subsection{RQ3: Robustness across Code Length}
+
+\todo{Performance breakdown by short / medium / long functions.}
+
+\subsection{RQ4: Ablation Study}
+
+\todo{Effect of each syntax convention category on AUROC.}

@@ -1,0 +1,281 @@
+Productions from §15 (Expressions)
+
+   Primary:
+     PrimaryNoNewArray
+     ArrayCreationExpression
+
+   PrimaryNoNewArray:
+     Literal
+     ClassLiteral
+     this
+     TypeName . this
+     ( Expression )
+     ClassInstanceCreationExpression
+     FieldAccess
+     ArrayAccess
+     MethodInvocation
+     MethodReference
+
+   ClassLiteral:
+     TypeName {[ ]} . class
+     NumericType {[ ]} . class
+     boolean {[ ]} . class
+     void . class
+
+   ClassInstanceCreationExpression:
+     UnqualifiedClassInstanceCreationExpression
+     ExpressionName . UnqualifiedClassInstanceCreationExpression
+     Primary . UnqualifiedClassInstanceCreationExpression
+
+   UnqualifiedClassInstanceCreationExpression:
+    new [TypeArguments]
+       ClassOrInterfaceTypeToInstantiate ( [ArgumentList] ) [ClassBody]
+
+   ClassOrInterfaceTypeToInstantiate:
+     {Annotation} Identifier {. {Annotation} Identifier}
+        [TypeArgumentsOrDiamond]
+
+   TypeArgumentsOrDiamond:
+     TypeArguments
+     <>
+
+
+
+
+                                                                          847
+                                                                SYNTAX
+
+
+      ArrayCreationExpression:
+        ArrayCreationExpressionWithoutInitializer
+        ArrayCreationExpressionWithInitializer
+
+      ArrayCreationExpressionWithoutInitializer:
+        new PrimitiveType DimExprs [Dims]
+        new ClassOrInterfaceType DimExprs [Dims]
+
+      ArrayCreationExpressionWithInitializer:
+        new PrimitiveType Dims ArrayInitializer
+        new ClassOrInterfaceType Dims ArrayInitializer
+
+      DimExprs:
+        DimExpr {DimExpr}
+
+      DimExpr:
+        {Annotation} [ Expression ]
+
+      ArrayAccess:
+        ExpressionName [ Expression ]
+        PrimaryNoNewArray [ Expression ]
+        ArrayCreationExpressionWithInitializer [ Expression ]
+
+
+
+
+848
+SYNTAX
+
+
+   FieldAccess:
+     Primary . Identifier
+     super . Identifier
+     TypeName . super . Identifier
+
+   MethodInvocation:
+    MethodName ( [ArgumentList] )
+    TypeName . [TypeArguments] Identifier ( [ArgumentList] )
+    ExpressionName . [TypeArguments] Identifier ( [ArgumentList] )
+    Primary . [TypeArguments] Identifier ( [ArgumentList] )
+    super . [TypeArguments] Identifier ( [ArgumentList] )
+    TypeName . super . [TypeArguments] Identifier ( [ArgumentList] )
+
+   ArgumentList:
+     Expression {, Expression}
+
+   MethodReference:
+    ExpressionName :: [TypeArguments] Identifier
+    Primary :: [TypeArguments] Identifier
+    ReferenceType :: [TypeArguments] Identifier
+    super :: [TypeArguments] Identifier
+    TypeName . super :: [TypeArguments] Identifier
+    ClassType :: [TypeArguments] new
+    ArrayType :: new
+
+
+
+
+                                                                       849
+                                                                     SYNTAX
+
+
+      Expression:
+        LambdaExpression
+        AssignmentExpression
+
+      LambdaExpression:
+        LambdaParameters -> LambdaBody
+
+      LambdaParameters:
+        ( [LambdaParameterList] )
+        ConciseLambdaParameter
+
+      LambdaParameterList:
+        NormalLambdaParameter {, NormalLambdaParameter}
+        ConciseLambdaParameter {, ConciseLambdaParameter}
+
+      NormalLambdaParameter:
+       {VariableModifier} LambdaParameterType VariableDeclaratorId
+       VariableArityParameter
+
+      LambdaParameterType:
+        UnannType
+        var
+
+      ConciseLambdaParameter:
+       Identifier
+        _
+
+      LambdaBody:
+        Expression
+        Block
+
+
+
+
+850
+SYNTAX
+
+
+   AssignmentExpression:
+     ConditionalExpression
+     Assignment
+
+   Assignment:
+     LeftHandSide AssignmentOperator Expression
+
+   LeftHandSide:
+     ExpressionName
+     FieldAccess
+     ArrayAccess
+
+   AssignmentOperator:
+     (one of)
+     =   *=   /=   %=   +=   -=   <<=   >>=   >>>=   &=   ^=   |=
+
+   ConditionalExpression:
+    ConditionalOrExpression
+    ConditionalOrExpression ? Expression : ConditionalExpression
+    ConditionalOrExpression ? Expression : LambdaExpression
+
+   ConditionalOrExpression:
+    ConditionalAndExpression
+    ConditionalOrExpression || ConditionalAndExpression
+
+   ConditionalAndExpression:
+    InclusiveOrExpression
+    ConditionalAndExpression && InclusiveOrExpression
+
+   InclusiveOrExpression:
+     ExclusiveOrExpression
+     InclusiveOrExpression | ExclusiveOrExpression
+
+   ExclusiveOrExpression:
+     AndExpression
+     ExclusiveOrExpression ^ AndExpression
+
+   AndExpression:
+     EqualityExpression
+     AndExpression & EqualityExpression
+
+
+
+
+                                                                    851
+                                                        SYNTAX
+
+
+      EqualityExpression:
+        RelationalExpression
+        EqualityExpression == RelationalExpression
+        EqualityExpression != RelationalExpression
+
+      RelationalExpression:
+        ShiftExpression
+        RelationalExpression < ShiftExpression
+        RelationalExpression > ShiftExpression
+        RelationalExpression <= ShiftExpression
+        RelationalExpression >= ShiftExpression
+        InstanceofExpression
+
+      InstanceofExpression:
+        RelationalExpression instanceof ReferenceType
+        RelationalExpression instanceof Pattern
+
+      ShiftExpression:
+        AdditiveExpression
+        ShiftExpression << AdditiveExpression
+        ShiftExpression >> AdditiveExpression
+        ShiftExpression >>> AdditiveExpression
+
+      AdditiveExpression:
+        MultiplicativeExpression
+        AdditiveExpression + MultiplicativeExpression
+        AdditiveExpression - MultiplicativeExpression
+
+      MultiplicativeExpression:
+       UnaryExpression
+       MultiplicativeExpression * UnaryExpression
+       MultiplicativeExpression / UnaryExpression
+       MultiplicativeExpression % UnaryExpression
+
+      UnaryExpression:
+       PreIncrementExpression
+       PreDecrementExpression
+       + UnaryExpression
+       - UnaryExpression
+       UnaryExpressionNotPlusMinus
+
+
+
+852
+SYNTAX
+
+
+   PreIncrementExpression:
+     ++ UnaryExpression
+
+   PreDecrementExpression:
+     -- UnaryExpression
+
+   UnaryExpressionNotPlusMinus:
+    PostfixExpression
+    ~ UnaryExpression
+    ! UnaryExpression
+    CastExpression
+    SwitchExpression
+
+   PostfixExpression:
+     Primary
+     ExpressionName
+     PostIncrementExpression
+     PostDecrementExpression
+
+   PostIncrementExpression:
+     PostfixExpression ++
+
+   PostDecrementExpression:
+     PostfixExpression --
+
+   CastExpression:
+    ( PrimitiveType ) UnaryExpression
+    ( ReferenceType {AdditionalBound} ) UnaryExpressionNotPlusMinus
+    ( ReferenceType {AdditionalBound} ) LambdaExpression
+
+   SwitchExpression:
+     switch ( Expression ) SwitchBlock
+
+
+
+
+                                                                      853
+

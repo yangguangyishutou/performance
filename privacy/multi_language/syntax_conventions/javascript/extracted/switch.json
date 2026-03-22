@@ -1,0 +1,85 @@
+{
+  "construct": "switch",
+  "language": "javascript",
+  "syntax_node": "switch",
+  "constraints": [
+    {
+      "conditional": "switch",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'switch' 后必须跟左括号"
+    },
+    {
+      "conditional": "switch (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（跳过表达式）"
+    },
+    {
+      "conditional": "switch ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "switch () {",
+      "consequent": "case",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后必须跟 'case' 关键字"
+    },
+    {
+      "conditional": "switch () {",
+      "consequent": "default",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后可跟 'default' 关键字"
+    },
+    {
+      "conditional": "switch () { case",
+      "consequent": ":",
+      "skip": "expression",
+      "required": true,
+      "note": "'case' 后必须跟冒号（跳过 case 表达式）"
+    },
+    {
+      "conditional": "switch () { case :",
+      "consequent": "case",
+      "skip": "statement_list",
+      "required": true,
+      "note": "case 冒号后可跟另一个 'case'"
+    },
+    {
+      "conditional": "switch () { case :",
+      "consequent": "default",
+      "skip": "statement_list",
+      "required": true,
+      "note": "case 冒号后可跟 'default'"
+    },
+    {
+      "conditional": "switch () { case :",
+      "consequent": "}",
+      "skip": "statement_list",
+      "required": true,
+      "note": "case 冒号后可跟右大括号"
+    },
+    {
+      "conditional": "switch () { default",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "'default' 后必须跟冒号"
+    },
+    {
+      "conditional": "switch () { default :",
+      "consequent": "}",
+      "skip": "statement_list",
+      "required": true,
+      "note": "default 冒号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:47.219782"
+}

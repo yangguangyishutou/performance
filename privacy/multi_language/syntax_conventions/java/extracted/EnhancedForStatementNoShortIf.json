@@ -1,0 +1,50 @@
+{
+  "construct": "EnhancedForStatementNoShortIf",
+  "language": "java",
+  "syntax_node": "for",
+  "constraints": [
+    {
+      "conditional": "for",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'for' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "for (",
+      "consequent": "LocalVariableDeclaration",
+      "skip": "",
+      "required": true,
+      "note": "左括号后必须跟局部变量声明"
+    },
+    {
+      "conditional": "for ( LocalVariableDeclaration",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "局部变量声明后必须跟冒号"
+    },
+    {
+      "conditional": "for ( LocalVariableDeclaration :",
+      "consequent": "Expression",
+      "skip": "",
+      "required": true,
+      "note": "冒号后必须跟表达式"
+    },
+    {
+      "conditional": "for ( LocalVariableDeclaration : Expression",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟右括号"
+    },
+    {
+      "conditional": "for ( LocalVariableDeclaration : Expression )",
+      "consequent": "StatementNoShortIf",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟非短路语句"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:57:41.806932"
+}

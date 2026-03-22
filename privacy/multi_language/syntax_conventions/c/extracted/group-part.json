@@ -1,0 +1,15 @@
+{
+  "construct": "group-part",
+  "language": "c",
+  "syntax_node": "group-part",
+  "constraints": [
+    {
+      "conditional": "#",
+      "consequent": "if, ifdef, ifndef, elif, else, endif, include, define, undef, line, error, pragma",
+      "skip": "",
+      "required": true,
+      "note": "# 符号后必须跟预处理指令关键字或 non-directive"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:01.259260"
+}

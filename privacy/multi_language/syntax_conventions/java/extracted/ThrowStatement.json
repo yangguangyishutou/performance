@@ -1,0 +1,22 @@
+{
+  "construct": "ThrowStatement",
+  "language": "java",
+  "syntax_node": "throw",
+  "constraints": [
+    {
+      "conditional": "throw",
+      "consequent": "Expression",
+      "skip": "",
+      "required": true,
+      "note": "'throw' 关键字后必须跟表达式"
+    },
+    {
+      "conditional": "throw Expression",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "表达式后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:57:41.809643"
+}

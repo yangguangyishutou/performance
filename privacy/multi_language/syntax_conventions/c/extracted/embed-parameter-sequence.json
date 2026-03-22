@@ -1,0 +1,22 @@
+{
+  "construct": "embed-parameter-sequence",
+  "language": "c",
+  "syntax_node": "embed-parameter-sequence",
+  "constraints": [
+    {
+      "conditional": "pp-parameter",
+      "consequent": "pp-parameter, <end>",
+      "skip": "",
+      "required": false,
+      "note": "第一个预处理参数后可以跟另一个预处理参数或结束"
+    },
+    {
+      "conditional": "embed-parameter-sequence",
+      "consequent": "pp-parameter",
+      "skip": "",
+      "required": true,
+      "note": "嵌入参数序列后必须跟预处理参数"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:53.951610"
+}

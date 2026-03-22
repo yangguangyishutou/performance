@@ -1,0 +1,22 @@
+{
+  "construct": "init-declarator-list",
+  "language": "c",
+  "syntax_node": "init-declarator-list",
+  "constraints": [
+    {
+      "conditional": "init-declarator",
+      "consequent": ",",
+      "skip": "",
+      "required": false,
+      "note": "初始化声明符后可选跟随逗号以继续列表"
+    },
+    {
+      "conditional": "init-declarator ,",
+      "consequent": "init-declarator",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟随另一个初始化声明符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:34.353420"
+}

@@ -1,0 +1,43 @@
+{
+  "construct": "static_assert-declaration",
+  "language": "c",
+  "syntax_node": "static_assert",
+  "constraints": [
+    {
+      "conditional": "static_assert",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "static_assert 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "static_assert (",
+      "consequent": ",, )",
+      "skip": "constant-expression",
+      "required": true,
+      "note": "左括号后必须跟逗号或右括号（中间跳过常量表达式）"
+    },
+    {
+      "conditional": "static_assert ( ,",
+      "consequent": ")",
+      "skip": "string-literal",
+      "required": true,
+      "note": "逗号后必须跟右括号（中间跳过字符串字面量）"
+    },
+    {
+      "conditional": "static_assert ( )",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟分号"
+    },
+    {
+      "conditional": "static_assert ( , )",
+      "consequent": ";",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟分号"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:06.926766"
+}

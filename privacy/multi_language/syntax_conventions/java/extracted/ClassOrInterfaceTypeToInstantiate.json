@@ -1,0 +1,50 @@
+{
+  "construct": "ClassOrInterfaceTypeToInstantiate",
+  "language": "java",
+  "syntax_node": "Identifier",
+  "constraints": [
+    {
+      "conditional": "Annotation",
+      "consequent": "Identifier",
+      "skip": "",
+      "required": true,
+      "note": "'Annotation' 后必须跟 'Identifier'"
+    },
+    {
+      "conditional": "Identifier",
+      "consequent": "., TypeArgumentsOrDiamond",
+      "skip": "",
+      "required": false,
+      "note": "'Identifier' 后可选择性跟随点号（用于限定名）或 'TypeArgumentsOrDiamond'"
+    },
+    {
+      "conditional": "Identifier .",
+      "consequent": "Annotation, Identifier",
+      "skip": "",
+      "required": false,
+      "note": "点号后可选择性跟随 'Annotation'，然后必须跟 'Identifier'"
+    },
+    {
+      "conditional": "Identifier . Annotation",
+      "consequent": "Identifier",
+      "skip": "",
+      "required": true,
+      "note": "'Annotation' 后必须跟 'Identifier'"
+    },
+    {
+      "conditional": "Identifier . Identifier",
+      "consequent": "., TypeArgumentsOrDiamond",
+      "skip": "",
+      "required": false,
+      "note": "后续 'Identifier' 后可选择性跟随点号（用于更多限定）或 'TypeArgumentsOrDiamond'"
+    },
+    {
+      "conditional": "Identifier TypeArgumentsOrDiamond",
+      "consequent": "",
+      "skip": "",
+      "required": false,
+      "note": "'TypeArgumentsOrDiamond' 是此构造的可选结束部分"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:59:17.544249"
+}

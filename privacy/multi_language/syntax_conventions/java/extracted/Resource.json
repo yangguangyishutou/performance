@@ -1,0 +1,15 @@
+{
+  "construct": "Resource",
+  "language": "java",
+  "syntax_node": "try",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "LocalVariableDeclaration, VariableAccess",
+      "skip": "",
+      "required": true,
+      "note": "资源必须是局部变量声明或变量访问表达式"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:58:17.065973"
+}

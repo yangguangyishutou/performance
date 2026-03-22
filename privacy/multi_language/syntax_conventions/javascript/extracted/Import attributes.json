@@ -1,0 +1,176 @@
+{
+  "construct": "Import attributes",
+  "language": "javascript",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "import",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "import 后可跟左大括号"
+    },
+    {
+      "conditional": "import {",
+      "consequent": "}",
+      "skip": "import_specifiers",
+      "required": true,
+      "note": "import 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "import {}",
+      "consequent": "from",
+      "skip": "",
+      "required": true,
+      "note": "import 右大括号后必须跟 from"
+    },
+    {
+      "conditional": "import {} from",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "from 后必须跟模块名字符串"
+    },
+    {
+      "conditional": "import {} from [STRING]",
+      "consequent": "with",
+      "skip": "",
+      "required": true,
+      "note": "模块名字符串后必须跟 with"
+    },
+    {
+      "conditional": "import {} from [STRING] with",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "with 后必须跟左大括号"
+    },
+    {
+      "conditional": "import {} from [STRING] with {",
+      "consequent": "}",
+      "skip": "attributes",
+      "required": true,
+      "note": "with 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "import {} from [STRING] with {",
+      "consequent": "[PROPERTY]",
+      "skip": "",
+      "required": true,
+      "note": "with 左大括号后可跟属性键"
+    },
+    {
+      "conditional": "import {} from [STRING] with { [PROPERTY]",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "属性键后必须跟冒号"
+    },
+    {
+      "conditional": "import {} from [STRING] with { [PROPERTY] :",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "冒号后必须跟属性值字符串"
+    },
+    {
+      "conditional": "import {} from [STRING] with { [PROPERTY] : [STRING]",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "属性值后可跟逗号"
+    },
+    {
+      "conditional": "import {} from [STRING] with { [PROPERTY] : [STRING] ,",
+      "consequent": "[PROPERTY]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个属性键"
+    },
+    {
+      "conditional": "export",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "export 后可跟左大括号"
+    },
+    {
+      "conditional": "export {",
+      "consequent": "}",
+      "skip": "export_specifiers",
+      "required": true,
+      "note": "export 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "export {}",
+      "consequent": "from",
+      "skip": "",
+      "required": true,
+      "note": "export 右大括号后必须跟 from"
+    },
+    {
+      "conditional": "export {} from",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "from 后必须跟模块名字符串"
+    },
+    {
+      "conditional": "export {} from [STRING]",
+      "consequent": "with",
+      "skip": "",
+      "required": true,
+      "note": "模块名字符串后必须跟 with"
+    },
+    {
+      "conditional": "export {} from [STRING] with",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "with 后必须跟左大括号"
+    },
+    {
+      "conditional": "export {} from [STRING] with {",
+      "consequent": "}",
+      "skip": "attributes",
+      "required": true,
+      "note": "with 左大括号后必须跟右大括号"
+    },
+    {
+      "conditional": "export {} from [STRING] with {",
+      "consequent": "[PROPERTY]",
+      "skip": "",
+      "required": true,
+      "note": "with 左大括号后可跟属性键"
+    },
+    {
+      "conditional": "export {} from [STRING] with { [PROPERTY]",
+      "consequent": ":",
+      "skip": "",
+      "required": true,
+      "note": "属性键后必须跟冒号"
+    },
+    {
+      "conditional": "export {} from [STRING] with { [PROPERTY] :",
+      "consequent": "[STRING]",
+      "skip": "",
+      "required": true,
+      "note": "冒号后必须跟属性值字符串"
+    },
+    {
+      "conditional": "export {} from [STRING] with { [PROPERTY] : [STRING]",
+      "consequent": ",",
+      "skip": "",
+      "required": true,
+      "note": "属性值后可跟逗号"
+    },
+    {
+      "conditional": "export {} from [STRING] with { [PROPERTY] : [STRING] ,",
+      "consequent": "[PROPERTY]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个属性键"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:27:28.645520"
+}

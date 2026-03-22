@@ -1,0 +1,36 @@
+{
+  "construct": "CatchClause",
+  "language": "java",
+  "syntax_node": "catch",
+  "constraints": [
+    {
+      "conditional": "catch",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'catch' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "catch (",
+      "consequent": "CatchFormalParameter",
+      "skip": "",
+      "required": true,
+      "note": "左括号后必须跟捕获形参"
+    },
+    {
+      "conditional": "catch ( CatchFormalParameter",
+      "consequent": ")",
+      "skip": "",
+      "required": true,
+      "note": "捕获形参后必须跟右括号"
+    },
+    {
+      "conditional": "catch ( CatchFormalParameter )",
+      "consequent": "Block",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟代码块"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:57:41.810796"
+}

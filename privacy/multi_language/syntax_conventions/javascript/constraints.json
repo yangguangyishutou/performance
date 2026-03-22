@@ -1,0 +1,4900 @@
+{
+  "language": "javascript",
+  "total_constructs": 71,
+  "total_constraints": 628,
+  "constructs": [
+    {
+      "construct": "for",
+      "language": "javascript",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'for' 后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": ";",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟分号（跳过初始化表达式）"
+        },
+        {
+          "conditional": "for (;",
+          "consequent": ";",
+          "skip": "expression",
+          "required": true,
+          "note": "第一个分号后必须跟分号（跳过条件表达式）"
+        },
+        {
+          "conditional": "for (;;",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "第二个分号后必须跟右括号（跳过更新表达式）"
+        },
+        {
+          "conditional": "for ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "for ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        },
+        {
+          "conditional": "for () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "async function expression",
+      "language": "javascript",
+      "syntax_node": "async_function",
+      "constraints": [
+        {
+          "conditional": "async function",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async function 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "async function",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "async function 关键字后可跟函数名标识符"
+        },
+        {
+          "conditional": "async function [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async function 函数名后必须跟左括号"
+        },
+        {
+          "conditional": "async function (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async function 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async function ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "async function 参数列表后必须跟左大括号"
+        },
+        {
+          "conditional": "async function () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "async function 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "async function [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async function 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async function [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "async function 参数列表后必须跟左大括号"
+        },
+        {
+          "conditional": "async function [IDENT] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "async function 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "switch",
+      "language": "javascript",
+      "syntax_node": "switch",
+      "constraints": [
+        {
+          "conditional": "switch",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'switch' 后必须跟左括号"
+        },
+        {
+          "conditional": "switch (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（跳过表达式）"
+        },
+        {
+          "conditional": "switch ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "switch () {",
+          "consequent": "case",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后必须跟 'case' 关键字"
+        },
+        {
+          "conditional": "switch () {",
+          "consequent": "default",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后可跟 'default' 关键字"
+        },
+        {
+          "conditional": "switch () { case",
+          "consequent": ":",
+          "skip": "expression",
+          "required": true,
+          "note": "'case' 后必须跟冒号（跳过 case 表达式）"
+        },
+        {
+          "conditional": "switch () { case :",
+          "consequent": "case",
+          "skip": "statement_list",
+          "required": true,
+          "note": "case 冒号后可跟另一个 'case'"
+        },
+        {
+          "conditional": "switch () { case :",
+          "consequent": "default",
+          "skip": "statement_list",
+          "required": true,
+          "note": "case 冒号后可跟 'default'"
+        },
+        {
+          "conditional": "switch () { case :",
+          "consequent": "}",
+          "skip": "statement_list",
+          "required": true,
+          "note": "case 冒号后可跟右大括号"
+        },
+        {
+          "conditional": "switch () { default",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "'default' 后必须跟冒号"
+        },
+        {
+          "conditional": "switch () { default :",
+          "consequent": "}",
+          "skip": "statement_list",
+          "required": true,
+          "note": "default 冒号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "do...while",
+      "language": "javascript",
+      "syntax_node": "do",
+      "constraints": [
+        {
+          "conditional": "do",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "do 后必须跟左大括号"
+        },
+        {
+          "conditional": "do",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "do 后必须跟语句起始"
+        },
+        {
+          "conditional": "do {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "do 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "do {}",
+          "consequent": "while",
+          "skip": "",
+          "required": true,
+          "note": "do 语句块后必须跟 while"
+        },
+        {
+          "conditional": "do <statement_start>",
+          "consequent": "while",
+          "skip": "",
+          "required": true,
+          "note": "do 语句后必须跟 while"
+        },
+        {
+          "conditional": "do {} while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "while 后必须跟左括号"
+        },
+        {
+          "conditional": "do <statement_start> while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "while 后必须跟左括号"
+        },
+        {
+          "conditional": "do {} while (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "while 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "do <statement_start> while (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "while 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "do {} while ()",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "while 右括号后必须跟分号"
+        },
+        {
+          "conditional": "do <statement_start> while ()",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "while 右括号后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "yield",
+      "language": "javascript",
+      "syntax_node": "yield",
+      "constraints": [
+        {
+          "conditional": "yield",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": false,
+          "note": "yield 关键字后可跟表达式起始"
+        },
+        {
+          "conditional": "yield",
+          "consequent": ";",
+          "skip": "",
+          "required": false,
+          "note": "yield 后可直接跟分号"
+        },
+        {
+          "conditional": "yield",
+          "consequent": "}",
+          "skip": "",
+          "required": false,
+          "note": "yield 后可直接跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "extends",
+      "language": "javascript",
+      "syntax_node": "extends",
+      "constraints": [
+        {
+          "conditional": "extends",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "extends 关键字后必须跟父类标识符"
+        },
+        {
+          "conditional": "extends [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "父类名称后必须跟左大括号"
+        },
+        {
+          "conditional": "extends",
+          "consequent": "null",
+          "skip": "",
+          "required": true,
+          "note": "extends 关键字后可跟 null"
+        },
+        {
+          "conditional": "extends null",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "extends null 后必须跟左大括号"
+        }
+      ]
+    },
+    {
+      "construct": "new",
+      "language": "javascript",
+      "syntax_node": "new",
+      "constraints": [
+        {
+          "conditional": "new",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "new 关键字后必须跟表达式起始（构造函数）"
+        },
+        {
+          "conditional": "new <expression_start>",
+          "consequent": "(",
+          "skip": "",
+          "required": false,
+          "note": "构造函数后可跟左括号"
+        },
+        {
+          "conditional": "new <expression_start> (",
+          "consequent": ")",
+          "skip": "arguments",
+          "required": true,
+          "note": "左括号后必须跟右括号"
+        },
+        {
+          "conditional": "new <expression_start> ()",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "new 表达式后可跟属性访问点号"
+        },
+        {
+          "conditional": "new <expression_start> ()",
+          "consequent": "?",
+          "skip": "",
+          "required": false,
+          "note": "new 表达式后可跟可选链问号"
+        }
+      ]
+    },
+    {
+      "construct": "get",
+      "language": "javascript",
+      "syntax_node": "getter",
+      "constraints": [
+        {
+          "conditional": "get",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "get 关键字后必须跟属性名标识符"
+        },
+        {
+          "conditional": "get",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "get 关键字后可跟左方括号以开始计算属性名"
+        },
+        {
+          "conditional": "get [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "计算属性名左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "get []",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "计算属性名后必须跟左括号"
+        },
+        {
+          "conditional": "get [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "属性名标识符后必须跟左括号"
+        },
+        {
+          "conditional": "get [IDENT] (",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "getter 左括号后必须跟右括号（无参数）"
+        },
+        {
+          "conditional": "get [] (",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "getter 左括号后必须跟右括号（无参数）"
+        },
+        {
+          "conditional": "get [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "getter 右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "get [] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "getter 右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "get [IDENT] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "getter 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "get [] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "getter 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "delete",
+      "language": "javascript",
+      "syntax_node": "delete",
+      "constraints": [
+        {
+          "conditional": "delete",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "delete 关键字后必须跟对象标识符"
+        },
+        {
+          "conditional": "delete [IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "delete 对象标识符后可跟点号"
+        },
+        {
+          "conditional": "delete [IDENT].",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "delete 点号后必须跟属性标识符"
+        },
+        {
+          "conditional": "delete [IDENT]",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "delete 对象标识符后可跟左中括号"
+        },
+        {
+          "conditional": "delete [IDENT] [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "delete 左中括号后必须跟右中括号（中间跳过表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "debugger",
+      "language": "javascript",
+      "syntax_node": "debugger",
+      "constraints": [
+        {
+          "conditional": "debugger",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "'debugger' 语句必须以分号结尾"
+        }
+      ]
+    },
+    {
+      "construct": "function*",
+      "language": "javascript",
+      "syntax_node": "function*",
+      "constraints": [
+        {
+          "conditional": "function",
+          "consequent": "*",
+          "skip": "",
+          "required": true,
+          "note": "function 关键字后必须跟星号"
+        },
+        {
+          "conditional": "function *",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "星号后必须跟函数名称标识符"
+        },
+        {
+          "conditional": "function * [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "函数名后必须跟左括号"
+        },
+        {
+          "conditional": "function * [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过参数列表）"
+        },
+        {
+          "conditional": "function * [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "参数括号后必须跟左大括号"
+        },
+        {
+          "conditional": "function * [IDENT] () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过函数体）"
+        }
+      ]
+    },
+    {
+      "construct": "function",
+      "language": "javascript",
+      "syntax_node": "function",
+      "constraints": [
+        {
+          "conditional": "function",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "function 关键字后必须跟标识符名称"
+        },
+        {
+          "conditional": "function [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "function 名称后必须跟左括号"
+        },
+        {
+          "conditional": "function [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "function 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "function [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "function 括号后必须跟左大括号"
+        },
+        {
+          "conditional": "function [IDENT] () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "function 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "set",
+      "language": "javascript",
+      "syntax_node": "set",
+      "constraints": [
+        {
+          "conditional": "set",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "set 关键字后必须跟属性名"
+        },
+        {
+          "conditional": "set",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "set 关键字后可跟计算属性左括号"
+        },
+        {
+          "conditional": "set [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "set 计算属性左括号后必须跟右括号"
+        },
+        {
+          "conditional": "set [PROPERTY]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "set 属性名后必须跟左括号"
+        },
+        {
+          "conditional": "set []",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "set 计算属性后必须跟左括号"
+        },
+        {
+          "conditional": "set [PROPERTY] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "set 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "set [] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "set 计算属性左括号后必须跟右括号"
+        },
+        {
+          "conditional": "set [PROPERTY] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "set 参数后必须跟左大括号"
+        },
+        {
+          "conditional": "set [] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "set 计算属性参数后必须跟左大括号"
+        },
+        {
+          "conditional": "set [PROPERTY] ({",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "set 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "set [] ({",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "set 计算属性左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "const",
+      "language": "javascript",
+      "syntax_node": "const",
+      "constraints": [
+        {
+          "conditional": "const",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "const 关键字后必须跟标识符"
+        },
+        {
+          "conditional": "const",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "const 关键字后可跟左中括号（解构）"
+        },
+        {
+          "conditional": "const",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "const 关键字后可跟左大括号（解构）"
+        },
+        {
+          "conditional": "const [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "const 标识符后必须跟赋值号"
+        },
+        {
+          "conditional": "const [",
+          "consequent": "]",
+          "skip": "pattern",
+          "required": true,
+          "note": "const 左中括号后必须跟右中括号"
+        },
+        {
+          "conditional": "const []",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "const 数组解构后必须跟赋值号"
+        },
+        {
+          "conditional": "const {",
+          "consequent": "}",
+          "skip": "pattern",
+          "required": true,
+          "note": "const 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "const {}",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "const 对象解构后必须跟赋值号"
+        },
+        {
+          "conditional": "const [IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "const 赋值号后必须跟表达式起始"
+        },
+        {
+          "conditional": "const [] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "const 解构赋值号后必须跟表达式起始"
+        },
+        {
+          "conditional": "const {} =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "const 解构赋值号后必须跟表达式起始"
+        },
+        {
+          "conditional": "const [IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "const 声明表达式后必须跟分号"
+        },
+        {
+          "conditional": "const [IDENT] = <expression_start>",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "const 声明表达式后可跟逗号（多变量声明）"
+        },
+        {
+          "conditional": "const [IDENT] = <expression_start>,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "const 逗号后必须跟标识符"
+        },
+        {
+          "conditional": "const [IDENT] = <expression_start>,",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "const 逗号后可跟左中括号（解构）"
+        },
+        {
+          "conditional": "const [IDENT] = <expression_start>,",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "const 逗号后可跟左大括号（解构）"
+        }
+      ]
+    },
+    {
+      "construct": "break",
+      "language": "javascript",
+      "syntax_node": "break",
+      "constraints": [
+        {
+          "conditional": "break",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "break 后可直接跟分号"
+        },
+        {
+          "conditional": "break",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "break 后可跟标签标识符"
+        },
+        {
+          "conditional": "break [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "break 标签后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "export",
+      "language": "javascript",
+      "syntax_node": "export",
+      "constraints": [
+        {
+          "conditional": "export",
+          "consequent": "default",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟 default 关键字"
+        },
+        {
+          "conditional": "export",
+          "consequent": "*",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟星号（用于导出所有）"
+        },
+        {
+          "conditional": "export",
+          "consequent": "{",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟左大括号（用于导出列表）"
+        },
+        {
+          "conditional": "export",
+          "consequent": "function",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟 function 关键字"
+        },
+        {
+          "conditional": "export",
+          "consequent": "class",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟 class 关键字"
+        },
+        {
+          "conditional": "export",
+          "consequent": "var",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟 var 关键字"
+        },
+        {
+          "conditional": "export",
+          "consequent": "let",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟 let 关键字"
+        },
+        {
+          "conditional": "export",
+          "consequent": "const",
+          "skip": "",
+          "required": false,
+          "note": "export 后可跟 const 关键字"
+        },
+        {
+          "conditional": "export default",
+          "consequent": "function",
+          "skip": "",
+          "required": false,
+          "note": "export default 后可跟 function 关键字"
+        },
+        {
+          "conditional": "export default",
+          "consequent": "class",
+          "skip": "",
+          "required": false,
+          "note": "export default 后可跟 class 关键字"
+        },
+        {
+          "conditional": "export default",
+          "consequent": "function*",
+          "skip": "",
+          "required": false,
+          "note": "export default 后可跟 function* 关键字"
+        },
+        {
+          "conditional": "export default",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": false,
+          "note": "export default 后可跟表达式起始"
+        },
+        {
+          "conditional": "export *",
+          "consequent": "as",
+          "skip": "",
+          "required": false,
+          "note": "export * 后可跟 as 关键字"
+        },
+        {
+          "conditional": "export *",
+          "consequent": "from",
+          "skip": "",
+          "required": false,
+          "note": "export * 后可跟 from 关键字"
+        },
+        {
+          "conditional": "export * as",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "as 后必须跟标识符名称"
+        },
+        {
+          "conditional": "export * as [IDENT]",
+          "consequent": "from",
+          "skip": "",
+          "required": true,
+          "note": "别名后必须跟 from 关键字"
+        },
+        {
+          "conditional": "export * from",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "from 后必须跟模块名字符串"
+        },
+        {
+          "conditional": "export {",
+          "consequent": "}",
+          "skip": "exports_list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过导出列表）"
+        },
+        {
+          "conditional": "export {}",
+          "consequent": "from",
+          "skip": "",
+          "required": false,
+          "note": "导出列表后可跟 from 关键字"
+        },
+        {
+          "conditional": "export {} from",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "from 后必须跟模块名字符串"
+        }
+      ]
+    },
+    {
+      "construct": "using",
+      "language": "javascript",
+      "syntax_node": "using",
+      "constraints": [
+        {
+          "conditional": "using",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "using 关键字后必须跟标识符"
+        },
+        {
+          "conditional": "using [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "标识符后必须跟赋值号"
+        },
+        {
+          "conditional": "using [IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "赋值号后必须跟表达式"
+        },
+        {
+          "conditional": "using [IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟分号"
+        },
+        {
+          "conditional": "using [IDENT] = <expression_start> ;",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "分号后可跟下一个标识符（多重声明）"
+        },
+        {
+          "conditional": "using [IDENT] = <expression_start> ; [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "后续标识符后必须跟赋值号"
+        }
+      ]
+    },
+    {
+      "construct": "for...of",
+      "language": "javascript",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "for 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "const",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟 const 声明"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "let",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟 let 声明"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "var",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟 var 声明"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "using",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟 using 声明"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "await",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟 await using 声明的一部分"
+        },
+        {
+          "conditional": "for ( await",
+          "consequent": "using",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 using 关键字"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟变量标识符"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "{",
+          "skip": "",
+          "required": false,
+          "note": "左括号后可跟解构赋值左大括号"
+        },
+        {
+          "conditional": "for ( const",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "const 后必须跟标识符"
+        },
+        {
+          "conditional": "for ( let",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "let 后必须跟标识符"
+        },
+        {
+          "conditional": "for ( var",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "var 后必须跟标识符"
+        },
+        {
+          "conditional": "for ( using",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "using 后必须跟标识符"
+        },
+        {
+          "conditional": "for ( await using",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "await using 后必须跟标识符"
+        },
+        {
+          "conditional": "for ( [IDENT]",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "变量后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( const [IDENT]",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "const 变量后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( let [IDENT]",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "let 变量后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( var [IDENT]",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "var 变量后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( using [IDENT]",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "using 变量后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( await using [IDENT]",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "await using 变量后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( {",
+          "consequent": "}",
+          "skip": "pattern",
+          "required": true,
+          "note": "解构左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "for ( {}",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "解构模式后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( const {}",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "const 解构后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( let {}",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "let 解构后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( var {}",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "var 解构后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( using {}",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "using 解构后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( await using {}",
+          "consequent": "of",
+          "skip": "",
+          "required": true,
+          "note": "await using 解构后必须跟 of 关键字"
+        },
+        {
+          "conditional": "for ( [IDENT] of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( const [IDENT] of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( let [IDENT] of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( var [IDENT] of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( using [IDENT] of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( await using [IDENT] of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( {} of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( const {} of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( let {} of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( var {} of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( using {} of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( await using {} of",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "of 后必须跟可迭代对象表达式"
+        },
+        {
+          "conditional": "for ( [IDENT] of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( const [IDENT] of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( let [IDENT] of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( var [IDENT] of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( using [IDENT] of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( await using [IDENT] of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( {} of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( const {} of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( let {} of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( var {} of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( using {} of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( await using {} of <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "for ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        },
+        {
+          "conditional": "for () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "return",
+      "language": "javascript",
+      "syntax_node": "return",
+      "constraints": [
+        {
+          "conditional": "return",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "return 后可直接跟分号"
+        },
+        {
+          "conditional": "return",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "return 后必须跟表达式起始"
+        },
+        {
+          "conditional": "return <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "return 表达式后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "Property accessors",
+      "language": "javascript",
+      "syntax_node": "member_expression",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "对象标识符后可跟点号"
+        },
+        {
+          "conditional": "[IDENT].",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟属性标识符"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "对象标识符后可跟左中括号"
+        },
+        {
+          "conditional": "[IDENT] [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左中括号后必须跟右中括号（中间跳过计算表达式）"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": ".#",
+          "skip": "",
+          "required": true,
+          "note": "对象标识符后可跟点号用于私有属性"
+        },
+        {
+          "conditional": "[IDENT] .#",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "私有属性点号后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "Arrow function expressions",
+      "language": "javascript",
+      "syntax_node": "arrow_function",
+      "constraints": [
+        {
+          "conditional": "async",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async 关键字后可跟左括号"
+        },
+        {
+          "conditional": "async",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "async 关键字后可跟参数标识符"
+        },
+        {
+          "conditional": "async (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async ()",
+          "consequent": "=>",
+          "skip": "",
+          "required": true,
+          "note": "async 无参括号后必须跟箭头"
+        },
+        {
+          "conditional": "async [IDENT]",
+          "consequent": "=>",
+          "skip": "",
+          "required": true,
+          "note": "async 单参数标识符后必须跟箭头"
+        },
+        {
+          "conditional": "async () =>",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "async 箭头后必须跟左大括号"
+        },
+        {
+          "conditional": "async () =>",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "async 箭头后必须跟表达式起始"
+        },
+        {
+          "conditional": "async () => {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "async 箭头左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号"
+        },
+        {
+          "conditional": "()",
+          "consequent": "=>",
+          "skip": "",
+          "required": true,
+          "note": "无参括号后必须跟箭头"
+        },
+        {
+          "conditional": "() =>",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "箭头后必须跟左大括号"
+        },
+        {
+          "conditional": "() =>",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "箭头后必须跟表达式起始"
+        },
+        {
+          "conditional": "() => {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "箭头左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "=>",
+          "skip": "",
+          "required": true,
+          "note": "单参数标识符后必须跟箭头"
+        },
+        {
+          "conditional": "[IDENT] =>",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "箭头后必须跟左大括号"
+        },
+        {
+          "conditional": "[IDENT] =>",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "箭头后必须跟表达式起始"
+        },
+        {
+          "conditional": "[IDENT] => {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "箭头左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "static",
+      "language": "javascript",
+      "syntax_node": "static",
+      "constraints": [
+        {
+          "conditional": "static",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "static 关键字后必须跟标识符（字段名）"
+        },
+        {
+          "conditional": "static",
+          "consequent": "async",
+          "skip": "",
+          "required": true,
+          "note": "static 关键字后可跟 async（用于异步方法）"
+        },
+        {
+          "conditional": "static",
+          "consequent": "*",
+          "skip": "",
+          "required": true,
+          "note": "static 关键字后可跟星号（用于生成器方法）"
+        },
+        {
+          "conditional": "static",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "static 关键字后可跟左大括号（用于静态初始化块）"
+        },
+        {
+          "conditional": "static async",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "static async 后必须跟方法名标识符"
+        },
+        {
+          "conditional": "static *",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "static * 后必须跟生成器方法名标识符"
+        },
+        {
+          "conditional": "static [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "static 字段名后可跟左括号（用于方法定义）"
+        },
+        {
+          "conditional": "static [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "static 字段名后可跟分号"
+        },
+        {
+          "conditional": "static [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "static 字段名后可跟等号（用于初始化）"
+        },
+        {
+          "conditional": "static async [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "static async 方法名后必须跟左括号"
+        },
+        {
+          "conditional": "static * [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "static * 生成器方法名后必须跟左括号"
+        }
+      ]
+    },
+    {
+      "construct": "import.meta",
+      "language": "javascript",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "import 关键字后必须跟点号"
+        },
+        {
+          "conditional": "import .",
+          "consequent": "meta",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 meta 标识符"
+        },
+        {
+          "conditional": "import . meta",
+          "consequent": ".",
+          "skip": "",
+          "required": false,
+          "note": "import.meta 后可跟属性访问点号"
+        }
+      ]
+    },
+    {
+      "construct": "Static initialization blocks",
+      "language": "javascript",
+      "syntax_node": "static_block",
+      "constraints": [
+        {
+          "conditional": "static",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "static 关键字后必须跟左大括号"
+        },
+        {
+          "conditional": "static {",
+          "consequent": "}",
+          "skip": "statement_list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "Spread syntax (...)",
+      "language": "javascript",
+      "syntax_node": "...",
+      "constraints": [
+        {
+          "conditional": "...",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "展开语法 ... 后必须跟标识符"
+        },
+        {
+          "conditional": "...",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "展开语法 ... 后必须跟左方括号（嵌套数组）"
+        },
+        {
+          "conditional": "...",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "展开语法 ... 后必须跟左大括号（嵌套对象）"
+        },
+        {
+          "conditional": "...",
+          "consequent": "...",
+          "skip": "",
+          "required": true,
+          "note": "展开语法 ... 后可跟另一个展开语法"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "展开元素后可跟逗号"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": "]",
+          "skip": "",
+          "required": false,
+          "note": "展开元素后可跟右方括号（数组结束）"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": "}",
+          "skip": "",
+          "required": false,
+          "note": "展开元素后可跟右大括号（对象结束）"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": ")",
+          "skip": "",
+          "required": false,
+          "note": "展开元素后可跟右括号（函数调用结束）"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "展开元素后可跟等号（仅在对象字面量尾部）"
+        }
+      ]
+    },
+    {
+      "construct": "import",
+      "language": "javascript",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "import 后可跟默认导出标识符"
+        },
+        {
+          "conditional": "import",
+          "consequent": "*",
+          "skip": "",
+          "required": false,
+          "note": "import 后可跟星号（命名空间导入）"
+        },
+        {
+          "conditional": "import",
+          "consequent": "{",
+          "skip": "",
+          "required": false,
+          "note": "import 后可跟左大括号（命名导入）"
+        },
+        {
+          "conditional": "import",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": false,
+          "note": "import 后可直接跟模块名字符串（副作用导入）"
+        },
+        {
+          "conditional": "import *",
+          "consequent": "as",
+          "skip": "",
+          "required": true,
+          "note": "星号后必须跟 as 关键字"
+        },
+        {
+          "conditional": "import * as",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "as 后必须跟命名空间标识符"
+        },
+        {
+          "conditional": "import * as [IDENT]",
+          "consequent": "from",
+          "skip": "",
+          "required": true,
+          "note": "命名空间标识符后必须跟 from 关键字"
+        },
+        {
+          "conditional": "import {",
+          "consequent": "}",
+          "skip": "imports_list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过导入列表）"
+        },
+        {
+          "conditional": "import {}",
+          "consequent": "from",
+          "skip": "",
+          "required": true,
+          "note": "导入列表后必须跟 from 关键字"
+        },
+        {
+          "conditional": "import [IDENT]",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "默认导入标识符后可跟逗号"
+        },
+        {
+          "conditional": "import [IDENT]",
+          "consequent": "from",
+          "skip": "",
+          "required": false,
+          "note": "默认导入标识符后可跟 from 关键字"
+        },
+        {
+          "conditional": "import [IDENT] ,",
+          "consequent": "*",
+          "skip": "",
+          "required": false,
+          "note": "逗号后可跟星号（混合导入命名空间）"
+        },
+        {
+          "conditional": "import [IDENT] ,",
+          "consequent": "{",
+          "skip": "",
+          "required": false,
+          "note": "逗号后可跟左大括号（混合导入命名）"
+        },
+        {
+          "conditional": "import [IDENT] , *",
+          "consequent": "as",
+          "skip": "",
+          "required": true,
+          "note": "星号前必须跟 as 关键字"
+        },
+        {
+          "conditional": "import [IDENT] , * as [IDENT]",
+          "consequent": "from",
+          "skip": "",
+          "required": true,
+          "note": "混合导入后必须跟 from 关键字"
+        },
+        {
+          "conditional": "import [IDENT] , {",
+          "consequent": "}",
+          "skip": "imports_list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "import [IDENT] , {}",
+          "consequent": "from",
+          "skip": "",
+          "required": true,
+          "note": "混合导入后必须跟 from 关键字"
+        },
+        {
+          "conditional": "import from",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "from 后必须跟模块名字符串"
+        }
+      ]
+    },
+    {
+      "construct": "Grouping operator ( )",
+      "language": "javascript",
+      "syntax_node": "grouping",
+      "constraints": [
+        {
+          "conditional": "(",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间包含表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "Labeled statement",
+      "language": "javascript",
+      "syntax_node": "label",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "标签标识符后必须跟冒号"
+        },
+        {
+          "conditional": "[IDENT] :",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟左大括号"
+        },
+        {
+          "conditional": "[IDENT] :",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟语句起始"
+        },
+        {
+          "conditional": "[IDENT] : {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "Rest parameters",
+      "language": "javascript",
+      "syntax_node": "...",
+      "constraints": [
+        {
+          "conditional": "...",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "Rest 参数语法 ... 后必须跟标识符名称"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "Rest 参数必须是最后一个参数，其后必须跟随右括号"
+        }
+      ]
+    },
+    {
+      "construct": "for await...of",
+      "language": "javascript",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "await",
+          "skip": "",
+          "required": true,
+          "note": "'for' 后必须跟 'await' 关键字"
+        },
+        {
+          "conditional": "for await",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "'await' 后必须跟左括号"
+        },
+        {
+          "conditional": "for await (",
+          "consequent": "of",
+          "skip": "variable_declaration",
+          "required": true,
+          "note": "左括号后必须跟 'of' 关键字（跳过变量声明）"
+        },
+        {
+          "conditional": "for await ( of",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "'of' 后必须跟右括号（跳过可迭代对象表达式）"
+        },
+        {
+          "conditional": "for await ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "for await ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        },
+        {
+          "conditional": "for await () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "Destructuring",
+      "language": "javascript",
+      "syntax_node": "destructuring",
+      "constraints": [
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "array_pattern",
+          "required": true,
+          "note": "左方括号后必须跟右方括号（中间包含数组解构模式）"
+        },
+        {
+          "conditional": "[]",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "数组解构模式后可跟随赋值运算符"
+        },
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "object_pattern",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间包含对象解构模式）"
+        },
+        {
+          "conditional": "{}",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "对象解构模式后可跟随赋值运算符"
+        },
+        {
+          "conditional": "...",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "Rest 元素语法 ... 后必须跟标识符名称"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": "]",
+          "skip": "",
+          "required": true,
+          "note": "Rest 元素必须是数组解构的最后一个元素，其后必须跟随右方括号"
+        },
+        {
+          "conditional": "... [IDENT]",
+          "consequent": "}",
+          "skip": "",
+          "required": true,
+          "note": "Rest 元素必须是对象解构的最后一个元素，其后必须跟随右大括号"
+        },
+        {
+          "conditional": "...",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "Rest 元素语法 ... 后可跟左大括号（用于解构到对象模式）"
+        },
+        {
+          "conditional": "...",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "Rest 元素语法 ... 后可跟左方括号（用于解构到数组模式）"
+        },
+        {
+          "conditional": "[",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "数组解构模式中必须包含标识符"
+        },
+        {
+          "conditional": "{",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "对象解构模式中必须包含属性名标识符"
+        },
+        {
+          "conditional": "{ [IDENT]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "对象解构属性名后可跟冒号（用于重命名）"
+        },
+        {
+          "conditional": "{ [IDENT] :",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "对象解构重命名冒号后必须跟新的标识符名称"
+        },
+        {
+          "conditional": "{ [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "对象解构计算属性名左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "{ []",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "对象解构计算属性名后必须跟冒号"
+        },
+        {
+          "conditional": "{ [] :",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "对象解构计算属性名冒号后必须跟目标标识符"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "解构参数或属性后可跟默认值赋值符号"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "默认值赋值符号后必须跟表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "try...catch",
+      "language": "javascript",
+      "syntax_node": "try",
+      "constraints": [
+        {
+          "conditional": "try",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "try 后必须跟左大括号"
+        },
+        {
+          "conditional": "try {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "try 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "try {}",
+          "consequent": "catch",
+          "skip": "",
+          "required": true,
+          "note": "try 块后必须跟 catch"
+        },
+        {
+          "conditional": "try {}",
+          "consequent": "finally",
+          "skip": "",
+          "required": true,
+          "note": "try 块后可直接跟 finally"
+        },
+        {
+          "conditional": "catch",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "catch 后必须跟左括号"
+        },
+        {
+          "conditional": "catch",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "catch 后可直接跟左大括号"
+        },
+        {
+          "conditional": "catch (",
+          "consequent": ")",
+          "skip": "pattern",
+          "required": true,
+          "note": "catch 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "catch ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "catch 括号后必须跟左大括号"
+        },
+        {
+          "conditional": "catch {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "catch 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "catch () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "catch 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "try {} catch () {}",
+          "consequent": "finally",
+          "skip": "",
+          "required": false,
+          "note": "catch 块后可选择性跟随 finally"
+        },
+        {
+          "conditional": "try {} catch {}",
+          "consequent": "finally",
+          "skip": "",
+          "required": false,
+          "note": "catch 块后可选择性跟随 finally"
+        },
+        {
+          "conditional": "finally",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "finally 后必须跟左大括号"
+        },
+        {
+          "conditional": "finally {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "finally 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "instanceof",
+      "language": "javascript",
+      "syntax_node": "instanceof",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "instanceof",
+          "skip": "",
+          "required": true,
+          "note": "对象标识符后可跟 instanceof 关键字"
+        },
+        {
+          "conditional": "[IDENT] instanceof",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "instanceof 关键字后必须跟构造函数标识符"
+        }
+      ]
+    },
+    {
+      "construct": "void operator",
+      "language": "javascript",
+      "syntax_node": "void",
+      "constraints": [
+        {
+          "conditional": "void",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "void 关键字后必须跟表达式起始"
+        }
+      ]
+    },
+    {
+      "construct": "Block statement",
+      "language": "javascript",
+      "syntax_node": "block",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "statement_list",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "{",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后可跟语句起始"
+        }
+      ]
+    },
+    {
+      "construct": "import()",
+      "language": "javascript",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "import 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "import (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过模块名表达式）"
+        },
+        {
+          "conditional": "import (",
+          "consequent": ",",
+          "skip": "expression",
+          "required": false,
+          "note": "左括号后可选择性跟随逗号以传递 options"
+        },
+        {
+          "conditional": "import (,",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "逗号后必须跟右括号（中间跳过 options 对象）"
+        }
+      ]
+    },
+    {
+      "construct": "Template literals (Template strings)",
+      "language": "javascript",
+      "syntax_node": "template_literal",
+      "constraints": [
+        {
+          "conditional": "`",
+          "consequent": "}",
+          "skip": "template_string",
+          "required": true,
+          "note": "反引号后可跟字符串内容或插值结束符"
+        },
+        {
+          "conditional": "`",
+          "consequent": "${",
+          "skip": "template_string",
+          "required": true,
+          "note": "反引号后可跟插值起始序列"
+        },
+        {
+          "conditional": "`",
+          "consequent": "`",
+          "skip": "template_string",
+          "required": true,
+          "note": "反引号后可跟反引号结束符"
+        },
+        {
+          "conditional": "` ${",
+          "consequent": "}",
+          "skip": "expression",
+          "required": true,
+          "note": "插值起始后必须跟右大括号"
+        },
+        {
+          "conditional": "` ${}",
+          "consequent": "}",
+          "skip": "template_string",
+          "required": true,
+          "note": "插值结束后可跟字符串内容"
+        },
+        {
+          "conditional": "` ${}",
+          "consequent": "${",
+          "skip": "template_string",
+          "required": true,
+          "note": "插值结束后可跟新的插值起始序列"
+        },
+        {
+          "conditional": "` ${}",
+          "consequent": "`",
+          "skip": "template_string",
+          "required": true,
+          "note": "插值结束后可跟反引号结束符"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "`",
+          "skip": "",
+          "required": true,
+          "note": "标签函数标识符后必须跟反引号"
+        },
+        {
+          "conditional": "[IDENT] `",
+          "consequent": "}",
+          "skip": "template_string",
+          "required": true,
+          "note": "标签模板反引号后可跟字符串内容"
+        },
+        {
+          "conditional": "[IDENT] `",
+          "consequent": "${",
+          "skip": "template_string",
+          "required": true,
+          "note": "标签模板反引号后可跟插值起始序列"
+        },
+        {
+          "conditional": "[IDENT] `",
+          "consequent": "`",
+          "skip": "template_string",
+          "required": true,
+          "note": "标签模板反引号后可跟反引号结束符"
+        },
+        {
+          "conditional": "[IDENT] ` ${",
+          "consequent": "}",
+          "skip": "expression",
+          "required": true,
+          "note": "标签模板插值起始后必须跟右大括号"
+        },
+        {
+          "conditional": "[IDENT] ` ${}",
+          "consequent": "}",
+          "skip": "template_string",
+          "required": true,
+          "note": "标签模板插值结束后可跟字符串内容"
+        },
+        {
+          "conditional": "[IDENT] ` ${}",
+          "consequent": "${",
+          "skip": "template_string",
+          "required": true,
+          "note": "标签模板插值结束后可跟新的插值起始序列"
+        },
+        {
+          "conditional": "[IDENT] ` ${}",
+          "consequent": "`",
+          "skip": "template_string",
+          "required": true,
+          "note": "标签模板插值结束后可跟反引号结束符"
+        }
+      ]
+    },
+    {
+      "construct": "for...in",
+      "language": "javascript",
+      "syntax_node": "for",
+      "constraints": [
+        {
+          "conditional": "for",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "for 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "const",
+          "skip": "",
+          "required": true,
+          "note": "for 左括号后可跟 const 关键字"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "let",
+          "skip": "",
+          "required": true,
+          "note": "for 左括号后可跟 let 关键字"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "var",
+          "skip": "",
+          "required": true,
+          "note": "for 左括号后可跟 var 关键字"
+        },
+        {
+          "conditional": "for (",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "for 左括号后可跟变量标识符"
+        },
+        {
+          "conditional": "for ( const",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "for ( const 后必须跟标识符"
+        },
+        {
+          "conditional": "for ( const [IDENT]",
+          "consequent": "in",
+          "skip": "",
+          "required": true,
+          "note": "for ( const 标识符后必须跟 in 关键字"
+        },
+        {
+          "conditional": "for ( const [IDENT] in",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "for ( const 标识符 in 后必须跟表达式起始（对象）"
+        },
+        {
+          "conditional": "for ( const [IDENT] in <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "for ( const 标识符 in 表达式后必须跟右括号"
+        },
+        {
+          "conditional": "for ( const [IDENT] in <expression_start> )",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "for 右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "for ( const [IDENT] in <expression_start> )",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "for 右括号后必须跟语句起始"
+        },
+        {
+          "conditional": "for ( const [IDENT] in <expression_start> ) {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "for 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "class expression",
+      "language": "javascript",
+      "syntax_node": "class",
+      "constraints": [
+        {
+          "conditional": "class",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "class 关键字后可跟类名标识符"
+        },
+        {
+          "conditional": "class",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "class 关键字后必须跟左大括号"
+        },
+        {
+          "conditional": "class [IDENT]",
+          "consequent": "extends",
+          "skip": "",
+          "required": false,
+          "note": "类名后可跟 extends 关键字"
+        },
+        {
+          "conditional": "class [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "类名后必须跟左大括号"
+        },
+        {
+          "conditional": "class [IDENT] extends",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "extends 后必须跟表达式起始"
+        },
+        {
+          "conditional": "class [IDENT] extends <expression_start>",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "父类表达式后必须跟左大括号"
+        },
+        {
+          "conditional": "class {",
+          "consequent": "}",
+          "skip": "class_body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "class [IDENT] {",
+          "consequent": "}",
+          "skip": "class_body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "class [IDENT] extends <expression_start> {",
+          "consequent": "}",
+          "skip": "class_body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "var",
+      "language": "javascript",
+      "syntax_node": "var",
+      "constraints": [
+        {
+          "conditional": "var",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "var 后必须跟标识符"
+        },
+        {
+          "conditional": "var",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "var 后可跟左中括号（解构）"
+        },
+        {
+          "conditional": "var",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "var 后可跟左大括号（解构）"
+        },
+        {
+          "conditional": "var [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "var 标识符后可跟等号"
+        },
+        {
+          "conditional": "var [IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "var 等号后必须跟表达式起始"
+        },
+        {
+          "conditional": "var [IDENT]",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "var 标识符后可跟逗号"
+        },
+        {
+          "conditional": "var [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "var 标识符后可跟分号"
+        },
+        {
+          "conditional": "var [IDENT] =",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "var 赋值表达式后可跟逗号"
+        },
+        {
+          "conditional": "var [IDENT] =",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "var 赋值表达式后可跟分号"
+        },
+        {
+          "conditional": "var [IDENT],",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "var 逗号后必须跟标识符"
+        },
+        {
+          "conditional": "var [IDENT],",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "var 逗号后可跟左中括号（解构）"
+        },
+        {
+          "conditional": "var [IDENT],",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "var 逗号后可跟左大括号（解构）"
+        },
+        {
+          "conditional": "var [",
+          "consequent": "]",
+          "skip": "pattern",
+          "required": true,
+          "note": "var 左中括号后必须跟右中括号"
+        },
+        {
+          "conditional": "var []",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "var 解构模式后可跟等号"
+        },
+        {
+          "conditional": "var []",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "var 解构模式后可跟逗号"
+        },
+        {
+          "conditional": "var []",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "var 解构模式后可跟分号"
+        },
+        {
+          "conditional": "var {",
+          "consequent": "}",
+          "skip": "pattern",
+          "required": true,
+          "note": "var 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "var {}",
+          "consequent": "=",
+          "skip": "",
+          "required": false,
+          "note": "var 解构模式后可跟等号"
+        },
+        {
+          "conditional": "var {}",
+          "consequent": ",",
+          "skip": "",
+          "required": false,
+          "note": "var 解构模式后可跟逗号"
+        },
+        {
+          "conditional": "var {}",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "var 解构模式后可跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "await",
+      "language": "javascript",
+      "syntax_node": "await",
+      "constraints": [
+        {
+          "conditional": "await",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟标识符"
+        },
+        {
+          "conditional": "await",
+          "consequent": "[NUMBER]",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟数字字面量"
+        },
+        {
+          "conditional": "await",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟字符串字面量"
+        },
+        {
+          "conditional": "await",
+          "consequent": "[TEMPLATE]",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟模板字符串"
+        },
+        {
+          "conditional": "await",
+          "consequent": "[REGEX]",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟正则表达式字面量"
+        },
+        {
+          "conditional": "await",
+          "consequent": "null",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 null"
+        },
+        {
+          "conditional": "await",
+          "consequent": "true",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 true"
+        },
+        {
+          "conditional": "await",
+          "consequent": "false",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 false"
+        },
+        {
+          "conditional": "await",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟左括号（用于分组或IIFE）"
+        },
+        {
+          "conditional": "await",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟左方括号（成员访问或解构）"
+        },
+        {
+          "conditional": "await",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟左大括号（对象字面量或块）"
+        },
+        {
+          "conditional": "await",
+          "consequent": "`",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟反引号（模板字符串起始）"
+        },
+        {
+          "conditional": "await",
+          "consequent": "async",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 async 关键字"
+        },
+        {
+          "conditional": "await",
+          "consequent": "function",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 function 关键字"
+        },
+        {
+          "conditional": "await",
+          "consequent": "class",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 class 关键字"
+        },
+        {
+          "conditional": "await",
+          "consequent": "this",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 this"
+        },
+        {
+          "conditional": "await",
+          "consequent": "super",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 super"
+        },
+        {
+          "conditional": "await",
+          "consequent": "new",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 new 关键字"
+        },
+        {
+          "conditional": "await",
+          "consequent": "await",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟另一个 await"
+        },
+        {
+          "conditional": "await",
+          "consequent": "yield",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 yield"
+        },
+        {
+          "conditional": "await",
+          "consequent": "delete",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 delete 操作符"
+        },
+        {
+          "conditional": "await",
+          "consequent": "void",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 void 操作符"
+        },
+        {
+          "conditional": "await",
+          "consequent": "typeof",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟 typeof 操作符"
+        },
+        {
+          "conditional": "await",
+          "consequent": "+",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟一元加号"
+        },
+        {
+          "conditional": "await",
+          "consequent": "-",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟一元减号"
+        },
+        {
+          "conditional": "await",
+          "consequent": "~",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟按位非"
+        },
+        {
+          "conditional": "await",
+          "consequent": "!",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟逻辑非"
+        },
+        {
+          "conditional": "await",
+          "consequent": "++",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟自增运算符"
+        },
+        {
+          "conditional": "await",
+          "consequent": "--",
+          "skip": "",
+          "required": true,
+          "note": "await 后必须跟自减运算符"
+        }
+      ]
+    },
+    {
+      "construct": "class",
+      "language": "javascript",
+      "syntax_node": "class",
+      "constraints": [
+        {
+          "conditional": "class",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'class' 后必须跟类名标识符"
+        },
+        {
+          "conditional": "class [IDENT]",
+          "consequent": "extends",
+          "skip": "",
+          "required": false,
+          "note": "类名后可跟 'extends' 关键字"
+        },
+        {
+          "conditional": "class [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "类名后必须跟左大括号"
+        },
+        {
+          "conditional": "class [IDENT] extends",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "'extends' 后必须跟父类名标识符"
+        },
+        {
+          "conditional": "class [IDENT] extends [IDENT]",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "父类名后必须跟左大括号"
+        },
+        {
+          "conditional": "class [IDENT] {",
+          "consequent": "}",
+          "skip": "class_body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "class [IDENT] extends [IDENT] {",
+          "consequent": "}",
+          "skip": "class_body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "new.target",
+      "language": "javascript",
+      "syntax_node": "new",
+      "constraints": [
+        {
+          "conditional": "new",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "new 关键字后必须跟点号"
+        },
+        {
+          "conditional": "new .",
+          "consequent": "target",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 target 标识符"
+        }
+      ]
+    },
+    {
+      "construct": "Method definitions",
+      "language": "javascript",
+      "syntax_node": "method",
+      "constraints": [
+        {
+          "conditional": "*",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "Generator 星号后必须跟属性名"
+        },
+        {
+          "conditional": "*",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "Generator 星号后可跟计算属性左括号"
+        },
+        {
+          "conditional": "async",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "async 关键字后必须跟属性名"
+        },
+        {
+          "conditional": "async",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "async 关键字后可跟计算属性左括号"
+        },
+        {
+          "conditional": "async *",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "async generator 星号后必须跟属性名"
+        },
+        {
+          "conditional": "async *",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "async generator 星号后可跟计算属性左括号"
+        },
+        {
+          "conditional": "[PROPERTY]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "方法名后必须跟左括号"
+        },
+        {
+          "conditional": "[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "计算属性左括号后必须跟右括号"
+        },
+        {
+          "conditional": "* [PROPERTY]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "Generator 方法名后必须跟左括号"
+        },
+        {
+          "conditional": "* [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "Generator 计算属性左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async [PROPERTY]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async 方法名后必须跟左括号"
+        },
+        {
+          "conditional": "async [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "async 计算属性左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async * [PROPERTY]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async generator 方法名后必须跟左括号"
+        },
+        {
+          "conditional": "async * [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "async generator 计算属性左括号后必须跟右括号"
+        },
+        {
+          "conditional": "[PROPERTY] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "* [PROPERTY] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "Generator 方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async [PROPERTY] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async 方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async * [PROPERTY] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async generator 方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "[] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "计算属性方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "* [] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "Generator 计算属性方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async [] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async 计算属性方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async * [] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async generator 计算属性方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "[PROPERTY] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "方法参数后必须跟左大括号"
+        },
+        {
+          "conditional": "[PROPERTY] ({",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "方法左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "typeof",
+      "language": "javascript",
+      "syntax_node": "typeof",
+      "constraints": [
+        {
+          "conditional": "typeof",
+          "consequent": "(",
+          "skip": "",
+          "required": false,
+          "note": "typeof 关键字后可选择性跟随左括号"
+        },
+        {
+          "conditional": "typeof",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "typeof 关键字后必须跟表达式起始"
+        },
+        {
+          "conditional": "typeof (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "typeof 左括号后必须跟右括号（中间跳过表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "if...else",
+      "language": "javascript",
+      "syntax_node": "if",
+      "constraints": [
+        {
+          "conditional": "if",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "if 后必须跟左括号"
+        },
+        {
+          "conditional": "if (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号"
+        },
+        {
+          "conditional": "if ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "if ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        },
+        {
+          "conditional": "if () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "if () {}",
+          "consequent": "else",
+          "skip": "",
+          "required": false,
+          "note": "if 语句块后可选择性跟随 else"
+        },
+        {
+          "conditional": "else",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "else 后必须跟左大括号"
+        },
+        {
+          "conditional": "else",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "else 后必须跟语句起始"
+        },
+        {
+          "conditional": "else {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "else 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "in",
+      "language": "javascript",
+      "syntax_node": "in",
+      "constraints": [
+        {
+          "conditional": "in",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "in 运算符后必须跟表达式（对象）"
+        }
+      ]
+    },
+    {
+      "construct": "function* expression",
+      "language": "javascript",
+      "syntax_node": "function*",
+      "constraints": [
+        {
+          "conditional": "function*",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "function* 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "function*",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "function* 关键字后可跟函数名标识符"
+        },
+        {
+          "conditional": "function* [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "function* 函数名后必须跟左括号"
+        },
+        {
+          "conditional": "function* (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "function* 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "function* ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "function* 参数列表后必须跟左大括号"
+        },
+        {
+          "conditional": "function* () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "function* 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "function* [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "function* 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "function* [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "function* 参数列表后必须跟左大括号"
+        },
+        {
+          "conditional": "function* [IDENT] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "function* 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "constructor",
+      "language": "javascript",
+      "syntax_node": "constructor",
+      "constraints": [
+        {
+          "conditional": "constructor",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "constructor 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "constructor (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过参数列表）"
+        },
+        {
+          "conditional": "constructor ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "constructor () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过函数体）"
+        }
+      ]
+    },
+    {
+      "construct": "await using",
+      "language": "javascript",
+      "syntax_node": "await using",
+      "constraints": [
+        {
+          "conditional": "await using",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "await using 后必须跟变量名标识符"
+        },
+        {
+          "conditional": "await using [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "变量名后必须跟赋值号"
+        },
+        {
+          "conditional": "await using [IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "赋值号后必须跟表达式起始"
+        },
+        {
+          "conditional": "await using [IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "表达式后必须跟分号"
+        },
+        {
+          "conditional": "await using [IDENT] = <expression_start>",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "表达式后可跟逗号以声明多个变量"
+        },
+        {
+          "conditional": "await using [IDENT] = <expression_start> ,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个变量名标识符"
+        }
+      ]
+    },
+    {
+      "construct": "import.meta.resolve()",
+      "language": "javascript",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "import 关键字后必须跟点号"
+        },
+        {
+          "conditional": "import .",
+          "consequent": "meta",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 meta 标识符"
+        },
+        {
+          "conditional": "import . meta",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "import.meta 后必须跟点号"
+        },
+        {
+          "conditional": "import . meta .",
+          "consequent": "resolve",
+          "skip": "",
+          "required": true,
+          "note": "点号后必须跟 resolve 标识符"
+        },
+        {
+          "conditional": "import . meta . resolve",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "resolve 标识符后必须跟左括号"
+        },
+        {
+          "conditional": "import . meta . resolve (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过模块名表达式）"
+        }
+      ]
+    },
+    {
+      "construct": "function expression",
+      "language": "javascript",
+      "syntax_node": "function",
+      "constraints": [
+        {
+          "conditional": "function",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "function 关键字后可跟函数名标识符"
+        },
+        {
+          "conditional": "function",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "function 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "function [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "函数名后必须跟左括号"
+        },
+        {
+          "conditional": "function (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间包含参数列表）"
+        },
+        {
+          "conditional": "function ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "参数列表右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "function () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "函数体左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "function [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "命名函数参数列表右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "function [IDENT] () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "命名函数体左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "Import attributes",
+      "language": "javascript",
+      "syntax_node": "import",
+      "constraints": [
+        {
+          "conditional": "import",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "import 后可跟左大括号"
+        },
+        {
+          "conditional": "import {",
+          "consequent": "}",
+          "skip": "import_specifiers",
+          "required": true,
+          "note": "import 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "import {}",
+          "consequent": "from",
+          "skip": "",
+          "required": true,
+          "note": "import 右大括号后必须跟 from"
+        },
+        {
+          "conditional": "import {} from",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "from 后必须跟模块名字符串"
+        },
+        {
+          "conditional": "import {} from [STRING]",
+          "consequent": "with",
+          "skip": "",
+          "required": true,
+          "note": "模块名字符串后必须跟 with"
+        },
+        {
+          "conditional": "import {} from [STRING] with",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "with 后必须跟左大括号"
+        },
+        {
+          "conditional": "import {} from [STRING] with {",
+          "consequent": "}",
+          "skip": "attributes",
+          "required": true,
+          "note": "with 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "import {} from [STRING] with {",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "with 左大括号后可跟属性键"
+        },
+        {
+          "conditional": "import {} from [STRING] with { [PROPERTY]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "属性键后必须跟冒号"
+        },
+        {
+          "conditional": "import {} from [STRING] with { [PROPERTY] :",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟属性值字符串"
+        },
+        {
+          "conditional": "import {} from [STRING] with { [PROPERTY] : [STRING]",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "属性值后可跟逗号"
+        },
+        {
+          "conditional": "import {} from [STRING] with { [PROPERTY] : [STRING] ,",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个属性键"
+        },
+        {
+          "conditional": "export",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "export 后可跟左大括号"
+        },
+        {
+          "conditional": "export {",
+          "consequent": "}",
+          "skip": "export_specifiers",
+          "required": true,
+          "note": "export 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "export {}",
+          "consequent": "from",
+          "skip": "",
+          "required": true,
+          "note": "export 右大括号后必须跟 from"
+        },
+        {
+          "conditional": "export {} from",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "from 后必须跟模块名字符串"
+        },
+        {
+          "conditional": "export {} from [STRING]",
+          "consequent": "with",
+          "skip": "",
+          "required": true,
+          "note": "模块名字符串后必须跟 with"
+        },
+        {
+          "conditional": "export {} from [STRING] with",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "with 后必须跟左大括号"
+        },
+        {
+          "conditional": "export {} from [STRING] with {",
+          "consequent": "}",
+          "skip": "attributes",
+          "required": true,
+          "note": "with 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "export {} from [STRING] with {",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "with 左大括号后可跟属性键"
+        },
+        {
+          "conditional": "export {} from [STRING] with { [PROPERTY]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "属性键后必须跟冒号"
+        },
+        {
+          "conditional": "export {} from [STRING] with { [PROPERTY] :",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "冒号后必须跟属性值字符串"
+        },
+        {
+          "conditional": "export {} from [STRING] with { [PROPERTY] : [STRING]",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "属性值后可跟逗号"
+        },
+        {
+          "conditional": "export {} from [STRING] with { [PROPERTY] : [STRING] ,",
+          "consequent": "[PROPERTY]",
+          "skip": "",
+          "required": true,
+          "note": "逗号后必须跟下一个属性键"
+        }
+      ]
+    },
+    {
+      "construct": "yield*",
+      "language": "javascript",
+      "syntax_node": "yield*",
+      "constraints": [
+        {
+          "conditional": "yield*",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": false,
+          "note": "yield* 后可跟表达式（可迭代对象）"
+        }
+      ]
+    },
+    {
+      "construct": "Empty statement",
+      "language": "javascript",
+      "syntax_node": ";",
+      "constraints": [
+        {
+          "conditional": ";",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": false,
+          "note": "分号后可跟任意语句"
+        }
+      ]
+    },
+    {
+      "construct": "while",
+      "language": "javascript",
+      "syntax_node": "while",
+      "constraints": [
+        {
+          "conditional": "while",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "while 后必须跟左括号"
+        },
+        {
+          "conditional": "while (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "while 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "while ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "while 右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "while ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "while 右括号后必须跟语句起始"
+        },
+        {
+          "conditional": "while () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "while 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "async function",
+      "language": "javascript",
+      "syntax_node": "async function",
+      "constraints": [
+        {
+          "conditional": "async",
+          "consequent": "function",
+          "skip": "",
+          "required": true,
+          "note": "async 关键字后必须跟 function 关键字"
+        },
+        {
+          "conditional": "async function",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "async function 后必须跟函数名称标识符"
+        },
+        {
+          "conditional": "async function [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "函数名后必须跟左括号"
+        },
+        {
+          "conditional": "async function [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "左括号后必须跟右括号（中间跳过参数列表）"
+        },
+        {
+          "conditional": "async function [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "参数括号后必须跟左大括号"
+        },
+        {
+          "conditional": "async function [IDENT] () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过函数体）"
+        }
+      ]
+    },
+    {
+      "construct": "Optional chaining (?.)",
+      "language": "javascript",
+      "syntax_node": "optional_chaining",
+      "constraints": [
+        {
+          "conditional": "?.",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "可选链操作符后可跟属性标识符"
+        },
+        {
+          "conditional": "?.",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "可选链操作符后可跟左中括号"
+        },
+        {
+          "conditional": "?.",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "可选链操作符后可跟左括号"
+        },
+        {
+          "conditional": "?.[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "可选链左中括号后必须跟右中括号"
+        },
+        {
+          "conditional": "?.(",
+          "consequent": ")",
+          "skip": "arguments",
+          "required": true,
+          "note": "可选链左括号后必须跟右括号"
+        }
+      ]
+    },
+    {
+      "construct": "let",
+      "language": "javascript",
+      "syntax_node": "let",
+      "constraints": [
+        {
+          "conditional": "let",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "let 关键字后必须跟标识符"
+        },
+        {
+          "conditional": "let",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "let 关键字后可跟左中括号（解构）"
+        },
+        {
+          "conditional": "let",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "let 关键字后可跟左大括号（解构）"
+        },
+        {
+          "conditional": "let [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "let 标识符后可跟赋值号"
+        },
+        {
+          "conditional": "let [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "let 标识符后可跟分号（无初始化）"
+        },
+        {
+          "conditional": "let [IDENT]",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "let 标识符后可跟逗号（多变量声明）"
+        },
+        {
+          "conditional": "let [",
+          "consequent": "]",
+          "skip": "pattern",
+          "required": true,
+          "note": "let 左中括号后必须跟右中括号"
+        },
+        {
+          "conditional": "let []",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "let 数组解构后可跟赋值号"
+        },
+        {
+          "conditional": "let []",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "let 数组解构后可跟分号"
+        },
+        {
+          "conditional": "let []",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "let 数组解构后可跟逗号"
+        },
+        {
+          "conditional": "let {",
+          "consequent": "}",
+          "skip": "pattern",
+          "required": true,
+          "note": "let 左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "let {}",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "let 对象解构后可跟赋值号"
+        },
+        {
+          "conditional": "let {}",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "let 对象解构后可跟分号"
+        },
+        {
+          "conditional": "let {}",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "let 对象解构后可跟逗号"
+        },
+        {
+          "conditional": "let [IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "let 赋值号后必须跟表达式起始"
+        },
+        {
+          "conditional": "let [] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "let 解构赋值号后必须跟表达式起始"
+        },
+        {
+          "conditional": "let {} =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "let 解构赋值号后必须跟表达式起始"
+        },
+        {
+          "conditional": "let [IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "let 声明表达式后必须跟分号"
+        },
+        {
+          "conditional": "let [IDENT] = <expression_start>",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "let 声明表达式后可跟逗号（多变量声明）"
+        },
+        {
+          "conditional": "let [IDENT] = <expression_start>,",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "let 逗号后必须跟标识符"
+        },
+        {
+          "conditional": "let [IDENT] = <expression_start>,",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "let 逗号后可跟左中括号（解构）"
+        },
+        {
+          "conditional": "let [IDENT] = <expression_start>,",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "let 逗号后可跟左大括号（解构）"
+        }
+      ]
+    },
+    {
+      "construct": "Default parameters",
+      "language": "javascript",
+      "syntax_node": "default_param",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "参数标识符后可跟等号"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "等号后必须跟表达式起始"
+        },
+        {
+          "conditional": "[IDENT] = <expression_start>",
+          "consequent": ",",
+          "skip": "",
+          "required": true,
+          "note": "默认值表达式后可跟逗号"
+        },
+        {
+          "conditional": "[IDENT] = <expression_start>",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "默认值表达式后可跟右括号"
+        }
+      ]
+    },
+    {
+      "construct": "arguments[Symbol.iterator]()",
+      "language": "javascript",
+      "syntax_node": "arguments",
+      "constraints": [
+        {
+          "conditional": "arguments",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "arguments 对象后必须跟左方括号"
+        },
+        {
+          "conditional": "arguments [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "左方括号后必须跟右方括号"
+        },
+        {
+          "conditional": "arguments []",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "方括号后必须跟左括号"
+        },
+        {
+          "conditional": "arguments [] (",
+          "consequent": ")",
+          "skip": "arguments",
+          "required": true,
+          "note": "左括号后必须跟右括号"
+        }
+      ]
+    },
+    {
+      "construct": "Public class fields",
+      "language": "javascript",
+      "syntax_node": "field_definition",
+      "constraints": [
+        {
+          "conditional": "[IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "字段名后可跟分号"
+        },
+        {
+          "conditional": "[IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "字段名后可跟等号进行初始化"
+        },
+        {
+          "conditional": "[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "等号后必须跟表达式起始"
+        },
+        {
+          "conditional": "[IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "初始化表达式后可跟分号"
+        },
+        {
+          "conditional": "[IDENT] = <expression_start>",
+          "consequent": "}",
+          "skip": "",
+          "required": true,
+          "note": "初始化表达式后可直接跟右大括号"
+        },
+        {
+          "conditional": "static [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "静态字段名后可跟分号"
+        },
+        {
+          "conditional": "static [IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "静态字段名后可跟等号进行初始化"
+        },
+        {
+          "conditional": "static [IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "静态字段等号后必须跟表达式起始"
+        },
+        {
+          "conditional": "static [IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "静态字段初始化表达式后可跟分号"
+        },
+        {
+          "conditional": "static [IDENT] = <expression_start>",
+          "consequent": "}",
+          "skip": "",
+          "required": true,
+          "note": "静态字段初始化表达式后可直接跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "Object initializer",
+      "language": "javascript",
+      "syntax_node": "object_expression",
+      "constraints": [
+        {
+          "conditional": "{",
+          "consequent": "}",
+          "skip": "properties",
+          "required": true,
+          "note": "左大括号后必须跟右大括号（中间跳过属性列表）"
+        },
+        {
+          "conditional": "{",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后可跟属性标识符"
+        },
+        {
+          "conditional": "{",
+          "consequent": "[NUMBER]",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后可跟数字字面量属性名"
+        },
+        {
+          "conditional": "{",
+          "consequent": "[STRING]",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后可跟字符串字面量属性名"
+        },
+        {
+          "conditional": "{",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后可跟左中括号（计算属性名）"
+        },
+        {
+          "conditional": "{ [",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "计算属性名左中括号后必须跟右中括号"
+        },
+        {
+          "conditional": "{ []",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "计算属性名右中括号后必须跟冒号"
+        },
+        {
+          "conditional": "{ [IDENT]",
+          "consequent": ":",
+          "skip": "",
+          "required": true,
+          "note": "标识符属性名后可跟冒号"
+        },
+        {
+          "conditional": "{ [IDENT] :",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "属性冒号后必须跟表达式起始"
+        },
+        {
+          "conditional": "{ [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "标识符属性名后可跟左括号（方法定义）"
+        },
+        {
+          "conditional": "{ [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "{ [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "方法参数括号后必须跟左大括号"
+        },
+        {
+          "conditional": "{ [IDENT] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "方法体左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "{ get [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "get 访问器标识符后必须跟左括号"
+        },
+        {
+          "conditional": "{ get [IDENT] (",
+          "consequent": ")",
+          "skip": "",
+          "required": true,
+          "note": "get 访问器左括号后必须跟右括号"
+        },
+        {
+          "conditional": "{ get [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "get 访问器括号后必须跟左大括号"
+        },
+        {
+          "conditional": "{ set [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "set 访问器标识符后必须跟左括号"
+        },
+        {
+          "conditional": "{ set [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "set 访问器左括号后必须跟右括号"
+        },
+        {
+          "conditional": "{ set [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "set 访问器括号后必须跟左大括号"
+        },
+        {
+          "conditional": "{",
+          "consequent": "...",
+          "skip": "",
+          "required": true,
+          "note": "左大括号后可跟扩展运算符"
+        },
+        {
+          "conditional": "{ ...",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "扩展运算符后必须跟标识符"
+        }
+      ]
+    },
+    {
+      "construct": "async function*",
+      "language": "javascript",
+      "syntax_node": "function",
+      "constraints": [
+        {
+          "conditional": "async",
+          "consequent": "function",
+          "skip": "",
+          "required": true,
+          "note": "async 关键字后必须跟 function 关键字"
+        },
+        {
+          "conditional": "async function",
+          "consequent": "*",
+          "skip": "",
+          "required": true,
+          "note": "async function 后必须跟星号"
+        },
+        {
+          "conditional": "async function *",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "async function * 后必须跟函数名标识符"
+        },
+        {
+          "conditional": "async function * [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async function * 标识符后必须跟左括号"
+        },
+        {
+          "conditional": "async function * [IDENT] (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async function * 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async function * [IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "async function * 括号后必须跟左大括号"
+        },
+        {
+          "conditional": "async function * [IDENT] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "async function * 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "continue",
+      "language": "javascript",
+      "syntax_node": "continue",
+      "constraints": [
+        {
+          "conditional": "continue",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "continue 后必须跟分号"
+        },
+        {
+          "conditional": "continue",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "continue 后可跟标签标识符"
+        },
+        {
+          "conditional": "continue [IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "continue 标签后必须跟分号"
+        }
+      ]
+    },
+    {
+      "construct": "super",
+      "language": "javascript",
+      "syntax_node": "super",
+      "constraints": [
+        {
+          "conditional": "super",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "super 后必须跟左括号（用于调用父类构造函数）"
+        },
+        {
+          "conditional": "super",
+          "consequent": ".",
+          "skip": "",
+          "required": true,
+          "note": "super 后必须跟点号（用于访问父类属性）"
+        },
+        {
+          "conditional": "super",
+          "consequent": "[",
+          "skip": "",
+          "required": true,
+          "note": "super 后必须跟左方括号（用于计算属性访问）"
+        },
+        {
+          "conditional": "super(",
+          "consequent": ")",
+          "skip": "arguments",
+          "required": true,
+          "note": "super 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "super.",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "super 点号后必须跟属性标识符"
+        },
+        {
+          "conditional": "super[",
+          "consequent": "]",
+          "skip": "expression",
+          "required": true,
+          "note": "super 左方括号后必须跟右方括号"
+        }
+      ]
+    },
+    {
+      "construct": "with",
+      "language": "javascript",
+      "syntax_node": "with",
+      "constraints": [
+        {
+          "conditional": "with",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "with 关键字后必须跟左括号"
+        },
+        {
+          "conditional": "with (",
+          "consequent": ")",
+          "skip": "expression",
+          "required": true,
+          "note": "左括号后必须跟右括号"
+        },
+        {
+          "conditional": "with ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟左大括号"
+        },
+        {
+          "conditional": "with ()",
+          "consequent": "<statement_start>",
+          "skip": "",
+          "required": true,
+          "note": "右括号后必须跟语句起始"
+        },
+        {
+          "conditional": "with () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "async function* expression",
+      "language": "javascript",
+      "syntax_node": "function",
+      "constraints": [
+        {
+          "conditional": "async",
+          "consequent": "function",
+          "skip": "",
+          "required": true,
+          "note": "async 关键字后必须跟 function 关键字"
+        },
+        {
+          "conditional": "async function",
+          "consequent": "*",
+          "skip": "",
+          "required": true,
+          "note": "async function 关键字后必须跟星号"
+        },
+        {
+          "conditional": "async function *",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": false,
+          "note": "async function * 后可跟函数名标识符"
+        },
+        {
+          "conditional": "async function *",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async function * 后必须跟左括号"
+        },
+        {
+          "conditional": "async function * [IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "async function * 名称后必须跟左括号"
+        },
+        {
+          "conditional": "async function * (",
+          "consequent": ")",
+          "skip": "parameters",
+          "required": true,
+          "note": "async function * 左括号后必须跟右括号"
+        },
+        {
+          "conditional": "async function * ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "async function * 括号后必须跟左大括号"
+        },
+        {
+          "conditional": "async function * () {",
+          "consequent": "}",
+          "skip": "statement_block",
+          "required": true,
+          "note": "async function * 左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "Private elements",
+      "language": "javascript",
+      "syntax_node": "private_identifier",
+      "constraints": [
+        {
+          "conditional": "#",
+          "consequent": "[IDENT]",
+          "skip": "",
+          "required": true,
+          "note": "私有符号 # 后必须跟标识符"
+        },
+        {
+          "conditional": "#[IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "私有字段名后可跟分号"
+        },
+        {
+          "conditional": "#[IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "私有字段名后可跟等号进行初始化"
+        },
+        {
+          "conditional": "#[IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "私有标识符后可跟左括号（用于私有方法）"
+        },
+        {
+          "conditional": "#[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "私有字段等号后必须跟表达式起始"
+        },
+        {
+          "conditional": "#[IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "私有字段初始化表达式后可跟分号"
+        },
+        {
+          "conditional": "#[IDENT] (",
+          "consequent": ")",
+          "skip": "formal_parameters",
+          "required": true,
+          "note": "私有方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "#[IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "私有方法参数列表后必须跟左大括号"
+        },
+        {
+          "conditional": "#[IDENT] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "私有方法左大括号后必须跟右大括号"
+        },
+        {
+          "conditional": "static #[IDENT]",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "静态私有字段名后可跟分号"
+        },
+        {
+          "conditional": "static #[IDENT]",
+          "consequent": "=",
+          "skip": "",
+          "required": true,
+          "note": "静态私有字段名后可跟等号进行初始化"
+        },
+        {
+          "conditional": "static #[IDENT]",
+          "consequent": "(",
+          "skip": "",
+          "required": true,
+          "note": "静态私有标识符后可跟左括号（用于静态私有方法）"
+        },
+        {
+          "conditional": "static #[IDENT] =",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "静态私有字段等号后必须跟表达式起始"
+        },
+        {
+          "conditional": "static #[IDENT] = <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "静态私有字段初始化表达式后可跟分号"
+        },
+        {
+          "conditional": "static #[IDENT] (",
+          "consequent": ")",
+          "skip": "formal_parameters",
+          "required": true,
+          "note": "静态私有方法左括号后必须跟右括号"
+        },
+        {
+          "conditional": "static #[IDENT] ()",
+          "consequent": "{",
+          "skip": "",
+          "required": true,
+          "note": "静态私有方法参数列表后必须跟左大括号"
+        },
+        {
+          "conditional": "static #[IDENT] () {",
+          "consequent": "}",
+          "skip": "function_body",
+          "required": true,
+          "note": "静态私有方法左大括号后必须跟右大括号"
+        }
+      ]
+    },
+    {
+      "construct": "Expression statement",
+      "language": "javascript",
+      "syntax_node": "expression",
+      "constraints": [
+        {
+          "conditional": "<expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "表达式语句必须以分号结束"
+        }
+      ]
+    },
+    {
+      "construct": "throw",
+      "language": "javascript",
+      "syntax_node": "throw",
+      "constraints": [
+        {
+          "conditional": "throw",
+          "consequent": "<expression_start>",
+          "skip": "",
+          "required": true,
+          "note": "throw 后必须跟表达式起始"
+        },
+        {
+          "conditional": "throw <expression_start>",
+          "consequent": ";",
+          "skip": "",
+          "required": true,
+          "note": "throw 表达式后必须跟分号"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "construct": "ClassPermits",
+  "language": "java",
+  "syntax_node": "permits",
+  "constraints": [
+    {
+      "conditional": "permits",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'permits' 关键字后必须跟允许的子类类型标识符"
+    },
+    {
+      "conditional": "permits [IDENT]",
+      "consequent": "{, ,",
+      "skip": "",
+      "required": true,
+      "note": "允许的子类类型标识符后必须跟左大括号（类体开始）或逗号"
+    },
+    {
+      "conditional": "permits [IDENT] ,",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟下一个允许的子类类型标识符"
+    },
+    {
+      "conditional": "permits [IDENT] , [IDENT]",
+      "consequent": "{, ,",
+      "skip": "",
+      "required": true,
+      "note": "后续允许的子类类型标识符后必须跟左大括号或逗号"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:05:22.032812"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "block-item-list",
+  "language": "c",
+  "syntax_node": "block-item-list",
+  "constraints": [
+    {
+      "conditional": "<block-item>",
+      "consequent": "<block-item>, }",
+      "skip": "",
+      "required": false,
+      "note": "block-item 后可以跟另一个 block-item 或右大括号（块结束）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:47:46.579901"
+}

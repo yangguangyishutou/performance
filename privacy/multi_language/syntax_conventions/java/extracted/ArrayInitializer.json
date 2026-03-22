@@ -1,0 +1,29 @@
+{
+  "construct": "ArrayInitializer",
+  "language": "java",
+  "syntax_node": "{",
+  "constraints": [
+    {
+      "conditional": "{",
+      "consequent": "}, [",
+      "skip": "",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（空数组）或逗号（尾随逗号）或表达式起始"
+    },
+    {
+      "conditional": "{ [",
+      "consequent": "}",
+      "skip": "VariableInitializerList",
+      "required": true,
+      "note": "表达式起始后必须跟右大括号（中间跳过 VariableInitializerList）"
+    },
+    {
+      "conditional": "{ [ ,",
+      "consequent": "}",
+      "skip": "",
+      "required": true,
+      "note": "尾随逗号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:18.262743"
+}

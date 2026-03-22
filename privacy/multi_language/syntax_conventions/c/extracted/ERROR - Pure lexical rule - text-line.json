@@ -1,0 +1,8 @@
+{
+  "construct": "ERROR: Pure lexical rule - text-line",
+  "language": "c",
+  "syntax_node": "SKIP",
+  "constraints": [],
+  "reason": "text-line 是纯 lexical 规则，只定义 token 序列后跟换行，没有括号或关键字序列",
+  "extracted_at": "2026-03-17T18:48:25.769426"
+}

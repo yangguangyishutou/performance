@@ -1,0 +1,36 @@
+{
+  "construct": "import()",
+  "language": "javascript",
+  "syntax_node": "import",
+  "constraints": [
+    {
+      "conditional": "import",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "import 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "import (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过模块名表达式）"
+    },
+    {
+      "conditional": "import (",
+      "consequent": ",",
+      "skip": "expression",
+      "required": false,
+      "note": "左括号后可选择性跟随逗号以传递 options"
+    },
+    {
+      "conditional": "import (,",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "逗号后必须跟右括号（中间跳过 options 对象）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:52.569919"
+}

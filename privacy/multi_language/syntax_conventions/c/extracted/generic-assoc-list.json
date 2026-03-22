@@ -1,0 +1,15 @@
+{
+  "construct": "generic-assoc-list",
+  "language": "c",
+  "syntax_node": "generic-association",
+  "constraints": [
+    {
+      "conditional": ",",
+      "consequent": "<generic-association-start>",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟泛型关联起始（type-name 或 default）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:44:55.064101"
+}

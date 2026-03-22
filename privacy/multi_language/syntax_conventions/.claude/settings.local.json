@@ -3,7 +3,8 @@
     "allow": [
       "Bash(tree:*)",
       "Bash(python:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(pdftotext -layout c/BS_ISO_IEC_9899_2024_Annex_A.pdf -)"
     ]
   }
 }

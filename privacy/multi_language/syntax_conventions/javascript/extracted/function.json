@@ -1,0 +1,43 @@
+{
+  "construct": "function",
+  "language": "javascript",
+  "syntax_node": "function",
+  "constraints": [
+    {
+      "conditional": "function",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "function 关键字后必须跟标识符名称"
+    },
+    {
+      "conditional": "function [IDENT]",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "function 名称后必须跟左括号"
+    },
+    {
+      "conditional": "function [IDENT] (",
+      "consequent": ")",
+      "skip": "parameters",
+      "required": true,
+      "note": "function 左括号后必须跟右括号"
+    },
+    {
+      "conditional": "function [IDENT] ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "function 括号后必须跟左大括号"
+    },
+    {
+      "conditional": "function [IDENT] () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "function 左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:29.990837"
+}

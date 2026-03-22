@@ -1,0 +1,15 @@
+{
+  "construct": "TypeArguments",
+  "language": "java",
+  "syntax_node": "<",
+  "constraints": [
+    {
+      "conditional": "<",
+      "consequent": ">",
+      "skip": "TypeArgumentList",
+      "required": true,
+      "note": "左尖括号后必须跟右尖括号（中间跳过类型参数列表）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:03:12.271802"
+}

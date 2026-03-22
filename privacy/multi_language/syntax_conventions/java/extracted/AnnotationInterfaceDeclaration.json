@@ -1,0 +1,36 @@
+{
+  "construct": "AnnotationInterfaceDeclaration",
+  "language": "java",
+  "syntax_node": "interface",
+  "constraints": [
+    {
+      "conditional": "@",
+      "consequent": "interface",
+      "skip": "",
+      "required": true,
+      "note": "注解符号 '@' 后必须跟 'interface' 关键字"
+    },
+    {
+      "conditional": "@ interface",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "'@ interface' 后必须跟类型标识符名称"
+    },
+    {
+      "conditional": "@ interface [IDENT]",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "类型标识符后必须跟左大括号开始注解接口体"
+    },
+    {
+      "conditional": "@ interface [IDENT] {",
+      "consequent": "}",
+      "skip": "AnnotationInterfaceBody",
+      "required": true,
+      "note": "左大括号后必须跟右大括号（中间跳过注解接口体内容）"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:10:10.962502"
+}

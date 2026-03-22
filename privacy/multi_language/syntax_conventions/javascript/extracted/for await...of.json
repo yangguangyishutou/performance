@@ -1,0 +1,57 @@
+{
+  "construct": "for await...of",
+  "language": "javascript",
+  "syntax_node": "for",
+  "constraints": [
+    {
+      "conditional": "for",
+      "consequent": "await",
+      "skip": "",
+      "required": true,
+      "note": "'for' 后必须跟 'await' 关键字"
+    },
+    {
+      "conditional": "for await",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'await' 后必须跟左括号"
+    },
+    {
+      "conditional": "for await (",
+      "consequent": "of",
+      "skip": "variable_declaration",
+      "required": true,
+      "note": "左括号后必须跟 'of' 关键字（跳过变量声明）"
+    },
+    {
+      "conditional": "for await ( of",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "'of' 后必须跟右括号（跳过可迭代对象表达式）"
+    },
+    {
+      "conditional": "for await ()",
+      "consequent": "{",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟左大括号"
+    },
+    {
+      "conditional": "for await ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟语句起始"
+    },
+    {
+      "conditional": "for await () {",
+      "consequent": "}",
+      "skip": "statement_block",
+      "required": true,
+      "note": "左大括号后必须跟右大括号"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:26:47.218070"
+}

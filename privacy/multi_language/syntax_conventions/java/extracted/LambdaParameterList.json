@@ -1,0 +1,8 @@
+{
+  "construct": "LambdaParameterList",
+  "language": "java",
+  "syntax_node": "",
+  "constraints": [],
+  "note": "构造 'LambdaParameterList' 是纯枚举规则（NormalLambdaParameter 或 ConciseLambdaParameter 列表），没有括号或关键字序列，跳过提取。",
+  "extracted_at": "2026-03-18T12:00:27.871750"
+}

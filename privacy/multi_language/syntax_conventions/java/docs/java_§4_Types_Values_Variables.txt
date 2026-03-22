@@ -1,0 +1,92 @@
+      Productions from §4 (Types, Values, and Variables)
+
+         Type:
+           PrimitiveType
+           ReferenceType
+
+         PrimitiveType:
+           {Annotation} NumericType
+           {Annotation} boolean
+
+         NumericType:
+          IntegralType
+          FloatingPointType
+
+         IntegralType:
+           (one of)
+           byte short int long char
+
+         FloatingPointType:
+           (one of)
+           float double
+
+         ReferenceType:
+           ClassOrInterfaceType
+           TypeVariable
+           ArrayType
+
+         ClassOrInterfaceType:
+           ClassType
+           InterfaceType
+
+
+
+
+826
+SYNTAX
+
+
+   ClassType:
+     {Annotation} TypeIdentifier [TypeArguments]
+     PackageName . {Annotation} TypeIdentifier [TypeArguments]
+     ClassOrInterfaceType . {Annotation} TypeIdentifier [TypeArguments]
+
+   InterfaceType:
+     ClassType
+
+   TypeVariable:
+     {Annotation} TypeIdentifier
+
+   ArrayType:
+     PrimitiveType Dims
+     ClassOrInterfaceType Dims
+     TypeVariable Dims
+
+   Dims:
+     {Annotation} [ ] {{Annotation} [ ]}
+
+   TypeParameter:
+     {TypeParameterModifier} TypeIdentifier [TypeBound]
+
+   TypeParameterModifier:
+     Annotation
+
+   TypeBound:
+     extends TypeVariable
+     extends ClassOrInterfaceType {AdditionalBound}
+
+   AdditionalBound:
+     & InterfaceType
+
+   TypeArguments:
+     < TypeArgumentList >
+
+   TypeArgumentList:
+     TypeArgument {, TypeArgument}
+
+   TypeArgument:
+     ReferenceType
+     Wildcard
+
+
+
+                                                                          827
+                                                SYNTAX
+
+
+         Wildcard:
+          {Annotation} ? [WildcardBounds]
+
+         WildcardBounds:
+          extends ReferenceType
+          super ReferenceType

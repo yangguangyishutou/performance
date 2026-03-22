@@ -1,0 +1,15 @@
+{
+  "construct": "preprocessing-file",
+  "language": "c",
+  "syntax_node": "preprocessing-file",
+  "constraints": [
+    {
+      "conditional": "",
+      "consequent": "#, <group_start>",
+      "skip": "group",
+      "required": false,
+      "note": "预处理文件可选地包含预处理组（以 # 或组起始标记开始）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:01.258827"
+}

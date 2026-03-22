@@ -1,0 +1,43 @@
+{
+  "construct": "IfThenElseStatement",
+  "language": "java",
+  "syntax_node": "if",
+  "constraints": [
+    {
+      "conditional": "if",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "'if' 关键字后必须跟左括号"
+    },
+    {
+      "conditional": "if (",
+      "consequent": ")",
+      "skip": "expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过条件表达式）"
+    },
+    {
+      "conditional": "if ()",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "右括号后必须跟一个 'StatementNoShortIf' 起始"
+    },
+    {
+      "conditional": "if () <statement_start>",
+      "consequent": "else",
+      "skip": "statement",
+      "required": true,
+      "note": "'if' 分支语句后必须跟 'else' 关键字"
+    },
+    {
+      "conditional": "else",
+      "consequent": "<statement_start>",
+      "skip": "",
+      "required": true,
+      "note": "'else' 关键字后必须跟一个语句起始"
+    }
+  ],
+  "extracted_at": "2026-03-18T11:54:52.250826"
+}

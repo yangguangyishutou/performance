@@ -1,0 +1,22 @@
+{
+  "construct": "TypeArgumentList",
+  "language": "java",
+  "syntax_node": "TypeArgument",
+  "constraints": [
+    {
+      "conditional": "TypeArgument",
+      "consequent": ",, >",
+      "skip": "",
+      "required": false,
+      "note": "类型参数后可选择性跟随逗号（用于更多参数）或直接结束（遇到 '>'）"
+    },
+    {
+      "conditional": "TypeArgument ,",
+      "consequent": "TypeArgument",
+      "skip": "",
+      "required": true,
+      "note": "逗号后必须跟另一个类型参数"
+    }
+  ],
+  "extracted_at": "2026-03-18T12:03:12.272396"
+}

@@ -1,0 +1,15 @@
+{
+  "construct": "yield*",
+  "language": "javascript",
+  "syntax_node": "yield*",
+  "constraints": [
+    {
+      "conditional": "yield*",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": false,
+      "note": "yield* 后可跟表达式（可迭代对象）"
+    }
+  ],
+  "extracted_at": "2026-03-01T16:28:20.301575"
+}

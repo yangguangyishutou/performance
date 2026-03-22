@@ -1,0 +1,36 @@
+{
+  "construct": "if-group",
+  "language": "c",
+  "syntax_node": "#",
+  "constraints": [
+    {
+      "conditional": "#",
+      "consequent": "if, ifdef, ifndef",
+      "skip": "",
+      "required": true,
+      "note": "预处理指令 # 后必须跟 if、ifdef 或 ifndef 关键字"
+    },
+    {
+      "conditional": "# if",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "# if 后必须跟常量表达式的起始"
+    },
+    {
+      "conditional": "# ifdef",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "# ifdef 后必须跟标识符"
+    },
+    {
+      "conditional": "# ifndef",
+      "consequent": "[IDENT]",
+      "skip": "",
+      "required": true,
+      "note": "# ifndef 后必须跟标识符"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:48:10.041858"
+}

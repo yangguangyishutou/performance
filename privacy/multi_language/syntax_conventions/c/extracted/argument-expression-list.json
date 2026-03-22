@@ -1,0 +1,15 @@
+{
+  "construct": "argument-expression-list",
+  "language": "c",
+  "syntax_node": "argument-expression-list",
+  "constraints": [
+    {
+      "conditional": ",",
+      "consequent": "<expression_start>",
+      "skip": "",
+      "required": true,
+      "note": "参数列表中的逗号后必须跟随赋值表达式的起始"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:05.089794"
+}

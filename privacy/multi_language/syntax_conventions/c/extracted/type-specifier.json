@@ -1,0 +1,22 @@
+{
+  "construct": "type-specifier",
+  "language": "c",
+  "syntax_node": "type-specifier",
+  "constraints": [
+    {
+      "conditional": "_BitInt",
+      "consequent": "(",
+      "skip": "",
+      "required": true,
+      "note": "_BitInt 后必须跟左括号"
+    },
+    {
+      "conditional": "_BitInt (",
+      "consequent": ")",
+      "skip": "constant-expression",
+      "required": true,
+      "note": "左括号后必须跟右括号（中间跳过常量表达式）"
+    }
+  ],
+  "extracted_at": "2026-03-17T18:45:41.953607"
+}
