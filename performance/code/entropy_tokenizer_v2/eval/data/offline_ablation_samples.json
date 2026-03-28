@@ -1,0 +1,9 @@
+[
+  "def add(a, b):\n    total = a + b\n    return total\n",
+  "def check(items):\n    for item in items:\n        if item.value > 10:\n            return item.name\n    return \"none\"\n",
+  "obj.name = \"alpha\"\nprint(obj.name, 42)\n",
+  "<SYN_0> foo bar\nfoo = bar\n",
+  "prompt = \"\"\"hello\nworld\"\"\"\nif prompt:\n    return_value = 1\n",
+  "def stage2_trigger(x):\n    \"\"\"Docstring line one.\n    Docstring line two.\n    \"\"\"\n    # inline comment\n\n    if x > 0:\n        value = x + 100\n        return value  # trailing comment\n    return 0\n",
+  "for item in items:\n    if item.score > 1:\n        print(item.name, \"token\")\n"
+]
