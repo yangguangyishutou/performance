@@ -18,5 +18,9 @@ def summarize_run(result: Stage3ABRunResult) -> Stage3ABRunSummary:
             "source_id": result.source_id,
             "a_saved": result.a_result.saved_tokens_true,
             "b_saved": result.b_result.saved_tokens_true,
+            "a_intro_true": result.a_result.intro_tokens_true,
+            "b_intro_true": result.b_result.intro_tokens_true,
+            "delta_input_to_final_true": inp - out,
+            "primary_metric": "tokenizer_true",
         },
     )

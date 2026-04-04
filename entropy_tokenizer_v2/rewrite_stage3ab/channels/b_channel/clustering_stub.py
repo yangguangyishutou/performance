@@ -1,30 +1,21 @@
 """
-Clustering backend registry (identifiers only — no algorithms).
+Deprecated module name: clustering backends are registered in ``clustering_v1``.
 
-TODO: Register factory callables that build real clusterers from config.
+Import this module to ensure default backends are registered in legacy call sites.
 """
 
 from __future__ import annotations
 
-from typing import Any, Callable
+from rewrite_stage3ab.channels.b_channel.clustering_v1 import (  # noqa: F401
+    get_cluster_backend,
+    hdbscan_available,
+    list_registered_backends,
+    register_cluster_backend,
+)
 
-from rewrite_stage3ab.contracts.enums import ClusterBackendId
-
-BackendFactory = Callable[[], Any]
-
-_REGISTRY: dict[ClusterBackendId, BackendFactory] = {}
-
-
-def register_cluster_backend(bid: ClusterBackendId, factory: BackendFactory) -> None:
-    _REGISTRY[bid] = factory
-
-
-def get_cluster_backend(bid: ClusterBackendId) -> Any:
-    """Return backend instance; raises if not registered."""
-    if bid not in _REGISTRY:
-        raise KeyError(f"no clustering backend registered for {bid!r} (scaffold round)")
-    return _REGISTRY[bid]()
-
-
-def list_registered_backends() -> list[ClusterBackendId]:
-    return list(_REGISTRY.keys())
+__all__ = [
+    "get_cluster_backend",
+    "hdbscan_available",
+    "list_registered_backends",
+    "register_cluster_backend",
+]

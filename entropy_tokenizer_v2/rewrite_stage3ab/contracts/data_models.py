@@ -69,6 +69,8 @@ class TelemetryEvent:
     output_tokens_true: int
     delta_true: int
     payload: dict[str, Any] = field(default_factory=dict)
+    source_id: str = ""
+    action: str = ""
 
 
 @dataclass

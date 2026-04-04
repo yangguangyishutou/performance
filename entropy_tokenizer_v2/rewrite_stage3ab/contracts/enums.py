@@ -18,31 +18,49 @@ class StageName(str, Enum):
 
 
 class RouteAction(str, Enum):
-    """Future Stage2 → Stage3 resource routing (stub only this round)."""
+    """Stage2 → Stage3 resource routing (DAG edges materialized as per-asset actions)."""
 
     DELETE_NOW = "delete_now"
     RETAIN_FOR_B = "retain_for_b"
+    RETAIN_AS_REFERENCE_CANDIDATE = "retain_as_reference_candidate"
+    PASS_THROUGH = "pass_through"
+    CLEAN_AFTER_B = "clean_after_b"
+    # Legacy granular labels (still used in metadata.asset_kind)
     RETAIN_AS_DOCSTRING_ASSET = "retain_as_docstring_asset"
     RETAIN_AS_COMMENT_ASSET = "retain_as_comment_asset"
-    PASS_THROUGH = "pass_through"
 
 
 class TelemetryEventKind(str, Enum):
-    """High-level telemetry categories (expand for AST / economics / cluster)."""
+    """Telemetry categories for economics, AST, routing, and clusters."""
 
     STAGE_BOUNDARY = "stage_boundary"
-    CANDIDATE_COLLECTED = "candidate_collected"
-    CANDIDATE_REJECTED = "candidate_rejected"
-    CLUSTER_FORMED = "cluster_formed"
-    CLUSTER_REJECTED = "cluster_rejected"
-    ALIAS_APPLIED = "alias_applied"
-    REFERENCE_EMITTED = "reference_emitted"
-    ROUTING_DECISION = "routing_decision"
+    A_CANDIDATE_COLLECTED = "a_candidate_collected"
+    A_CANDIDATE_REJECTED = "a_candidate_rejected"
+    A_CANDIDATE_ACCEPTED = "a_candidate_accepted"
+    A_ALIAS_APPLIED = "a_alias_applied"
+    B_ASSET_COLLECTED = "b_asset_collected"
+    B_CLUSTER_FORMED = "b_cluster_formed"
+    B_CLUSTER_REJECTED = "b_cluster_rejected"
+    B_CLUSTER_ACCEPTED = "b_cluster_accepted"
+    B_REFERENCE_EMITTED = "b_reference_emitted"
+    ROUTE_DECISION_MADE = "route_decision_made"
+    DOCSTRING_DETECTED = "docstring_detected"
+    COMMENT_DETECTED = "comment_detected"
+    FINAL_STAGE_DELTA = "final_stage_delta"
+    # Back-compat aliases
+    CANDIDATE_COLLECTED = "a_candidate_collected"
+    CANDIDATE_REJECTED = "a_candidate_rejected"
+    CLUSTER_FORMED = "b_cluster_formed"
+    CLUSTER_REJECTED = "b_cluster_rejected"
+    ALIAS_APPLIED = "a_alias_applied"
+    REFERENCE_EMITTED = "b_reference_emitted"
+    ROUTING_DECISION = "route_decision_made"
 
 
 class ClusterBackendId(str, Enum):
-    """Registered B-channel clustering backends (implementations are future work)."""
+    """B-channel clustering backends."""
 
     LEXICAL_BASELINE = "lexical_baseline"
     MIXED_LEXICAL_CHAR = "mixed_lexical_char"
+    HDBSCAN = "hdbscan"
     HDBSCAN_FUTURE = "hdbscan_future"

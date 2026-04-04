@@ -1,7 +1,7 @@
 """
 B-channel Protocol: free-text → clusters → reference/template rewrites.
 
-Backends: lexical, mixed, future HDBSCAN / SemDeDup-style (see ``clustering_stub``).
+Backends: lexical, mixed, HDBSCAN path with explicit fallback (see ``clustering_v1``).
 """
 
 from __future__ import annotations

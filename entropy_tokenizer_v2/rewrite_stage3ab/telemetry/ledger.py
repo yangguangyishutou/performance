@@ -1,18 +1,20 @@
 """
-Human-readable case ledger (before/after snippets, reject reasons).
-
-Not wired to production logging this round — smoke tests append dummy rows only.
+Human-readable case ledger + optional JSONL stream of ``TelemetryEvent`` rows.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any, Literal
+import json
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Any, Iterator, Literal
+
+from rewrite_stage3ab.contracts.data_models import TelemetryEvent
 
 
 @dataclass
 class LedgerEntry:
-    kind: Literal["a_rewrite", "b_cluster", "reject"]
+    kind: Literal["a_rewrite", "b_cluster", "reject", "routing"]
     source_id: str
     before_snippet: str
     after_snippet: str
@@ -72,8 +74,49 @@ class ExampleLedger:
             )
         )
 
+    def append_routing(
+        self,
+        source_id: str,
+        before: str,
+        after: str,
+        *,
+        reason: str = "",
+        payload: dict[str, Any] | None = None,
+    ) -> None:
+        self._rows.append(
+            LedgerEntry(
+                kind="routing",
+                source_id=source_id,
+                before_snippet=before,
+                after_snippet=after,
+                reason=reason,
+                payload=payload or {},
+            )
+        )
+
     def __len__(self) -> int:
         return len(self._rows)
 
     def entries(self) -> list[LedgerEntry]:
         return list(self._rows)
+
+    def iter_jsonl_dicts(self) -> Iterator[dict[str, Any]]:
+        for e in self._rows:
+            yield {**asdict(e)}
+
+
+class JsonlTelemetryLedger:
+    """Append-only JSONL of structured ``TelemetryEvent`` rows."""
+
+    def __init__(self, path: Path | str) -> None:
+        self.path = Path(path)
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+
+    def append(self, event: TelemetryEvent) -> None:
+        row = asdict(event)
+        with self.path.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    def extend(self, events: list[TelemetryEvent]) -> None:
+        for e in events:
+            self.append(e)

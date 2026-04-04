@@ -13,7 +13,8 @@ def _field_names(cls) -> set[str]:
 
 
 def test_stage3ab_run_result_schema():
-    result, _ = run_smoke("gpt4")
+    results, _ = run_smoke("gpt4")
+    result = results[0]
     assert _field_names(Stage3ABRunResult) == {
         "source_id",
         "input_snapshot",

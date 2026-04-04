@@ -34,3 +34,11 @@ class SnapshotBuilder(Protocol):
 
     def build(self, stage_name: str, text: str, tokenizer_key: str, notes: str = "") -> StageSnapshot:
         ...
+
+
+@runtime_checkable
+class Stage2RoutingEngine(Protocol):
+    """AST / lexical sniff → asset extraction → route decisions."""
+
+    def route(self, source_id: str, assets: list[Any]) -> Any:
+        ...
