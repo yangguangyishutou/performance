@@ -1,5 +1,7 @@
 # Stage3 AB rewrite scaffold (`rewrite_stage3ab`)
 
+**Branch:** develop this tree on `exp/stage3ab-architecture-scaffold` (cut from `feat/stage1-stage2-adapt` @ `4e8b3c1e`). Keep `feat/stage1-stage2-adapt` for baseline / fast_try / 200k without mixing in large refactors.
+
 ## Why a separate tree?
 
 Production Stage3 hybrid AB lives in `stage3/backends/`, `pipeline.py`, and eval scripts. Rewriting it in place would risk breaking the working baseline (`eval_stage3ab_starcoder_200k.py`), fast-try wrappers, and cached mining configs.
