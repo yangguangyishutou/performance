@@ -1,8 +1,12 @@
 """
-Rewrite Stage3 AB runtime: route → B → re-route / destructive → A, with telemetry.
+Rewrite Stage3 AB runtime: route → B → re-route → parse-safe A input → A → re-route / destructive, with telemetry.
 """
 
 from __future__ import annotations
+
+import ast as ast_module
+from dataclasses import replace
+from typing import Any
 
 from rewrite_stage3ab.channels.a_channel.implementation_v1 import AChannelV1
 from rewrite_stage3ab.channels.b_channel.implementation_v1 import BChannelV1
@@ -23,6 +27,7 @@ from rewrite_stage3ab.orchestrator.stage2_router import (
     assets_for_b,
     collect_spans_for_action,
     extract_python_free_text_assets,
+    mask_char_spans_preserve_layout,
 )
 from rewrite_stage3ab.telemetry import events as tev
 from rewrite_stage3ab.telemetry.summaries import summarize_run
@@ -33,7 +38,8 @@ class Stage3ScaffoldRuntime:
     """
     Production rewrite path (name kept for import stability).
 
-    Order: **B** on routed NL assets → **re-sniff + destructive + clean** → **A** economics.
+    Order: **B** on routed NL assets → **re-route** → **parse-safe view for A** (mask spans if needed) → **A** →
+    **re-route + destructive clean** → final text.
     """
 
     def __init__(self, default_route_policy: RoutePolicy | None = None) -> None:
@@ -86,10 +92,21 @@ class Stage3ScaffoldRuntime:
                 )
             )
 
+        span_pre_b = collect_spans_for_action(
+            rd0, {RouteAction.DELETE_NOW, RouteAction.CLEAN_AFTER_B}
+        )
+        text_for_b = mask_char_spans_preserve_layout(text0, span_pre_b)
+        b_routed = []
+        for a in assets_for_b(rd0):
+            cs, ce = a.char_start, a.char_end
+            if cs is not None and ce is not None:
+                b_routed.append(replace(a, text=text_for_b[cs:ce]))
+            else:
+                b_routed.append(a)
         ctx_b: dict = {
             "source_id": sid,
             "tokenizer_key": tok,
-            "b_routed_assets": assets_for_b(rd0),
+            "b_routed_assets": b_routed,
         }
         for x in ctx_b["b_routed_assets"]:
             events.append(
@@ -101,7 +118,7 @@ class Stage3ScaffoldRuntime:
                 )
             )
 
-        text_after_b = self._b.apply_cluster_rewrites(text0, ctx_b)
+        text_after_b = self._b.apply_cluster_rewrites(text_for_b, ctx_b)
         b_rewrite_diag = dict(ctx_b.get("b_rewrite_diagnostics") or {})
 
         for cl in ctx_b.get("b_cluster_evaluations", []):
@@ -174,11 +191,37 @@ class Stage3ScaffoldRuntime:
         route_sum1 = dict(rd1.extras.get("route_summary", {}))
         del_spans = collect_spans_for_action(rd1, {RouteAction.DELETE_NOW})
         clean_spans = collect_spans_for_action(rd1, {RouteAction.CLEAN_AFTER_B})
-        text_s2 = apply_char_span_removals(text_after_b, del_spans)
-        text_s2 = apply_char_span_removals(text_s2, clean_spans)
+        mask_spans = list(del_spans) + list(clean_spans)
+
+        text_for_a = text_after_b
+        a_input_origin = "after_b_direct"
+        a_parse_safe_fallback_used = False
+        a_parse_safe_fallback_masked_chars = 0
+        a_parse_safe_parse_ok = False
+        try:
+            ast_module.parse(text_for_a)
+            a_parse_safe_parse_ok = True
+        except SyntaxError:
+            before_mask = text_for_a
+            text_for_a = mask_char_spans_preserve_layout(text_after_b, mask_spans)
+            a_parse_safe_fallback_used = True
+            a_parse_safe_fallback_masked_chars = sum(1 for i, (a, b) in enumerate(zip(before_mask, text_for_a)) if a != b)
+            a_input_origin = "after_b_masked_preserve_layout"
+            try:
+                ast_module.parse(text_for_a)
+                a_parse_safe_parse_ok = True
+            except SyntaxError:
+                a_input_origin = "after_b_parse_failed_mask_failed"
+
+        b_syms: set[str] = {str(getattr(em, "symbol", "")) for em in ctx_b.get("b_emissions", []) if getattr(em, "symbol", "")}
 
         a_impl = AChannelV1(tok, min_occ_aux=1)
-        ctx_a: dict = {"source_id": sid, "tokenizer_key": tok, "reserved_aliases": set()}
+        ctx_a: dict = {
+            "source_id": sid,
+            "tokenizer_key": tok,
+            "reserved_aliases": set(),
+            "b_generated_symbols": b_syms,
+        }
         alias_pool_agg = {
             "alias_pool_total": 0,
             "alias_pool_single_token_count": 0,
@@ -186,7 +229,7 @@ class Stage3ScaffoldRuntime:
             "alias_pool_fallback_tier_count": 0,
             "alias_selections_by_tier": {},  # type: ignore[var-annotated]
         }
-        cands = a_impl.collect_candidates(text_s2, ctx_a)
+        cands = a_impl.collect_candidates(text_for_a, ctx_a)
         for c in cands:
             lit = str(c.get("literal", ""))
             events.append(
@@ -250,7 +293,15 @@ class Stage3ScaffoldRuntime:
                     )
                 )
         ctx_a["a_assignments"] = assignments
-        text_after_a = a_impl.apply_assignments(text_s2, ctx_a)
+        text_after_a = a_impl.apply_assignments(text_for_a, ctx_a)
+
+        assets2 = extract_python_free_text_assets(sid, text_after_a)
+        rd2 = router.route(sid, assets2)
+        route_sum2 = dict(rd2.extras.get("route_summary", {}))
+        del_spans2 = collect_spans_for_action(rd2, {RouteAction.DELETE_NOW})
+        clean_spans2 = collect_spans_for_action(rd2, {RouteAction.CLEAN_AFTER_B})
+        text_final = apply_char_span_removals(text_after_a, del_spans2)
+        text_final = apply_char_span_removals(text_final, clean_spans2)
         for row in assignments:
             events.append(
                 tev.event_a_alias_applied(
@@ -264,9 +315,9 @@ class Stage3ScaffoldRuntime:
 
         input_snap = snapshot_from_text(StageName.STAGE3_PRE_AB.value, text0, tok, notes="rewrite input")
         after_b_snap = snapshot_from_text(StageName.STAGE3_AFTER_B.value, text_after_b, tok, notes="after B")
-        after_clean_snap = snapshot_from_text("after_stage2_route_clean", text_s2, tok, notes="after destructive clean")
+        after_clean_snap = snapshot_from_text("after_stage2_route_clean", text_final, tok, notes="after destructive clean (post-A route)")
         after_a_snap = snapshot_from_text(StageName.STAGE3_AFTER_A.value, text_after_a, tok, notes="after A")
-        final_snap = snapshot_from_text(StageName.STAGE3_FINAL.value, text_after_a, tok, notes="final")
+        final_snap = snapshot_from_text(StageName.STAGE3_FINAL.value, text_final, tok, notes="final")
 
         em_list = list(ctx_b.get("b_emissions", []))
         b_intro = sum(int(getattr(em, "intro_tokens_true", 0)) for em in em_list)
@@ -337,7 +388,13 @@ class Stage3ScaffoldRuntime:
         )
 
         run_extras: dict[str, Any] = {
-            "text_after_destructive_clean_for_a": text_s2,
+            "text_for_a_parse_safe": text_for_a,
+            "a_input_origin": a_input_origin,
+            "a_parse_safe_token_true": measure_true_token_len(text_for_a, tok),
+            "a_parse_safe_fallback_used": a_parse_safe_fallback_used,
+            "a_parse_safe_fallback_masked_chars": a_parse_safe_fallback_masked_chars,
+            "a_parse_safe_parse_ok": a_parse_safe_parse_ok,
+            "text_after_destructive_clean_for_a": text_final,
             "b_rewrite_diagnostics": b_rewrite_diag,
             "after_b_token_true": after_b_snap.token_count_true,
             "after_clean_token_true": after_clean_snap.token_count_true,
@@ -345,10 +402,13 @@ class Stage3ScaffoldRuntime:
             "final_token_true": final_snap.token_count_true,
             "route_summary_initial": route_sum0,
             "route_summary_post_b": route_sum1,
+            "route_summary_post_a": route_sum2,
             "alias_pool_telemetry": alias_pool_agg,
             "b_clustering_backend_note": ctx_b.get("b_clustering_backend_note"),
             "b_hdbscan_runtime_available": ctx_b.get("b_hdbscan_runtime_available"),
             "b_hdbscan_actually_used": ctx_b.get("b_hdbscan_actually_used"),
+            "b_hdbscan_noise_points": int(ctx_b.get("b_hdbscan_noise_points", 0)),
+            "b_hdbscan_noise_singleton_residual": int(ctx_b.get("b_hdbscan_noise_singleton_residual", 0)),
             "total_a_candidates_collected": len(cands),
             "total_a_selected": len(assignments),
             "total_b_clusters_evaluated": len(ctx_b.get("b_cluster_evaluations", [])),
@@ -375,6 +435,7 @@ class Stage3ScaffoldRuntime:
                     "after_clean_token_true": after_clean_snap.token_count_true,
                     "route_summary_initial": route_sum0,
                     "route_summary_post_b": route_sum1,
+                    "route_summary_post_a": route_sum2,
                     "alias_pool_telemetry": alias_pool_agg,
                 }
             )

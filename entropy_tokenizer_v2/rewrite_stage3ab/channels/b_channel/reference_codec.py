@@ -19,6 +19,23 @@ def _python_value_repr_from_literal_segment(seg: str) -> str:
         return seg
 
 
+def _source_span_matches_cluster_literal(slice_: str, members: set[str]) -> bool:
+    """True if *slice_* equals some member, or ``ast.literal_eval`` matches (e.g. ``'a'`` vs ``\"a\"``)."""
+    if slice_ in members:
+        return True
+    try:
+        v_slice = ast_module.literal_eval(slice_)
+    except Exception:
+        return False
+    for m in members:
+        try:
+            if ast_module.literal_eval(m) == v_slice:
+                return True
+        except Exception:
+            continue
+    return False
+
+
 @dataclass
 class ReferenceEmission:
     symbol: str
@@ -109,6 +126,7 @@ class ReferenceCodecV1:
             "b_rewrite_diagnostics",
             {
                 "span_hits": 0,
+                "span_hits_literal_equiv": 0,
                 "span_misses_bounds": 0,
                 "span_misses_slice_mismatch": 0,
                 "global_replace_fallback_clusters": 0,
@@ -124,10 +142,14 @@ class ReferenceCodecV1:
                     diag["span_misses_bounds"] += 1
                     continue
                 slice_ = out[start:end]
-                if slice_ not in members_set:
+                if slice_ in members_set:
+                    diag["span_hits"] += 1
+                elif _source_span_matches_cluster_literal(slice_, members_set):
+                    diag["span_hits"] += 1
+                    diag["span_hits_literal_equiv"] += 1
+                else:
                     diag["span_misses_slice_mismatch"] += 1
                     continue
-                diag["span_hits"] += 1
                 out = out[:start] + emission.symbol + out[end:]
             return preamble + out
         diag["global_replace_fallback_clusters"] += 1

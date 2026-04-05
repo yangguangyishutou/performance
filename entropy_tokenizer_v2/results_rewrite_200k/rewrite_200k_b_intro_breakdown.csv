@@ -1,0 +1,5 @@
+cluster_size_bucket,n_accepted_reference_emitted,n_rejected_no_net_gain,sum_raw_total_true_accepted,sum_intro_true_accepted,sum_net_true_accepted,sum_raw_total_true_rejected_no_net,sum_intro_true_rejected_no_net,sum_cluster_net_true_rejected_no_net
+2,5,3,109,69,20,23,22,-11
+3,2,0,50,17,21,0,0,0
+4,2,0,68,23,29,0,0,0
+5+,2,0,76,18,30,0,0,0

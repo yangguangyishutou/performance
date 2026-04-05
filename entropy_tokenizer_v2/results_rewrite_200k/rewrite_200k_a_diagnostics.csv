@@ -1,0 +1,133 @@
+a_candidates_accepted,a_candidates_attribute,a_candidates_filtered_attr_depth,a_candidates_filtered_short_name,a_candidates_filtered_string_exact_path,a_candidates_no_legal_alias,a_candidates_no_net_true_gain,a_candidates_positive_gross_but_negative_net,a_candidates_string_exact_path,a_candidates_total,a_candidates_variable,a_input_origin,a_parse_safe_fallback_masked_chars,a_parse_safe_fallback_used,a_parse_safe_parse_ok,a_text_nonempty,ast_parse_failed,frozen_index,parse_ok,source_id,syntax_error_lineno,syntax_error_msg
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,0,False,frozen:0,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,1,False,frozen:1,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,2,False,frozen:2,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,3,False,frozen:3,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,4,False,frozen:4,9,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,5,False,frozen:5,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,6,False,frozen:6,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,7,False,frozen:7,6,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,8,False,frozen:8,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,9,False,frozen:9,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,10,False,frozen:10,7,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,11,False,frozen:11,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,12,False,frozen:12,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,13,False,frozen:13,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,14,False,frozen:14,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,15,False,frozen:15,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,16,False,frozen:16,7,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,17,False,frozen:17,6,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,18,False,frozen:18,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,19,False,frozen:19,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,20,False,frozen:20,24,unterminated string literal (detected at line 24)
+0,1,0,17,0,0,1,1,0,1,0,after_b_direct,0,False,True,True,False,21,True,frozen:21,0,
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,22,False,frozen:22,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,23,False,frozen:23,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,24,False,frozen:24,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,25,False,frozen:25,8,expected an indented block after class definition on line 7
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,26,False,frozen:26,3,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,27,False,frozen:27,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,28,False,frozen:28,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,29,False,frozen:29,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_direct,0,False,True,True,False,30,True,frozen:30,0,
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,31,False,frozen:31,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,32,False,frozen:32,5,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,33,False,frozen:33,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,34,False,frozen:34,3,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,35,False,frozen:35,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,36,False,frozen:36,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,37,False,frozen:37,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,38,False,frozen:38,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,39,False,frozen:39,3,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,40,False,frozen:40,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,41,False,frozen:41,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,42,False,frozen:42,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,43,False,frozen:43,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,44,False,frozen:44,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,45,False,frozen:45,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,46,False,frozen:46,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,47,False,frozen:47,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,48,False,frozen:48,8,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,49,False,frozen:49,24,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,50,False,frozen:50,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,51,False,frozen:51,3,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,52,False,frozen:52,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,53,False,frozen:53,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,54,False,frozen:54,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,55,False,frozen:55,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,56,False,frozen:56,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,57,False,frozen:57,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,58,False,frozen:58,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,59,False,frozen:59,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,60,False,frozen:60,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,61,False,frozen:61,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,62,False,frozen:62,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,63,False,frozen:63,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,64,False,frozen:64,3,expected an indented block after class definition on line 2
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,65,False,frozen:65,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,66,False,frozen:66,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,67,False,frozen:67,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,68,False,frozen:68,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,69,False,frozen:69,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,70,False,frozen:70,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,71,False,frozen:71,5,expected an indented block after function definition on line 4
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,72,False,frozen:72,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,73,False,frozen:73,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,74,False,frozen:74,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,75,False,frozen:75,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,76,False,frozen:76,6,expected an indented block after class definition on line 5
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,77,False,frozen:77,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,78,False,frozen:78,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,79,False,frozen:79,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,80,False,frozen:80,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,81,False,frozen:81,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,82,False,frozen:82,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,83,False,frozen:83,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,84,False,frozen:84,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,85,False,frozen:85,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,86,False,frozen:86,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,87,False,frozen:87,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,88,False,frozen:88,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,89,False,frozen:89,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,90,False,frozen:90,1,invalid syntax
+0,0,0,1,0,0,0,0,0,0,0,after_b_direct,0,False,True,True,False,91,True,frozen:91,0,
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,92,False,frozen:92,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,93,False,frozen:93,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,94,False,frozen:94,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,95,False,frozen:95,5,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,96,False,frozen:96,4,expected an indented block after function definition on line 3
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,97,False,frozen:97,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,98,False,frozen:98,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,99,False,frozen:99,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,100,False,frozen:100,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,101,False,frozen:101,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,102,False,frozen:102,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,103,False,frozen:103,5,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,104,False,frozen:104,5,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_direct,0,False,True,True,False,105,True,frozen:105,0,
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,106,False,frozen:106,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,107,False,frozen:107,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,108,False,frozen:108,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,109,False,frozen:109,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,110,False,frozen:110,6,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,111,False,frozen:111,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,112,False,frozen:112,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,113,False,frozen:113,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,114,False,frozen:114,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,115,False,frozen:115,4,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,116,False,frozen:116,2,expected an indented block after 'try' statement on line 1
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,117,False,frozen:117,9,expected an indented block after class definition on line 8
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,118,False,frozen:118,7,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,119,False,frozen:119,2,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,120,False,frozen:120,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,121,False,frozen:121,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,122,False,frozen:122,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,123,False,frozen:123,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,124,False,frozen:124,3,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,125,False,frozen:125,15,expected an indented block after function definition on line 14
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,126,False,frozen:126,1,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,127,False,frozen:127,4,expected an indented block after class definition on line 3
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,128,False,frozen:128,1,invalid decimal literal
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,129,False,frozen:129,6,expected an indented block after function definition on line 5
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,130,False,frozen:130,14,invalid syntax
+0,0,0,0,0,0,0,0,0,0,0,after_b_parse_failed_mask_failed,0,True,False,True,True,131,False,frozen:131,151,unterminated string literal (detected at line 151)

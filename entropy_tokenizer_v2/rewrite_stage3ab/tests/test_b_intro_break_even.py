@@ -19,7 +19,7 @@ def test_b_intro_break_even_table():
     for n in (2, 3, 4, 5):
         members = [LIT] * n
         rep = codec.select_representative(list(dict.fromkeys(members)), {"tokenizer_key": tok})
-        sym = "_BREF0"
+        sym = "_b0"
         sub = {
             "tokenizer_key": tok,
             "cluster_members": members,
@@ -34,7 +34,7 @@ def test_b_intro_break_even_table():
     (OUT / "b_intro_break_even.md").write_text("".join(lines), encoding="utf-8")
     em2 = codec.emit(
         LIT,
-        "_BREF0",
+        "_b0",
         {
             "tokenizer_key": tok,
             "cluster_members": [LIT, LIT],

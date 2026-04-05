@@ -48,7 +48,7 @@ class BChannelV1:
         self._next_sym = 0
 
     def _next_symbol_name(self) -> str:
-        return f"_BREF{self._next_sym}"
+        return f"_b{self._next_sym}"
 
     def _commit_symbol(self) -> None:
         self._next_sym += 1
@@ -88,6 +88,8 @@ class BChannelV1:
 
     def cluster_candidates(self, candidates: list[dict[str, Any]], ctx: dict[str, Any]) -> list[dict[str, Any]]:
         if not candidates:
+            ctx["b_hdbscan_noise_points"] = 0
+            ctx["b_hdbscan_noise_singleton_residual"] = 0
             return []
         strings = [str(c.get("text", "")) for c in candidates]
         backend = get_cluster_backend(ClusterBackendId.HDBSCAN)
@@ -142,8 +144,10 @@ class BChannelV1:
             fid += 1
         nid = 0
         remaining_noise = [i for i in noise if i not in claimed_noise]
+        near_grouped: set[int] = set()
         for grp in near_duplicate_noise_groups(strings, remaining_noise):
             members = [candidates[i] for i in grp]
+            near_grouped.update(grp)
             formed.append(
                 {
                     "cluster_id": f"nd{nid}",
@@ -157,6 +161,8 @@ class BChannelV1:
                 }
             )
             nid += 1
+        ctx["b_hdbscan_noise_points"] = len(noise)
+        ctx["b_hdbscan_noise_singleton_residual"] = len([i for i in remaining_noise if i not in near_grouped])
         return formed
 
     def evaluate_cluster(self, cluster: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:

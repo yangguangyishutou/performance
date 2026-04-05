@@ -39,6 +39,7 @@ from rewrite_stage3ab.diagnostics.a_probe import (  # noqa: E402
 )
 from rewrite_stage3ab.diagnostics.route_probe import merge_route_breakdown, route_breakdown_for_text  # noqa: E402
 from rewrite_stage3ab.orchestrator.pipeline import run_scaffold_on_units  # noqa: E402
+from rewrite_stage3ab.orchestrator.stage2_router import RoutePolicy  # noqa: E402
 from rewrite_stage3ab.telemetry.aggregate import RewriteCorpusRollup  # noqa: E402
 from rewrite_stage3ab.telemetry.ledger import JsonlTelemetryLedger  # noqa: E402
 from stage2.cleaning import stage2_clean_skip_syn_and_stats  # noqa: E402
@@ -351,7 +352,7 @@ def _write_failure_artifacts(
 - **其中 AST 解析失败** (`ast_parse_failed`): {n_ast_fail}
 - **parse_ok 占全文件比例**: {cov:.2f}%
 
-**说明**：rewrite 在 B 与 destructive route 之后，**A 输入常常不再是合法 Python 源码**（缩进/类体被破坏），`ast.parse` 失败与 **A 通道 collect 同样无法走 AST** 一致。此类 `parse_ok=False` **不是 eval 与 `after_route_clean_snapshot` 接线错误**，而是 **管线形态导致 A 诊断 probe 无法在语法层分析**。
+**说明**：A 诊断优先使用 `run_extras["text_for_a_parse_safe"]`（与运行时 A 通道输入一致：B 后 re-route，必要时对待删 span 做空格 mask）。若仍 `parse_ok=False`，多为 mask 后仍不合法或残余语法问题，而非 eval 与 `after_route_clean_snapshot` 的简单接线错误。
 
 ## 2. A 通道（语料计数来自 a_diagnostics 行求和）
 
@@ -395,9 +396,9 @@ def _write_failure_artifacts(
 
 ## 6. 根因 Top 3（结合本次数字）
 
-1. **A 语法层失效**：{n_ast_fail}/{n_sources} 个文件 A 输入 `ast.parse` 失败；与 **长度门/深度门** 无关，是 **B + destructive route 后源码不可解析**，导致 A collect 与 AST probe 同时瘫痪。
-2. **A 经济与规模（在可解析子集上）**：语料行求和 `a_candidates_total`={a_corpus_totals.get("a_candidates_total", 0)}，且 `no_net_true_gain`={a_corpus_totals.get("a_candidates_no_net_true_gain", 0)}；**几乎全部候选被 net 门杀掉**。
-3. **语料级未赢**：rewrite Δ={rw_d} vs old Δ={old_d}；B 通道局部正收益不足以抵消全文与 intro 口径差异，见 summary 与 `rewrite_200k_b_span_stats.md`。
+1. **A 语法层**：优先诊断 `text_for_a_parse_safe`（B 后、destructive 前；必要时 mask）。若 `ast.parse` 仍失败，多为 mask 后仍不合法或残余语法问题。
+2. **A 经济与规模（在可解析子集上）**：语料行求和 `a_candidates_total`={a_corpus_totals.get("a_candidates_total", 0)}，且 `no_net_true_gain`={a_corpus_totals.get("a_candidates_no_net_true_gain", 0)}。
+3. **语料级 delta**：rewrite Δ={rw_d} vs old Δ={old_d}；路由使用 `RoutePolicy.rewrite_recovery_v2()`（更多 NL 进 B）；B span 统计见 `rewrite_200k_b_diagnostics.csv`（含 `span_hits_literal_equiv`）。
 
 ## 7. 评测口径
 
@@ -498,7 +499,16 @@ def main() -> int:
         _, t_old_b, t_old_a = _hybrid_pipeline_file(after_s2, conf_old, tokenizer, tok_type)
         _, t_fast_b, t_fast_a = _hybrid_pipeline_file(after_s2, conf_fast, tokenizer, tok_type)
 
-        unit = SourceUnit(sid, after_s2, TOKENIZER_KEY, metadata={"eval": "rewrite_200k", "frozen_index": i})
+        unit = SourceUnit(
+            sid,
+            after_s2,
+            TOKENIZER_KEY,
+            metadata={
+                "eval": "rewrite_200k",
+                "frozen_index": i,
+                "route_policy": RoutePolicy.rewrite_recovery_v2(),
+            },
+        )
         rw = run_scaffold_on_units([unit], jsonl_ledger_path=None)[0]
         ledger.extend(rw.telemetry_events)
         rollup.add_run(rw)
@@ -542,11 +552,18 @@ def main() -> int:
                 "clustering_backend_note": ex0.get("b_clustering_backend_note", ""),
                 "hdbscan_runtime_available": ex0.get("b_hdbscan_runtime_available", False),
                 "hdbscan_actually_used": ex0.get("b_hdbscan_actually_used", False),
+                "route_profile": "rewrite_recovery_v2",
+                "b_hdbscan_noise_points": int(ex0.get("b_hdbscan_noise_points", 0)),
+                "b_hdbscan_noise_singleton_residual": int(ex0.get("b_hdbscan_noise_singleton_residual", 0)),
             }
         )
 
-        ars = rw.after_route_clean_snapshot
-        text_for_a = (ars.text if ars is not None else "") or str(ex0.get("text_after_destructive_clean_for_a") or "")
+        text_for_a = str(ex0.get("text_for_a_parse_safe") or "").strip()
+        if not text_for_a:
+            ars = rw.after_route_clean_snapshot
+            text_for_a = (ars.text if ars is not None else "") or str(
+                ex0.get("text_after_destructive_clean_for_a") or ""
+            )
         ad = (
             diagnose_a_evaluations(text_for_a, TOKENIZER_KEY)
             if text_for_a
@@ -583,6 +600,10 @@ def main() -> int:
             {
                 "source_id": sid,
                 "frozen_index": i,
+                "a_input_origin": str(ex0.get("a_input_origin", "")),
+                "a_parse_safe_fallback_used": bool(ex0.get("a_parse_safe_fallback_used", False)),
+                "a_parse_safe_parse_ok": bool(ex0.get("a_parse_safe_parse_ok", False)),
+                "a_parse_safe_fallback_masked_chars": int(ex0.get("a_parse_safe_fallback_masked_chars", 0)),
                 "a_text_nonempty": bool(text_for_a),
                 "parse_ok": ad.get("parse_ok", False),
                 "ast_parse_failed": ad.get("ast_parse_failed", False),
@@ -609,6 +630,7 @@ def main() -> int:
                 "b_span_safe_rewrite_hits": int(bd.get("span_hits", 0)),
                 "b_span_safe_rewrite_misses_bounds": int(bd.get("span_misses_bounds", 0)),
                 "b_span_safe_rewrite_misses_slice_mismatch": int(bd.get("span_misses_slice_mismatch", 0)),
+                "b_span_hits_literal_equiv": int(bd.get("span_hits_literal_equiv", 0)),
                 "b_global_replace_fallback_hits": int(bd.get("global_replace_fallback_clusters", 0)),
             }
         )

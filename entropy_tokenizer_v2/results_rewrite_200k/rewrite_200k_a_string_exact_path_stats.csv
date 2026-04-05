@@ -1,0 +1,8 @@
+metric,value
+n_files_text_nonempty,132
+n_files_ast_scan_ok_for_path_literals,4
+sum_distinct_path_like_literals,9
+sum_occurrences_path_like_literals,15
+n_files_with_any_path_like_literal,3
+eval_context_allow_string_exact_path_true_files,0
+note,rewrite_200k 未注入 string_exact_path metadata；AST 扫描仅统计类 path 字符串常量

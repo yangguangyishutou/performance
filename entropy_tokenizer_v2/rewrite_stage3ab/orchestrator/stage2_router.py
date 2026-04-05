@@ -208,6 +208,19 @@ class RoutePolicy:
     multiline_string_policy: str = "retain_b"  # retain_b | pass_through
 
 
+    @classmethod
+    def rewrite_recovery_v2(cls) -> RoutePolicy:
+        """More NL retained for B; eval-oriented profile."""
+        return cls(
+            short_comment_max_inner=6,
+            retain_docstring=True,
+            b_string_min_chars=10,
+            retain_comment_threshold=7,
+            long_literal_reference_threshold=10,
+            multiline_string_policy="retain_b",
+        )
+
+
 def summarize_route_decision(rd: RouteDecision) -> dict[str, Any]:
     """Aggregate counts for corpus rollups (excludes coarse ``ordinary_code_text`` spam)."""
     from collections import Counter
@@ -321,6 +334,19 @@ def apply_char_span_removals(text: str, spans: Iterable[tuple[int, int]]) -> str
         e = max(s, min(e, len(out)))
         out = out[:s] + out[e:]
     return out
+
+
+def mask_char_spans_preserve_layout(text: str, spans: Iterable[tuple[int, int]]) -> str:
+    """Replace span interiors with spaces; keep newlines so offsets and line structure stay stable."""
+    merged = _merge_spans(list(spans))
+    chars = list(text)
+    for s, e in merged:
+        s = max(0, min(s, len(chars)))
+        e = max(s, min(e, len(chars)))
+        for i in range(s, e):
+            if chars[i] not in "\n\r":
+                chars[i] = " "
+    return "".join(chars)
 
 
 def collect_spans_for_action(rd: RouteDecision, actions: set[RouteAction]) -> list[tuple[int, int]]:

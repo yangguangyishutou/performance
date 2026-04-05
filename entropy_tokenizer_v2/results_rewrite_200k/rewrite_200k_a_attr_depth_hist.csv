@@ -1,0 +1,7 @@
+metric,value
+attr_occ_gain_relax_3_to_4,0
+attr_occ_gain_relax_4_to_5,0
+attr_suffix_occ_minlen_ok_depth_gt_5,0
+attr_suffix_occ_minlen_ok_depth_le_3,1
+attr_suffix_occ_minlen_ok_depth_le_4,1
+attr_suffix_occ_minlen_ok_depth_le_5,1

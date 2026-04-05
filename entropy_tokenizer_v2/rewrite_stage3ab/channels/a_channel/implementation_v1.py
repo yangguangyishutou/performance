@@ -16,6 +16,7 @@ from rewrite_stage3ab.metrics.tokenizer_metric import measure_true_token_len
 
 _NAME_MIN_CHARS = 10
 _SAFE_PATH_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_.]{7,}\Z")
+_B_GENERATED_SYM_RE = re.compile(r"^_b\d+\Z")
 
 
 def _collect_defined_and_imported_names(tree: ast.AST) -> set[str]:
@@ -109,6 +110,7 @@ class AChannelV1:
         name_ctr, tree = _count_load_names(text)
         if tree is None:
             return out
+        b_gen: set[str] = set(ctx.get("b_generated_symbols") or ())
         fb = ctx.get("forbidden_base")
         if fb is None:
             fb = _collect_defined_and_imported_names(tree)
@@ -116,6 +118,8 @@ class AChannelV1:
         for field, ctr in (("variable", name_ctr),):
             for raw, occ in ctr.items():
                 if not raw.isidentifier() or keyword.iskeyword(raw):
+                    continue
+                if raw in b_gen or raw.startswith("_BREF") or _B_GENERATED_SYM_RE.match(raw):
                     continue
                 if len(raw) < self.min_identifier_chars:
                     tl = measure_true_token_len(raw, self.tokenizer_key)
@@ -127,6 +131,8 @@ class AChannelV1:
             if tree2 is not None:
                 for raw, occ in attr_ctr.items():
                     if keyword.iskeyword(raw) or len(raw) < self.min_identifier_chars:
+                        continue
+                    if raw in b_gen or raw.startswith("_BREF") or _B_GENERATED_SYM_RE.match(raw):
                         continue
                     out.append({"field": "attribute", "literal": raw, "occ": occ})
         exact_path = ctx.get("string_exact_path")
@@ -150,7 +156,7 @@ class AChannelV1:
     def rank_candidates(self, candidates: list[dict[str, Any]], ctx: dict[str, Any]) -> list[dict[str, Any]]:
         scored: list[tuple[float, dict[str, Any]]] = []
         base = set(ctx.get("forbidden_base", set()))
-        reserved = set(ctx.get("reserved_aliases", set()))
+        reserved = set(ctx.get("reserved_aliases", set())) | set(ctx.get("b_generated_symbols") or ())
         for c in candidates:
             occ = int(c.get("occ", 0))
             raw = str(c.get("literal", ""))

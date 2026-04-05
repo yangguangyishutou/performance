@@ -1,0 +1,8 @@
+asset_kind,route_action,count,pct_within_kind
+comment,retain_for_b,34,94.4444
+comment,delete_now,2,5.5556
+docstring,retain_for_b,1,100.0000
+long_literal,retain_as_reference_candidate,7,100.0000
+ordinary_code,pass_through,4,100.0000
+short_literal,pass_through,37,78.7234
+short_literal,retain_as_reference_candidate,10,21.2766

@@ -1,0 +1,8 @@
+literal,field,occ_sum_corpus
+cms,variable,9
+double,attribute,3
+InputTag,attribute,2
+int32,attribute,1
+bool,attribute,1
+string,attribute,1
+print,variable,1
