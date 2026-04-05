@@ -1,0 +1,4 @@
+source_id,in_true,out_true,a_net,b_net,n_events
+hand_a,39,15,9,0,6
+hand_b,43,39,0,33,14
+hand_route,19,17,0,0,10
