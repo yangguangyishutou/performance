@@ -102,6 +102,7 @@ class Stage3ScaffoldRuntime:
             )
 
         text_after_b = self._b.apply_cluster_rewrites(text0, ctx_b)
+        b_rewrite_diag = dict(ctx_b.get("b_rewrite_diagnostics") or {})
 
         for cl in ctx_b.get("b_cluster_evaluations", []):
             clus = cl.get("cluster", {})
@@ -305,6 +306,8 @@ class Stage3ScaffoldRuntime:
         )
 
         run_extras: dict[str, Any] = {
+            "text_after_destructive_clean_for_a": text_s2,
+            "b_rewrite_diagnostics": b_rewrite_diag,
             "after_b_token_true": after_b_snap.token_count_true,
             "after_clean_token_true": after_clean_snap.token_count_true,
             "after_a_token_true": after_a_snap.token_count_true,
@@ -332,6 +335,7 @@ class Stage3ScaffoldRuntime:
             telemetry_events=events,
             summary=None,
             run_extras=run_extras,
+            after_route_clean_snapshot=after_clean_snap,
         )
         result.summary = summarize_run(result)
         if result.summary is not None:

@@ -105,7 +105,15 @@ class ReferenceCodecV1:
         )
 
     def rewrite_text(self, text: str, emission: ReferenceEmission, ctx: dict[str, Any]) -> str:
-        del ctx
+        diag = ctx.setdefault(
+            "b_rewrite_diagnostics",
+            {
+                "span_hits": 0,
+                "span_misses_bounds": 0,
+                "span_misses_slice_mismatch": 0,
+                "global_replace_fallback_clusters": 0,
+            },
+        )
         preamble = emission.meta.get("preamble", "")
         spans = sorted(emission.member_spans, key=lambda t: t[0], reverse=True)
         members_set = set(emission.member_texts)
@@ -113,12 +121,16 @@ class ReferenceCodecV1:
             out = text
             for start, end in spans:
                 if not (0 <= start < end <= len(out)):
+                    diag["span_misses_bounds"] += 1
                     continue
                 slice_ = out[start:end]
                 if slice_ not in members_set:
+                    diag["span_misses_slice_mismatch"] += 1
                     continue
+                diag["span_hits"] += 1
                 out = out[:start] + emission.symbol + out[end:]
             return preamble + out
+        diag["global_replace_fallback_clusters"] += 1
         out = text
         for m in sorted(set(emission.member_texts), key=len, reverse=True):
             if m:

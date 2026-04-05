@@ -99,3 +99,5 @@ class Stage3ABRunResult:
     telemetry_events: list[TelemetryEvent] = field(default_factory=list)
     summary: Stage3ABRunSummary | None = None
     run_extras: dict[str, Any] = field(default_factory=dict)
+    # A 通道输入：destructive route clean 之后；eval 诊断优先读此快照的 text
+    after_route_clean_snapshot: StageSnapshot | None = None

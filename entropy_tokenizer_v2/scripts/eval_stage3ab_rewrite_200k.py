@@ -29,6 +29,8 @@ from marker_count import encode as mc_encode  # noqa: E402
 from pipeline import apply_stage1_with_stats, build_stage2_config, resolve_stage2_for_pipeline  # noqa: E402
 from repo_miner import _load_tokenizer, mine_from_sources  # noqa: E402
 from rewrite_stage3ab.contracts.data_models import SourceUnit  # noqa: E402
+from rewrite_stage3ab.diagnostics.a_probe import diagnose_a_evaluations  # noqa: E402
+from rewrite_stage3ab.diagnostics.route_probe import merge_route_breakdown, route_breakdown_for_text  # noqa: E402
 from rewrite_stage3ab.orchestrator.pipeline import run_scaffold_on_units  # noqa: E402
 from rewrite_stage3ab.telemetry.aggregate import RewriteCorpusRollup  # noqa: E402
 from rewrite_stage3ab.telemetry.ledger import JsonlTelemetryLedger  # noqa: E402
@@ -102,6 +104,36 @@ def _pct(num: int, den: int) -> float:
     return (100.0 * num / den) if den else 0.0
 
 
+def _merge_top_lists(dst: list[dict[str, Any]], src: list[dict[str, Any]], *, key, limit: int = 50) -> None:
+    dst.extend(src)
+    dst.sort(key=key, reverse=True)
+    del dst[limit:]
+
+
+def _write_accounting_gap_md(path: Path) -> None:
+    body = """# rewrite_200k 与旧主线评测口径差异（定点说明）
+
+## 已对齐（本脚本内）
+
+- **Tokenizer**：与仓库 `EVAL_TOKENIZERS` / `marker_count.encode` 一致，true token 以 `mc_encode` 长度计量。
+- **Stage1**：`apply_stage1_with_stats` 与 `mine_from_sources` 摘要一致。
+- **Stage2**：`stage2_clean_skip_syn_and_stats` + `build_stage2_config` / `resolve_stage2_for_pipeline`，rewrite 与 hybrid 分支共用同一 `after_s2` 文本。
+- **Stage3 输入口径**：old / fast_try 的 hybrid_ab 与 rewrite 的对比均以 **after_s2 的 true token 数为 before**，Stage3 后再计 after。
+
+## 未与旧主线完全同构
+
+- **v2_eval / marker accounting**：本脚本未走完整 `v2_eval` 流水线；未做与生产一致的 marker 级账本对齐。
+- **hybrid_ab guardrail**：old / fast_try 路径调用了 `_apply_hybrid_ab_file_guardrail`；rewrite Stage3 为独立 orchestrator，**未**接入同一 guardrail 实现。
+- **A/B 经济学**：rewrite 使用 `AChannelV1` / `BChannelV1` 的 net_true 门控与单候选接受规则；与 hybrid_ab 的 combo / 风险阈值等 **算法不同**，仅可比「同一 after_s2 上的启发式压缩量」，不可视为同一后端重复实验。
+
+## 结论用法
+
+- rewrite_200k 结果适合诊断 **rewrite 架构自身**（路由留存、A/B 门、span 命中率）。
+- 与 old baseline 的数字对比应标注 **guardrail 与 marker 账本未对齐**，不宜直接宣称为生产等价 A/B。
+"""
+    path.write_text(body, encoding="utf-8")
+
+
 def main() -> int:
     frozen_dir = Path(os.environ.get("ET_FROZEN_CORPUS_DIR", str(DEFAULT_FROZEN))).resolve()
     if not (frozen_dir / "frozen_corpus_sources.jsonl").is_file():
@@ -138,6 +170,13 @@ def main() -> int:
     rollup = RewriteCorpusRollup()
     ledger = JsonlTelemetryLedger(OUT_DIR / "rewrite_200k_ledger.jsonl")
     detail_rows: list[dict[str, Any]] = []
+    a_diag_rows: list[dict[str, Any]] = []
+    b_diag_rows: list[dict[str, Any]] = []
+    route_flat_corpus: dict[str, int] = {}
+    route_per_file_rows: list[dict[str, Any]] = []
+    top_gross_neg: list[dict[str, Any]] = []
+    top_long_ids: list[dict[str, Any]] = []
+    top_high_occ: list[dict[str, Any]] = []
 
     totals_old_after = 0
     totals_old_before = 0
@@ -215,6 +254,43 @@ def main() -> int:
             }
         )
 
+        ars = rw.after_route_clean_snapshot
+        text_for_a = (ars.text if ars is not None else "") or str(ex0.get("text_after_destructive_clean_for_a") or "")
+        ad = diagnose_a_evaluations(text_for_a, TOKENIZER_KEY) if text_for_a else {"parse_ok": False}
+        if ad.get("parse_ok"):
+            _merge_top_lists(top_gross_neg, list(ad.get("top_gross_pos_net_neg") or []), key=lambda x: x.get("gross", 0))
+            _merge_top_lists(top_long_ids, list(ad.get("top_long_identifiers") or []), key=lambda x: (x.get("tok", 0), x.get("occ", 0)))
+            _merge_top_lists(top_high_occ, list(ad.get("top_high_occurrence") or []), key=lambda x: (x.get("occ", 0), len(str(x.get("literal", "")))))
+        a_diag_rows.append(
+            {
+                "source_id": sid,
+                "frozen_index": i,
+                "parse_ok": ad.get("parse_ok", False),
+                "a_candidates_total": ad.get("a_candidates_total", 0),
+                "a_candidates_filtered_short_name": ad.get("a_candidates_filtered_short_name", 0),
+                "a_candidates_filtered_attr_depth": ad.get("a_candidates_filtered_attr_depth", 0),
+                "a_candidates_filtered_string_exact_path": ad.get("a_candidates_filtered_string_exact_path", 0),
+                "a_candidates_no_legal_alias": ad.get("a_candidates_no_legal_alias", 0),
+                "a_candidates_no_net_true_gain": ad.get("a_candidates_no_net_true_gain", 0),
+                "a_candidates_positive_gross_but_negative_net": ad.get("a_candidates_positive_gross_but_negative_net", 0),
+                "a_candidates_accepted": ad.get("a_candidates_accepted", 0),
+            }
+        )
+        bd = ex0.get("b_rewrite_diagnostics") or {}
+        b_diag_rows.append(
+            {
+                "source_id": sid,
+                "frozen_index": i,
+                "b_span_safe_rewrite_hits": int(bd.get("span_hits", 0)),
+                "b_span_safe_rewrite_misses_bounds": int(bd.get("span_misses_bounds", 0)),
+                "b_span_safe_rewrite_misses_slice_mismatch": int(bd.get("span_misses_slice_mismatch", 0)),
+                "b_global_replace_fallback_hits": int(bd.get("global_replace_fallback_clusters", 0)),
+            }
+        )
+        rb = route_breakdown_for_text(sid, after_s2)
+        merge_route_breakdown(route_flat_corpus, rb)
+        route_per_file_rows.append({"source_id": sid, "frozen_index": i, **dict(rb.get("flat") or {})})
+
         if ex["a_ok"] is None and rw.a_result.net_saved_true > 0 and rw.a_result.alias_assignments:
             ex["a_ok"] = {
                 "source_id": sid,
@@ -276,6 +352,89 @@ def main() -> int:
             w = csv.DictWriter(f, fieldnames=keys)
             w.writeheader()
             w.writerows(detail_rows)
+
+    if a_diag_rows:
+        keys_a = sorted({k for row in a_diag_rows for k in row})
+        with (OUT_DIR / "rewrite_200k_a_diagnostics.csv").open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=keys_a)
+            w.writeheader()
+            w.writerows(a_diag_rows)
+
+    if b_diag_rows:
+        keys_b = sorted({k for row in b_diag_rows for k in row})
+        b_corpus = {
+            "source_id": "__corpus__",
+            "frozen_index": -1,
+            "b_span_safe_rewrite_hits": sum(int(r.get("b_span_safe_rewrite_hits", 0)) for r in b_diag_rows),
+            "b_span_safe_rewrite_misses_bounds": sum(int(r.get("b_span_safe_rewrite_misses_bounds", 0)) for r in b_diag_rows),
+            "b_span_safe_rewrite_misses_slice_mismatch": sum(
+                int(r.get("b_span_safe_rewrite_misses_slice_mismatch", 0)) for r in b_diag_rows
+            ),
+            "b_global_replace_fallback_hits": sum(int(r.get("b_global_replace_fallback_hits", 0)) for r in b_diag_rows),
+        }
+        with (OUT_DIR / "rewrite_200k_b_diagnostics.csv").open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=keys_b)
+            w.writeheader()
+            w.writerows(b_diag_rows + [b_corpus])
+
+    if route_per_file_rows:
+        keys_rt = sorted({k for row in route_per_file_rows for k in row} | set(route_flat_corpus.keys()))
+        corp_rt: dict[str, Any] = {"source_id": "__corpus__", "frozen_index": -1}
+        for k in keys_rt:
+            if k in ("source_id", "frozen_index"):
+                continue
+            corp_rt[k] = route_flat_corpus.get(k, 0)
+        for row in route_per_file_rows:
+            for k in keys_rt:
+                if k not in row and k not in ("source_id", "frozen_index"):
+                    row.setdefault(k, 0)
+        with (OUT_DIR / "rewrite_200k_route_diagnostics.csv").open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=keys_rt)
+            w.writeheader()
+            w.writerows(route_per_file_rows + [corp_rt])
+
+    a_rej_md = ["# A 通道拒绝样例（corpus 级 Top，来自 diagnose_a_evaluations）\n\n## gross>0 且 net<0（Top 50）\n```json\n"]
+    a_rej_md.append(json.dumps(top_gross_neg[:50], ensure_ascii=False, indent=2))
+    a_rej_md.append("\n```\n\n## 长 identifier 候选（Top 50）\n```json\n")
+    a_rej_md.append(json.dumps(top_long_ids[:50], ensure_ascii=False, indent=2))
+    a_rej_md.append("\n```\n\n## 高频 identifier 候选（Top 50）\n```json\n")
+    a_rej_md.append(json.dumps(top_high_occ[:50], ensure_ascii=False, indent=2))
+    a_rej_md.append("\n```\n")
+    (OUT_DIR / "rewrite_200k_a_reject_examples.md").write_text("".join(a_rej_md), encoding="utf-8")
+
+    b_sum = {
+        "b_span_safe_rewrite_hits": sum(int(r.get("b_span_safe_rewrite_hits", 0)) for r in b_diag_rows),
+        "b_span_safe_rewrite_misses_bounds": sum(int(r.get("b_span_safe_rewrite_misses_bounds", 0)) for r in b_diag_rows),
+        "b_span_safe_rewrite_misses_slice_mismatch": sum(
+            int(r.get("b_span_safe_rewrite_misses_slice_mismatch", 0)) for r in b_diag_rows
+        ),
+        "b_global_replace_fallback_hits": sum(int(r.get("b_global_replace_fallback_hits", 0)) for r in b_diag_rows),
+    } if b_diag_rows else {
+        "b_span_safe_rewrite_hits": 0,
+        "b_span_safe_rewrite_misses_bounds": 0,
+        "b_span_safe_rewrite_misses_slice_mismatch": 0,
+        "b_global_replace_fallback_hits": 0,
+    }
+    b_ex_md = (
+        "# B span / fallback 诊断汇总\n\n"
+        f"```json\n{json.dumps(b_sum, ensure_ascii=False, indent=2)}\n```\n\n"
+        "详见 `rewrite_200k_b_diagnostics.csv` 末行 `__corpus__`。\n"
+    )
+    (OUT_DIR / "rewrite_200k_b_examples.md").write_text(b_ex_md, encoding="utf-8")
+
+    top_retain = sorted(
+        detail_rows,
+        key=lambda r: int(r.get("route_initial_retain_for_b", 0) or 0),
+        reverse=True,
+    )[:12]
+    rt_md = ["# Route 高留存样例（按 route_initial_retain_for_b 排序）\n"]
+    for r in top_retain:
+        rt_md.append(f"## {r.get('source_id')} (retain_for_b={r.get('route_initial_retain_for_b')})\n")
+        rt_md.append(f"- delete_now: {r.get('route_initial_delete_now')}, reference: {r.get('route_initial_reference')}\n")
+        rt_md.append(f"- docstrings: {r.get('route_initial_docstrings')}, comments: {r.get('route_initial_comments')}\n\n")
+    (OUT_DIR / "rewrite_200k_route_examples.md").write_text("".join(rt_md), encoding="utf-8")
+
+    _write_accounting_gap_md(OUT_DIR / "rewrite_200k_accounting_gap.md")
 
     examples_md = ["# rewrite_200k examples (ledger-backed snapshots)\n"]
     for title, key in [

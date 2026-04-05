@@ -57,10 +57,9 @@ def _count_load_names(text: str) -> tuple[Counter[str], ast.AST | None]:
     return ctr, tree
 
 
-def _count_attribute_suffixes_safe(text: str) -> tuple[Counter[str], ast.AST | None]:
+def _count_attribute_suffixes_safe(text: str, *, max_attr_depth: int = 3) -> tuple[Counter[str], ast.AST | None]:
     """
-    Count ``.attr`` suffixes only for simple ``Name.attr`` / ``Attribute.attr`` chains
-    (single hop from a non-literal base), reducing accidental deep-path churn.
+    Count ``.attr`` suffixes for ``Attribute`` loads whose value chain depth ≤ ``max_attr_depth``.
     """
     try:
         tree = ast.parse(text)
@@ -80,7 +79,7 @@ def _count_attribute_suffixes_safe(text: str) -> tuple[Counter[str], ast.AST | N
     for node in ast.walk(tree):
         if isinstance(node, ast.Attribute) and isinstance(node.ctx, ast.Load):
             if isinstance(node.attr, str) and node.attr.isidentifier():
-                if base_depth(node.value) <= 3:
+                if base_depth(node.value) <= max_attr_depth:
                     ctr[node.attr] += 1
     return ctr, tree
 
@@ -96,11 +95,13 @@ class AChannelV1:
         *,
         min_occ_aux: int = 1,
         min_identifier_chars: int = _NAME_MIN_CHARS,
+        max_attr_depth: int = 3,
         enable_attributes: bool = True,
     ) -> None:
         self.tokenizer_key = tokenizer_key
         self.min_occ_aux = min_occ_aux
         self.min_identifier_chars = min_identifier_chars
+        self.max_attr_depth = max_attr_depth
         self.enable_attributes = enable_attributes
 
     def collect_candidates(self, text: str, ctx: dict[str, Any]) -> list[dict[str, Any]]:
@@ -122,7 +123,7 @@ class AChannelV1:
                         continue
                 out.append({"field": field, "literal": raw, "occ": occ})
         if self.enable_attributes:
-            attr_ctr, tree2 = _count_attribute_suffixes_safe(text)
+            attr_ctr, tree2 = _count_attribute_suffixes_safe(text, max_attr_depth=self.max_attr_depth)
             if tree2 is not None:
                 for raw, occ in attr_ctr.items():
                     if keyword.iskeyword(raw) or len(raw) < self.min_identifier_chars:
