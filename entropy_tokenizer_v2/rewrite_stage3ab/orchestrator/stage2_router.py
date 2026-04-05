@@ -106,7 +106,10 @@ def extract_python_free_text_assets(source_id: str, text: str) -> list[FreeTextA
                 )
             )
             aid += 1
-    except tokenize.TokenError:
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        pass
+    except Exception:
+        # Malformed or pathological sources in large corpora: skip comment mining only.
         pass
 
     # --- AST: docstrings + string literals
@@ -193,21 +196,53 @@ def _is_docstring_holder(stmt: ast.stmt | None, parent: ast.AST | None) -> bool:
     return _is_docstring_statement(parent, stmt)
 
 
+@dataclass
+class RoutePolicy:
+    """Tunable Stage2 → B routing (AST/tokenize assets only)."""
+
+    short_comment_max_inner: int = 8
+    retain_docstring: bool = True
+    b_string_min_chars: int = 16
+    retain_comment_threshold: int = 9
+    long_literal_reference_threshold: int = 16
+    multiline_string_policy: str = "retain_b"  # retain_b | pass_through
+
+
+def summarize_route_decision(rd: RouteDecision) -> dict[str, Any]:
+    """Aggregate counts for corpus rollups (excludes coarse ``ordinary_code_text`` spam)."""
+    from collections import Counter
+
+    act = Counter()
+    docstrings = 0
+    comments = 0
+    for d in rd.decisions:
+        a = d.asset
+        kind = a.metadata.get("asset_kind", "")
+        if kind == "ordinary_code_text":
+            continue
+        act[d.action.value] += 1
+        if kind == "docstring":
+            docstrings += 1
+        elif kind == "comment":
+            comments += 1
+    return {
+        "total_route_delete_now": int(act.get(RouteAction.DELETE_NOW.value, 0)),
+        "total_route_retain_for_b": int(act.get(RouteAction.RETAIN_FOR_B.value, 0)),
+        "total_route_retain_as_reference_candidate": int(act.get(RouteAction.RETAIN_AS_REFERENCE_CANDIDATE.value, 0)),
+        "total_route_pass_through": int(act.get(RouteAction.PASS_THROUGH.value, 0)),
+        "total_route_clean_after_b": int(act.get(RouteAction.CLEAN_AFTER_B.value, 0)),
+        "total_docstrings_detected": docstrings,
+        "total_comments_detected": comments,
+    }
+
+
 class Stage2RouterEngine:
     """
-    Heuristic policy: long NL → B; noise comments → delete; reference-like duplicates flagged.
+    Parameterized policy: long NL → B; noise comments → delete; reference-like literals flagged.
     """
 
-    def __init__(
-        self,
-        *,
-        short_comment_max_inner: int = 8,
-        b_string_min_chars: int = 16,
-        b_docstring_always: bool = True,
-    ) -> None:
-        self.short_comment_max_inner = short_comment_max_inner
-        self.b_string_min_chars = b_string_min_chars
-        self.b_docstring_always = b_docstring_always
+    def __init__(self, policy: RoutePolicy | None = None) -> None:
+        self.policy = policy or RoutePolicy()
 
     def route(self, source_id: str, assets: list[FreeTextAsset]) -> RouteDecision:
         decisions: list[Stage2AssetDecision] = []
@@ -215,25 +250,40 @@ class Stage2RouterEngine:
             kind = a.metadata.get("asset_kind", "")
             action, reason, score = self._decide_one(a, kind)
             decisions.append(Stage2AssetDecision(asset=a, action=action, reason=reason, priority_score=score))
-        return RouteDecision(source_id=source_id, decisions=decisions, extras={"engine": "Stage2RouterEngine"})
+        summary = summarize_route_decision(
+            RouteDecision(source_id=source_id, decisions=decisions, extras={})
+        )
+        return RouteDecision(
+            source_id=source_id,
+            decisions=decisions,
+            extras={"engine": "Stage2RouterEngine", "route_summary": summary, "policy": self.policy},
+        )
 
     def _decide_one(self, a: FreeTextAsset, kind: str) -> tuple[RouteAction, str, float]:
+        p = self.policy
         if kind == "ordinary_code_text":
             return RouteAction.PASS_THROUGH, "code_body_default", 0.0
         if kind == "comment":
             inner = a.text.lstrip("#").strip()
-            if len(inner) <= self.short_comment_max_inner:
+            if len(inner) <= p.short_comment_max_inner:
                 return RouteAction.DELETE_NOW, "short_comment_noise", 1.0
-            return RouteAction.RETAIN_FOR_B, "comment_nl_candidate", 0.6
-        if kind == "docstring" and self.b_docstring_always:
-            return RouteAction.RETAIN_FOR_B, "docstring_compressible", 0.9
+            if len(inner) >= p.retain_comment_threshold:
+                return RouteAction.RETAIN_FOR_B, "comment_nl_candidate", 0.6
+            return RouteAction.PASS_THROUGH, "comment_mid_neutral", 0.2
+        if kind == "docstring":
+            if p.retain_docstring:
+                return RouteAction.RETAIN_FOR_B, "docstring_compressible", 0.9
+            return RouteAction.PASS_THROUGH, "docstring_policy_off", 0.1
         if kind == "string_literal":
             L = len(a.text)
             if a.metadata.get("multiline"):
-                return RouteAction.RETAIN_FOR_B, "multiline_string_asset", 0.75
-            if L >= self.b_string_min_chars:
-                # Near-duplicate path: long repeated literals may become reference dictionary
+                if p.multiline_string_policy == "retain_b":
+                    return RouteAction.RETAIN_FOR_B, "multiline_string_asset", 0.75
+                return RouteAction.PASS_THROUGH, "multiline_policy_pass", 0.15
+            if L >= p.long_literal_reference_threshold:
                 return RouteAction.RETAIN_AS_REFERENCE_CANDIDATE, "long_literal_reference_pool", 0.55
+            if L >= p.b_string_min_chars:
+                return RouteAction.RETAIN_FOR_B, "long_string_nl", 0.5
             return RouteAction.PASS_THROUGH, "short_literal_keep", 0.1
         return RouteAction.PASS_THROUGH, "unknown_kind", 0.0
 

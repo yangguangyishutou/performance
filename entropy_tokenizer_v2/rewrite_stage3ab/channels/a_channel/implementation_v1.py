@@ -1,5 +1,5 @@
 """
-Tokenizer-aware A channel: alias mining, true-token economics, AST scope safety.
+Tokenizer-aware A channel: strict single-token pool tiers + token economics (net_true gate).
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from rewrite_stage3ab.channels.a_channel.economics import net_gain_for_alias
 from rewrite_stage3ab.metrics.tokenizer_metric import measure_true_token_len
 
 _NAME_MIN_CHARS = 10
+_SAFE_PATH_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_.]{7,}\Z")
 
 
 def _collect_defined_and_imported_names(tree: ast.AST) -> set[str]:
@@ -56,22 +57,37 @@ def _count_load_names(text: str) -> tuple[Counter[str], ast.AST | None]:
     return ctr, tree
 
 
-def _count_attribute_suffixes(text: str) -> tuple[Counter[str], ast.AST | None]:
+def _count_attribute_suffixes_safe(text: str) -> tuple[Counter[str], ast.AST | None]:
+    """
+    Count ``.attr`` suffixes only for simple ``Name.attr`` / ``Attribute.attr`` chains
+    (single hop from a non-literal base), reducing accidental deep-path churn.
+    """
     try:
         tree = ast.parse(text)
     except SyntaxError:
         return Counter(), None
     ctr: Counter[str] = Counter()
+
+    def base_depth(node: ast.AST) -> int:
+        if isinstance(node, ast.Name):
+            return 1
+        if isinstance(node, ast.Attribute) and isinstance(node.value, ast.Name):
+            return 2
+        if isinstance(node, ast.Attribute):
+            return 1 + base_depth(node.value)
+        return 99
+
     for node in ast.walk(tree):
         if isinstance(node, ast.Attribute) and isinstance(node.ctx, ast.Load):
             if isinstance(node.attr, str) and node.attr.isidentifier():
-                ctr[node.attr] += 1
+                if base_depth(node.value) <= 3:
+                    ctr[node.attr] += 1
     return ctr, tree
 
 
 class AChannelV1:
     """
-    Exact identifier aliasing driven by **net true-token gain**; ``min_occ_aux`` is soft.
+    Exact identifier aliasing driven by **net true-token gain**; ``min_occ_aux`` is diagnostic only.
     """
 
     def __init__(
@@ -106,15 +122,28 @@ class AChannelV1:
                         continue
                 out.append({"field": field, "literal": raw, "occ": occ})
         if self.enable_attributes:
-            attr_ctr, tree2 = _count_attribute_suffixes(text)
+            attr_ctr, tree2 = _count_attribute_suffixes_safe(text)
             if tree2 is not None:
                 for raw, occ in attr_ctr.items():
                     if keyword.iskeyword(raw) or len(raw) < self.min_identifier_chars:
                         continue
                     out.append({"field": "attribute", "literal": raw, "occ": occ})
         exact_path = ctx.get("string_exact_path")
-        if isinstance(exact_path, str) and exact_path in text:
-            out.append({"field": "string_exact_path", "literal": exact_path, "occ": text.count(exact_path)})
+        allow = bool(ctx.get("allow_string_exact_path"))
+        if (
+            allow
+            and isinstance(exact_path, str)
+            and _SAFE_PATH_RE.match(exact_path)
+            and exact_path in text
+            and text.count(exact_path) == ctx.get("string_exact_path_expected_occ", text.count(exact_path))
+        ):
+            out.append(
+                {
+                    "field": "string_exact_path",
+                    "literal": exact_path,
+                    "occ": text.count(exact_path),
+                }
+            )
         return out
 
     def rank_candidates(self, candidates: list[dict[str, Any]], ctx: dict[str, Any]) -> list[dict[str, Any]]:
@@ -125,7 +154,7 @@ class AChannelV1:
             occ = int(c.get("occ", 0))
             raw = str(c.get("literal", ""))
             fb = base | reserved
-            best = pick_best_alias(self.tokenizer_key, forbidden=fb | {raw})
+            best, _meta = pick_best_alias(self.tokenizer_key, forbidden=fb | {raw})
             if best is None:
                 scored.append((-1e9, c))
                 continue
@@ -138,11 +167,10 @@ class AChannelV1:
         raw = str(candidate.get("literal", ""))
         occ = int(candidate.get("occ", 0))
         fb = set(ctx.get("forbidden_base", set())) | set(ctx.get("reserved_aliases", set()))
-        best = pick_best_alias(self.tokenizer_key, forbidden=fb | {raw})
+        best, pool_meta = pick_best_alias(self.tokenizer_key, forbidden=fb | {raw})
         if best is None:
-            return {"ok": False, "candidate": candidate, "reason": "no_legal_alias"}
+            return {"ok": False, "candidate": candidate, "reason": "no_legal_alias", "alias_pool_meta": pool_meta}
         gross, intro, net = net_gain_for_alias(raw, best.alias, occ, self.tokenizer_key)
-        # Primary gate: net true tokens
         if net <= 0:
             return {
                 "ok": False,
@@ -152,6 +180,7 @@ class AChannelV1:
                 "intro_tokens_true": intro,
                 "net_true": net,
                 "alias": best.alias,
+                "alias_pool_meta": pool_meta,
             }
         return {
             "ok": True,
@@ -161,6 +190,9 @@ class AChannelV1:
             "intro_tokens_true": intro,
             "net_true": net,
             "token_len_alias": best.token_len_true,
+            "alias_selection_tier": best.tier,
+            "alias_is_strict_single_token": best.is_strict_single_token,
+            "alias_pool_meta": pool_meta,
         }
 
     def apply_assignments(self, text: str, ctx: dict[str, Any]) -> str:
@@ -175,7 +207,8 @@ class AChannelV1:
                 pattern = re.compile(rf"(\.){re.escape(old)}\b")
                 out = pattern.sub(rf"\1{new}", out)
             elif row.get("field") == "string_exact_path":
-                out = out.replace(old, new)
+                pattern = re.compile(rf"(?<![A-Za-z0-9_]){re.escape(old)}(?![A-Za-z0-9_])")
+                out = pattern.sub(new, out)
             else:
                 out = re.sub(rf"\b{re.escape(old)}\b", new, out)
         return out

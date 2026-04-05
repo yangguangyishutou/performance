@@ -25,6 +25,7 @@ def test_stage3ab_run_result_schema():
         "b_result",
         "telemetry_events",
         "summary",
+        "run_extras",
     }
     assert isinstance(result.input_snapshot, StageSnapshot)
     assert result.summary is not None

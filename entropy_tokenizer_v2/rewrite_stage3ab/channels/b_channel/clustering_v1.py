@@ -1,9 +1,12 @@
 """
 Clustering backends: HDBSCAN when available, else explicit lexical fallback (no silent skip).
+
+Also provides **near-duplicate** grouping for noise points (exact / norm-ws / lexical / char overlap).
 """
 
 from __future__ import annotations
 
+import ast
 import math
 from typing import Any, Callable, List, Sequence, Tuple
 
@@ -46,6 +49,85 @@ def list_registered_backends() -> list[ClusterBackendId]:
 
 def hdbscan_available() -> bool:
     return _HAS_HDBSCAN
+
+
+def _inner_string_value(s: str) -> str:
+    try:
+        v = ast.literal_eval(s)
+        if isinstance(v, str):
+            return v
+    except Exception:
+        pass
+    return s
+
+
+def _norm_ws_literal(s: str) -> str:
+    return " ".join(_inner_string_value(s).split())
+
+
+def word_jaccard_literal(a: str, b: str) -> float:
+    wa = set(_inner_string_value(a).lower().split())
+    wb = set(_inner_string_value(b).lower().split())
+    if not wa and not wb:
+        return 1.0
+    return len(wa & wb) / len(wa | wb)
+
+
+def char_jaccard_literal(a: str, b: str) -> float:
+    ca = set(_inner_string_value(a))
+    cb = set(_inner_string_value(b))
+    if not ca and not cb:
+        return 1.0
+    return len(ca & cb) / len(ca | cb)
+
+
+def near_duplicate_noise_groups(
+    strings: Sequence[str],
+    noise_indices: Sequence[int],
+    *,
+    word_thr: float = 0.72,
+    char_thr: float = 0.55,
+) -> list[list[int]]:
+    """
+    Union-find on *noise* indices only: exact, normalized-whitespace, lexical, char-overlap edges.
+    Returns disjoint member lists of size >= 2.
+    """
+    idxs = list(noise_indices)
+    if len(idxs) < 2:
+        return []
+    parent = {i: i for i in idxs}
+
+    def find(x: int) -> int:
+        while parent[x] != x:
+            parent[x] = parent[parent[x]]
+            x = parent[x]
+        return x
+
+    def union(a: int, b: int) -> None:
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[rb] = ra
+
+    for ii in range(len(idxs)):
+        for jj in range(ii + 1, len(idxs)):
+            i, j = idxs[ii], idxs[jj]
+            si, sj = strings[i], strings[j]
+            if si == sj:
+                union(i, j)
+                continue
+            if _norm_ws_literal(si) == _norm_ws_literal(sj) and len(_norm_ws_literal(si)) > 0:
+                union(i, j)
+                continue
+            if word_jaccard_literal(si, sj) >= word_thr:
+                union(i, j)
+                continue
+            if char_jaccard_literal(si, sj) >= char_thr:
+                union(i, j)
+    buckets: dict[int, list[int]] = {}
+    for i in idxs:
+        r = find(i)
+        buckets.setdefault(r, []).append(i)
+    return [sorted(v) for v in buckets.values() if len(v) >= 2]
 
 
 def _string_features(s: str) -> List[float]:

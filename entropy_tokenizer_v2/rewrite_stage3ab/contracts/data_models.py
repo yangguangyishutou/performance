@@ -98,3 +98,4 @@ class Stage3ABRunResult:
     b_result: BChannelResult
     telemetry_events: list[TelemetryEvent] = field(default_factory=list)
     summary: Stage3ABRunSummary | None = None
+    run_extras: dict[str, Any] = field(default_factory=dict)

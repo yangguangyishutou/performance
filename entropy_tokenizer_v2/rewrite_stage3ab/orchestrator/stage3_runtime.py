@@ -17,6 +17,7 @@ from rewrite_stage3ab.contracts.data_models import (
 from rewrite_stage3ab.contracts.enums import RouteAction, StageName, TelemetryEventKind
 from rewrite_stage3ab.metrics.tokenizer_metric import measure_true_token_len
 from rewrite_stage3ab.orchestrator.stage2_router import (
+    RoutePolicy,
     Stage2RouterEngine,
     apply_char_span_removals,
     assets_for_b,
@@ -35,8 +36,9 @@ class Stage3ScaffoldRuntime:
     Order: **B** on routed NL assets → **re-sniff + destructive + clean** → **A** economics.
     """
 
-    def __init__(self) -> None:
-        self._router = Stage2RouterEngine()
+    def __init__(self, default_route_policy: RoutePolicy | None = None) -> None:
+        self._default_route_policy = default_route_policy or RoutePolicy()
+        self._router = Stage2RouterEngine(self._default_route_policy)
         self._b = BChannelV1()
 
     def run_unit(self, unit: SourceUnit) -> Stage3ABRunResult:
@@ -44,9 +46,12 @@ class Stage3ScaffoldRuntime:
         sid = unit.source_id
         text0 = unit.raw_text
         events: list[TelemetryEvent] = []
+        pol = unit.metadata.get("route_policy")
+        router = Stage2RouterEngine(pol) if isinstance(pol, RoutePolicy) else self._router
 
         assets0 = extract_python_free_text_assets(sid, text0)
-        rd0 = self._router.route(sid, assets0)
+        rd0 = router.route(sid, assets0)
+        route_sum0 = dict(rd0.extras.get("route_summary", {}))
         for d in rd0.decisions:
             a = d.asset
             ak = a.metadata.get("asset_kind", "")
@@ -133,7 +138,8 @@ class Stage3ScaffoldRuntime:
                 )
 
         assets1 = extract_python_free_text_assets(sid, text_after_b)
-        rd1 = self._router.route(sid, assets1)
+        rd1 = router.route(sid, assets1)
+        route_sum1 = dict(rd1.extras.get("route_summary", {}))
         del_spans = collect_spans_for_action(rd1, {RouteAction.DELETE_NOW})
         clean_spans = collect_spans_for_action(rd1, {RouteAction.CLEAN_AFTER_B})
         text_s2 = apply_char_span_removals(text_after_b, del_spans)
@@ -141,6 +147,13 @@ class Stage3ScaffoldRuntime:
 
         a_impl = AChannelV1(tok, min_occ_aux=1)
         ctx_a: dict = {"source_id": sid, "tokenizer_key": tok, "reserved_aliases": set()}
+        alias_pool_agg = {
+            "alias_pool_total": 0,
+            "alias_pool_single_token_count": 0,
+            "alias_pool_low_cost_count": 0,
+            "alias_pool_fallback_tier_count": 0,
+            "alias_selections_by_tier": {},  # type: ignore[var-annotated]
+        }
         cands = a_impl.collect_candidates(text_s2, ctx_a)
         for c in cands:
             lit = str(c.get("literal", ""))
@@ -168,11 +181,25 @@ class Stage3ScaffoldRuntime:
                         {"literal": c.get("literal"), "alias": ev.get("alias")},
                     )
                 )
+                apm = ev.get("alias_pool_meta") or {}
+                for k in ("alias_pool_total", "alias_pool_single_token_count", "alias_pool_low_cost_count"):
+                    if k in apm:
+                        alias_pool_agg[k] = max(alias_pool_agg[k], int(apm[k]))
+                fb = int(apm.get("alias_pool_fallback_tier_count", 0))
+                alias_pool_agg["alias_pool_fallback_tier_count"] = max(alias_pool_agg["alias_pool_fallback_tier_count"], fb)
+                tier = ev.get("alias_selection_tier")
+                if tier is not None:
+                    alias_pool_agg["alias_selections_by_tier"][str(tier)] = (
+                        alias_pool_agg["alias_selections_by_tier"].get(str(tier), 0) + 1
+                    )
                 assignments.append(
                     {
                         "field": c.get("field"),
                         "literal": c.get("literal"),
                         "alias": ev.get("alias"),
+                        "alias_selected_token_len_true": ev.get("token_len_alias"),
+                        "alias_selection_tier": ev.get("alias_selection_tier"),
+                        "alias_is_strict_single_token": ev.get("alias_is_strict_single_token"),
                     }
                 )
                 intro_a += int(ev.get("intro_tokens_true", 0))
@@ -205,6 +232,7 @@ class Stage3ScaffoldRuntime:
 
         input_snap = snapshot_from_text(StageName.STAGE3_PRE_AB.value, text0, tok, notes="rewrite input")
         after_b_snap = snapshot_from_text(StageName.STAGE3_AFTER_B.value, text_after_b, tok, notes="after B")
+        after_clean_snap = snapshot_from_text("after_stage2_route_clean", text_s2, tok, notes="after destructive clean")
         after_a_snap = snapshot_from_text(StageName.STAGE3_AFTER_A.value, text_after_a, tok, notes="after A")
         final_snap = snapshot_from_text(StageName.STAGE3_FINAL.value, text_after_a, tok, notes="final")
 
@@ -239,6 +267,14 @@ class Stage3ScaffoldRuntime:
                     "symbol": getattr(em, "symbol", ""),
                     "representative": getattr(em, "representative", ""),
                     "net_true": getattr(em, "net_true", 0),
+                    "intro_tokens_true": getattr(em, "intro_tokens_true", 0),
+                    "raw_total_true": getattr(em, "raw_total_true", 0),
+                    "ref_total_true": getattr(em, "ref_total_true", 0),
+                    "representative_token_len_true": (getattr(em, "representative_meta", {}) or {}).get(
+                        "representative_token_len_true"
+                    ),
+                    "cluster_path": (getattr(em, "meta", {}) or {}).get("cluster_path", ""),
+                    "fallback_reason": (getattr(em, "meta", {}) or {}).get("fallback_reason", ""),
                 }
                 for em in ctx_b.get("b_emissions", [])
             ],
@@ -268,6 +304,23 @@ class Stage3ScaffoldRuntime:
             )
         )
 
+        run_extras: dict[str, Any] = {
+            "after_b_token_true": after_b_snap.token_count_true,
+            "after_clean_token_true": after_clean_snap.token_count_true,
+            "after_a_token_true": after_a_snap.token_count_true,
+            "final_token_true": final_snap.token_count_true,
+            "route_summary_initial": route_sum0,
+            "route_summary_post_b": route_sum1,
+            "alias_pool_telemetry": alias_pool_agg,
+            "b_clustering_backend_note": ctx_b.get("b_clustering_backend_note"),
+            "b_hdbscan_runtime_available": ctx_b.get("b_hdbscan_runtime_available"),
+            "b_hdbscan_actually_used": ctx_b.get("b_hdbscan_actually_used"),
+            "total_a_candidates_collected": len(cands),
+            "total_a_selected": len(assignments),
+            "total_b_clusters_evaluated": len(ctx_b.get("b_cluster_evaluations", [])),
+            "total_b_clusters_selected": len(em_list),
+        }
+
         result = Stage3ABRunResult(
             source_id=sid,
             input_snapshot=input_snap,
@@ -278,8 +331,18 @@ class Stage3ScaffoldRuntime:
             b_result=b_res,
             telemetry_events=events,
             summary=None,
+            run_extras=run_extras,
         )
         result.summary = summarize_run(result)
+        if result.summary is not None:
+            result.summary.extras.update(
+                {
+                    "after_clean_token_true": after_clean_snap.token_count_true,
+                    "route_summary_initial": route_sum0,
+                    "route_summary_post_b": route_sum1,
+                    "alias_pool_telemetry": alias_pool_agg,
+                }
+            )
         return result
 
 
