@@ -105,8 +105,10 @@ class Stage3ScaffoldRuntime:
         b_rewrite_diag = dict(ctx_b.get("b_rewrite_diagnostics") or {})
 
         for cl in ctx_b.get("b_cluster_evaluations", []):
-            clus = cl.get("cluster", {})
+            clus = cl.get("cluster", {}) or {}
             cid = str(clus.get("cluster_id", ""))
+            texts = list(clus.get("texts") or [])
+            n_mem = len(texts)
             events.append(tev.event_b_cluster_formed(sid, StageName.STAGE3_PRE_AB.value, {"cluster_id": cid}))
             if cl.get("ok"):
                 em = cl.get("emission")
@@ -116,7 +118,12 @@ class Stage3ScaffoldRuntime:
                         sid,
                         StageName.STAGE3_PRE_AB.value,
                         int(net),
-                        {"cluster_id": cid, "fallback_exact": clus.get("fallback_exact", False)},
+                        {
+                            "cluster_id": cid,
+                            "fallback_exact": clus.get("fallback_exact", False),
+                            "n_members": n_mem,
+                            "cluster_path": str(clus.get("cluster_path", "")),
+                        },
                     )
                 )
                 events.append(
@@ -125,16 +132,40 @@ class Stage3ScaffoldRuntime:
                         StageName.STAGE3_PRE_AB.value,
                         int(getattr(em, "intro_tokens_true", 0)),
                         int(net),
-                        {"symbol": getattr(em, "symbol", ""), "cluster_id": cid},
+                        {
+                            "symbol": getattr(em, "symbol", ""),
+                            "cluster_id": cid,
+                            "n_members": n_mem,
+                            "raw_total_true": int(getattr(em, "raw_total_true", 0)),
+                            "ref_total_true": int(getattr(em, "ref_total_true", 0)),
+                            "intro_tokens_true": int(getattr(em, "intro_tokens_true", 0)),
+                            "net_true": int(net),
+                            "cluster_path": str(clus.get("cluster_path", "")),
+                        },
                     )
                 )
             else:
+                reason = str(cl.get("reason", ""))
+                rej_pl: dict[str, Any] = {
+                    "cluster_id": cid,
+                    "n_members": n_mem,
+                    "cluster_path": str(clus.get("cluster_path", "")),
+                    "fallback_exact": bool(clus.get("fallback_exact")),
+                    "fallback_near_dup": bool(clus.get("fallback_near_dup")),
+                    "total_text_chars": sum(len(t) for t in texts),
+                }
+                if reason == "rejected_for_no_net_gain" and cl.get("emission") is not None:
+                    em0 = cl["emission"]
+                    rej_pl["raw_total_true"] = int(getattr(em0, "raw_total_true", 0))
+                    rej_pl["intro_tokens_true"] = int(getattr(em0, "intro_tokens_true", 0))
+                    rej_pl["ref_total_true"] = int(getattr(em0, "ref_total_true", 0))
+                    rej_pl["cluster_net_true"] = int(getattr(em0, "net_true", 0))
                 events.append(
                     tev.event_b_cluster_rejected(
                         sid,
                         StageName.STAGE3_PRE_AB.value,
-                        str(cl.get("reason", "")),
-                        {"cluster_id": cid},
+                        reason,
+                        rej_pl,
                     )
                 )
 

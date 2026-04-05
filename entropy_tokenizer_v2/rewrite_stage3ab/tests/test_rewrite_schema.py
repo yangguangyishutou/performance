@@ -26,7 +26,9 @@ def test_stage3ab_run_result_schema():
         "telemetry_events",
         "summary",
         "run_extras",
+        "after_route_clean_snapshot",
     }
     assert isinstance(result.input_snapshot, StageSnapshot)
+    assert result.after_route_clean_snapshot is not None
     assert result.summary is not None
     assert "total_input_tokens_true" in _field_names(type(result.summary))

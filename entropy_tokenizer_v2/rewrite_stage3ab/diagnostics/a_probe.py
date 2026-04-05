@@ -8,7 +8,7 @@ import ast
 import keyword
 import re
 from collections import Counter
-from typing import Any
+from typing import Any, Iterator
 
 from rewrite_stage3ab.channels.a_channel.implementation_v1 import (
     _collect_defined_and_imported_names,
@@ -152,8 +152,16 @@ def diagnose_a_evaluations(
     """
     try:
         tree = ast.parse(text)
-    except SyntaxError:
-        return {"parse_ok": False}
+    except SyntaxError as e:
+        return {
+            "parse_ok": False,
+            "ast_parse_failed": True,
+            "syntax_error_lineno": int(e.lineno or 0),
+            "syntax_error_msg": str(e.msg or ""),
+            "a_candidates_variable": 0,
+            "a_candidates_attribute": 0,
+            "a_candidates_string_exact_path": 0,
+        }
     fb = _collect_defined_and_imported_names(tree)
     ctx: dict[str, Any] = {"forbidden_base": fb, "reserved_aliases": set()}
     if string_path_ctx:
@@ -169,10 +177,17 @@ def diagnose_a_evaluations(
     )
     a = AChannelV1(tokenizer_key, min_identifier_chars=min_identifier_chars, max_attr_depth=max_attr_depth)
     cands = a.collect_candidates(text, ctx)
+    by_field: Counter[str] = Counter(str(c.get("field")) for c in cands)
     stats = {
         "parse_ok": True,
+        "ast_parse_failed": False,
+        "syntax_error_lineno": 0,
+        "syntax_error_msg": "",
         **gate,
         "a_candidates_total": len(cands),
+        "a_candidates_variable": int(by_field.get("variable", 0)),
+        "a_candidates_attribute": int(by_field.get("attribute", 0)),
+        "a_candidates_string_exact_path": int(by_field.get("string_exact_path", 0)),
         "a_candidates_no_legal_alias": 0,
         "a_candidates_no_net_true_gain": 0,
         "a_candidates_positive_gross_but_negative_net": 0,
@@ -213,6 +228,97 @@ def diagnose_a_evaluations(
         "top_gross_pos_net_neg": gross_neg_net[:50],
         "top_long_identifiers": long_ids[:50],
         "top_high_occurrence": high_occ[:50],
+    }
+
+
+def iter_short_name_filtered_records(
+    text: str,
+    tokenizer_key: str,
+    *,
+    min_identifier_chars: int = 10,
+    max_attr_depth: int = 3,
+) -> Iterator[dict[str, Any]]:
+    """
+    Identifiers that fail the short-name gate (variable: len<min and true_tok<2;
+    attribute: shallow chain and len(attr)<min), with occurrence counts in this file.
+    """
+    name_ctr, tree = _count_load_names(text)
+    if tree is None:
+        return
+    for raw, occ in name_ctr.items():
+        if not raw.isidentifier() or keyword.iskeyword(raw):
+            continue
+        if len(raw) < min_identifier_chars:
+            tl = measure_true_token_len(raw, tokenizer_key)
+            if tl < 2:
+                yield {
+                    "literal": raw,
+                    "field": "variable",
+                    "occ": occ,
+                    "char_len": len(raw),
+                    "tok_true": tl,
+                }
+    short_attr: Counter[str] = Counter()
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Attribute) or not isinstance(node.ctx, ast.Load):
+            continue
+        if not isinstance(node.attr, str) or not node.attr.isidentifier() or keyword.iskeyword(node.attr):
+            continue
+        d = _attr_base_depth(node.value)
+        if d <= max_attr_depth and len(node.attr) < min_identifier_chars:
+            short_attr[node.attr] += 1
+    for raw, occ in short_attr.items():
+        yield {
+            "literal": raw,
+            "field": "attribute",
+            "occ": occ,
+            "char_len": len(raw),
+            "tok_true": measure_true_token_len(raw, tokenizer_key),
+        }
+
+
+def aggregate_attr_occ_by_depth_caps(
+    text: str,
+    *,
+    min_identifier_chars: int = 10,
+) -> dict[str, int]:
+    """
+    Per-name max-depth rows from ``enumerate_attribute_suffixes_by_depth``;
+    sum ``occ`` where name length passes ``min_identifier_chars``.
+    """
+    rows = enumerate_attribute_suffixes_by_depth(text)
+    eligible = [(n, d, occ) for n, d, occ in rows if len(n) >= min_identifier_chars and not keyword.iskeyword(n)]
+    le3 = sum(occ for _n, d, occ in eligible if d <= 3)
+    le4 = sum(occ for _n, d, occ in eligible if d <= 4)
+    le5 = sum(occ for _n, d, occ in eligible if d <= 5)
+    gt5 = sum(occ for _n, d, occ in eligible if d > 5)
+    return {
+        "attr_suffix_occ_minlen_ok_depth_le_3": le3,
+        "attr_suffix_occ_minlen_ok_depth_le_4": le4,
+        "attr_suffix_occ_minlen_ok_depth_le_5": le5,
+        "attr_suffix_occ_minlen_ok_depth_gt_5": gt5,
+        "attr_occ_gain_relax_3_to_4": le4 - le3,
+        "attr_occ_gain_relax_4_to_5": le5 - le4,
+    }
+
+
+def scan_string_path_literal_stats(text: str) -> dict[str, Any]:
+    """Count AST string constants whose full value matches ``_SAFE_PATH_RE`` (proxy for string_exact_path)."""
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return {"parse_ok": False, "n_distinct_path_like": 0, "total_occurrences_in_file": 0}
+    distinct: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            v = node.value
+            if _SAFE_PATH_RE.match(v):
+                distinct.add(v)
+    total_occ = sum(text.count(v) for v in distinct)
+    return {
+        "parse_ok": True,
+        "n_distinct_path_like": len(distinct),
+        "total_occurrences_in_file": total_occ,
     }
 
 
