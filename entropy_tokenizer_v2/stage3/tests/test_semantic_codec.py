@@ -42,3 +42,28 @@ def test_semantic_codec_low_similarity_fallback():
         min_cluster_size=2,
     )
     assert res.used_clusters == 0
+
+
+def test_semantic_codec_supports_compact_code_and_net_greedy():
+    tok, tt = _load_tokenizer("gpt4", EVAL_TOKENIZERS["gpt4"])
+    text = (
+        "a = 'User profile update failed: timeout while syncing account metadata for tenant alpha in region east'\n"
+        "b = 'User profile update failed: timeout while syncing account metadata for tenant beta in region east'\n"
+        "c = 'User profile update failed: timeout while syncing account metadata for tenant gamma in region east'\n"
+        "d = 'User profile update failed: timeout while syncing account metadata for tenant delta in region east'\n"
+    )
+    res = encode_semantic_strings(
+        text,
+        tokenizer=tok,
+        tok_type=tt,
+        similarity_threshold=0.65,
+        risk_threshold=0.55,
+        min_cluster_size=2,
+        code_style="base62",
+        code_prefix="b",
+        member_select_mode="net_greedy",
+        definition_mode="shared_terms",
+        similarity_norm="light",
+    )
+    assert res.used_clusters >= 1
+    assert any(e.get("token") == "'b0'" for e in res.vocab_entries)

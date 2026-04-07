@@ -37,6 +37,13 @@ class HybridABConfig:
     b_lexical_weight: float = 0.7
     b_char_weight: float = 0.3
     b_char_ngram_n: int = 3
+    b_similarity_norm: str = "none"
+    b_definition_mode: str = "shared_terms"
+    b_definition_min_df_ratio: float = 0.6
+    b_definition_max_terms: int = 10
+    b_member_select_mode: str = "all"
+    b_code_style: str = "prefix_index"
+    b_code_prefix: str = "__abB"
     a_processing_mode: str = "full"
     a_cost_mode: str = "local"
     enable_global_guardrail: bool = False
@@ -94,6 +101,13 @@ def _encode_b_channel(
         lexical_weight=conf.b_lexical_weight,
         char_weight=conf.b_char_weight,
         ngram_n=conf.b_char_ngram_n,
+        similarity_norm=conf.b_similarity_norm,
+        definition_mode=conf.b_definition_mode,
+        definition_min_df_ratio=conf.b_definition_min_df_ratio,
+        definition_max_terms=conf.b_definition_max_terms,
+        member_select_mode=conf.b_member_select_mode,
+        code_style=conf.b_code_style,
+        code_prefix=conf.b_code_prefix,
     )
 
 
@@ -334,6 +348,10 @@ def encode_stage3_hybrid_ab(
         "stage3_ab_b_reject_reason_counts": dict(b_res.reject_reason_counts),
         "stage3_ab_similarity_kind": b_res.similarity_kind,
         "stage3_ab_b_mode": b_res.mode,
+        "stage3_ab_b_definition_mode": conf.b_definition_mode,
+        "stage3_ab_b_member_select_mode": conf.b_member_select_mode,
+        "stage3_ab_b_code_style": conf.b_code_style,
+        "stage3_ab_b_similarity_norm": conf.b_similarity_norm,
         "stage3_ab_mode": conf.mode,
         "stage3_ab_vocab_entries": a_res.vocab_entries + b_res.vocab_entries,
         "stage3_ab_a_processing_mode": conf.a_processing_mode,
@@ -405,6 +423,13 @@ class HybridABStage3Backend:
             b_lexical_weight=float(cfg_raw.get("b_lexical_weight", 0.7)),
             b_char_weight=float(cfg_raw.get("b_char_weight", 0.3)),
             b_char_ngram_n=int(cfg_raw.get("b_char_ngram_n", 3)),
+            b_similarity_norm=str(cfg_raw.get("b_similarity_norm", "none")),
+            b_definition_mode=str(cfg_raw.get("b_definition_mode", "shared_terms")),
+            b_definition_min_df_ratio=float(cfg_raw.get("b_definition_min_df_ratio", 0.6)),
+            b_definition_max_terms=int(cfg_raw.get("b_definition_max_terms", 10)),
+            b_member_select_mode=str(cfg_raw.get("b_member_select_mode", "all")),
+            b_code_style=str(cfg_raw.get("b_code_style", "prefix_index")),
+            b_code_prefix=str(cfg_raw.get("b_code_prefix", "__abB")),
             a_processing_mode=str(cfg_raw.get("a_processing_mode", "full")).strip().lower(),
             a_cost_mode=str(cfg_raw.get("a_cost_mode", "local")).strip().lower(),
             enable_global_guardrail=_truthy(cfg_raw.get("enable_global_guardrail", False)),

@@ -99,6 +99,37 @@ if STAGE3_AB_B_SIMILARITY_KIND not in {"lexical_bow_cosine", "hybrid_lexical_cha
 STAGE3_AB_B_LEXICAL_WEIGHT = float(os.getenv("ET_STAGE3_AB_B_LEXICAL_WEIGHT", "0.7"))
 STAGE3_AB_B_CHAR_WEIGHT = float(os.getenv("ET_STAGE3_AB_B_CHAR_WEIGHT", "0.3"))
 STAGE3_AB_B_CHAR_NGRAM_N = int(os.getenv("ET_STAGE3_AB_B_CHAR_NGRAM_N", "3"))
+STAGE3_AB_B_SIMILARITY_NORM = os.getenv(
+    "ET_STAGE3_AB_B_SIMILARITY_NORM",
+    "none",
+).strip().lower()
+if STAGE3_AB_B_SIMILARITY_NORM not in {"none", "raw", "light", "numeric"}:
+    STAGE3_AB_B_SIMILARITY_NORM = "none"
+STAGE3_AB_B_DEFINITION_MODE = os.getenv(
+    "ET_STAGE3_AB_B_DEFINITION_MODE",
+    "shared_terms",
+).strip().lower()
+if STAGE3_AB_B_DEFINITION_MODE not in {"shared_terms", "representative", "rep"}:
+    STAGE3_AB_B_DEFINITION_MODE = "shared_terms"
+STAGE3_AB_B_DEFINITION_MIN_DF_RATIO = float(
+    os.getenv("ET_STAGE3_AB_B_DEFINITION_MIN_DF_RATIO", "0.6")
+)
+STAGE3_AB_B_DEFINITION_MAX_TERMS = int(
+    os.getenv("ET_STAGE3_AB_B_DEFINITION_MAX_TERMS", "10")
+)
+STAGE3_AB_B_MEMBER_SELECT_MODE = os.getenv(
+    "ET_STAGE3_AB_B_MEMBER_SELECT_MODE",
+    "all",
+).strip().lower()
+if STAGE3_AB_B_MEMBER_SELECT_MODE not in {"all", "drop_negative", "net_greedy"}:
+    STAGE3_AB_B_MEMBER_SELECT_MODE = "all"
+STAGE3_AB_B_CODE_STYLE = os.getenv(
+    "ET_STAGE3_AB_B_CODE_STYLE",
+    "prefix_index",
+).strip().lower()
+if STAGE3_AB_B_CODE_STYLE not in {"prefix_index", "base62", "compact"}:
+    STAGE3_AB_B_CODE_STYLE = "prefix_index"
+STAGE3_AB_B_CODE_PREFIX = os.getenv("ET_STAGE3_AB_B_CODE_PREFIX", "__abB")
 STAGE3_AB_ENABLE_B = os.getenv("ET_STAGE3_AB_ENABLE_B", "1").lower() in ("1", "true", "yes")
 STAGE3_AB_MODE = os.getenv("ET_STAGE3_AB_MODE", "").strip().lower()
 STAGE3_AB_A_MIN_OCC = int(os.getenv("ET_STAGE3_AB_A_MIN_OCC", "2"))
@@ -134,7 +165,8 @@ HYBRID_AB_GPT4_PROFILE_STAGE3: dict = {
     "enable_incremental_rollback": True,
     "min_raw_token_len": 3,
     "max_alias_token_len": 2,
-    "b_channel_priority": "low",
+    # Use normal B priority on GPT-4: stronger B contributes net gains on 1M eval.
+    "b_channel_priority": "normal",
     "context_window_chars": 80,
 }
 HYBRID_AB_GPT2_PROFILE_STAGE3: dict = {
@@ -158,6 +190,9 @@ def resolve_hybrid_ab_settings(tokenizer_key: str) -> dict:
     tok = (tokenizer_key or "").strip().lower()
     sim_default = 0.84 if tok == "gpt4" else STAGE3_AB_B_SIMILARITY_THRESHOLD
     risk_default = 0.74 if tok == "gpt4" else STAGE3_AB_B_RISK_THRESHOLD
+    norm_default = "light" if tok == "gpt4" else STAGE3_AB_B_SIMILARITY_NORM
+    code_style_default = "base62" if tok == "gpt4" else STAGE3_AB_B_CODE_STYLE
+    code_prefix_default = "b" if tok == "gpt4" else STAGE3_AB_B_CODE_PREFIX
     mode_default = "exact_only"
     # Read mode from the environment on each call so subprocess-free tests and
     # validate smoke can switch exact_only vs hybrid without reloading config.
@@ -232,6 +267,38 @@ def resolve_hybrid_ab_settings(tokenizer_key: str) -> dict:
         ),
         "b_char_weight": float(os.getenv("ET_STAGE3_AB_B_CHAR_WEIGHT", str(STAGE3_AB_B_CHAR_WEIGHT))),
         "b_char_ngram_n": int(os.getenv("ET_STAGE3_AB_B_CHAR_NGRAM_N", str(STAGE3_AB_B_CHAR_NGRAM_N))),
+        "b_similarity_norm": os.getenv(
+            "ET_STAGE3_AB_B_SIMILARITY_NORM",
+            norm_default,
+        ).strip().lower(),
+        "b_definition_mode": os.getenv(
+            "ET_STAGE3_AB_B_DEFINITION_MODE",
+            STAGE3_AB_B_DEFINITION_MODE,
+        ).strip().lower(),
+        "b_definition_min_df_ratio": float(
+            os.getenv(
+                "ET_STAGE3_AB_B_DEFINITION_MIN_DF_RATIO",
+                str(STAGE3_AB_B_DEFINITION_MIN_DF_RATIO),
+            )
+        ),
+        "b_definition_max_terms": int(
+            os.getenv(
+                "ET_STAGE3_AB_B_DEFINITION_MAX_TERMS",
+                str(STAGE3_AB_B_DEFINITION_MAX_TERMS),
+            )
+        ),
+        "b_member_select_mode": os.getenv(
+            "ET_STAGE3_AB_B_MEMBER_SELECT_MODE",
+            STAGE3_AB_B_MEMBER_SELECT_MODE,
+        ).strip().lower(),
+        "b_code_style": os.getenv(
+            "ET_STAGE3_AB_B_CODE_STYLE",
+            code_style_default,
+        ).strip().lower(),
+        "b_code_prefix": os.getenv(
+            "ET_STAGE3_AB_B_CODE_PREFIX",
+            code_prefix_default,
+        ),
         "enable_b": enable_b,
         "a_min_occ": a_min_occ,
         "a_min_net_gain": int(
@@ -271,6 +338,26 @@ def resolve_hybrid_ab_settings(tokenizer_key: str) -> dict:
         ),
     }
     out.update(ab_prof)
+    if str(out.get("b_similarity_norm", "")).strip().lower() not in {"none", "raw", "light", "numeric"}:
+        out["b_similarity_norm"] = "none"
+    if str(out.get("b_definition_mode", "")).strip().lower() not in {"shared_terms", "representative", "rep"}:
+        out["b_definition_mode"] = "shared_terms"
+    try:
+        out["b_definition_min_df_ratio"] = float(out.get("b_definition_min_df_ratio", 0.6))
+    except Exception:
+        out["b_definition_min_df_ratio"] = 0.6
+    out["b_definition_min_df_ratio"] = max(0.0, min(1.0, float(out["b_definition_min_df_ratio"])))
+    try:
+        out["b_definition_max_terms"] = int(out.get("b_definition_max_terms", 10))
+    except Exception:
+        out["b_definition_max_terms"] = 10
+    out["b_definition_max_terms"] = max(1, int(out["b_definition_max_terms"]))
+    if str(out.get("b_member_select_mode", "")).strip().lower() not in {"all", "drop_negative", "net_greedy"}:
+        out["b_member_select_mode"] = "all"
+    if str(out.get("b_code_style", "")).strip().lower() not in {"prefix_index", "base62", "compact"}:
+        out["b_code_style"] = "prefix_index"
+    if not str(out.get("b_code_prefix", "")).strip():
+        out["b_code_prefix"] = "__abB"
     eg = os.getenv("ET_STAGE3_AB_ENABLE_GLOBAL_GUARDRAIL", "").strip()
     if eg:
         out["enable_global_guardrail"] = _truthy_ab(eg)

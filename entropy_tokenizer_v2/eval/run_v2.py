@@ -5,7 +5,12 @@ import os
 import sys
 from pathlib import Path
 
-import bootstrap_v2
+# Ensure repo root is on sys.path so package imports work in script mode.
+REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from eval import bootstrap_v2
 
 bootstrap_v2.ensure()
 
@@ -17,7 +22,7 @@ from config import (
 
 
 def cmd_eval(args):
-    from v2_eval import run_evaluation
+    from eval.v2_eval import run_evaluation
 
     if getattr(args, "stage2_hybrid_ab_profile", None):
         os.environ["ET_STAGE2_HYBRID_AB_PROFILE"] = str(args.stage2_hybrid_ab_profile)
@@ -29,7 +34,7 @@ def cmd_eval(args):
     if args.repo:
         # Evaluate using a local repo as both mining corpus AND eval corpus
         from repo_miner import collect_py_sources, mine_from_repo_path
-        from v2_eval import evaluate, print_report, save_results
+        from eval.v2_eval import evaluate, print_report, save_results
 
         print(f"[run_v2] Evaluating local repo: {args.repo}")
         sources = collect_py_sources(args.repo)
@@ -107,7 +112,7 @@ def cmd_demo(args):
     print("─" * 60)
 
     from repo_miner import mine_from_sources, _load_tokenizer
-    from v2_eval import apply_v2_compression
+    from eval.v2_eval import apply_v2_compression
 
     tokenizer, tok_type = _load_tokenizer(tok_key, cfg)
 
