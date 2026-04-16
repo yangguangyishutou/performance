@@ -1,0 +1,3 @@
+name,effective_total_reduction_pct,sequence_reduction_pct,replacement_pct,stage3_vocab_intro_tokens,stage3_ab_a_effective_net_saving,stage3_ab_b_effective_net_saving,stage3_ab_global_dict_enabled,stage3_ab_global_dict_size_a,stage3_ab_global_dict_size_b,stage3_ab_a_global_used_entries,stage3_ab_b_global_used_codes,stage3_ab_global_sequence_saved
+hybrid_local_only,14.910956924810337,16.6597097963437,2.2157875225855035,5239,7743,889,False,0,0,0,0,0
+hybrid_global_dict,16.371315899319004,17.59465478841871,3.15073251466051,3439,15710,1277,True,473,9,775,7,12829

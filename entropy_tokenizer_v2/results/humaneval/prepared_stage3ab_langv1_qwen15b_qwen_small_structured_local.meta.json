@@ -1,0 +1,21 @@
+{
+  "dataset": "openai/openai_humaneval",
+  "split": "test",
+  "dataset_jsonl": "cache\\humaneval\\HumanEval_ascii_subset_164.jsonl",
+  "n_tasks": 20,
+  "support_repo": null,
+  "support_jsonl": "cache\\stage1_starcoder_1m_corpus.jsonl",
+  "support_dataset": null,
+  "support_dataset_split": "train",
+  "support_text_field": "content",
+  "support_limit": 1200,
+  "support_top_k": 4,
+  "snippet_max_chars": 1200,
+  "compression_tokenizer": "qwen25-coder-15b",
+  "stage3_backend": "hybrid_ab",
+  "stage3_ab_mode": "exact_only",
+  "prompt_style": "structured",
+  "stage2_profile": "stage2_parseable",
+  "stage2_mode": "blockwise",
+  "output": "E:\\cursor\\SITP1\\performance-work2\\entropy_tokenizer_v2\\results\\humaneval\\prepared_stage3ab_langv1_qwen15b_qwen_small_structured_local.jsonl"
+}

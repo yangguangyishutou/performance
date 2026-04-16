@@ -1,0 +1,46 @@
+{
+  "raw_gen": {
+    "avg_prompt_tokens": 1155.2,
+    "avg_completion_tokens": 0
+  },
+  "comp_gen": {
+    "avg_prompt_tokens": 1162.25,
+    "avg_completion_tokens": 0
+  },
+  "raw_res": {
+    "passed": 10,
+    "tasks": [
+      "HumanEval/0",
+      "HumanEval/3",
+      "HumanEval/5",
+      "HumanEval/7",
+      "HumanEval/8",
+      "HumanEval/11",
+      "HumanEval/12",
+      "HumanEval/13",
+      "HumanEval/14",
+      "HumanEval/15"
+    ]
+  },
+  "comp_res": {
+    "passed": 10,
+    "tasks": [
+      "HumanEval/0",
+      "HumanEval/2",
+      "HumanEval/3",
+      "HumanEval/5",
+      "HumanEval/7",
+      "HumanEval/8",
+      "HumanEval/11",
+      "HumanEval/12",
+      "HumanEval/14",
+      "HumanEval/16"
+    ]
+  },
+  "prepared": {
+    "avg_raw_context_tokens": 1027.55,
+    "avg_compressed_effective_tokens": 1031.6,
+    "avg_codebook_tokens": 0.8
+  }
+}
+[remote-exit] 0

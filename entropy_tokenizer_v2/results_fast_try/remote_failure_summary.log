@@ -1,0 +1,196 @@
+raw
+[
+  [
+    "",
+    8
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 56) (<string>, line 35)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 59) (<string>, line 39)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 57) (<string>, line 37)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 64) (<string>, line 50)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 63) (<string>, line 43)",
+    1
+  ],
+  [
+    "'(' was never closed (<string>, line 33)",
+    1
+  ],
+  [
+    "invalid syntax (<string>, line 14)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 58) (<string>, line 41)",
+    1
+  ],
+  [
+    "unexpected indent (<string>, line 29)",
+    1
+  ]
+]
+[
+  {
+    "task_id": "HumanEval/0",
+    "result": "failed: unterminated triple-quoted string literal (detected at line 56) (<string>, line 35)"
+  },
+  {
+    "task_id": "HumanEval/1",
+    "result": "failed: "
+  },
+  {
+    "task_id": "HumanEval/2",
+    "result": "failed: "
+  },
+  {
+    "task_id": "HumanEval/3",
+    "result": "failed: unterminated triple-quoted string literal (detected at line 59) (<string>, line 39)"
+  },
+  {
+    "task_id": "HumanEval/4",
+    "result": "failed: "
+  }
+]
+base_compressed
+[
+  [
+    "",
+    7
+  ],
+  [
+    "invalid syntax (<string>, line 14)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 59) (<string>, line 39)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 50) (<string>, line 28)",
+    1
+  ],
+  [
+    "invalid syntax (<string>, line 23)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 62) (<string>, line 43)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 60) (<string>, line 45)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 59) (<string>, line 44)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 63) (<string>, line 43)",
+    1
+  ],
+  [
+    "invalid syntax (<string>, line 16)",
+    1
+  ]
+]
+[
+  {
+    "task_id": "HumanEval/1",
+    "result": "failed: "
+  },
+  {
+    "task_id": "HumanEval/2",
+    "result": "failed: invalid syntax (<string>, line 14)"
+  },
+  {
+    "task_id": "HumanEval/3",
+    "result": "failed: unterminated triple-quoted string literal (detected at line 59) (<string>, line 39)"
+  },
+  {
+    "task_id": "HumanEval/4",
+    "result": "failed: "
+  },
+  {
+    "task_id": "HumanEval/5",
+    "result": "failed: "
+  }
+]
+lora_compressed
+[
+  [
+    "",
+    5
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 52) (<string>, line 31)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 62) (<string>, line 43)",
+    1
+  ],
+  [
+    "No module named 'uka'",
+    1
+  ],
+  [
+    "'[' was never closed (<string>, line 31)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 50) (<string>, line 28)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 54) (<string>, line 35)",
+    1
+  ],
+  [
+    "expected an indented block after function definition on line 30 (<string>, line 33)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 41) (<string>, line 26)",
+    1
+  ],
+  [
+    "unterminated triple-quoted string literal (detected at line 58) (<string>, line 39)",
+    1
+  ]
+]
+[
+  {
+    "task_id": "HumanEval/0",
+    "result": "failed: unterminated triple-quoted string literal (detected at line 52) (<string>, line 31)"
+  },
+  {
+    "task_id": "HumanEval/1",
+    "result": "failed: "
+  },
+  {
+    "task_id": "HumanEval/3",
+    "result": "failed: unterminated triple-quoted string literal (detected at line 62) (<string>, line 43)"
+  },
+  {
+    "task_id": "HumanEval/4",
+    "result": "failed: No module named 'uka'"
+  },
+  {
+    "task_id": "HumanEval/5",
+    "result": "failed: '[' was never closed (<string>, line 31)"
+  }
+]
+[remote-exit] 0

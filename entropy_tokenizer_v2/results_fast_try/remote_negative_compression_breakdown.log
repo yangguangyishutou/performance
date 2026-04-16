@@ -1,0 +1,115 @@
+{
+  "avg_prompt_delta": 7.05,
+  "avg_ctx_body_delta": 3.25,
+  "avg_codebook_delta": 0.8,
+  "avg_wrapper_delta": 3,
+  "tasks_with_dynamic_dict": 2,
+  "avg_dynamic_dict_tokens_on_used_tasks": 8,
+  "avg_stage3_a_saved": 3.25,
+  "avg_stage3_a_intro": 0.8,
+  "top_positive_ctx_body_delta": [
+    {
+      "task_id": "HumanEval/4",
+      "prompt_delta": 10,
+      "ctx_body_delta": 8,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 0,
+      "stage3_a_intro": 0
+    },
+    {
+      "task_id": "HumanEval/12",
+      "prompt_delta": 10,
+      "ctx_body_delta": 8,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 0,
+      "stage3_a_intro": 0
+    },
+    {
+      "task_id": "HumanEval/13",
+      "prompt_delta": 10,
+      "ctx_body_delta": 8,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 0,
+      "stage3_a_intro": 0
+    },
+    {
+      "task_id": "HumanEval/18",
+      "prompt_delta": 9,
+      "ctx_body_delta": 7,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 0,
+      "stage3_a_intro": 0
+    },
+    {
+      "task_id": "HumanEval/1",
+      "prompt_delta": 8,
+      "ctx_body_delta": 6,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 2,
+      "stage3_a_intro": 0
+    }
+  ],
+  "top_positive_prompt_delta": [
+    {
+      "task_id": "HumanEval/7",
+      "prompt_delta": 14,
+      "ctx_body_delta": -3,
+      "codebook_delta": 5,
+      "wrapper_delta": 12,
+      "codebook_entries": 1,
+      "stage3_a_saved": 9,
+      "stage3_a_intro": 5
+    },
+    {
+      "task_id": "HumanEval/6",
+      "prompt_delta": 13,
+      "ctx_body_delta": -10,
+      "codebook_delta": 11,
+      "wrapper_delta": 12,
+      "codebook_entries": 1,
+      "stage3_a_saved": 17,
+      "stage3_a_intro": 11
+    },
+    {
+      "task_id": "HumanEval/4",
+      "prompt_delta": 10,
+      "ctx_body_delta": 8,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 0,
+      "stage3_a_intro": 0
+    },
+    {
+      "task_id": "HumanEval/12",
+      "prompt_delta": 10,
+      "ctx_body_delta": 8,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 0,
+      "stage3_a_intro": 0
+    },
+    {
+      "task_id": "HumanEval/13",
+      "prompt_delta": 10,
+      "ctx_body_delta": 8,
+      "codebook_delta": 0,
+      "wrapper_delta": 2,
+      "codebook_entries": 0,
+      "stage3_a_saved": 0,
+      "stage3_a_intro": 0
+    }
+  ]
+}
+[remote-exit] 0

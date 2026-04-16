@@ -1,0 +1,65 @@
+{
+  "raw_gen": {
+    "n": 20,
+    "avg_prompt_tokens": 1175.35,
+    "avg_completion_tokens": 0
+  },
+  "base_comp_gen": {
+    "n": 20,
+    "avg_prompt_tokens": 1233,
+    "avg_completion_tokens": 0
+  },
+  "lora_comp_gen": {
+    "n": 20,
+    "avg_prompt_tokens": 1233,
+    "avg_completion_tokens": 0
+  },
+  "raw_res": {
+    "n": 20,
+    "passed": 2,
+    "pass_rate": 0.1,
+    "passed_tasks": [
+      "HumanEval/7",
+      "HumanEval/13"
+    ]
+  },
+  "base_comp_res": {
+    "n": 20,
+    "passed": 1,
+    "pass_rate": 0.05,
+    "passed_tasks": [
+      "HumanEval/0"
+    ]
+  },
+  "lora_comp_res": {
+    "n": 20,
+    "passed": 4,
+    "pass_rate": 0.2,
+    "passed_tasks": [
+      "HumanEval/2",
+      "HumanEval/7",
+      "HumanEval/13",
+      "HumanEval/14"
+    ]
+  },
+  "prepared": {
+    "n": 20,
+    "avg_raw_context_tokens": 1061.5,
+    "avg_compressed_context_tokens": 0,
+    "avg_prompt_delta_estimate": -1061.5
+  },
+  "comparisons": {
+    "lost_when_compressed": [
+      "HumanEval/13",
+      "HumanEval/7"
+    ],
+    "recovered_by_lora_vs_base_compressed": [
+      "HumanEval/13",
+      "HumanEval/14",
+      "HumanEval/2",
+      "HumanEval/7"
+    ],
+    "still_missing_vs_raw_after_lora": []
+  }
+}
+[remote-exit] 0

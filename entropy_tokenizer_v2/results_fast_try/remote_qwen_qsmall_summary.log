@@ -1,0 +1,205 @@
+{
+  "raw_gen": {
+    "n": 20,
+    "avg_prompt_tokens": 1175.35,
+    "avg_completion_tokens": 0
+  },
+  "base_comp_gen": {
+    "n": 20,
+    "avg_prompt_tokens": 1232.8,
+    "avg_completion_tokens": 0
+  },
+  "lora_comp_gen": {
+    "n": 20,
+    "avg_prompt_tokens": 1232.8,
+    "avg_completion_tokens": 0
+  },
+  "raw_res": {
+    "n": 20,
+    "passed": 2,
+    "pass_rate": 0.1,
+    "passed_tasks": [
+      "HumanEval/7",
+      "HumanEval/13"
+    ]
+  },
+  "base_comp_res": {
+    "n": 20,
+    "passed": 1,
+    "pass_rate": 0.05,
+    "passed_tasks": [
+      "HumanEval/14"
+    ]
+  },
+  "lora_comp_res": {
+    "n": 20,
+    "passed": 8,
+    "pass_rate": 0.4,
+    "passed_tasks": [
+      "HumanEval/0",
+      "HumanEval/2",
+      "HumanEval/7",
+      "HumanEval/10",
+      "HumanEval/11",
+      "HumanEval/12",
+      "HumanEval/13",
+      "HumanEval/14"
+    ]
+  },
+  "prepared": {
+    "n": 20,
+    "avg_raw_context_tokens": 1027.55,
+    "avg_compressed_effective_tokens": 1031.6,
+    "avg_compressed_sequence_tokens": 1030.8,
+    "avg_codebook_tokens": 0.8,
+    "avg_context_delta": 4.05,
+    "avg_context_delta_pct": 0.004013165652094039
+  },
+  "cpt_summary": {
+    "train_jsonl": "results/langv1_pilot/langv1_cpt_dataset_qwen_small.jsonl",
+    "base_model": "Qwen/Qwen2.5-Coder-1.5B",
+    "adapter_init_path": "",
+    "output_dir": "results/langv1_pilot/checkpoints/qwen15b_langv1_qwen_small_cpt",
+    "train_mode": "cpt",
+    "n_train_rows": 120,
+    "max_length": 1024,
+    "epochs": 1.0,
+    "learning_rate": 0.0002,
+    "batch_size": 2,
+    "grad_accum": 4,
+    "use_4bit": true,
+    "train_runtime": 44.1697,
+    "train_loss": 1.0538556416829428
+  },
+  "sft_summary": {
+    "train_jsonl": "results/langv1_pilot/langv1_sft_dataset_qwen_small.jsonl",
+    "base_model": "Qwen/Qwen2.5-Coder-1.5B",
+    "adapter_init_path": "results/langv1_pilot/checkpoints/qwen15b_langv1_qwen_small_cpt",
+    "output_dir": "results/langv1_pilot/checkpoints/qwen15b_langv1_qwen_small_cpt_sft",
+    "train_mode": "sft",
+    "n_train_rows": 114,
+    "max_length": 1024,
+    "epochs": 1.0,
+    "learning_rate": 0.0001,
+    "batch_size": 2,
+    "grad_accum": 4,
+    "use_4bit": true,
+    "train_runtime": 44.0097,
+    "train_loss": 0.8239922523498535
+  },
+  "comparisons": {
+    "lost_when_compressed": [
+      "HumanEval/13",
+      "HumanEval/7"
+    ],
+    "recovered_by_lora_vs_base_compressed": [
+      "HumanEval/0",
+      "HumanEval/10",
+      "HumanEval/11",
+      "HumanEval/12",
+      "HumanEval/13",
+      "HumanEval/2",
+      "HumanEval/7"
+    ],
+    "still_missing_vs_raw_after_lora": []
+  },
+  "raw_fail": [
+    [
+      "failed: ",
+      8
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 56) (<string>, line 35)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 59) (<string>, line 39)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 57) (<string>, line 37)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 64) (<string>, line 50)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 63) (<string>, line 43)",
+      1
+    ],
+    [
+      "failed: '(' was never closed (<string>, line 33)",
+      1
+    ],
+    [
+      "failed: invalid syntax (<string>, line 14)",
+      1
+    ]
+  ],
+  "base_comp_fail": [
+    [
+      "failed: ",
+      7
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 53) (<string>, line 35)",
+      2
+    ],
+    [
+      "failed: invalid syntax (<string>, line 13)",
+      2
+    ],
+    [
+      "failed: invalid syntax (<string>, line 38)",
+      1
+    ],
+    [
+      "failed: invalid syntax (<string>, line 14)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 59) (<string>, line 39)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 62) (<string>, line 43)",
+      1
+    ],
+    [
+      "failed: expected '(' (<string>, line 38)",
+      1
+    ]
+  ],
+  "lora_comp_fail": [
+    [
+      "failed: ",
+      6
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 62) (<string>, line 43)",
+      1
+    ],
+    [
+      "failed: invalid syntax (<string>, line 21)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 54) (<string>, line 35)",
+      1
+    ],
+    [
+      "failed: expected an indented block after function definition on line 30 (<string>, line 33)",
+      1
+    ],
+    [
+      "failed: unterminated triple-quoted string literal (detected at line 45) (<string>, line 28)",
+      1
+    ],
+    [
+      "failed: invalid character '。' (U+3002) (<string>, line 15)",
+      1
+    ]
+  ]
+}
+[remote-exit] 0
