@@ -52,6 +52,10 @@ class BCodecResult:
     mode: str = "lexical_free_text_baseline"
     reject_reason_counts: dict[str, int] = field(default_factory=dict)
     intro_not_worth_count: int = 0
+    global_used_codes: int = 0
+    global_used_literals: int = 0
+    global_sequence_saved: int = 0
+    global_vocab_entries: list[dict[str, Any]] = field(default_factory=list)
 
 
 def _token_len(tokenizer: Any, tok_type: str, text: str) -> int:
@@ -249,6 +253,9 @@ def encode_semantic_strings(
     definition_min_df_ratio: float = 0.6,
     definition_max_terms: int = 10,
     member_select_mode: str = "all",
+    global_norm_codebook: dict[str, str] | None = None,
+    global_code_definition: dict[str, str] | None = None,
+    global_codes_are_predefined: bool = True,
 ) -> BCodecResult:
     cfg = classifier_cfg or SemanticClassifierConfig()
     try:
@@ -259,7 +266,12 @@ def encode_semantic_strings(
     line_starts = _line_start_offsets(text)
     occurrences: dict[str, list[tuple[int, int]]] = {}
     inners: dict[str, str] = {}
+    global_occurrences: dict[str, list[tuple[int, int]]] = {}
+    global_code_surface_by_literal: dict[str, str] = {}
+    global_code_inner_by_literal: dict[str, str] = {}
+    global_definition_by_code = dict(global_code_definition or {})
     route_rejects: Counter[str] = Counter()
+    g_map = dict(global_norm_codebook or {})
     for tok in toks:
         if tok.type != tokenize.STRING:
             continue
@@ -276,10 +288,20 @@ def encode_semantic_strings(
             continue
         st = _pos_to_offset(line_starts, tok.start)
         ed = _pos_to_offset(line_starts, tok.end)
+        norm_key = _normalize_for_similarity(inner, similarity_norm)
+        g_code_inner = g_map.get(norm_key)
+        if g_code_inner:
+            code_inner = str(g_code_inner)
+            global_occurrences.setdefault(sp, []).append((st, ed))
+            global_code_surface_by_literal[sp] = repr(code_inner)
+            global_code_inner_by_literal[sp] = code_inner
+            if code_inner not in global_definition_by_code:
+                global_definition_by_code[code_inner] = inner
+            continue
         occurrences.setdefault(sp, []).append((st, ed))
         inners[sp] = inner
 
-    cands = len(occurrences)
+    cands = len(occurrences) + len(global_occurrences)
     if cands == 0:
         return BCodecResult(encoded_text=text)
 
@@ -316,16 +338,37 @@ def encode_semantic_strings(
     usable: list[BCluster] = []
     replacements: dict[str, str] = {}
     vocab_entries: list[dict[str, Any]] = []
+    global_vocab_entries: list[dict[str, Any]] = []
     risk_reject_count = 0
     fallback_count = 0
     intro_not_worth_count = 0
     seq_saved = 0
     intro = 0
+    global_used_codes: set[str] = set()
+    global_used_literals = 0
+    global_seq_saved = 0
     sim_values: list[float] = []
 
     sel_mode = (member_select_mode or "").strip().lower()
     if sel_mode not in {"all", "drop_negative", "net_greedy"}:
         sel_mode = "all"
+
+    for lit, spans_lit in global_occurrences.items():
+        rep = global_code_surface_by_literal.get(lit)
+        code_inner = global_code_inner_by_literal.get(lit)
+        if not rep or not code_inner:
+            fallback_count += len(spans_lit)
+            continue
+        cnt = len(spans_lit)
+        gain = cnt * (_token_len(tokenizer, tok_type, lit) - _token_len(tokenizer, tok_type, rep))
+        if gain <= 0:
+            fallback_count += cnt
+            continue
+        replacements[lit] = rep
+        global_used_literals += cnt
+        global_used_codes.add(code_inner)
+        global_seq_saved += gain
+        seq_saved += gain
 
     for idx, members in enumerate(clusters):
         if len(members) < min_cluster_size:
@@ -427,6 +470,23 @@ def encode_semantic_strings(
         intro += intro_cost
         sim_values.append(avg_sim)
 
+    if global_used_codes:
+        for code_inner in sorted(global_used_codes):
+            intro_entry = {
+                "token": repr(code_inner),
+                "kind": "stage3_ab_b_global_cluster",
+                "definition": str(global_definition_by_code.get(code_inner, code_inner)),
+            }
+            global_vocab_entries.append(intro_entry)
+        if not global_codes_are_predefined:
+            intro_global = compute_vocab_intro_cost(
+                global_vocab_entries,
+                mode=VOCAB_COST_MODE,
+                tokenizer=tokenizer,
+                tok_type=tok_type,
+            )
+            intro += int(intro_global)
+
     spans: list[tuple[int, int, str]] = []
     for lit, rep in replacements.items():
         for st, ed in occurrences.get(lit, []):
@@ -454,5 +514,9 @@ def encode_semantic_strings(
         ),
         reject_reason_counts=dict(route_rejects),
         intro_not_worth_count=intro_not_worth_count,
+        global_used_codes=len(global_used_codes),
+        global_used_literals=global_used_literals,
+        global_sequence_saved=global_seq_saved,
+        global_vocab_entries=global_vocab_entries,
     )
 

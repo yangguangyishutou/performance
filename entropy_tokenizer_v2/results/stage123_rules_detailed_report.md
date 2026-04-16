@@ -226,7 +226,7 @@ hybrid_ab 默认 Stage2:
 
 ---
 
-## 5. Stage3 详细规则
+## 5. Stage3 详细规则（重点补充示例）
 
 ### 5.1 backend 选择
 
@@ -251,7 +251,13 @@ Stage3 支持:
 - B 通道: 面向“语义相近自由文本”聚类压缩
 - 最后做文件级 guardrail，避免 Stage3 让 sequence 变大
 
-### 5.3 A 通道规则（Exact Alias）
+执行顺序:
+
+1. 先做 A（`encode_exact_aliases`）
+2. 再做 B（`encode_semantic_strings`）
+3. 最后做 file-level guardrail（必要时回滚 A/B）
+
+### 5.3 A 通道规则（Exact Alias）+ 可复现实例
 
 A 通道候选来源:
 
@@ -260,9 +266,9 @@ A 通道候选来源:
 
 A 通道核心约束:
 
-- `min_occ`（默认该实验是 2）
-- `min_raw_token_len`（实验为 2）
-- `max_alias_token_len`（实验为 2）
+- `min_occ`（本实验常用 2）
+- `min_raw_token_len`（本实验为 2）
+- `max_alias_token_len`（本实验为 2）
 - `min_net_gain`（默认 1）
 
 收益判断:
@@ -271,6 +277,35 @@ A 通道核心约束:
 - 或 context-aware delta（启用时）
 
 只有 `gain >= min_net_gain` 才接受。
+
+#### A 示例 1（命中）
+
+输入片段（简化）:
+
+```python
+user_profile_sync_payload = user_profile_sync_payload + 1
+user_profile_sync_payload = user_profile_sync_payload + user_profile_sync_payload_backup
+```
+
+实际统计（gpt4 tokenizer，小样本实验）:
+
+- `user_profile_sync_payload -> a`
+- `count=6, raw_cost=4, alias_cost=1, intro=6`
+- `gain = 6*(4-1)-6 = 12`，命中
+
+#### A 示例 2（命中）
+
+- `user_profile_sync_payload_backup -> b`
+- `count=4, raw_cost=5, alias_cost=1, intro=7`
+- `gain = 4*(5-1)-7 = 9`，命中
+
+#### A 示例 3（拒绝）
+
+同一实验中:
+
+- `min_occ_reject_count = 4`（低频直接拒绝）
+- `net_gain_reject_count = 2`（收益不够）
+- `route_reasons = {"route_free_text": 2}`（明显长句被路由给 B，不进 A）
 
 #### A 通道 1M 实测（exact 与 best_hybrid 同 A 参数）
 
@@ -286,9 +321,9 @@ A 通道核心约束:
 
 说明 A 的主要瓶颈不是“找不到候选”，而是候选太稀疏或净收益不足。
 
-### 5.4 B 通道规则（Semantic Cluster）
+### 5.4 B 通道规则（Semantic Cluster）+ 可复现实例
 
-#### B 路由（先决条件）
+#### 5.4.1 B 路由（先决条件）
 
 字符串必须先被路由到 B:
 
@@ -296,7 +331,18 @@ A 通道核心约束:
 - 多行字符串默认禁用，除非 whitelist
 - URL/path/regex/identifier-like 通常走 A
 
-#### B 聚类与过滤
+路由正反例（`classify_string_with_reason` 实测）:
+
+| 字符串 | 路由 | 原因 |
+|---|---|---|
+| `"The host running the process that read the file. Typically ..."` | B | `free_text` |
+| `"alpha beta gamma"` | B | `mid_free_text` |
+| `"/api/v1/user/profile"` | A | `path_or_url` |
+| `"session_id"` | A | `identifier_like` |
+| `"foo.*bar"` | A | `regex_like` |
+| `"""line1\\nline2\\nline3"""` | fallback | `multiline_disabled` |
+
+#### 5.4.2 B 聚类与过滤
 
 1. 生成相似度向量（词袋 / mixed lexical+char）
 2. 依据 `similarity_threshold` 聚类
@@ -304,14 +350,74 @@ A 通道核心约束:
 4. 计算词表引入成本（intro）
 5. 只有 `sequence_saved > intro_cost` 才保留
 
-#### 我们新增并已落地的 B 规则
+### 5.5 我们新增并已落地的 B 规则（重点示例）
 
-1. 簇定义压缩（`definition_mode=shared_terms`）
-2. 代码短化（`b_code_style=base62`, `b_code_prefix=b`）
-3. 轻归一化（`b_similarity_norm=light`，对数字/uuid/hex 归一）
-4. 成员选择策略开关（`all/drop_negative/net_greedy`）
+#### 规则 1: 簇定义压缩（`definition_mode=shared_terms`）
 
-### 5.5 当前 gpt4 默认（已固化）
+同一簇、同一 code 下对比:
+
+- `shared_terms`: `seq_saved=42, intro=12, net=30`
+- `representative`: `seq_saved=42, intro=15, net=27`
+
+示例簇:
+
+- `"The source IPv4 address of the flow that caused the hit."`
+- `"The source IPv6 address of the flow that caused the hit."`
+- `"The source port of the flow that caused the hit."`
+- `"The destination IPv4 address of the flow that caused the hit."`
+
+关键点: `shared_terms` 不改替换收益（`seq_saved`），主要靠降低 definition token 成本提升净收益。
+
+#### 规则 2: 代码短化（`b_code_style=base62`, `b_code_prefix=b`）
+
+同簇对比:
+
+- `prefix_index + "__abB"`: `seq_saved=30, intro=15, net=15`
+- `base62 + "b"`: `seq_saved=42, intro=12, net=30`
+
+关键点: code 本身更短，既降低替换后的序列成本，也降低词表引入成本。
+
+#### 规则 3: 轻归一化（`b_similarity_norm=light`，重点）
+
+测试簇（仅变化 hex + uuid，语义相同）:
+
+- `"Artifact 0xA91B3F was linked to session 3f2504e0-... during triage flow"`
+- `"Artifact 0xB77CCD was linked to session 6ba7b810-... during triage flow"`
+- `"Artifact 0x7EE101 was linked to session 550e8400-... during triage flow"`
+
+对比结果:
+
+- `norm=none`: `used_clusters=0, net=0`
+- `norm=light`: `used_clusters=1, seq_saved=115, intro=12, net=103`
+
+原因: `light` 会把 `uuid/hex/num` 归一成占位词，显著提高“结构相同但 ID 不同”文本的可聚类性。
+
+#### 规则 4: 成员选择策略（`all/drop_negative/net_greedy`）
+
+1M 实测中三者结果几乎一致（当前参数下）:
+
+- `prev_plus_compact_norm`、`..._greedy`、`..._dropneg` 指标相同
+- `effective_total_reduction_pct = 16.9863%`
+- `B effective_net = 2363`
+
+解释: 在当前 `base62+b` 设定下，进入可用簇的成员大多已是净正收益成员，策略差异被“收益门槛”吃掉。
+
+### 5.6 1M 数据上的规则消融（B 规则实际贡献）
+
+来自 `results/stage3_hybrid_ab_1m_b_rule_combo_eval_ext.csv`（gpt4, StarCoder 1M）:
+
+| 方案 | B used_clusters | B seq_saved | B intro | B net |
+|---|---:|---:|---:|---:|
+| `prev_ref_084_normal` | 50 | 1909 | 693 | 1216 |
+| `prev_plus_compact` | 117 | 3408 | 1194 | 2214 |
+| `prev_plus_compact_norm` | 121 | 3603 | 1240 | 2363 |
+
+读法:
+
+- compact（含短 code 与定义压缩组合）把 B net 从 `1216` 提升到 `2214`（+998）
+- 在此基础上加 `light norm` 再升到 `2363`（+149）
+
+### 5.7 当前 gpt4 默认（已固化）
 
 在 `resolve_hybrid_ab_settings('gpt4')`，当 `mode=hybrid` 且启用 B 时，默认关键参数为:
 
@@ -322,20 +428,22 @@ A 通道核心约束:
 - `b_code_style=base62`
 - `b_code_prefix=b`
 
-### 5.6 B 通道示例（真实抽样）
+### 5.8 B 通道示例（真实抽样）
 
 来自 `results/stage3_hybrid_ab_1m_examples.json`:
 
 - cluster 示例: “The host running the process that ... Typically the same host ...”
-  - 多个动作差异句子映射到同一 cluster code
+  - 多个动作差异句子映射到同一 cluster code（`member_count=11`）
 - cluster 示例: “The \"part/vendor/product/version\" field from the CPE 2.3 string.”
-  - 模板化说明文本聚为一簇
+  - 模板化说明文本聚为一簇（`member_count=11`）
+- cluster 示例: “The primary name for the ATT&CK ...”
+  - 组/战术/技术/软件/缓解字段被同簇吸收（`member_count=5`）
 
 A 通道示例:
 
-- `testObj -> b`（同文件多次）
-- `IECore -> c`
-- `applicableTo -> m`
+- `testObj -> b`（同文件 71 次）
+- `IECore -> c`（同文件 57 次）
+- `applicableTo -> m`（同文件 17 次）
 
 ---
 

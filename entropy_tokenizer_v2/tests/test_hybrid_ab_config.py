@@ -50,6 +50,16 @@ def test_hybrid_ab_new_knobs_are_resolved(monkeypatch: pytest.MonkeyPatch) -> No
     assert cfg["b_char_ngram_n"] == 4
 
 
+def test_hybrid_ab_global_dictionary_knobs(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ET_STAGE3_AB_GLOBAL_DICT_ENABLE", "1")
+    monkeypatch.setenv("ET_STAGE3_AB_GLOBAL_DICT_PATH", "C:/tmp/global_dict.json")
+    monkeypatch.setenv("ET_STAGE3_AB_GLOBAL_DICT_CHARGE_VOCAB", "0")
+    cfg = resolve_hybrid_ab_settings("gpt4")
+    assert cfg["global_dict_enabled"] is True
+    assert cfg["global_dict_path"].endswith("global_dict.json")
+    assert cfg["global_dict_charge_vocab"] is False
+
+
 def test_hybrid_ab_stage1_stage2_profile_constants() -> None:
     assert "stage2_hybrid_ab_aggressive" in STAGE2_PROFILE_FLAGS
     assert STAGE2_HYBRID_AB_PROFILE == "stage2_hybrid_ab_aggressive"

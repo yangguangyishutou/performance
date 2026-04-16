@@ -8,6 +8,7 @@ from marker_count import encode as mc_encode
 from placeholder_accounting import compute_vocab_intro_cost
 from stage3.backends.base import Stage3EncodeResult
 from stage3.exact.alias_codec import ACodecResult, AEntry, apply_a_entries, encode_exact_aliases
+from stage3.global_dictionary import load_global_dictionary
 from stage3.lexical.semantic_codec import BCodecResult, encode_semantic_strings
 from stage3.lexical.string_classifier import SemanticClassifierConfig
 from stage3.routing.router import ABRoutingConfig
@@ -52,6 +53,12 @@ class HybridABConfig:
     max_alias_token_len: int = 32
     context_window_chars: int = 80
     b_channel_priority: str = "normal"
+    global_dict_enabled: bool = False
+    global_dict_path: str = ""
+    global_dict_charge_vocab: bool = False
+    global_a_aliases: dict[tuple[str, str], str] = field(default_factory=dict)
+    global_b_norm_map: dict[str, str] = field(default_factory=dict)
+    global_b_definition_by_code: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(slots=True)
@@ -108,6 +115,11 @@ def _encode_b_channel(
         member_select_mode=conf.b_member_select_mode,
         code_style=conf.b_code_style,
         code_prefix=conf.b_code_prefix,
+        global_norm_codebook=conf.global_b_norm_map if conf.global_dict_enabled else None,
+        global_code_definition=(
+            conf.global_b_definition_by_code if conf.global_dict_enabled else None
+        ),
+        global_codes_are_predefined=not bool(conf.global_dict_charge_vocab),
     )
 
 
@@ -119,10 +131,26 @@ def _build_a_codec_subset(
 ) -> ACodecResult:
     intro = sum(e.intro_cost for e in entries)
     seq_saved = sum(e.count * max(0, e.raw_cost - e.alias_cost) for e in entries)
-    vocab_entries = [
-        {"token": e.alias, "kind": "stage3_ab_a_alias", "field": e.field, "definition": e.literal}
-        for e in entries
-    ]
+    vocab_entries: list[dict[str, Any]] = []
+    global_vocab_entries: list[dict[str, Any]] = []
+    g_v = g_a = g_s = 0
+    for e in entries:
+        row = {
+            "token": e.alias,
+            "kind": e.vocab_kind,
+            "field": e.field,
+            "definition": e.literal,
+        }
+        if e.is_global:
+            global_vocab_entries.append(row)
+            if e.field == "variable":
+                g_v += 1
+            elif e.field == "attribute":
+                g_a += 1
+            elif e.field == "string":
+                g_s += 1
+        if int(e.intro_cost) > 0:
+            vocab_entries.append(row)
     return ACodecResult(
         encoded_text=text_after_a,
         entries=list(entries),
@@ -137,6 +165,11 @@ def _build_a_codec_subset(
         protected_name_count=orig_a.protected_name_count,
         min_occ_reject_count=orig_a.min_occ_reject_count,
         net_gain_reject_count=orig_a.net_gain_reject_count,
+        global_used_entries=g_v + g_a + g_s,
+        global_used_entries_variable=g_v,
+        global_used_entries_attribute=g_a,
+        global_used_entries_string=g_s,
+        global_vocab_entries=global_vocab_entries,
         occ=dict(occ),
     )
 
@@ -305,6 +338,8 @@ def encode_stage3_hybrid_ab(
         min_raw_token_len=conf.min_raw_token_len,
         max_alias_token_len=conf.max_alias_token_len,
         context_window_chars=conf.context_window_chars,
+        global_aliases=conf.global_a_aliases if conf.global_dict_enabled else None,
+        global_aliases_are_predefined=not bool(conf.global_dict_charge_vocab),
     )
     b_res = _encode_b_channel(a_res.encoded_text, conf=conf, tokenizer=tokenizer, tok_type=tok_type)
     raw = HybridABResult(
@@ -321,6 +356,18 @@ def encode_stage3_hybrid_ab(
     a_v = sum(1 for e in a_res.entries if e.field == "variable")
     a_a = sum(1 for e in a_res.entries if e.field == "attribute")
     a_s = sum(1 for e in a_res.entries if e.field == "string")
+    global_seq_saved = int(
+        sum(
+            e.count * max(0, e.raw_cost - e.alias_cost)
+            for e in a_res.entries
+            if bool(getattr(e, "is_global", False))
+        )
+        + int(getattr(b_res, "global_sequence_saved", 0) or 0)
+    )
+    vocab_entries = list(a_res.vocab_entries) + list(b_res.vocab_entries)
+    if conf.global_dict_charge_vocab:
+        vocab_entries += list(a_res.global_vocab_entries)
+        vocab_entries += list(b_res.global_vocab_entries)
     meta = {
         "stage3_ab_a_candidates": a_res.candidates,
         "stage3_ab_a_selected": a_res.selected,
@@ -346,6 +393,9 @@ def encode_stage3_hybrid_ab(
         "stage3_ab_b_risk_reject_count": b_res.risk_reject_count,
         "stage3_ab_b_intro_not_worth_count": b_res.intro_not_worth_count,
         "stage3_ab_b_reject_reason_counts": dict(b_res.reject_reason_counts),
+        "stage3_ab_b_global_used_codes": int(getattr(b_res, "global_used_codes", 0) or 0),
+        "stage3_ab_b_global_used_literals": int(getattr(b_res, "global_used_literals", 0) or 0),
+        "stage3_ab_b_global_sequence_saved": int(getattr(b_res, "global_sequence_saved", 0) or 0),
         "stage3_ab_similarity_kind": b_res.similarity_kind,
         "stage3_ab_b_mode": b_res.mode,
         "stage3_ab_b_definition_mode": conf.b_definition_mode,
@@ -353,10 +403,25 @@ def encode_stage3_hybrid_ab(
         "stage3_ab_b_code_style": conf.b_code_style,
         "stage3_ab_b_similarity_norm": conf.b_similarity_norm,
         "stage3_ab_mode": conf.mode,
-        "stage3_ab_vocab_entries": a_res.vocab_entries + b_res.vocab_entries,
+        "stage3_ab_vocab_entries": vocab_entries,
         "stage3_ab_a_processing_mode": conf.a_processing_mode,
         "stage3_ab_a_cost_mode": conf.a_cost_mode,
         "stage3_ab_b_channel_priority": conf.b_channel_priority,
+        "stage3_ab_global_dict_enabled": bool(conf.global_dict_enabled),
+        "stage3_ab_global_dict_charge_vocab": bool(conf.global_dict_charge_vocab),
+        "stage3_ab_global_dict_size_a": len(conf.global_a_aliases),
+        "stage3_ab_global_dict_size_b": len(conf.global_b_norm_map),
+        "stage3_ab_a_global_used_entries": int(getattr(a_res, "global_used_entries", 0) or 0),
+        "stage3_ab_a_global_used_entries_variable": int(
+            getattr(a_res, "global_used_entries_variable", 0) or 0
+        ),
+        "stage3_ab_a_global_used_entries_attribute": int(
+            getattr(a_res, "global_used_entries_attribute", 0) or 0
+        ),
+        "stage3_ab_a_global_used_entries_string": int(
+            getattr(a_res, "global_used_entries_string", 0) or 0
+        ),
+        "stage3_ab_global_sequence_saved": global_seq_saved,
         **guard_telem,
     }
     return HybridABResult(
@@ -438,9 +503,17 @@ class HybridABStage3Backend:
             max_alias_token_len=int(cfg_raw.get("max_alias_token_len", 32)),
             context_window_chars=int(cfg_raw.get("context_window_chars", 80)),
             b_channel_priority=str(cfg_raw.get("b_channel_priority", "normal")).strip().lower(),
+            global_dict_enabled=_truthy(cfg_raw.get("global_dict_enabled", False)),
+            global_dict_path=str(cfg_raw.get("global_dict_path", "") or ""),
+            global_dict_charge_vocab=_truthy(cfg_raw.get("global_dict_charge_vocab", False)),
         )
         if mode != "hybrid" or not _truthy(cfg_raw.get("enable_b", False)):
             conf.mode = "exact_only"
+        if conf.global_dict_enabled and conf.global_dict_path:
+            gd = load_global_dictionary(conf.global_dict_path)
+            conf.global_a_aliases = dict(gd.a_alias_map)
+            conf.global_b_norm_map = dict(gd.b_norm_map)
+            conf.global_b_definition_by_code = dict(gd.b_definition_by_code)
         res = encode_stage3_hybrid_ab(text, tokenizer=tokenizer, tok_type=tok_type, cfg=conf)
         meta = summary_dict(res)
         vocab_entries = meta.get("stage3_ab_vocab_entries", []) or []

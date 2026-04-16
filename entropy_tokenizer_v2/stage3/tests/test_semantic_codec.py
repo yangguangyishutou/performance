@@ -67,3 +67,25 @@ def test_semantic_codec_supports_compact_code_and_net_greedy():
     )
     assert res.used_clusters >= 1
     assert any(e.get("token") == "'b0'" for e in res.vocab_entries)
+
+
+def test_semantic_codec_uses_global_norm_codebook():
+    tok, tt = _load_tokenizer("gpt4", EVAL_TOKENIZERS["gpt4"])
+    text = (
+        "a = 'Artifact 0xA91B3F was linked to session 3f2504e0-4f89-11d3-9a0c-0305e82c3301 during triage flow'\n"
+        "b = 'Artifact 0xB77CCD was linked to session 6ba7b810-9dad-11d1-80b4-00c04fd430c8 during triage flow'\n"
+    )
+    res = encode_semantic_strings(
+        text,
+        tokenizer=tok,
+        tok_type=tt,
+        similarity_threshold=0.95,
+        risk_threshold=0.95,
+        min_cluster_size=2,
+        similarity_norm="light",
+        global_norm_codebook={"Artifact <hex> was linked to session <uuid> during triage flow": "gb0"},
+        global_code_definition={"gb0": "artifact session template"},
+    )
+    assert res.global_used_codes >= 1
+    assert res.global_used_literals >= 2
+    assert res.global_sequence_saved > 0

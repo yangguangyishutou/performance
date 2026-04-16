@@ -22,3 +22,7 @@ results/v2_eval_detail_*.json
 results/stage3_plan_a/codebook_*_sources.json
 results/stage3_plan_a/report_*_sources.json
 *.log
+.codex/
+.venv-langv1/
+.env.langv1_pilot
+results_fast_try/

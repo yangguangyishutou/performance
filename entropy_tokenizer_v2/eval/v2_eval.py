@@ -184,6 +184,12 @@ class EvalResult:
     stage3_ab_fallback_count: int = 0
     stage3_ab_mode: str = ""
     stage3_ab_similarity_kind: str = ""
+    stage3_ab_global_dict_enabled: bool = False
+    stage3_ab_global_dict_size_a: int = 0
+    stage3_ab_global_dict_size_b: int = 0
+    stage3_ab_a_global_used_entries: int = 0
+    stage3_ab_b_global_used_codes: int = 0
+    stage3_ab_global_sequence_saved: int = 0
     hybrid_ab_stage1_override_used: bool = False
     hybrid_ab_stage2_override_used: bool = False
     stage2_resolution_source: str = ""
@@ -238,6 +244,9 @@ def evaluate(
     ab_similarity_weight = 0
     ab_mode_seen = ""
     ab_similarity_kind_seen = ""
+    ab_global_dict_enabled = False
+    ab_global_dict_size_a = 0
+    ab_global_dict_size_b = 0
     ab_a_reject_reasons: Counter = Counter()
     ab_b_reject_reasons: Counter = Counter()
 
@@ -277,6 +286,17 @@ def evaluate(
                 ab_mode_seen = str(meta.get("stage3_ab_mode", "") or "")
             if not ab_similarity_kind_seen:
                 ab_similarity_kind_seen = str(meta.get("stage3_ab_similarity_kind", "") or "")
+            ab_global_dict_enabled = ab_global_dict_enabled or bool(
+                meta.get("stage3_ab_global_dict_enabled")
+            )
+            ab_global_dict_size_a = max(
+                ab_global_dict_size_a,
+                int(meta.get("stage3_ab_global_dict_size_a", 0) or 0),
+            )
+            ab_global_dict_size_b = max(
+                ab_global_dict_size_b,
+                int(meta.get("stage3_ab_global_dict_size_b", 0) or 0),
+            )
             for k in (
                 "stage3_ab_a_candidates",
                 "stage3_ab_a_selected",
@@ -284,6 +304,7 @@ def evaluate(
                 "stage3_ab_a_used_entries_variable",
                 "stage3_ab_a_used_entries_attribute",
                 "stage3_ab_a_used_entries_string",
+                "stage3_ab_a_global_used_entries",
                 "stage3_ab_a_intro_tokens",
                 "stage3_ab_a_sequence_saved",
                 "stage3_ab_a_effective_net_saving",
@@ -297,8 +318,12 @@ def evaluate(
                 "stage3_ab_b_sequence_saved",
                 "stage3_ab_b_effective_net_saving",
                 "stage3_ab_b_fallback_count",
+                "stage3_ab_b_global_used_codes",
+                "stage3_ab_b_global_used_literals",
+                "stage3_ab_b_global_sequence_saved",
                 "stage3_ab_b_risk_reject_count",
                 "stage3_ab_b_intro_not_worth_count",
+                "stage3_ab_global_sequence_saved",
                 # File-level guardrail telemetry (hybrid_ab_backend meta).
                 "stage2_tokens",
                 "stage3_tokens",
@@ -531,6 +556,12 @@ def evaluate(
         stage3_ab_similarity_kind=ab_similarity_kind_seen or str(
             (getattr(repo_config, "stage3_ab_summary", {}) or {}).get("stage3_ab_similarity_kind", "")
         ),
+        stage3_ab_global_dict_enabled=ab_global_dict_enabled if backend == "hybrid_ab" else False,
+        stage3_ab_global_dict_size_a=ab_global_dict_size_a if backend == "hybrid_ab" else 0,
+        stage3_ab_global_dict_size_b=ab_global_dict_size_b if backend == "hybrid_ab" else 0,
+        stage3_ab_a_global_used_entries=int(ab_sum.get("stage3_ab_a_global_used_entries", 0)),
+        stage3_ab_b_global_used_codes=int(ab_sum.get("stage3_ab_b_global_used_codes", 0)),
+        stage3_ab_global_sequence_saved=int(ab_sum.get("stage3_ab_global_sequence_saved", 0)),
         hybrid_ab_stage1_override_used=hybrid_ab_s1,
         hybrid_ab_stage2_override_used=hybrid_ab_s2,
         stage2_resolution_source=s2_src,

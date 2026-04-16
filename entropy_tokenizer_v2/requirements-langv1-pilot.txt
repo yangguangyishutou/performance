@@ -1,0 +1,17 @@
+accelerate>=1.2.0
+datasets>=3.2.0
+evaluate>=0.4.3
+huggingface_hub>=0.28.0
+libcst>=1.6.0
+numpy>=2.1.0
+openai>=1.73.0
+pandas>=2.2.0
+peft>=0.14.0
+psutil>=6.1.0
+pyyaml>=6.0.2
+python-dotenv>=1.0.1
+safetensors>=0.5.2
+sentencepiece>=0.2.0
+tiktoken>=0.9.0
+transformers>=4.48.0
+trl>=0.15.0

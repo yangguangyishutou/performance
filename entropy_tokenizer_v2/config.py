@@ -131,6 +131,18 @@ if STAGE3_AB_B_CODE_STYLE not in {"prefix_index", "base62", "compact"}:
     STAGE3_AB_B_CODE_STYLE = "prefix_index"
 STAGE3_AB_B_CODE_PREFIX = os.getenv("ET_STAGE3_AB_B_CODE_PREFIX", "__abB")
 STAGE3_AB_ENABLE_B = os.getenv("ET_STAGE3_AB_ENABLE_B", "1").lower() in ("1", "true", "yes")
+STAGE3_AB_GLOBAL_DICT_ENABLE = os.getenv(
+    "ET_STAGE3_AB_GLOBAL_DICT_ENABLE",
+    "0",
+).lower() in ("1", "true", "yes")
+STAGE3_AB_GLOBAL_DICT_PATH = os.getenv(
+    "ET_STAGE3_AB_GLOBAL_DICT_PATH",
+    str(CACHE_DIR / "stage3_global_dictionary.json"),
+)
+STAGE3_AB_GLOBAL_DICT_CHARGE_VOCAB = os.getenv(
+    "ET_STAGE3_AB_GLOBAL_DICT_CHARGE_VOCAB",
+    "0",
+).lower() in ("1", "true", "yes")
 STAGE3_AB_MODE = os.getenv("ET_STAGE3_AB_MODE", "").strip().lower()
 STAGE3_AB_A_MIN_OCC = int(os.getenv("ET_STAGE3_AB_A_MIN_OCC", "2"))
 STAGE3_AB_A_MIN_NET_GAIN = int(os.getenv("ET_STAGE3_AB_A_MIN_NET_GAIN", "1"))
@@ -300,6 +312,18 @@ def resolve_hybrid_ab_settings(tokenizer_key: str) -> dict:
             code_prefix_default,
         ),
         "enable_b": enable_b,
+        "global_dict_enabled": os.getenv(
+            "ET_STAGE3_AB_GLOBAL_DICT_ENABLE",
+            "1" if STAGE3_AB_GLOBAL_DICT_ENABLE else "0",
+        ).lower() in ("1", "true", "yes"),
+        "global_dict_path": os.getenv(
+            "ET_STAGE3_AB_GLOBAL_DICT_PATH",
+            STAGE3_AB_GLOBAL_DICT_PATH,
+        ),
+        "global_dict_charge_vocab": os.getenv(
+            "ET_STAGE3_AB_GLOBAL_DICT_CHARGE_VOCAB",
+            "1" if STAGE3_AB_GLOBAL_DICT_CHARGE_VOCAB else "0",
+        ).lower() in ("1", "true", "yes"),
         "a_min_occ": a_min_occ,
         "a_min_net_gain": int(
             os.getenv("ET_STAGE3_AB_A_MIN_NET_GAIN", str(STAGE3_AB_A_MIN_NET_GAIN))
@@ -479,6 +503,14 @@ EVAL_TOKENIZERS = {
     "gpt4": {
         "type": "tiktoken",
         "tiktoken_model": "gpt-4",
+    },
+    "qwen25-coder-15b": {
+        "type": "hf",
+        "name": "Qwen/Qwen2.5-Coder-1.5B",
+    },
+    "deepseek-v31": {
+        "type": "hf",
+        "name": "deepseek-ai/DeepSeek-V3.1",
     },
     "gpt2": {
         "type": "hf",

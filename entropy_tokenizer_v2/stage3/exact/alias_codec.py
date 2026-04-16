@@ -34,6 +34,8 @@ class AEntry:
     alias_cost: int
     intro_cost: int
     gain: int
+    is_global: bool = False
+    vocab_kind: str = "stage3_ab_a_alias"
 
 
 @dataclass(slots=True)
@@ -51,6 +53,11 @@ class ACodecResult:
     protected_name_count: int = 0
     min_occ_reject_count: int = 0
     net_gain_reject_count: int = 0
+    global_used_entries: int = 0
+    global_used_entries_variable: int = 0
+    global_used_entries_attribute: int = 0
+    global_used_entries_string: int = 0
+    global_vocab_entries: list[dict[str, Any]] = field(default_factory=list)
     # Span index for incremental guardrail rollback (hybrid_ab file-level check).
     occ: dict[tuple[str, str], list[tuple[int, int]]] = field(default_factory=dict)
 
@@ -268,6 +275,8 @@ def encode_exact_aliases(
     min_raw_token_len: int = 1,
     max_alias_token_len: int = 32,
     context_window_chars: int = 80,
+    global_aliases: Optional[dict[tuple[str, str], str]] = None,
+    global_aliases_are_predefined: bool = True,
 ) -> ACodecResult:
     cost_mode = (cost_mode or "local").strip().lower()
     if cost_mode not in {"local", "context_aware"}:
@@ -342,18 +351,130 @@ def encode_exact_aliases(
 
     selected: dict[tuple[str, str], str] = {}
     entries: list[AEntry] = []
+    global_vocab_entries: list[dict[str, Any]] = []
+    global_used_v = 0
+    global_used_a = 0
+    global_used_s = 0
     min_occ_reject_count = 0
     net_gain_reject_count = 0
+
+    def _try_global_alias(field: str, literal: str) -> tuple[str, str] | None:
+        if not global_aliases:
+            return None
+        raw = global_aliases.get((field, literal))
+        if raw is None:
+            return None
+        ab = str(raw).strip()
+        if not ab:
+            return None
+        if field != "string":
+            if not ab.isidentifier() or keyword.iskeyword(ab):
+                return None
+            surf = ab
+        else:
+            # For string field, value can be either plain alias text (gs0)
+            # or a quoted literal ("'gs0'").
+            if len(ab) >= 2 and ab[0] in {"'", '"'} and ab[-1] == ab[0]:
+                try:
+                    inner = ast.literal_eval(ab)
+                except (SyntaxError, ValueError, MemoryError):
+                    return None
+                if not isinstance(inner, str) or not inner:
+                    return None
+                ab = inner
+            surf = repr(ab)
+        if ab in taken_alias_bases:
+            return None
+        if field != "string" and ab in static_reserved:
+            return None
+        if _token_len(tokenizer, tok_type, surf) > int(max_alias_token_len):
+            return None
+        return ab, surf
+
     for key, spans in sorted(occ.items(), key=lambda kv: len(kv[1]), reverse=True):
         field, literal = key
         count = len(spans)
+        raw_cost = _token_len(tokenizer, tok_type, literal)
+        if raw_cost < int(min_raw_token_len):
+            net_gain_reject_count += 1
+            continue
+
+        def _evaluate_current_alias(
+            cur_alias_surface: str,
+            *,
+            is_global_alias: bool,
+        ) -> tuple[int, int, dict[str, Any], str, int]:
+            cur_alias_cost = _token_len(tokenizer, tok_type, cur_alias_surface)
+            cur_vocab_kind = (
+                "stage3_ab_a_global_alias" if is_global_alias else "stage3_ab_a_alias"
+            )
+            cur_intro_entry = {
+                "token": cur_alias_surface,
+                "kind": cur_vocab_kind,
+                "field": field,
+                "definition": literal,
+            }
+            cur_intro_cost = 0
+            if not (is_global_alias and global_aliases_are_predefined):
+                cur_intro_cost = compute_vocab_intro_cost(
+                    [cur_intro_entry], mode=VOCAB_COST_MODE, tokenizer=tokenizer, tok_type=tok_type
+                )
+            if cost_mode == "context_aware":
+                seq_delta = sum_context_aware_literal_delta(
+                    text,
+                    spans,
+                    literal,
+                    cur_alias_surface,
+                    tokenizer,
+                    tok_type,
+                    window_chars=int(context_window_chars),
+                )
+                cur_gain = int(seq_delta) - int(cur_intro_cost)
+            else:
+                cur_gain = count * (raw_cost - cur_alias_cost) - cur_intro_cost
+            return cur_alias_cost, cur_intro_cost, cur_intro_entry, cur_vocab_kind, int(cur_gain)
+
+        g_pick = _try_global_alias(field, literal)
+        global_alias_base: str | None = None
+        global_alias_surface: str | None = None
+        global_eval: tuple[int, int, dict[str, Any], str, int] | None = None
+        if g_pick is not None:
+            global_alias_base, global_alias_surface = g_pick
+            global_eval = _evaluate_current_alias(global_alias_surface, is_global_alias=True)
+
         if count < int(min_occ):
+            if global_eval is not None and int(global_eval[4]) >= int(min_net_gain):
+                assert global_alias_base is not None and global_alias_surface is not None
+                taken_alias_bases.add(global_alias_base)
+                alias_cost, intro_cost, intro_entry, vocab_kind, gain = global_eval
+                selected[key] = global_alias_surface
+                entries.append(
+                    AEntry(
+                        field=field,
+                        literal=literal,
+                        alias=global_alias_surface,
+                        count=count,
+                        raw_cost=raw_cost,
+                        alias_cost=alias_cost,
+                        intro_cost=intro_cost,
+                        gain=gain,
+                        is_global=True,
+                        vocab_kind=vocab_kind,
+                    )
+                )
+                global_vocab_entries.append(intro_entry)
+                if field == "variable":
+                    global_used_v += 1
+                elif field == "attribute":
+                    global_used_a += 1
+                elif field == "string":
+                    global_used_s += 1
+                continue
             min_occ_reject_count += 1
             continue
 
-        alias_base: str | None = None
-        alias_surface: str | None = None
-
+        local_alias_base: str | None = None
+        local_alias_surface: str | None = None
         if alias_style == "mnemonic":
             prefix = _sanitize_prefix(literal)
             if prefix not in mnemonic_alias_alphabet_by_prefix:
@@ -375,10 +496,37 @@ def encode_exact_aliases(
                     continue
                 if _token_len(tokenizer, tok_type, surf) > int(max_alias_token_len):
                     continue
-                alias_base, alias_surface = ab, surf
+                local_alias_base, local_alias_surface = ab, surf
                 picked = True
                 break
             if not picked:
+                if global_eval is not None and int(global_eval[4]) >= int(min_net_gain):
+                    assert global_alias_base is not None and global_alias_surface is not None
+                    taken_alias_bases.add(global_alias_base)
+                    alias_cost, intro_cost, intro_entry, vocab_kind, gain = global_eval
+                    selected[key] = global_alias_surface
+                    entries.append(
+                        AEntry(
+                            field=field,
+                            literal=literal,
+                            alias=global_alias_surface,
+                            count=count,
+                            raw_cost=raw_cost,
+                            alias_cost=alias_cost,
+                            intro_cost=intro_cost,
+                            gain=gain,
+                            is_global=True,
+                            vocab_kind=vocab_kind,
+                        )
+                    )
+                    global_vocab_entries.append(intro_entry)
+                    if field == "variable":
+                        global_used_v += 1
+                    elif field == "attribute":
+                        global_used_a += 1
+                    elif field == "string":
+                        global_used_s += 1
+                    continue
                 net_gain_reject_count += 1
                 continue
         elif alias_candidate_style == "legal_identifier_pool":
@@ -391,15 +539,40 @@ def encode_exact_aliases(
                 surf = ab if field != "string" else repr(ab)
                 if _token_len(tokenizer, tok_type, surf) > int(max_alias_token_len):
                     continue
-                alias_base, alias_surface = ab, surf
+                local_alias_base, local_alias_surface = ab, surf
                 picked = True
                 break
             if not picked:
+                if global_eval is not None and int(global_eval[4]) >= int(min_net_gain):
+                    assert global_alias_base is not None and global_alias_surface is not None
+                    taken_alias_bases.add(global_alias_base)
+                    alias_cost, intro_cost, intro_entry, vocab_kind, gain = global_eval
+                    selected[key] = global_alias_surface
+                    entries.append(
+                        AEntry(
+                            field=field,
+                            literal=literal,
+                            alias=global_alias_surface,
+                            count=count,
+                            raw_cost=raw_cost,
+                            alias_cost=alias_cost,
+                            intro_cost=intro_cost,
+                            gain=gain,
+                            is_global=True,
+                            vocab_kind=vocab_kind,
+                        )
+                    )
+                    global_vocab_entries.append(intro_entry)
+                    if field == "variable":
+                        global_used_v += 1
+                    elif field == "attribute":
+                        global_used_a += 1
+                    elif field == "string":
+                        global_used_s += 1
+                    continue
                 net_gain_reject_count += 1
                 continue
         else:
-            alias_base = None
-            alias_surface = None
             for _attempt in range(512):
                 cursor = alias_iter_idx + _attempt
                 if cursor < len(short_alias_alphabet):
@@ -411,58 +584,94 @@ def encode_exact_aliases(
                     continue
                 if _token_len(tokenizer, tok_type, surf) > int(max_alias_token_len):
                     continue
-                alias_base, alias_surface = ab, surf
+                local_alias_base, local_alias_surface = ab, surf
                 alias_iter_idx = cursor + 1
                 break
-            if alias_base is None:
+            if local_alias_base is None:
+                if global_eval is not None and int(global_eval[4]) >= int(min_net_gain):
+                    assert global_alias_base is not None and global_alias_surface is not None
+                    taken_alias_bases.add(global_alias_base)
+                    alias_cost, intro_cost, intro_entry, vocab_kind, gain = global_eval
+                    selected[key] = global_alias_surface
+                    entries.append(
+                        AEntry(
+                            field=field,
+                            literal=literal,
+                            alias=global_alias_surface,
+                            count=count,
+                            raw_cost=raw_cost,
+                            alias_cost=alias_cost,
+                            intro_cost=intro_cost,
+                            gain=gain,
+                            is_global=True,
+                            vocab_kind=vocab_kind,
+                        )
+                    )
+                    global_vocab_entries.append(intro_entry)
+                    if field == "variable":
+                        global_used_v += 1
+                    elif field == "attribute":
+                        global_used_a += 1
+                    elif field == "string":
+                        global_used_s += 1
+                    continue
                 net_gain_reject_count += 1
                 continue
 
-        assert alias_base is not None and alias_surface is not None
-        taken_alias_bases.add(alias_base)
+        assert local_alias_base is not None and local_alias_surface is not None
+        local_eval = _evaluate_current_alias(local_alias_surface, is_global_alias=False)
+        local_alias_cost, local_intro_cost, local_intro_entry, local_vocab_kind, local_gain = local_eval
 
-        raw_cost = _token_len(tokenizer, tok_type, literal)
-        if raw_cost < int(min_raw_token_len):
-            taken_alias_bases.discard(alias_base)
+        pick_is_global = False
+        best_alias_base = local_alias_base
+        best_alias_surface = local_alias_surface
+        best_alias_cost = local_alias_cost
+        best_intro_cost = local_intro_cost
+        best_intro_entry = local_intro_entry
+        best_vocab_kind = local_vocab_kind
+        best_gain = int(local_gain)
+
+        if global_eval is not None and int(global_eval[4]) > int(best_gain):
+            assert global_alias_base is not None and global_alias_surface is not None
+            (
+                best_alias_cost,
+                best_intro_cost,
+                best_intro_entry,
+                best_vocab_kind,
+                best_gain,
+            ) = global_eval
+            best_alias_base = global_alias_base
+            best_alias_surface = global_alias_surface
+            pick_is_global = True
+
+        if int(best_gain) < int(min_net_gain):
             net_gain_reject_count += 1
             continue
 
-        alias_cost = _token_len(tokenizer, tok_type, alias_surface)
-        intro_entry = {"token": alias_surface, "kind": "stage3_ab_a_alias", "field": field, "definition": literal}
-        intro_cost = compute_vocab_intro_cost(
-            [intro_entry], mode=VOCAB_COST_MODE, tokenizer=tokenizer, tok_type=tok_type
-        )
-        if cost_mode == "context_aware":
-            seq_delta = sum_context_aware_literal_delta(
-                text,
-                spans,
-                literal,
-                alias_surface,
-                tokenizer,
-                tok_type,
-                window_chars=int(context_window_chars),
-            )
-            gain = int(seq_delta) - int(intro_cost)
-        else:
-            gain = count * (raw_cost - alias_cost) - intro_cost
-        if gain < int(min_net_gain):
-            taken_alias_bases.discard(alias_base)
-            net_gain_reject_count += 1
-            continue
-
-        selected[key] = alias_surface
+        taken_alias_bases.add(best_alias_base)
+        selected[key] = best_alias_surface
         entries.append(
             AEntry(
                 field=field,
                 literal=literal,
-                alias=alias_surface,
+                alias=best_alias_surface,
                 count=count,
                 raw_cost=raw_cost,
-                alias_cost=alias_cost,
-                intro_cost=intro_cost,
-                gain=gain,
+                alias_cost=best_alias_cost,
+                intro_cost=best_intro_cost,
+                gain=best_gain,
+                is_global=pick_is_global,
+                vocab_kind=best_vocab_kind,
             )
         )
+        if pick_is_global:
+            global_vocab_entries.append(best_intro_entry)
+            if field == "variable":
+                global_used_v += 1
+            elif field == "attribute":
+                global_used_a += 1
+            elif field == "string":
+                global_used_s += 1
 
     spans_all: list[tuple[int, int, str]] = []
     for key, alias in selected.items():
@@ -470,7 +679,11 @@ def encode_exact_aliases(
             spans_all.append((st, ed, alias))
     encoded = _apply_spans(text, spans_all) if spans_all else text
 
-    vocab_entries = [{"token": e.alias, "kind": "stage3_ab_a_alias", "field": e.field, "definition": e.literal} for e in entries]
+    vocab_entries = [
+        {"token": e.alias, "kind": e.vocab_kind, "field": e.field, "definition": e.literal}
+        for e in entries
+        if int(e.intro_cost) > 0
+    ]
     seq_saved = sum(e.count * max(0, e.raw_cost - e.alias_cost) for e in entries)
     intro = sum(e.intro_cost for e in entries)
     occ_snapshot = {k: list(v) for k, v in occ.items()}
@@ -488,6 +701,11 @@ def encode_exact_aliases(
         protected_name_count=protected_name_count,
         min_occ_reject_count=min_occ_reject_count,
         net_gain_reject_count=net_gain_reject_count,
+        global_used_entries=global_used_v + global_used_a + global_used_s,
+        global_used_entries_variable=global_used_v,
+        global_used_entries_attribute=global_used_a,
+        global_used_entries_string=global_used_s,
+        global_vocab_entries=global_vocab_entries,
         occ=occ_snapshot,
     )
 

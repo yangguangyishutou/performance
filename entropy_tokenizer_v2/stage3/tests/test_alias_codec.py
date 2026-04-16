@@ -107,3 +107,60 @@ def test_alias_alphabet_sorted_by_token_cost():
     cands = build_alias_alphabet(tok, tt, style="short", max_n=16)
     costs = [len(mc_encode(tok, tt, c)) for c in cands]
     assert costs == sorted(costs)
+
+
+def test_alias_codec_supports_predefined_global_alias_without_intro():
+    tok, tt = _load_tokenizer("gpt4", EVAL_TOKENIZERS["gpt4"])
+    text = (
+        "user_profile_sync_payload = 1\n"
+        "print(user_profile_sync_payload)\n"
+        "user_profile_sync_payload += 1\n"
+    )
+    res = encode_exact_aliases(
+        text,
+        tokenizer=tok,
+        tok_type=tt,
+        route_cfg=ABRoutingConfig(),
+        global_aliases={("variable", "user_profile_sync_payload"): "g0"},
+        global_aliases_are_predefined=True,
+    )
+    assert any(e.is_global for e in res.entries)
+    assert res.global_used_entries >= 1
+    assert res.intro_tokens == 0
+
+
+def test_alias_codec_global_alias_can_bypass_min_occ():
+    tok, tt = _load_tokenizer("gpt4", EVAL_TOKENIZERS["gpt4"])
+    text = "extremely_long_identifier_for_one_shot_global_alias = 1\n"
+    res = encode_exact_aliases(
+        text,
+        tokenizer=tok,
+        tok_type=tt,
+        route_cfg=ABRoutingConfig(),
+        min_occ=99,
+        global_aliases={
+            ("variable", "extremely_long_identifier_for_one_shot_global_alias"): "g0",
+        },
+        global_aliases_are_predefined=True,
+    )
+    assert res.selected >= 1
+    assert any(e.is_global for e in res.entries)
+
+
+def test_alias_codec_prefers_higher_gain_global_alias_over_local():
+    tok, tt = _load_tokenizer("gpt4", EVAL_TOKENIZERS["gpt4"])
+    text = (
+        "verylongsymbol_for_alias_gain_compare = 1\n"
+        "print(verylongsymbol_for_alias_gain_compare)\n"
+        "verylongsymbol_for_alias_gain_compare += 1\n"
+    )
+    res = encode_exact_aliases(
+        text,
+        tokenizer=tok,
+        tok_type=tt,
+        route_cfg=ABRoutingConfig(),
+        alias_style="mnemonic",
+        global_aliases={("variable", "verylongsymbol_for_alias_gain_compare"): "g0"},
+        global_aliases_are_predefined=True,
+    )
+    assert any(e.is_global for e in res.entries)
