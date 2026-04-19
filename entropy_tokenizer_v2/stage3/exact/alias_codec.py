@@ -62,6 +62,14 @@ class ACodecResult:
     occ: dict[tuple[str, str], list[tuple[int, int]]] = field(default_factory=dict)
 
 
+@dataclass(slots=True)
+class _CompoundSpan:
+    field: str
+    literal: str
+    start: int
+    end: int
+
+
 def _token_len(tokenizer: Any, tok_type: str, text: str) -> int:
     from marker_count import encode as _encode
 
@@ -245,6 +253,163 @@ def _collect_scope_name_conflicts(text: str) -> set[str]:
     return names
 
 
+def _node_offsets(
+    line_starts: list[int],
+    node: ast.AST,
+) -> tuple[int, int] | None:
+    if not all(
+        hasattr(node, attr)
+        for attr in ("lineno", "col_offset", "end_lineno", "end_col_offset")
+    ):
+        return None
+    try:
+        st = _pos_to_offset(line_starts, (int(node.lineno), int(node.col_offset)))
+        ed = _pos_to_offset(line_starts, (int(node.end_lineno), int(node.end_col_offset)))
+    except Exception:
+        return None
+    if ed <= st:
+        return None
+    return st, ed
+
+
+def _push_compound_span(
+    out: list[_CompoundSpan],
+    *,
+    field: str,
+    literal: str,
+    start: int,
+    end: int,
+    tokenizer: Any,
+    tok_type: str,
+    min_raw_token_len: int,
+) -> None:
+    if end <= start:
+        return
+    if not literal or literal.isspace():
+        return
+    if not re.search(r"[A-Za-z_]", literal):
+        return
+    if _token_len(tokenizer, tok_type, literal) < int(min_raw_token_len):
+        return
+    out.append(_CompoundSpan(field=field, literal=literal, start=start, end=end))
+
+
+def _iter_annotation_nodes(tree: ast.AST) -> list[ast.AST]:
+    nodes: list[ast.AST] = []
+    for item in ast.walk(tree):
+        if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            for arg in (
+                list(item.args.posonlyargs)
+                + list(item.args.args)
+                + list(item.args.kwonlyargs)
+            ):
+                if arg.annotation is not None:
+                    nodes.append(arg.annotation)
+            if item.args.vararg and item.args.vararg.annotation is not None:
+                nodes.append(item.args.vararg.annotation)
+            if item.args.kwarg and item.args.kwarg.annotation is not None:
+                nodes.append(item.args.kwarg.annotation)
+            if item.returns is not None:
+                nodes.append(item.returns)
+        elif isinstance(item, ast.AnnAssign) and item.annotation is not None:
+            nodes.append(item.annotation)
+    return nodes
+
+
+def _collect_compound_spans(
+    text: str,
+    *,
+    tokenizer: Any,
+    tok_type: str,
+    line_starts: list[int],
+    min_raw_token_len: int,
+) -> list[_CompoundSpan]:
+    try:
+        tree = ast.parse(text)
+    except (SyntaxError, ValueError, MemoryError):
+        return []
+
+    raw: list[_CompoundSpan] = []
+    for ann in _iter_annotation_nodes(tree):
+        offsets = _node_offsets(line_starts, ann)
+        if offsets is None:
+            continue
+        st, ed = offsets
+        _push_compound_span(
+            raw,
+            field="annotation",
+            literal=text[st:ed],
+            start=st,
+            end=ed,
+            tokenizer=tokenizer,
+            tok_type=tok_type,
+            min_raw_token_len=min_raw_token_len,
+        )
+
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom):
+            offsets = _node_offsets(line_starts, node)
+            if offsets is None:
+                continue
+            module_text = "." * int(getattr(node, "level", 0) or 0) + str(node.module or "")
+            if not module_text:
+                continue
+            st_node, ed_node = offsets
+            segment = text[st_node:ed_node]
+            rel = segment.find(module_text)
+            if rel < 0:
+                continue
+            _push_compound_span(
+                raw,
+                field="import_module",
+                literal=module_text,
+                start=st_node + rel,
+                end=st_node + rel + len(module_text),
+                tokenizer=tokenizer,
+                tok_type=tok_type,
+                min_raw_token_len=min_raw_token_len,
+            )
+        elif isinstance(node, ast.Import):
+            offsets = _node_offsets(line_starts, node)
+            if offsets is None:
+                continue
+            st_node, ed_node = offsets
+            segment = text[st_node:ed_node]
+            cursor = 0
+            for alias in node.names:
+                target = str(alias.name or "")
+                if not target:
+                    continue
+                rel = segment.find(target, cursor)
+                if rel < 0:
+                    rel = segment.find(target)
+                    if rel < 0:
+                        continue
+                _push_compound_span(
+                    raw,
+                    field="import_module",
+                    literal=target,
+                    start=st_node + rel,
+                    end=st_node + rel + len(target),
+                    tokenizer=tokenizer,
+                    tok_type=tok_type,
+                    min_raw_token_len=min_raw_token_len,
+                )
+                cursor = rel + len(target)
+
+    raw.sort(key=lambda sp: (sp.start, -(sp.end - sp.start), sp.field))
+    filtered: list[_CompoundSpan] = []
+    for span in raw:
+        if any(not (span.end <= cur.start or span.start >= cur.end) for cur in filtered):
+            continue
+        filtered.append(span)
+    return filtered
+
+
+def _inside_compound_span(start: int, end: int, spans: list[_CompoundSpan]) -> bool:
+    return any(start >= sp.start and end <= sp.end for sp in spans)
+
+
 def apply_a_entries(
     text: str,
     occ: dict[tuple[str, str], list[tuple[int, int]]],
@@ -271,6 +436,8 @@ def encode_exact_aliases(
     min_net_gain: int = 1,
     alias_style: str = "short",
     alias_candidate_style: str = "token_cost_sorted",
+    enable_compound_spans: bool = True,
+    compound_min_raw_token_len: int = 4,
     cost_mode: str = "local",
     min_raw_token_len: int = 1,
     max_alias_token_len: int = 32,
@@ -288,6 +455,17 @@ def encode_exact_aliases(
     line_starts = _line_start_offsets(text)
     ast_protected = _collect_ast_protected_names(text)
     scope_conflicts = _collect_scope_name_conflicts(text)
+    compound_spans = (
+        _collect_compound_spans(
+            text,
+            tokenizer=tokenizer,
+            tok_type=tok_type,
+            line_starts=line_starts,
+            min_raw_token_len=max(int(min_raw_token_len), int(compound_min_raw_token_len)),
+        )
+        if enable_compound_spans
+        else []
+    )
     occ: dict[tuple[str, str], list[tuple[int, int]]] = defaultdict(list)
     reject_reasons: Counter[str] = Counter()
     protected_name_count = 0
@@ -302,6 +480,9 @@ def encode_exact_aliases(
             field = "attribute" if prev_is_dot else "variable"
             st = _pos_to_offset(line_starts, tok.start)
             ed = _pos_to_offset(line_starts, tok.end)
+            if _inside_compound_span(st, ed, compound_spans):
+                prev_is_dot = False
+                continue
             occ[(field, tstr)].append((st, ed))
             prev_is_dot = False
         elif ttype == tokenize.STRING:
@@ -309,6 +490,9 @@ def encode_exact_aliases(
             if route == "A":
                 st = _pos_to_offset(line_starts, tok.start)
                 ed = _pos_to_offset(line_starts, tok.end)
+                if _inside_compound_span(st, ed, compound_spans):
+                    prev_is_dot = False
+                    continue
                 occ[("string", tstr)].append((st, ed))
             else:
                 reject_reasons[f"route_{reason}"] += 1
@@ -317,6 +501,9 @@ def encode_exact_aliases(
             prev_is_dot = tstr == "."
         else:
             prev_is_dot = False
+
+    for span in compound_spans:
+        occ[(span.field, span.literal)].append((span.start, span.end))
 
     candidates = len(occ)
     alias_style = (alias_style or "").strip().lower()

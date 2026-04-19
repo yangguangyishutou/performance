@@ -31,6 +31,8 @@ class HybridABConfig:
     a_min_net_gain: int = 1
     a_alias_style: str = "short"
     a_alias_candidate_style: str = "token_cost_sorted"
+    enable_compound_spans: bool = True
+    compound_min_raw_token_len: int = 4
     b_similarity_threshold: float = 0.82
     b_risk_threshold: float = 0.72
     b_min_cluster_size: int = 2
@@ -334,6 +336,8 @@ def encode_stage3_hybrid_ab(
         min_net_gain=conf.a_min_net_gain,
         alias_style=conf.a_alias_style,
         alias_candidate_style=conf.a_alias_candidate_style,
+        enable_compound_spans=conf.enable_compound_spans,
+        compound_min_raw_token_len=conf.compound_min_raw_token_len,
         cost_mode=conf.a_cost_mode,
         min_raw_token_len=conf.min_raw_token_len,
         max_alias_token_len=conf.max_alias_token_len,
@@ -356,6 +360,8 @@ def encode_stage3_hybrid_ab(
     a_v = sum(1 for e in a_res.entries if e.field == "variable")
     a_a = sum(1 for e in a_res.entries if e.field == "attribute")
     a_s = sum(1 for e in a_res.entries if e.field == "string")
+    a_ann = sum(1 for e in a_res.entries if e.field == "annotation")
+    a_imp = sum(1 for e in a_res.entries if e.field == "import_module")
     global_seq_saved = int(
         sum(
             e.count * max(0, e.raw_cost - e.alias_cost)
@@ -375,6 +381,9 @@ def encode_stage3_hybrid_ab(
         "stage3_ab_a_used_entries_variable": a_v,
         "stage3_ab_a_used_entries_attribute": a_a,
         "stage3_ab_a_used_entries_string": a_s,
+        "stage3_ab_a_used_entries_annotation": a_ann,
+        "stage3_ab_a_used_entries_import_module": a_imp,
+        "stage3_ab_a_used_entries_compound": a_ann + a_imp,
         "stage3_ab_a_intro_tokens": a_res.intro_tokens,
         "stage3_ab_a_sequence_saved": a_res.sequence_saved,
         "stage3_ab_a_effective_net_saving": a_res.effective_net_saving,
@@ -406,6 +415,8 @@ def encode_stage3_hybrid_ab(
         "stage3_ab_vocab_entries": vocab_entries,
         "stage3_ab_a_processing_mode": conf.a_processing_mode,
         "stage3_ab_a_cost_mode": conf.a_cost_mode,
+        "stage3_ab_a_enable_compound_spans": bool(conf.enable_compound_spans),
+        "stage3_ab_a_compound_min_raw_token_len": int(conf.compound_min_raw_token_len),
         "stage3_ab_b_channel_priority": conf.b_channel_priority,
         "stage3_ab_global_dict_enabled": bool(conf.global_dict_enabled),
         "stage3_ab_global_dict_charge_vocab": bool(conf.global_dict_charge_vocab),
@@ -481,6 +492,8 @@ class HybridABStage3Backend:
             a_min_net_gain=int(cfg_raw["a_min_net_gain"]),
             a_alias_style=str(cfg_raw["a_alias_style"]),
             a_alias_candidate_style=str(cfg_raw.get("a_alias_candidate_style", "token_cost_sorted")),
+            enable_compound_spans=_truthy(cfg_raw.get("enable_compound_spans", True)),
+            compound_min_raw_token_len=int(cfg_raw.get("compound_min_raw_token_len", 4)),
             b_similarity_threshold=float(cfg_raw["b_similarity_threshold"]),
             b_risk_threshold=float(cfg_raw["b_risk_threshold"]),
             b_min_cluster_size=int(cfg_raw["b_min_cluster_size"]),

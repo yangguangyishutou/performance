@@ -160,6 +160,13 @@ STAGE3_AB_A_ALIAS_CANDIDATE_STYLE = os.getenv(
     "token_cost_sorted",
 ).strip().lower()
 STAGE3_AB_A_ALIAS_CACHE_DIR = str(CACHE_DIR / "alias_alphabets")
+STAGE3_AB_ENABLE_COMPOUND_SPANS = os.getenv(
+    "ET_STAGE3_AB_ENABLE_COMPOUND_SPANS",
+    "1",
+).lower() in ("1", "true", "yes")
+STAGE3_AB_COMPOUND_MIN_RAW_TOKEN_LEN = int(
+    os.getenv("ET_STAGE3_AB_COMPOUND_MIN_RAW_TOKEN_LEN", "4")
+)
 STAGE3_AB_KEY_LIKE_PATTERNS = tuple(
     x.strip()
     for x in os.getenv(
@@ -337,6 +344,16 @@ def resolve_hybrid_ab_settings(tokenizer_key: str) -> dict:
             "ET_STAGE3_AB_A_ALIAS_CANDIDATE_STYLE",
             cand_style_default,
         ).strip().lower(),
+        "enable_compound_spans": os.getenv(
+            "ET_STAGE3_AB_ENABLE_COMPOUND_SPANS",
+            "1" if STAGE3_AB_ENABLE_COMPOUND_SPANS else "0",
+        ).lower() in ("1", "true", "yes"),
+        "compound_min_raw_token_len": int(
+            os.getenv(
+                "ET_STAGE3_AB_COMPOUND_MIN_RAW_TOKEN_LEN",
+                str(STAGE3_AB_COMPOUND_MIN_RAW_TOKEN_LEN),
+            )
+        ),
         "a_alias_cache_dir": os.getenv(
             "ET_STAGE3_AB_A_ALIAS_CACHE_DIR",
             STAGE3_AB_A_ALIAS_CACHE_DIR,
@@ -506,7 +523,8 @@ EVAL_TOKENIZERS = {
     },
     "qwen25-coder-15b": {
         "type": "hf",
-        "name": "Qwen/Qwen2.5-Coder-1.5B",
+        "name": os.getenv("ET_QWEN25_CODER_15B_MODEL", "Qwen/Qwen2.5-Coder-1.5B").strip()
+        or "Qwen/Qwen2.5-Coder-1.5B",
     },
     "deepseek-v31": {
         "type": "hf",

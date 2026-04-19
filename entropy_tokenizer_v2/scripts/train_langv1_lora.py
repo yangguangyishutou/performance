@@ -7,11 +7,13 @@ import json
 import os
 import random
 import shutil
+import sys
 from pathlib import Path
 
 import torch
 from datasets import Dataset
 from peft import LoraConfig, PeftModel, get_peft_model, prepare_model_for_kbit_training
+from torch.utils.data import Subset
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -21,6 +23,14 @@ from transformers import (
     TrainingArguments,
     default_data_collator,
 )
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+try:
+    from scripts.sft_dataset import DataCollatorForQwenSFT, QwenSFTDataset
+except Exception:
+    from sft_dataset import DataCollatorForQwenSFT, QwenSFTDataset
 
 
 def _load_rows(path: Path, limit: int | None, *, train_mode: str) -> list[dict]:
@@ -118,14 +128,18 @@ def main() -> int:
     parser.add_argument("--lora-dropout", type=float, default=0.05)
     parser.add_argument("--torch-dtype", default="float16")
     parser.add_argument("--no-4bit", action="store_true")
+    parser.add_argument("--chatml-sft", action="store_true")
+    parser.add_argument("--sanity-check-overfit", action="store_true")
     args = parser.parse_args()
 
     random.seed(args.seed)
     torch.manual_seed(args.seed)
 
-    rows = _load_rows(args.train_jsonl, args.max_samples, train_mode=args.train_mode)
-    if not rows:
-        raise SystemExit(f"empty train set: {args.train_jsonl}")
+    rows: list[dict] = []
+    if not args.chatml_sft:
+        rows = _load_rows(args.train_jsonl, args.max_samples, train_mode=args.train_mode)
+        if not rows:
+            raise SystemExit(f"empty train set: {args.train_jsonl}")
     if args.adapter_init_path is not None and not args.adapter_init_path.exists():
         raise SystemExit(f"missing adapter_init_path: {args.adapter_init_path}")
 
@@ -136,39 +150,58 @@ def main() -> int:
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    ds = Dataset.from_list(rows)
-
-    def _tokenize(batch: dict) -> dict:
-        if args.train_mode == "sft":
-            input_ids = []
-            attention_mask = []
-            labels = []
-            for prompt, completion in zip(batch["prompt"], batch["completion"]):
-                row = _tokenize_sft_example(
-                    tokenizer=tokenizer,
-                    prompt=str(prompt),
-                    completion=str(completion),
-                    max_length=int(args.max_length),
-                )
-                input_ids.append(row["input_ids"])
-                attention_mask.append(row["attention_mask"])
-                labels.append(row["labels"])
-            return {
-                "input_ids": input_ids,
-                "attention_mask": attention_mask,
-                "labels": labels,
-            }
-        tok = tokenizer(
-            batch["text"],
-            truncation=True,
+    if args.chatml_sft:
+        tokenized = QwenSFTDataset(
+            args.train_jsonl,
+            tokenizer,
             max_length=int(args.max_length),
-            padding="max_length",
         )
-        tok["labels"] = tok["input_ids"].copy()
-        return tok
+        if len(tokenized) == 0:
+            raise SystemExit(f"empty chatml-sft train set: {args.train_jsonl}")
+    else:
+        ds = Dataset.from_list(rows)
 
-    remove_columns = ["prompt", "completion"] if args.train_mode == "sft" else ["text"]
-    tokenized = ds.map(_tokenize, batched=True, remove_columns=remove_columns)
+        def _tokenize(batch: dict) -> dict:
+            if args.train_mode == "sft":
+                input_ids = []
+                attention_mask = []
+                labels = []
+                for prompt, completion in zip(batch["prompt"], batch["completion"]):
+                    row = _tokenize_sft_example(
+                        tokenizer=tokenizer,
+                        prompt=str(prompt),
+                        completion=str(completion),
+                        max_length=int(args.max_length),
+                    )
+                    input_ids.append(row["input_ids"])
+                    attention_mask.append(row["attention_mask"])
+                    labels.append(row["labels"])
+                return {
+                    "input_ids": input_ids,
+                    "attention_mask": attention_mask,
+                    "labels": labels,
+                }
+            tok = tokenizer(
+                batch["text"],
+                truncation=True,
+                max_length=int(args.max_length),
+                padding="max_length",
+            )
+            tok["labels"] = tok["input_ids"].copy()
+            return tok
+
+        remove_columns = ["prompt", "completion"] if args.train_mode == "sft" else ["text"]
+        tokenized = ds.map(_tokenize, batched=True, remove_columns=remove_columns)
+
+    if args.sanity_check_overfit:
+        tiny_n = min(8, len(tokenized))
+        if tiny_n <= 0:
+            raise SystemExit("sanity-check-overfit enabled but no train samples available")
+        if args.chatml_sft:
+            tokenized = Subset(tokenized, list(range(tiny_n)))
+        else:
+            tokenized = tokenized.select(range(tiny_n))
+        print(f"[sanity-check-overfit] using tiny train set: n={tiny_n}")
 
     model_kwargs: dict = {
         "trust_remote_code": True,
@@ -200,13 +233,17 @@ def main() -> int:
             is_trainable=True,
         )
     else:
+        target_modules = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
+        lora_alpha = int(args.lora_alpha)
+        if args.chatml_sft:
+            lora_alpha = int(args.lora_r) * 2
         peft_cfg = LoraConfig(
             r=int(args.lora_r),
-            lora_alpha=int(args.lora_alpha),
+            lora_alpha=lora_alpha,
             lora_dropout=float(args.lora_dropout),
             bias="none",
             task_type="CAUSAL_LM",
-            target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"],
+            target_modules=target_modules,
         )
         model = get_peft_model(model, peft_cfg)
 
@@ -243,7 +280,9 @@ def main() -> int:
         args=training_args,
         train_dataset=tokenized,
         data_collator=(
-            default_data_collator
+            DataCollatorForQwenSFT(tokenizer=tokenizer)
+            if args.chatml_sft
+            else default_data_collator
             if args.train_mode == "sft"
             else DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
         ),
@@ -258,7 +297,9 @@ def main() -> int:
         "adapter_init_path": str(args.adapter_init_path) if args.adapter_init_path else "",
         "output_dir": str(args.output_dir),
         "train_mode": args.train_mode,
-        "n_train_rows": len(rows),
+        "chatml_sft": bool(args.chatml_sft),
+        "sanity_check_overfit": bool(args.sanity_check_overfit),
+        "n_train_rows": len(tokenized),
         "max_length": int(args.max_length),
         "epochs": float(args.epochs),
         "learning_rate": float(args.learning_rate),
