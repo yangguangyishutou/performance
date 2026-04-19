@@ -1,0 +1,20 @@
+{
+  "n_tasks": 20,
+  "prepared": {
+    "avg_raw_context_tokens": 1118.4,
+    "avg_compressed_effective_tokens": 979.4,
+    "avg_codebook_tokens": 0.6
+  },
+  "raw_gen": {
+    "avg_prompt_tokens": 1246.2
+  },
+  "comp_gen": {
+    "avg_prompt_tokens": 1110.1
+  },
+  "raw_score": {
+    "pass@1": 0.0
+  },
+  "comp_score": {
+    "pass@1": 0.0
+  }
+}

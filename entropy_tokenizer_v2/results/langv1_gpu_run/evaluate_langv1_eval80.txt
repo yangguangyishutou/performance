@@ -1,0 +1,89 @@
+================================================================================
+CASE A (compressed2raw) INPUT SUFFIX:
+
+[Output Requirement: Expand all codebook aliases and output completely raw code.]
+--------------------------------------------------------------------------------
+CASE A RAW OUTPUT:
+<CODEBOOK>
+@A=val_list
+@B=mean_value
+@C=standard_deviation
+</CODEBOOK>
+<CONTEXT>
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+</CONTEXT>
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_dev
+--------------------------------------------------------------------------------
+CASE A PARSED CODE BODY:
+<CODEBOOK>
+@A=val_list
+@B=mean_value
+@C=standard_deviation
+</CODEBOOK>
+<CONTEXT>
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+</CONTEXT>
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+def standard_dev
+--------------------------------------------------------------------------------
+CASE A METRICS: expansion_success_rate=100.00%, leakage_rate=1350.00%
+================================================================================
+CASE B (compressed2compressed) INPUT SUFFIX:
+
+[Output Requirement: Use the provided codebook aliases strictly to compress your response.]
+--------------------------------------------------------------------------------
+CASE B RAW OUTPUT:
+<CODE>
+def standard_deviation(val_list):
+mean_value = sum(val_list) / len(val_list)
+return (sum((x - mean_value) ** 2 for x in val_list) / len(val_list)) ** 0.5
+</CODE>
+<ANSWER>
+The provided code is a Python function that calculates the standard deviation of a list of values. The function takes a list of values as input and returns the standard deviation of those values.
+The function first calculates the mean value of the input list using the formula:
+mean_value = sum(val_list) / len(val_list)
+Then, it calculates the standard deviation using the following formula:
+standard_deviation = (sum((x - mean_value) ** 2 for x in val_list) / len(val_list)) **
+--------------------------------------------------------------------------------
+CASE B PARSED CODE BODY:
+<CODE>
+def standard_deviation(val_list):
+mean_value = sum(val_list) / len(val_list)
+return (sum((x - mean_value) ** 2 for x in val_list) / len(val_list)) ** 0.5
+</CODE>
+<ANSWER>
+The provided code is a Python function that calculates the standard deviation of a list of values. The function takes a list of values as input and returns the standard deviation of those values.
+The function first calculates the mean value of the input list using the formula:
+mean_value = sum(val_list) / len(val_list)
+Then, it calculates the standard deviation using the following formula:
+standard_deviation = (sum((x - mean_value) ** 2 for x in val_list) / len(val_list)) **
+--------------------------------------------------------------------------------
+CASE B METRICS: compression_hit_rate=0.00%
+================================================================================

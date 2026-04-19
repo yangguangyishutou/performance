@@ -1,0 +1,18 @@
+{
+  "train_jsonl": "results/langv1_pilot/langv1_sft_dataset_128.jsonl",
+  "base_model": "/root/autodl-tmp/models/qwen25-coder-15b",
+  "adapter_init_path": "results/langv1_gpu_run/checkpoints/qwen15b_eval80_cpt",
+  "output_dir": "results/langv1_gpu_run/checkpoints/qwen15b_eval80_cpt_sft128",
+  "train_mode": "sft",
+  "chatml_sft": false,
+  "sanity_check_overfit": false,
+  "n_train_rows": 220,
+  "max_length": 1024,
+  "epochs": 1.0,
+  "learning_rate": 0.0001,
+  "batch_size": 2,
+  "grad_accum": 4,
+  "use_4bit": true,
+  "train_runtime": 46.3296,
+  "train_loss": 0.8440180931772504
+}

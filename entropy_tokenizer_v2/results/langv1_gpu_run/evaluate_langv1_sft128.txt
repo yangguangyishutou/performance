@@ -1,0 +1,57 @@
+================================================================================
+CASE A (compressed2raw) INPUT SUFFIX:
+
+[Output Requirement: Expand all codebook aliases and output completely raw code.]
+--------------------------------------------------------------------------------
+CASE A RAW OUTPUT:
+<CODEBOOK>
+@A=val_list
+@B=mean_value
+@C=standard_deviation
+</CODEBOOK>
+<CONTEXT>
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+</CONTEXT>
+[Output Requirement: Expand all codebook aliases and output completely raw code.]<|file_sep|><|fim_prefix|>/README.md
+# 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄
+--------------------------------------------------------------------------------
+CASE A PARSED CODE BODY:
+<CODEBOOK>
+@A=val_list
+@B=mean_value
+@C=standard_deviation
+</CODEBOOK>
+<CONTEXT>
+def standard_deviation(@A):
+    @B = sum(@A) / len(@A)
+    return @B
+</CONTEXT>
+[Output Requirement: Expand all codebook aliases and output completely raw code.]<|file_sep|><|fim_prefix|>/README.md
+# 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄 🦄
+--------------------------------------------------------------------------------
+CASE A METRICS: expansion_success_rate=100.00%, leakage_rate=350.00%
+================================================================================
+CASE B (compressed2compressed) INPUT SUFFIX:
+
+[Output Requirement: Use the provided codebook aliases strictly to compress your response.]
+--------------------------------------------------------------------------------
+CASE B RAW OUTPUT:
+<CODE>
+def standard_deviation(val_list):
+    mean_value = sum(val_list) / len(val_list)
+    return mean_value
+</CODE><|fim_middle|>def standard_deviation(val_list):
+<|endoftext|>
+--------------------------------------------------------------------------------
+CASE B PARSED CODE BODY:
+<CODE>
+def standard_deviation(val_list):
+    mean_value = sum(val_list) / len(val_list)
+    return mean_value
+</CODE><|fim_middle|>def standard_deviation(val_list):
+<|endoftext|>
+--------------------------------------------------------------------------------
+CASE B METRICS: compression_hit_rate=0.00%
+================================================================================
